@@ -1,18 +1,89 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Menu as MenuIcon, Add, PieChart, Logout, Home } from '@mui/icons-material/';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/colors'
 import {Image} from './Image.components'
+import request, { gql } from 'graphql-request';
+import { GRAPHQL_ENDPOINT } from '../realm/constants';
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
+  const { user } = useContext(UserContext);
+ 
+  const [profiles, setProfiles] = useState([]);
+  const [currentProfile, setCurrentProfile] = useState([]);
+  const [profilesLoaded, setProfilesLoaded] = useState(false);
+   
+  let userId = ""
+  let accessToken = ""
+  if (user) {
+    userId = user.id
+    accessToken = user._accessToken
+  }
+
+  // GraphQL query to fetch all the meals for specific time interval
+  const getProfiles = gql`
+  query getProfiles($userId: String!) {
+    profiles(query: { userId: $userId }) {
+      _id
+      avatar
+      breed
+      categories {
+        _id
+        color
+        index
+        name
+        profileId
+        percentage
+        type
+        userId
+        weight
+      }
+      dailyPortion
+      dailyRatio
+      dob
+      isCurrent
+      name
+      preset
+      size
+      userId
+      weight
+      activityType
+      deductCalories 
+    }
+  }
+  `;
+
+  // Filter only current user related data 
+  const queryVariablesProfiles = {
+    "userId": userId,
+  };
+
+  const headers = { Authorization: `Bearer ${accessToken}` }
+  const loadUserProfiles = async () => {
+    try {
+      const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
+      setProfiles(_ => resp.profiles.map(profile => ({ ...profile, key: profile._id })));
+      const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
+      setCurrentProfile(currentProfileFetched);
+      setProfilesLoaded(true);
+    } catch (error) {
+      console.error('Error loading profiles:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadUserProfiles();
+    }
+  }, [user]);
+   
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setShow(show => !show);
   };
  
@@ -23,21 +94,22 @@ const NavBar = () => {
           <div>
             <Image imageName="logo.png" width="260" height="77" />
           </div>
-          <div style={{ marginLeft: 'auto' }}>
-            <IconButton
-              size="large"
-              edge="end"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer}
-            >
-              <MenuIcon />
-            </IconButton>
-          </div>
-          {/* <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: "none", color: "white" }}>
-            Huppy
-          </Typography> */}
-          {/* <Button color="success" variant="contained" startIcon={<Add />} component={Link} to="/new">Add Expense</Button> */}
+          {user && profilesLoaded && (
+            <div style={{ marginLeft: 'auto' }}>
+              <Typography variant="h6" component={Link} onClick={toggleDrawer} sx={{ flexGrow: 1, textDecoration: "none", color: colors.green, fontWeight: "bold" }}>
+                {currentProfile[0].name}
+              </Typography>
+              <IconButton
+                size="large"
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer}
+              >
+                <Image imageName="avatar_small_placeholder.png" width="70" height="70" />
+              </IconButton>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <TemporaryDrawer show={show} setShow={setShow} toggleDrawer={toggleDrawer} />
@@ -57,30 +129,52 @@ const TemporaryDrawer = (props) => {
 
   const navLinks = [
     {
-      text: 'Home',
-      Icon: Home,
+      text: 'Profile',
+      Icon: () => (
+        <Image imageName="avatar_small_placeholder.png" width="50" height="50" />
+      ),
       link: '/',
     },
     {
-      text: 'Add Expense',
-      Icon: Add,
-      link: '/new',
+      text: 'Diary',
+      Icon: () => (
+        <Image imageName="diary_tab_icon_unselected.svg" width="50" height="50" />
+      ),
+      link: '/',
     },
     {
-      text: 'Analytics Dashboard',
-      Icon: PieChart,
+      text: 'Dashboard',
+      Icon: () => (
+        <Image imageName="dashboard_tab_icon_unselected.svg" width="50" height="50" />
+      ),
       link: '/analytics',
     },
     {
+      text: 'Training',
+      Icon: () => (
+        <Image imageName="training_tab_icon_unselected.svg" width="50" height="50" />
+      ),
+      link: 'new',
+    },
+    {
+      text: 'Health & Wellness',
+      Icon: () => (
+        <Image imageName="health_tab_icon_unselected.svg" width="50" height="50" />
+      ),
+      link: '/new',
+    },
+    {
       text: 'Logout',
-      Icon: Logout,
+      Icon: () => (
+        <Image imageName="logout_tab_icon_unselected.svg" width="50" height="50" />
+      ),
       action: logOut,
     },
   ];
 
   const DrawerList = () => (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 250, height: "100%",  backgroundColor: colors.coffe }}
       role="presentation"
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}

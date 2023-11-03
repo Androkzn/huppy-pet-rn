@@ -6,14 +6,14 @@ import DatePicker from '@mui/lab/DatePicker';
 const CustomDatePicker = ({ label, value, onChange, style }) => {
   return (
     <span style={style}>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
+     
         <DatePicker
           label={label}
           value={value}
           onChange={onChange}
           renderInput={(params) => <TextField {...params} />}
         />
-      </LocalizationProvider>
+    
     </span>
   );
 };

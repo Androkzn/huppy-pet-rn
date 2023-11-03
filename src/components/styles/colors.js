@@ -10,3 +10,4 @@ export const brown = '#DED2B2'
 export const gray = '#838383'
 export const lightBrown = '#F5F4F3'
 export const darkOrange = '#562A0D'
+export const coffe ="#E8D8C9"

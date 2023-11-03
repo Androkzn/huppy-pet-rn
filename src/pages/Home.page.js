@@ -1,9 +1,16 @@
+/** @jsxImportSource @emotion/react */
+
 import { useContext, useEffect, useState } from 'react';
 import request, { gql } from 'graphql-request';
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import { GRAPHQL_ENDPOINT } from '../realm/constants';
 import MealsCard from '../components/MealCard.component';
+import * as styles  from '../components/styles/css'
+import {Image} from '../components/Image.components'
+import CustomDatePicker from "../components/CustomDatePicker.component";
+import DatePicker from '@mui/lab/DatePicker';
+import TextField from '@mui/material/TextField';
 
 const Home = () => {
   // Fetching user details from UserContext
@@ -12,8 +19,8 @@ const Home = () => {
   const userId = user.id;
 
 // Get the current date
-const currentDate = new Date();
-
+const [currentDate, setCurrentDate] = useState(new Date());
+ 
 // Set the time to the beginning of the current date (midnight)
 const startToday = new Date(currentDate);
 startToday.setHours(0, 0, 0, 0);
@@ -26,7 +33,7 @@ const endTodayISOString = endToday.toISOString();
 
 const [meals, setMeals] = useState([]);
 
-// GraphQL query to fetch all the meals
+// GraphQL query to fetch all the meals for specific time interval
 const getAllMeals = gql`
   query getAllMeals($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
     meals(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
@@ -38,16 +45,13 @@ const getAllMeals = gql`
   }
 `;
 
-  // Since we don't want to filter the results as of now,
-  // we will just use the empty query object
-  const queryVariables = {
+  // Filter only current user related data 
+  const queryVariablesMeals = {
     "userId": userId,
     "startDate": startTodayISOString,
     "endDate": endTodayISOString,
   };
 
-  // To prove that the identity of the user, we are attaching
-  // an Authorization Header with the request
   const headers = { Authorization: `Bearer ${user._accessToken}` }
 
   // loadMeals function is responsible for making the GraphQL
@@ -55,7 +59,7 @@ const getAllMeals = gql`
   const loadMeals = async () => {
     const resp = await request(GRAPHQL_ENDPOINT,
       getAllMeals,
-      queryVariables,
+      queryVariablesMeals,
       headers
     );
     setMeals(_ => resp.meals.map(meal => ({ ...meal, key: meal._id, afterDelete })));
@@ -72,9 +76,45 @@ const getAllMeals = gql`
 
   return <PageContainer>
     <h1>All Meals</h1>
-    {
+    {/* {
       meals.map(meal => <MealsCard {...meal} />)
-    }
+    } */}
+     <DatePicker
+      showIcon
+      selected={currentDate}
+      onChange={(date) => setCurrentDate(date) }
+
+    />
+<div style={{ display: 'flex', justifyContent: 'space-between' }}> 
+    <div> 
+      <div css={styles.loginConteinerStyle}>
+        <div css={styles.loginHeaderStyle}>
+          <h3 css={styles.headingLoginStyle} >MEALS</h3>
+          <div style={{ marginLeft: '20px' }}>
+            <Image imageName="diary_tab_icon_unselected.svg" width="40" height="50"/>
+          </div>
+        </div>
+        <div>
+          Meals...
+        </div>  
+      </div>
+    </div>
+
+    <div> 
+      <div css={styles.loginConteinerStyle}>
+        <div css={styles.loginHeaderStyle}>
+          <h3 css={styles.headingLoginStyle} >ACTIVITIES</h3>
+          <div style={{ marginLeft: '20px' }}>
+            <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+          </div>
+        </div>
+        <div>
+          Activities...
+        </div>  
+      </div>
+    </div>
+</div>
+
   </PageContainer>
 }
 

@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 import { App, Credentials } from "realm-web";
 import { APP_ID } from "../realm/constants";
 
@@ -16,7 +16,6 @@ export const UserProvider = ({ children }) => {
   const emailPasswordLogin = async (email, password) => {
     const credentials = Credentials.emailPassword(email, password);
     const authedUser = await app.logIn(credentials);
-    console.log(authedUser)
     setUser(authedUser);
     return authedUser;
   };
@@ -60,7 +59,7 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  return <UserContext.Provider value={{ user, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser }}>
+  return <UserContext.Provider value={{ user, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser}}>
     {children}
   </UserContext.Provider>;
 }

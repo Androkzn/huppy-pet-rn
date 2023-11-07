@@ -22,7 +22,6 @@ const loginHeaderStyle = css`
 `;
 
 const headingLoginStyle = css`
-  margin: 0px; //removes all margins
   color: ${colors.green};
 `;
 

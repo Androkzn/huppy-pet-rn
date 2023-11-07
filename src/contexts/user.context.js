@@ -1,6 +1,8 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useEffect } from "react";
 import { App, Credentials } from "realm-web";
 import { APP_ID } from "../realm/constants";
+import request, { gql } from 'graphql-request';
+import { GRAPHQL_ENDPOINT } from '../realm/constants';
 
 // Creating a Realm App Instance
 const app = new App(APP_ID);
@@ -11,6 +13,10 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [profiles, setProfiles] = useState([]);
+  const [currentProfile, setCurrentProfile] = useState(null);
+  let userId = ""
+  let accessToken = ""
 
   // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
@@ -59,7 +65,69 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  return <UserContext.Provider value={{ user, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser}}>
+  // Fetch profiles when user is fetched
+  useEffect(() => {
+      loadUserProfiles();
+  }, [user]);
+
+
+  // GraphQL query to fetch all the meals for specific time interval
+  const getProfiles = gql`
+  query getProfiles($userId: String!) {
+    profiles(query: { userId: $userId }) {
+      _id
+      avatar
+      breed
+      categories {
+        _id
+        color
+        index
+        name
+        profileId
+        percentage
+        type
+        userId
+        weight
+      }
+      dailyPortion
+      dailyRatio
+      dob
+      isCurrent
+      name
+      preset
+      size
+      userId
+      weight
+      activityType
+      deductCalories 
+    }
+  }
+  `;
+
+  const loadUserProfiles = async () => {
+    if (user) {
+      userId = user.id
+      accessToken = user._accessToken
+      const headers = { Authorization: `Bearer ${accessToken}` }
+      // Filter only current user related data 
+      const queryVariablesProfiles = {
+        "userId": userId,
+      };
+      
+      try {
+        const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
+        setProfiles(_ => resp.profiles.map(profile => ({ ...profile, key: profile._id })));
+        const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
+        setCurrentProfile(currentProfileFetched[0]);
+      } catch (error) {
+        console.error('Error loading profiles:', error);
+      }
+    }
+  };
+
+
+
+  return <UserContext.Provider value={{ user, currentProfile, profiles, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser}}>
     {children}
   </UserContext.Provider>;
 }

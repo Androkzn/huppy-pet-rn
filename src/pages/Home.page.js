@@ -5,53 +5,100 @@ import request, { gql } from 'graphql-request';
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import { GRAPHQL_ENDPOINT } from '../realm/constants';
-import MealsCard from '../components/MealCard.component';
-import * as styles  from '../components/styles/css'
+import MealCard from '../components/MealCard.component';
+import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
-import CustomDatePicker from "../components/CustomDatePicker.component";
-import DatePicker from '@mui/lab/DatePicker';
-import TextField from '@mui/material/TextField';
-
+import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
+import { act } from '@testing-library/react';
+ 
 const Home = () => {
   // Fetching user details from UserContext
   const { user } = useContext(UserContext);
-// Get the user's ID
+  const { currentProfile } = useContext(UserContext);
+
+  // Get the user's ID
   const userId = user.id;
-
-// Get the current date
-const [currentDate, setCurrentDate] = useState(new Date());
- 
-// Set the time to the beginning of the current date (midnight)
-const startToday = new Date(currentDate);
-startToday.setHours(0, 0, 0, 0);
-const startTodayISOString = startToday.toISOString();
-
-// Set the time to the end of the current date (right before midnight)
-const endToday = new Date(currentDate);
-endToday.setHours(23, 59, 59, 999);
-const endTodayISOString = endToday.toISOString();
-
-const [meals, setMeals] = useState([]);
-
-// GraphQL query to fetch all the meals for specific time interval
-const getAllMeals = gql`
-  query getAllMeals($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-    meals(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
-      _id
-      date
-      profileId
-      userId
-    }
+  let profileId = ""
+  
+  // Get the current profile ID
+  if (currentProfile) {
+    profileId =  currentProfile._id;
   }
-`;
+   
+  // Get the current date
+  const initialDate = new Date(); 
+  const [currentDate, setCurrentDate] = useState(initialDate);
+  
+  // Set the time to the beginning of the current date (midnight)
+  const startToday = new Date(currentDate);
+  startToday.setHours(0, 0, 0, 0);
+  const startTodayISOString = startToday.toISOString();
 
-  // Filter only current user related data 
-  const queryVariablesMeals = {
+  // Set the time to the end of the current date (right before midnight)
+  const endToday = new Date(currentDate);
+  endToday.setHours(23, 59, 59, 999);
+  const endTodayISOString = endToday.toISOString();
+
+  const [meals, setMeals] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [trainings, setTrainings] = useState([]);
+
+  // GraphQL query to fetch all the meals for specific time interval
+  const getAllMeals = gql`
+    query getAllMeals($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      meals(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+        _id
+        date
+        profileId
+        userId
+      }
+    }
+  `;
+
+   // GraphQL query to fetch all the activities for specific time interval
+   const getAllActivities = gql`
+   query getAllActivities($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+     activities(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+       _id
+       date
+       burnedCalories
+       distance
+       duration
+       metric
+       type
+       profileId
+       userId
+     }
+   }
+ `;
+
+  // GraphQL query to fetch all the trainings for specific time interval
+  const getAllTrainings = gql`
+    query getAllTrainings($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      trainings(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+        _id
+        date
+        category
+        customCategory
+        customType
+        desc
+        isCompleted
+        type
+        profileId
+        userId
+      }
+    }
+  `;
+
+  // Filter only current user with current profile  
+  const queryVariables = {
     "userId": userId,
+    "profileId": profileId,
     "startDate": startTodayISOString,
     "endDate": endTodayISOString,
   };
 
+  // Authorization header
   const headers = { Authorization: `Bearer ${user._accessToken}` }
 
   // loadMeals function is responsible for making the GraphQL
@@ -59,63 +106,165 @@ const getAllMeals = gql`
   const loadMeals = async () => {
     const resp = await request(GRAPHQL_ENDPOINT,
       getAllMeals,
-      queryVariablesMeals,
+      queryVariables,
       headers
     );
-    setMeals(_ => resp.meals.map(meal => ({ ...meal, key: meal._id, afterDelete })));
+    setMeals([])
+    setMeals(_ => resp.meals.map(meal => ({ ...meal, key: meal._id, update })));
   };
 
-  useEffect(() => {
-    loadMeals();
-  }, []);
+  // loadActivities function is responsible for making the GraphQL
+  // request to Realm and update the activities array from the response. 
+  const loadActivities = async () => {
+    const resp = await request(GRAPHQL_ENDPOINT,
+      getAllActivities,
+      queryVariables,
+      headers
+    );
+    setActivities([])
+    setActivities(_ => resp.activities.map(activity => ({ ...activity, key: activity._id, update })));
+  };
 
-  // Helper function to be performed after an meals has been deleted.
-  const afterDelete = () => {
+  // loadTrainings function is responsible for making the GraphQL
+  // request to Realm and update the trainings array from the response. 
+  const loadTrainings = async () => {
+    const resp = await request(GRAPHQL_ENDPOINT,
+      getAllTrainings,
+      queryVariables,
+      headers
+    );
+    setTrainings([])
+    setTrainings(_ => resp.trainings.map(training => ({ ...training, key: training._id, update })));
+  };
+
+  // Responsible for fetching data for  meals/traings/activities when data is changed
+  useEffect(() => {
+    update()
+  }, [currentDate]);
+
+  // Helper function to be performed after an meals/traing/activity has been deleted.
+  const update = () => {
     loadMeals();
+    loadActivities();
+    loadTrainings();
   }
 
   return <PageContainer>
-    <h1>All Meals</h1>
-    {/* {
-      meals.map(meal => <MealsCard {...meal} />)
-    } */}
-     <DatePicker
-      showIcon
-      selected={currentDate}
-      onChange={(date) => setCurrentDate(date) }
+    <div css={styles.rowStyle}> {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+      <div css={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
-    />
-<div style={{ display: 'flex', justifyContent: 'space-between' }}> 
-    <div> 
-      <div css={styles.loginConteinerStyle}>
-        <div css={styles.loginHeaderStyle}>
-          <h3 css={styles.headingLoginStyle} >MEALS</h3>
-          <div style={{ marginLeft: '20px' }}>
-            <Image imageName="diary_tab_icon_unselected.svg" width="40" height="50"/>
+        <div css={styles.rowStyle}> {/* Date picker container*/}
+          <div css={styles.columnStyle}> 
+            <div css={styles.pickerContainerStyle}> 
+              <CustomDatePickerWithArrows
+                label="Select date:"
+                value={currentDate}
+                onChange={(date) => setCurrentDate(date) }
+                styleContainer= {styles.pickerStyle}
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          Meals...
-        </div>  
-      </div>
-    </div>
+        </div>{/* Date picker container*/}
 
-    <div> 
-      <div css={styles.loginConteinerStyle}>
-        <div css={styles.loginHeaderStyle}>
-          <h3 css={styles.headingLoginStyle} >ACTIVITIES</h3>
-          <div style={{ marginLeft: '20px' }}>
-            <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+        <div css={styles.rowStyle}> {/* Statistic container*/}
+          <div css={styles.columnStyle}> 
+              <div >
+                <div css={styles.headerStyle}>
+                  <div css={styles.headerTextStyle}>
+                    <h3 css={styles.headingStyle}>STATS</h3>
+                    <h3 css={styles.headingStyle}>Today/goal</h3>
+                    <h3 css={styles.headingStyle}>DIET PERCENTAGE</h3>
+                  </div>
+                </div>
+                <div>
+                  Show statistic here
+                </div>
+            </div>
           </div>
-        </div>
-        <div>
-          Activities...
-        </div>  
-      </div>
-    </div>
-</div>
+        </div>{/* Statistic container*/}
 
+        <div css={styles.rowStyle}>   {/* Meals + Activities container*/}
+          <div css={styles.twoColumnStyle}>   {/* Meals column container*/}
+              <div css={styles.childConteinerStyle}> {/* Meals container*/}
+                
+                <div css={styles.headerStyle}>{/* Header container*/}
+                  <div css={styles.headerTiteStyle}>
+                    <h3 css={styles.headingStyle}>MEALS</h3>
+                    <div css={styles.headerImageStyle}>
+                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height5="40" />
+                    </div>
+                  </div>
+                  <div css={styles.headerAddButtonStyle}>
+                    <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
+                  </div>
+                </div> {/* Header container*/}
+                
+                <div  css={styles.columnStyle}>  {/* Meal container*/}
+                  {/* Show meals cards if data avaliable, if not -> show placeholder*/}
+                  {meals.length > 0 ? (
+                    meals.map((meal) => 
+                    <div key={meal._id}>
+                      <MealCard meal={meal}/>
+                    </div>)
+                  ) : (
+                    <div css={styles.placeholderStyle}>
+                      <Image imageName="no_meals_placeholder.png" width="200" height="170" />
+                    </div>
+                  )}
+
+                </div> {/* Meals container*/}
+              </div> {/* Meals column container*/}
+          </div> {/* Meals container*/}
+        
+          <div css={styles.twoColumnStyle}>  {/* Activities column container*/}
+              <div css={styles.childConteinerStyle}> {/* Activities container*/}
+                <div css={styles.headerStyle}>{/* Header container*/}
+                  <h3 css={styles.headingStyle} >ACTIVITIES</h3>
+                  <div css={styles.headerImageStyle}>
+                    <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+                  </div>
+                </div>{/* Header container*/}
+                <div  css={styles.columnStyle}>{/* Activity container*/}
+                  {/* Show activity cards if data avaliable, if not -> show placeholder*/}
+                  {activities.length > 0 ? (
+                    activities.map((activity) => 
+                    <div key={activity._id}>
+                      {activity.date}
+                      </div>)
+                  ) : (
+                    <div css={styles.placeholderStyle}>
+                      <Image imageName="no_activities_placeholder.png" width="200" height="170" />
+                    </div>
+                  )}
+                </div> {/* Activity container*/}
+              </div>{/* Activities container*/}
+            </div>{/* Activities column container*/} 
+          </div>{/* Meals + Activities container*/}
+      </div> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
+
+      <div css={styles.columnRightStyle }> {/* Right column (Training) */}
+        <div css={styles.childConteinerStyle}> {/* Trainings container*/}
+          <div css={styles.headerStyle}>{/* Header container*/}
+            <h3 css={styles.headingStyle} >TRAINING</h3>
+            <div css={styles.headerImageStyle}>
+              <Image imageName="training_tab_icon_unselected.svg" width="40" height="50"/>
+            </div>
+          </div>{/* Header container*/}
+
+          <div css={styles.columnStyle}>{/* Training container*/}
+            {trainings.length > 0 ? (
+              trainings.map((training) => <div key={training._id}>{training.date}</div>)
+            ) : (
+              <div css={styles.placeholderStyle}>
+                <Image imageName="no_trainings_placeholder.png" width="200" height="170" />
+              </div>
+            )}
+          </div>{/* Training container*/}
+        </div>{/* Trainings container*/}
+      </div>{/* Right column (Training) */}
+    </div>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
   </PageContainer>
 }
 
 export default Home;
+

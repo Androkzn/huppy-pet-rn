@@ -1,82 +1,110 @@
+/** @jsxImportSource @emotion/react */
+
 import { Delete, Edit } from "@mui/icons-material";
 import { Card, CardContent, Grid, IconButton, Typography } from "@mui/material";
 import request, { gql } from "graphql-request";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
+import * as styles  from '../components/styles/Meals.css'
+import {Image} from '../components/Image.components'
 
-const MealsCard = ({ _id, title, amount, category, mode, createdAt, afterDelete }) => {
+function MealCard({ meal }) {
   const { user } = useContext(UserContext);
+  const userId = user.id;
+  const accessToken = user._accessToken;
+  const mealId = meal._id;
+  const profileId = meal.profileId;
+  
+  // Define 'food' as a state variable using useState
+  const [food, setFood] = useState([]);
+      // GraphQL query to fetch all  food for specificmeal
+      const getAllFood = gql`
+      query getAllFood($mealId: String!) {
+        foods(query: { mealId: $mealId}) {
+          _id
+          bonesRatio
+          calories
+          caloriesServing
+          categoryType
+          image
+          mealId
+          meatRatio
+          name
+          servingWeight
+          servings
+          templateId
+          units
+          weight
+          type
+          userId
+        }
+      }
+    `;
 
-  // GraphQL query to delete an Meal
-  const deleteMealQuery = gql`
-  mutation DeleteMeal($query: MealQueryInput!) {
-    deleteOneMeal(query: $query) {
-      _id
-    }
+  function handleWeightChange(e, foodItem) {
+    const newValue = e.target.value;
+    // Update the foodItem's weight with the new value
+    foodItem.weight = newValue;
+  
+    // You may want to save the updated foodItem to your state or API here
   }
-  `;
+  
 
-  // Passing the Meal-id in the query to delete a specific Meal
-  const queryVariables = { query: { _id } };
+  useEffect(() => {
+    loadFood(); // Load food data when the component mounts
+  }, []); // Empty dependency array to ensure it runs only once on mount
 
-  const headers = { Authorization: `Bearer ${user._accessToken}` };
-
-  // deleteThisMeal function is responsible for deleting the
-  // Meal based on the Meal-id provided and then calling the
-  // afterDelete function to do the cleanup. 
-  const deleteThisMeal = async () => {
-
-    // Confirming the user's action
-    const resp = window.confirm("Are you sure you want to delete this Meal?");
-    if (!resp) return;
-
+  async function loadFood() {
     try {
-      await request(GRAPHQL_ENDPOINT, deleteMealQuery, queryVariables, headers);
-      afterDelete();
+      const headers = { Authorization: `Bearer ${accessToken}` };
+      const resp = await request(GRAPHQL_ENDPOINT, getAllFood, {
+        "mealId": mealId,
+      }, headers);
+      
+      // Update the 'food' state with the fetched data
+      setFood(resp.foods);
     } catch (error) {
       alert(error);
     }
-  };
+  }
+
+  // Function to calculate the total weight of food
+  function calculateTotalWeight(foodItems) {
+    return foodItems.reduce((total, foodItem) => total + foodItem.weight, 0);
+  }
 
   return (
-    <Card style={{ marginBottom: "1rem", paddingBottom: 0 }} elevation={1}>
-      <CardContent>
-        <Grid container>
-          <Grid item xs={4}>
-            <Typography variant='body2' color="text.secondary" gutterBottom>
-              {category}
-            </Typography>
-            <Typography variant="h6" component={Link} to={`/expense/${_id}`}>
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="h6">
-              ₹{amount}/-
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {mode}
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Link to={`/expense/${_id}/edit`}>
-              <IconButton color="primary">
-                <Edit />
-              </IconButton>
-            </Link>
-            <IconButton color="error" onClick={deleteThisMeal}>
-              <Delete />
-            </IconButton>
-            <Typography variant="body1" color="text.secondary">
-              {(new Date(createdAt)).toDateString()}
-            </Typography>
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
+      <div css={styles.childConteinerStyle} >
+        <div css={styles.headerMealStyle}>
+          <div css={styles.headerTextStyle}>
+            <h3 css={styles.headingMealStyle}>MEALS</h3>
+            <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
+            <div css={styles.headingDeleteButonStyle}><Delete/></div>
+          </div> 
+        </div>
+        <ul  css={styles.foodListStyle}>
+          {food.map((foodItem) => (
+            <li css={styles.foodListRowStyle} key={foodItem._id}>
+              <div css={styles.headerFoodStyle}>
+                <div css={styles.headerTextStyle}>
+                  <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
+                  <input
+                    type="text"
+                    css={styles.inputFieldStyle}
+                    value={foodItem.weight}
+                    onChange={(e) => handleWeightChange(e, foodItem)}
+                  />
+                  <div css={styles.headingDeleteButonStyle}><Delete/></div>
+                </div> 
+              </div>
+            </li>
+          ))}
+        </ul>
+        {/* Other components and UI elements */}
+      </div>
+   );
 }
 
-export default MealsCard;
+export default MealCard;

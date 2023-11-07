@@ -5,80 +5,11 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/colors'
 import {Image} from './Image.components'
-import request, { gql } from 'graphql-request';
-import { GRAPHQL_ENDPOINT } from '../realm/constants';
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
   const { user } = useContext(UserContext);
- 
-  const [profiles, setProfiles] = useState([]);
-  const [currentProfile, setCurrentProfile] = useState([]);
-  const [profilesLoaded, setProfilesLoaded] = useState(false);
-   
-  let userId = ""
-  let accessToken = ""
-  if (user) {
-    userId = user.id
-    accessToken = user._accessToken
-  }
-
-  // GraphQL query to fetch all the meals for specific time interval
-  const getProfiles = gql`
-  query getProfiles($userId: String!) {
-    profiles(query: { userId: $userId }) {
-      _id
-      avatar
-      breed
-      categories {
-        _id
-        color
-        index
-        name
-        profileId
-        percentage
-        type
-        userId
-        weight
-      }
-      dailyPortion
-      dailyRatio
-      dob
-      isCurrent
-      name
-      preset
-      size
-      userId
-      weight
-      activityType
-      deductCalories 
-    }
-  }
-  `;
-
-  // Filter only current user related data 
-  const queryVariablesProfiles = {
-    "userId": userId,
-  };
-
-  const headers = { Authorization: `Bearer ${accessToken}` }
-  const loadUserProfiles = async () => {
-    try {
-      const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
-      setProfiles(_ => resp.profiles.map(profile => ({ ...profile, key: profile._id })));
-      const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
-      setCurrentProfile(currentProfileFetched);
-      setProfilesLoaded(true);
-    } catch (error) {
-      console.error('Error loading profiles:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      loadUserProfiles();
-    }
-  }, [user]);
+  const { currentProfile } = useContext(UserContext);
    
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -86,18 +17,22 @@ const NavBar = () => {
     }
     setShow(show => !show);
   };
+
+  useEffect(() => {
+  }, [user, currentProfile]);
+
  
   return (
     <>
       <AppBar position="static"  sx={{ backgroundColor: colors.brown }}>
         <Toolbar>
           <div>
-            <Image imageName="logo.png" width="260" height="77" />
+            <Image imageName="logo_green_stroke.png" width="260" height="77" />
           </div>
-          {user && profilesLoaded && (
+          {user && currentProfile && (
             <div style={{ marginLeft: 'auto' }}>
               <Typography variant="h6" component={Link} onClick={toggleDrawer} sx={{ flexGrow: 1, textDecoration: "none", color: colors.green, fontWeight: "bold" }}>
-                {currentProfile[0].name}
+                {currentProfile.name}
               </Typography>
               <IconButton
                 size="large"

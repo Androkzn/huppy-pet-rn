@@ -24,7 +24,26 @@ const headerFoodStyle = css`
   background-color: ${colors.lightBrown2};
 `;
 
- 
+const addButtonStyle = css`
+  background:  ${colors.lightGreen};  
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 120px;
+  height: 35px;
+  margin-bottom: 10px;
+`;
+
+const addButtonTitleStyle = css`
+  margin: 0px; 
+  margin-left: 10px;
+  color:  ${colors.white}
+`;
+
+const addButtonContentStyle = css`
+  display: flex;
+  align-items: center;
+`;
 
 const headingMealStyle = css`
   color: ${colors.green};
@@ -96,4 +115,4 @@ const childConteinerStyle = css`
   background-color: ${colors.lightBrown}
 `;
 
-export { headerMealStyle, headerFoodStyle, headingFoodStyle, headingMealStyle, foodListRowStyle, inputFieldStyle, foodListStyle, headingDeleteButonStyle, headingTotalStyle, childConteinerStyle, headerTextStyle }
+export { headerMealStyle, headerFoodStyle, addButtonStyle, addButtonTitleStyle, addButtonContentStyle, headingFoodStyle, headingMealStyle, foodListRowStyle, inputFieldStyle, foodListStyle, headingDeleteButonStyle, headingTotalStyle, childConteinerStyle, headerTextStyle }

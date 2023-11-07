@@ -137,6 +137,100 @@ const Home = () => {
     setTrainings(_ => resp.trainings.map(training => ({ ...training, key: training._id, update })));
   };
 
+ 
+    // addMeal function is responsible for creating the
+    // meal and then calling the
+    // updateMeals to show new meal. 
+    const addMeal = async () => {
+      // GraphQL query to create an meal
+      const createMealQuery = gql`
+      mutation AddMeal($data: MealInsertInput!) {
+        insertOneMeal(data: $data) {
+          _id
+        }
+      }
+      `;
+
+      // All the data that needs to be sent to the GraphQL endpoint
+      // to create an meal will be passed through queryVariablesCreateMeal.
+      const queryVariablesCreateMeal = {
+        data: {
+          date: (currentDate).toISOString(),
+          profileId: profileId,
+          userId: userId
+        }
+      };
+
+      try {
+        await request(GRAPHQL_ENDPOINT, createMealQuery, queryVariablesCreateMeal, headers);
+        updateMeals();
+        
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    
+
+    const addActivity = async () => {
+      // GraphQL query to create an Activity
+      const createActivityQuery = gql`
+      mutation AddActivity($data: ActivityInsertInput!) {
+        insertOneActivity(data: $data) {
+          _id
+        }
+      }
+      `;
+
+      // All the data that needs to be sent to the GraphQL endpoint
+      // to create an Activity will be passed through queryVariablesCreateActivity.
+      const queryVariablesCreateActivity = {
+        data: {
+          date: (new Date()).toISOString(),
+          profileId: profileId,
+          userId: userId
+        }
+      };
+      
+      try {
+        await request(GRAPHQL_ENDPOINT, createActivityQuery, queryVariablesCreateActivity, headers);
+        updateMeals();
+         
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+
+    const addTraining = async () => {
+          // GraphQL query to create an Training
+      const createTrainingQuery = gql`
+        mutation AddTraining($data: TrainingInsertInput!) {
+          insertOneTraining(data: $data) {
+            _id
+          }
+        }
+        `;
+
+      // All the data that needs to be sent to the GraphQL endpoint
+      // to create an Training will be passed through queryVariablesCreateTraining.
+      const queryVariablesCreateTraining = {
+        data: {
+          date: (new Date()).toISOString(),
+          profileId: profileId,
+          userId: userId
+        }
+      };
+
+      try {
+        await request(GRAPHQL_ENDPOINT, createTrainingQuery, queryVariablesCreateTraining, headers);
+        updateMeals();
+       
+      } catch (error) {
+        alert(error);
+      }
+    };
+
   // Responsible for fetching data for  meals/traings/activities when data is changed
   useEffect(() => {
     update()
@@ -147,6 +241,10 @@ const Home = () => {
     loadMeals();
     loadActivities();
     loadTrainings();
+  }
+
+  const updateMeals = () => {
+    loadMeals();
   }
 
   return <PageContainer>
@@ -190,13 +288,16 @@ const Home = () => {
                 <div css={styles.headerStyle}>{/* Header container*/}
                   <div css={styles.headerTiteStyle}>
                     <h3 css={styles.headingStyle}>MEALS</h3>
-                    <div css={styles.headerImageStyle}>
-                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height5="40" />
+                    <div css={styles.headerImageStyle} >
+                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height5="40"/>
                     </div>
                   </div>
-                  <div css={styles.headerAddButtonStyle}>
+                  <button
+                    css={styles.headerAddButtonStyle}
+                    onClick={addMeal}
+                  >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-                  </div>
+                  </button>
                 </div> {/* Header container*/}
                 
                 <div  css={styles.columnStyle}>  {/* Meal container*/}
@@ -204,7 +305,7 @@ const Home = () => {
                   {meals.length > 0 ? (
                     meals.map((meal) => 
                     <div key={meal._id}>
-                      <MealCard meal={meal}/>
+                      <MealCard meal={meal} updateMeals={updateMeals}/>
                     </div>)
                   ) : (
                     <div css={styles.placeholderStyle}>
@@ -218,11 +319,20 @@ const Home = () => {
         
           <div css={styles.twoColumnStyle}>  {/* Activities column container*/}
               <div css={styles.childConteinerStyle}> {/* Activities container*/}
+                
                 <div css={styles.headerStyle}>{/* Header container*/}
-                  <h3 css={styles.headingStyle} >ACTIVITIES</h3>
-                  <div css={styles.headerImageStyle}>
-                    <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+                  <div css={styles.headerTiteStyle}> 
+                    <h3 css={styles.headingStyle} >ACTIVITIES</h3>
+                    <div css={styles.headerImageStyle}>
+                      <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+                    </div>
                   </div>
+                  <button
+                    css={styles.headerAddButtonStyle}
+                    onClick={addActivity}
+                  >
+                    <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
+                  </button>
                 </div>{/* Header container*/}
                 <div  css={styles.columnStyle}>{/* Activity container*/}
                   {/* Show activity cards if data avaliable, if not -> show placeholder*/}
@@ -245,10 +355,18 @@ const Home = () => {
       <div css={styles.columnRightStyle }> {/* Right column (Training) */}
         <div css={styles.childConteinerStyle}> {/* Trainings container*/}
           <div css={styles.headerStyle}>{/* Header container*/}
+          <div css={styles.headerTiteStyle}> 
             <h3 css={styles.headingStyle} >TRAINING</h3>
             <div css={styles.headerImageStyle}>
               <Image imageName="training_tab_icon_unselected.svg" width="40" height="50"/>
             </div>
+            </div>
+            <button
+              css={styles.headerAddButtonStyle}
+              onClick={addTraining}
+            >
+              <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
+            </button>
           </div>{/* Header container*/}
 
           <div css={styles.columnStyle}>{/* Training container*/}

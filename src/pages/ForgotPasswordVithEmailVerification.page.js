@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles from '../components/styles/css';
-import { Button, Input, FormGroup } from '../components/Lib';
+import { Button, Input, FormGroup } from '../components/Shared.componentsb';
 import { Image } from '../components/Image.components';
 
 function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPasswords, onSubmitReset }) {

@@ -44,6 +44,9 @@ const headerImageStyle = css`
 
 const headerAddButtonStyle = css`
   margin-right: 20px; 
+  background: transparent;  
+  border: none;
+  cursor: pointer;
 `;
 
 const headerTextStyle = css`

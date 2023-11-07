@@ -6,7 +6,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import PawActivityIndicatorView from '../components/Spinner.components';
-import {Button, Input, FormGroup, Spinner} from '../components/Lib'
+import {Button, Input, FormGroup, Spinner} from '../components/Shared.components'
 import {Image} from '../components/Image.components'
 
 function SignUpForm({onSubmit, buttonText, onFormInputChange}) {

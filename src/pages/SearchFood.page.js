@@ -6,77 +6,39 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import PageContainer from "../components/PageContainer.component";
-import * as enums from "../helpers/Enums"
+import * as enums from "../helpers/Enums.helper"
 import { css } from "@emotion/react";
+import { searchForFood } from "../graphql/graphqlUtils";
+
+
 //import AddFoodPage from "./AddFood.page"; // Import the AddFood.page for opening when an item is clicked
 
 const SearchFood = () => {
-const { user } = useContext(UserContext);
-    const userId = user.id;
-    const accessToken = user._accessToken;
-
+  const { user } = useContext(UserContext);
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
   // State for selected category filter
   const [selectedCategory, setSelectedCategory] = useState("");
-  
+   // State for searchResult 
   const [searchResult, setResults] = useState([]);
-
-  //let searchResult = [];
- 
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     console.log("Opening AddFoodPage for:", foodItem);
   };
 
-    // GraphQL query to fetch all  food for specificmeal
-    const searchFoodQuery = gql`
-    query SearchFood($searchQuery: String!) {
-      search(input: $searchQuery) {
-          _id
-          bonesRatio
-          calories
-          caloriesServing
-          categoryType
-          image
-          meatRatio
-          name
-          servingWeight
-          servings
-          units
-          weight
-          type
-          userId
-      }
+  useEffect(() => {
+    // Do not query an empty string
+    if (searchQuery.length > 0) {
+      searchFood(); // Load food data when the component mounts
     }
-  `;
-  
-    const queryVariables = {
-      searchQuery: searchQuery,
-    };
-  
-    useEffect(() => {
-      //Do not query an empty string
-      if( searchQuery.length > 0 )  {
-          searchFood(); // Load food data when the component mounts
-      }
-    }, [searchQuery]); // Empty dependency array to ensure it runs only once on mount
-  
-    async function searchFood() {
-      try {
-        const headers = { Authorization: `Bearer ${accessToken}` };
-        const resp = await request(GRAPHQL_ENDPOINT, searchFoodQuery, queryVariables, headers);
-       
-        // Update the 'food' state with the fetched data
-        if( resp.search)  {
-          setResults(resp.search);
-        }
-       
-      } catch (error) {
-        alert(error);
-      }
-    }
+  }, [searchQuery]);
+
+  // Func that is responsible for searching Food Templates in DB 
+  async function searchFood() {
+    const results = await searchForFood(searchQuery, user);
+    setResults(results);
+  }
  
     const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
       const filterOptions = [
@@ -162,7 +124,6 @@ const { user } = useContext(UserContext);
         onChange={(e) => {
             if (searchQuery !== e.target.value) {
                 setSearchQuery(e.target.value);
-                //searchFood();
             }
         }}
         />

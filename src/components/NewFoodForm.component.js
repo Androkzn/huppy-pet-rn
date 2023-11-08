@@ -8,7 +8,7 @@ import TitleAndDropdown from "./AddFoodTitleAndDropdown.component"
 import AddFoodTitleButtonsAndTextField from "./AddFoodTitleButtonsAndTextField.component"
 import AddFoodTitleAndTextInput from "./AddFoodTitleAndTextInput.componet"
 import AddFoodTitleDescriptionAndTextBox from "./AddFoodTitleDescriptionAndTextBox.component"
-import * as enums from "../helpers/Enums"
+import * as enums from "../helpers/Enums.helper"
 
 const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
   

@@ -8,9 +8,8 @@ import {Image} from './Image.components'
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
-  const { user } = useContext(UserContext);
-  const { currentProfile } = useContext(UserContext);
-   
+  const { user, currentProfile, profiles } = useContext(UserContext);
+
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -18,10 +17,6 @@ const NavBar = () => {
     setShow(show => !show);
   };
 
-  useEffect(() => {
-  }, [user, currentProfile]);
-
- 
   return (
     <>
       <AppBar position="static"  sx={{ backgroundColor: colors.brown }}>

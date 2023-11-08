@@ -8,9 +8,10 @@ import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import NewFoodForm from "../components/NewFoodForm.component";
 import { useNavigate } from "react-router-dom";
 import {BackButton} from '../components/Shared.components'
+import { addFood } from "../graphql/graphqlUtils";
 
-const CreateNewFood = ({ mealId, profileId, userId, accessToken, loadFoodForMeal }) => {
-  const { user } = useContext(UserContext);
+const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
+  const { user, currentProfile } = useContext(UserContext);
   const navigate = useNavigate();
 
   // Some prefilled form state
@@ -33,47 +34,11 @@ const CreateNewFood = ({ mealId, profileId, userId, accessToken, loadFoodForMeal
     description: "",
   });
 
-  // addFood function is responsible for adding the food
-  const addFood = async () => {
-    const headers = { Authorization: `Bearer ${accessToken}` };
-   
-    // GraphQL query to create food
-    const createFoodQuery = gql`
-    mutation AddFood($data: FoodInsertInput!) {
-      insertOneFood(data: $data) {
-        _id
-      }
-    }
-    `;
-
-    // All the data that needs to be sent to the GraphQL endpoint
-    // to create food will be passed through queryVariablesCreateFood.
-    const queryVariablesCreateFood = {
-      data: {
-        bonesRatio:  form.bonesRatio,
-        calories:  form.calories,
-        caloriesServing:  form.caloriesServing,
-        categoryType:  form.category,
-        image: "",
-        mealId:  form.mealId,
-        meatRatio:  form.meatRatio,
-        name:  form.name,
-        servingWeight:  form.servingWeight,
-        servings: form.servings,
-        templateId: "",
-        type:  form.type,
-        units: form.units, 
-        weight: 0,
-        profileId: profileId,
-        userId: userId
-      }
-    };
-
-    try {
-      await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
+  // addFood function is responsible for adding the Food
+  const addNewFood = async () => {
+    const isAdded = await addFood(user, currentProfile, mealId, form)  
+    if (isAdded) {
       loadFoodForMeal();
-    } catch (error) {
-      alert(error);
     }
   };
 
@@ -84,7 +49,7 @@ const CreateNewFood = ({ mealId, profileId, userId, accessToken, loadFoodForMeal
     if ( name.length === 0 || calories  === 0   ) {
       return;
     }
-    addFood()
+    addNewFood()
   };
 
   return <PageContainer>

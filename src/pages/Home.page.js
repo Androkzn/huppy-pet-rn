@@ -4,248 +4,91 @@ import { useContext, useEffect, useState } from 'react';
 import request, { gql } from 'graphql-request';
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
-import { GRAPHQL_ENDPOINT } from '../realm/constants';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 import { Link } from "react-router-dom";
-
+import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, } from "../graphql/graphqlUtils";
 
 const Home = () => {
   // Fetching user details from UserContext
-  const { user } = useContext(UserContext);
-  const { currentProfile } = useContext(UserContext);
+  const { user, currentProfile } = useContext(UserContext);
 
-  // Get the user's ID
-  const userId = user.id;
-  let profileId = ""
-  
-  // Get the current profile ID
-  if (currentProfile) {
-    profileId =  currentProfile._id;
-  }
-   
-  // Get the current date
-  const initialDate = new Date(); 
-  const [currentDate, setCurrentDate] = useState(initialDate);
-  
-  // Set the time to the beginning of the current date (midnight)
-  const startToday = new Date(currentDate);
-  startToday.setHours(0, 0, 0, 0);
-  const startTodayISOString = startToday.toISOString();
-
-  // Set the time to the end of the current date (right before midnight)
-  const endToday = new Date(currentDate);
-  endToday.setHours(23, 59, 59, 999);
-  const endTodayISOString = endToday.toISOString();
-
+  const [currentDate, setCurrentDate] = useState( new Date());
   const [meals, setMeals] = useState([]);
   const [activities, setActivities] = useState([]);
   const [trainings, setTrainings] = useState([]);
 
-  // GraphQL query to fetch all the meals for specific time interval
-  const getAllMeals = gql`
-    query getAllMeals($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      meals(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
-        _id
-        date
-        profileId
-        userId
-      }
-    }
-  `;
-
-   // GraphQL query to fetch all the activities for specific time interval
-   const getAllActivities = gql`
-   query getAllActivities($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-     activities(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
-       _id
-       date
-       burnedCalories
-       distance
-       duration
-       metric
-       type
-       profileId
-       userId
-     }
-   }
- `;
-
-  // GraphQL query to fetch all the trainings for specific time interval
-  const getAllTrainings = gql`
-    query getAllTrainings($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      trainings(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
-        _id
-        date
-        category
-        customCategory
-        customType
-        desc
-        isCompleted
-        type
-        profileId
-        userId
-      }
-    }
-  `;
-
-  // Filter only current user with current profile  
-  const queryVariables = {
-    "userId": userId,
-    "profileId": profileId,
-    "startDate": startTodayISOString,
-    "endDate": endTodayISOString,
-  };
-
-  // Authorization header
-  const headers = { Authorization: `Bearer ${user._accessToken}` }
-
-  // loadMeals function is responsible for making the GraphQL
+  // Function is responsible for making the GraphQL
   // request to Realm and update the meals array from the response. 
-  const loadMeals = async () => {
-    const resp = await request(GRAPHQL_ENDPOINT,
-      getAllMeals,
-      queryVariables,
-      headers
-    );
-    setMeals([])
-    setMeals(_ => resp.meals.map(meal => ({ ...meal, key: meal._id, update })));
+  const loadMealsForDate = async () => {
+    if (currentProfile) {
+      const meals = await loadMeals(user, currentProfile, currentDate); 
+      setMeals(meals);
+    }
   };
 
-  // loadActivities function is responsible for making the GraphQL
+  // Function is responsible for making the GraphQL
   // request to Realm and update the activities array from the response. 
-  const loadActivities = async () => {
-    const resp = await request(GRAPHQL_ENDPOINT,
-      getAllActivities,
-      queryVariables,
-      headers
-    );
-    setActivities([])
-    setActivities(_ => resp.activities.map(activity => ({ ...activity, key: activity._id, update })));
+  const loadActivitiesForDate = async () => {
+    const activities = await loadActivities(user, currentProfile, currentDate); 
+    setActivities(activities);
   };
 
-  // loadTrainings function is responsible for making the GraphQL
+  // Function is responsible for making the GraphQL
   // request to Realm and update the trainings array from the response. 
-  const loadTrainings = async () => {
-    const resp = await request(GRAPHQL_ENDPOINT,
-      getAllTrainings,
-      queryVariables,
-      headers
-    );
-    setTrainings([])
-    setTrainings(_ => resp.trainings.map(training => ({ ...training, key: training._id, update })));
+  const loadTrainingsForDate = async () => {
+    const trainings = await loadTrainings(user, currentProfile, currentDate); 
+    setTrainings(trainings);
   };
 
- 
-    // addMeal function is responsible for creating the
-    // meal and then calling the
-    // updateMeals to show new meal. 
-    const addMeal = async () => {
-      // GraphQL query to create an meal
-      const createMealQuery = gql`
-      mutation AddMeal($data: MealInsertInput!) {
-        insertOneMeal(data: $data) {
-          _id
-        }
-      }
-      `;
+  // Function is responsible for creating a new meal
+  const addMealForDate = async () => {
+    const isAdded = await addMeal(user, currentProfile, currentDate)  
+    if (isAdded) {
+      updateMeals();
+    }
+  };
 
-      // All the data that needs to be sent to the GraphQL endpoint
-      // to create an meal will be passed through queryVariablesCreateMeal.
-      const queryVariablesCreateMeal = {
-        data: {
-          date: (currentDate).toISOString(),
-          profileId: profileId,
-          userId: userId
-        }
-      };
+  // Function is responsible for creating a new activity
+  const addActivityForDate = async () => {
+    const isAdded = await addActivity(user, currentProfile, currentDate)  
+    if (isAdded) {
+      updateActivities();
+    }
+  };
 
-      try {
-        await request(GRAPHQL_ENDPOINT, createMealQuery, queryVariablesCreateMeal, headers);
-        updateMeals();
-        
-      } catch (error) {
-        alert(error);
-      }
-    };
-
-    
-
-    const addActivity = async () => {
-      // GraphQL query to create an Activity
-      const createActivityQuery = gql`
-      mutation AddActivity($data: ActivityInsertInput!) {
-        insertOneActivity(data: $data) {
-          _id
-        }
-      }
-      `;
-
-      // All the data that needs to be sent to the GraphQL endpoint
-      // to create an Activity will be passed through queryVariablesCreateActivity.
-      const queryVariablesCreateActivity = {
-        data: {
-          date: (new Date()).toISOString(),
-          profileId: profileId,
-          userId: userId
-        }
-      };
-      
-      try {
-        await request(GRAPHQL_ENDPOINT, createActivityQuery, queryVariablesCreateActivity, headers);
-        updateMeals();
-         
-      } catch (error) {
-        alert(error);
-      }
-    };
-
-
-    const addTraining = async () => {
-          // GraphQL query to create an Training
-      const createTrainingQuery = gql`
-        mutation AddTraining($data: TrainingInsertInput!) {
-          insertOneTraining(data: $data) {
-            _id
-          }
-        }
-        `;
-
-      // All the data that needs to be sent to the GraphQL endpoint
-      // to create an Training will be passed through queryVariablesCreateTraining.
-      const queryVariablesCreateTraining = {
-        data: {
-          date: (new Date()).toISOString(),
-          profileId: profileId,
-          userId: userId
-        }
-      };
-
-      try {
-        await request(GRAPHQL_ENDPOINT, createTrainingQuery, queryVariablesCreateTraining, headers);
-        updateMeals();
-       
-      } catch (error) {
-        alert(error);
-      }
-    };
+  // Function is responsible for creating a new training
+  const addTrainingForDate = async () => {
+    const isAdded = await addTraining(user, currentProfile, currentDate)  
+    if (isAdded) {
+      updateTrainings();
+    }
+  };
 
   // Responsible for fetching data for  meals/traings/activities when data is changed
   useEffect(() => {
-    update()
+    updateAll()
   }, [currentDate]);
 
   // Helper function to be performed after an meals/traing/activity has been deleted.
-  const update = () => {
-    loadMeals();
-    loadActivities();
-    loadTrainings();
+  const updateAll = () => {
+    updateMeals()
+    updateActivities()
+    updateTrainings()
   }
 
   const updateMeals = () => {
-    loadMeals();
+    loadMealsForDate();
+  }
+
+  const updateActivities = () => {
+    loadActivitiesForDate();
+  }
+
+  const updateTrainings = () => {
+    loadTrainingsForDate();
   }
 
   return <PageContainer>
@@ -295,7 +138,7 @@ const Home = () => {
                   </div>
                   <button
                     css={styles.headerAddButtonStyle}
-                    onClick={addMeal}
+                    onClick={addMealForDate}
                   >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
@@ -330,7 +173,7 @@ const Home = () => {
                   </div>
                   <button
                     css={styles.headerAddButtonStyle}
-                    onClick={addActivity}
+                    onClick={addActivityForDate}
                   >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
@@ -364,7 +207,7 @@ const Home = () => {
             </div>
             <button
               css={styles.headerAddButtonStyle}
-              onClick={addTraining}
+              onClick={addTrainingForDate}
             >
               <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
             </button>

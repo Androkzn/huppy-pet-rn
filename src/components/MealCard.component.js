@@ -9,42 +9,16 @@ import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import * as styles  from '../components/styles/Meals.css'
 import {Image} from '../components/Image.components'
 import {Button, IconButton} from '@mui/material';
- 
+import { getAllFoodForMeal, deleteMeal } from "../graphql/graphqlUtils";
 
 function MealCard({ meal, updateMeals }) {
   const { user } = useContext(UserContext);
-  const userId = user.id;
-  const accessToken = user._accessToken;
   const mealId = meal._id;
   const _id = meal._id;
-  const profileId = meal.profileId;
+
   
   // Define 'food' as a state variable using useState
   const [food, setFood] = useState([]);
-  
-  // GraphQL query to fetch all  food for specificmeal
-  const getAllFoodForMeal = gql`
-  query getAllFoodForMeal($mealId: String!) {
-    foods(query: { mealId: $mealId}) {
-      _id
-      bonesRatio
-      calories
-      caloriesServing
-      categoryType
-      image
-      mealId
-      meatRatio
-      name
-      servingWeight
-      servings
-      templateId
-      units
-      weight
-      type
-      userId
-    }
-  }
-`;
 
   function handleWeightChange(e, foodItem) {
     const newValue = e.target.value;
@@ -58,44 +32,21 @@ function MealCard({ meal, updateMeals }) {
   }, []); // Empty dependency array to ensure it runs only once on mount
 
   async function loadFoodForMeal() {
-    try {
-      const headers = { Authorization: `Bearer ${accessToken}` };
-      const resp = await request(GRAPHQL_ENDPOINT, getAllFoodForMeal, {
-        "mealId": mealId,
-      }, headers);
-      
+    const results = await getAllFoodForMeal(user, mealId);
       // Update the 'food' state with the fetched data
-      setFood(resp.foods);
-    } catch (error) {
-      alert(error);
-    }
+      setFood(results);
+     
   }
 
-  // GraphQL query to delete an meal
-  const deleteMealQuery = gql`
-  mutation DeleteMeal($query: MealQueryInput!) {
-    deleteOneMeal(query: $query) {
-      _id
-    }
-  }
-  `;
-
-  // deleteThisMeal function is responsible for deleting the
+  
+  // deleteMeal function is responsible for deleting the
   // meal based on the expense-id provided and then calling the
   // updateMeals function to do the cleanup. 
-  const deleteThisMeal = async () => {
-    const headers = { Authorization: `Bearer ${accessToken}` };
-    const queryVariables = { query: { _id } };
-    // Confirming the user's action
-    const resp = window.confirm("Are you sure you want to delete this meal?");
-    if (!resp) return;
-
-    try {
-      await request(GRAPHQL_ENDPOINT, deleteMealQuery, queryVariables, headers);
-      updateMeals();
-    } catch (error) {
-      alert(error);
-    }
+  const deleteCurrentMeal = async () => {
+     const isDeleted = await deleteMeal(user, _id);
+     if (isDeleted) {
+        updateMeals()
+     }
   };
 
  
@@ -110,7 +61,7 @@ function MealCard({ meal, updateMeals }) {
           <div css={styles.headerTextStyle}>
             <h3 css={styles.headingMealStyle}>MEALS</h3>
             <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
-            <div css={styles.headingDeleteButonStyle}><Delete onClick={deleteThisMeal} /></div>
+            <div css={styles.headingDeleteButonStyle}><Delete onClick={deleteCurrentMeal} /></div>
           </div> 
         </div>
         <ul  css={styles.foodListStyle}>

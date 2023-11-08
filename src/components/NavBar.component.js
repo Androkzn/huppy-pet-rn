@@ -89,14 +89,14 @@ const TemporaryDrawer = (props) => {
       Icon: () => (
         <Image imageName="training_tab_icon_unselected.svg" width="50" height="50" />
       ),
-      link: 'new',
+      link: '/newFood',
     },
     {
       text: 'Health & Wellness',
       Icon: () => (
         <Image imageName="health_tab_icon_unselected.svg" width="50" height="50" />
       ),
-      link: '/new',
+      link: '/newFood',
     },
     {
       text: 'Logout',

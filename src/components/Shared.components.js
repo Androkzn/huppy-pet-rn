@@ -44,6 +44,34 @@ const Button = styled.button(
   })
 );
 
+const BackButtonWithText = styled.button({
+  background: colors.brown,
+  marginTop: '10px',
+  marginLeft: '10px',
+  borderRadius: '10px',
+  color: colors.green,
+  border: 'none',
+  padding: '10px',
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  fontWeight: "bold",
+  fontSize: '17px',
+  paddingRight: '25px',
+});
+
+const ArrowIcon = styled.div({
+  marginRight: '15px',
+  marginLeft: '15px',
+  fontSize: '20px',
+});
+
+const BackButton = ({ text }) => (
+  <BackButtonWithText>
+    <ArrowIcon>&#8592;</ArrowIcon> {text}
+  </BackButtonWithText>
+);
+
 const spin = keyframes({
   '0%': {transform: 'rotate(0deg)'},
   '100%': {transform: 'rotate(360deg)'},
@@ -100,4 +128,4 @@ const FormGroup = styled.div({
   alignItems: 'center',
 })
 
-export {Button, Input, CircleButton, Dialog, FormGroup, Spinner}
+export {Button, BackButton, Input, CircleButton, Dialog, FormGroup, Spinner}

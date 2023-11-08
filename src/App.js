@@ -2,14 +2,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar.component";
 import { UserProvider } from "./contexts/user.context";
 import Analytics from "./pages/Analytics.page";
-import CreateExpense from "./pages/CreateExpense.page";
 import EditExpense from "./pages/EditExpense.page";
 import Home from "./pages/Home.page";
 import Login from "./pages/Login.page";
 import PrivateRoute from "./pages/PrivateRoute.page";
 import Signup from "./pages/Signup.page";
 import ForgotPassword from "./pages/ForgotPassword.page";
-
+import CreateNewFood from "./pages/CreateNewFood.page";
+import SearchFood from "./pages/SearchFood.page";
 function App() {
   return (
     <BrowserRouter>
@@ -25,7 +25,8 @@ function App() {
           {/* users by wrapping it with PrivateRoute here. */}
           <Route element={<PrivateRoute />}>
             <Route exact path="/" element={<Home />} />
-            <Route exact path="/new" element={<CreateExpense />} />
+            <Route exact path="/newFood" element={<CreateNewFood />} />
+            <Route exact path="/searchFood" element={<SearchFood />} />
             <Route exact path="/expense/:id/edit" element={<EditExpense />} />
             <Route exact path="/analytics" element={<Analytics />} />
           </Route>

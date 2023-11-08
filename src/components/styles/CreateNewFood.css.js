@@ -24,15 +24,39 @@ const headerFoodStyle = css`
   background-color: ${colors.lightBrown2};
 `;
 
-const addButtonStyle = css`
+const addFoodFormStyle = css`
+  max-width: 450px;
+  min-width: 350px;
+  margin: auto;
+`;
+
+const addFoodTitleStyle = css`
+  text-align: center;
+  color: ${colors.lightGreen};
+`;
+
+const nutritionFactsTitleStyle = css`
+  text-align: center;
+  color: ${colors.lightGreen};
+`;
+
+
+const addFoodButtonContainerStyle = css`
+  display: flex;
+  justify-content: center;
+`;
+
+const addFoodButtonStyle = css`
   background:  ${colors.lightGreen}; 
   border: none;
   border-radius: 10px;  
   cursor: pointer;
   width: 150px;
-  height: 35px;
-  margin-bottom: 10px;
- 
+  height: 40px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-weight: bold;
+
   &:hover {
     background: ${colors.orange}; 
     
@@ -122,4 +146,23 @@ const childConteinerStyle = css`
   background-color: ${colors.lightBrown}
 `;
 
-export { headerMealStyle, headerFoodStyle, addButtonStyle, addButtonTitleStyle, addButtonContentStyle, headingFoodStyle, headingMealStyle, foodListRowStyle, inputFieldStyle, foodListStyle, headingDeleteButonStyle, headingTotalStyle, childConteinerStyle, headerTextStyle }
+export { 
+  headerMealStyle, 
+  addFoodButtonContainerStyle,
+  headerFoodStyle, 
+  addFoodFormStyle, 
+  addFoodTitleStyle,
+  addButtonTitleStyle, 
+  addButtonContentStyle, 
+  headingFoodStyle, 
+  headingMealStyle, 
+  foodListRowStyle, 
+  inputFieldStyle, 
+  foodListStyle, 
+  headingDeleteButonStyle,
+  headingTotalStyle, 
+  childConteinerStyle, 
+  headerTextStyle,
+  addFoodButtonStyle,
+  nutritionFactsTitleStyle,
+}

@@ -9,8 +9,9 @@ import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { act } from '@testing-library/react';
- 
+import { Link } from "react-router-dom";
+
+
 const Home = () => {
   // Fetching user details from UserContext
   const { user } = useContext(UserContext);

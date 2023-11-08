@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { Delete, Edit } from "@mui/icons-material";
-import { Card, CardContent, Grid, IconButton, Typography } from "@mui/material";
 import request, { gql } from "graphql-request";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,6 +8,8 @@ import { UserContext } from "../contexts/user.context";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import * as styles  from '../components/styles/Meals.css'
 import {Image} from '../components/Image.components'
+import {Button, IconButton} from '@mui/material';
+ 
 
 function MealCard({ meal, updateMeals }) {
   const { user } = useContext(UserContext);
@@ -20,29 +21,30 @@ function MealCard({ meal, updateMeals }) {
   
   // Define 'food' as a state variable using useState
   const [food, setFood] = useState([]);
-      // GraphQL query to fetch all  food for specificmeal
-      const getAllFoodForMeal = gql`
-      query getAllFoodForMeal($mealId: String!) {
-        foods(query: { mealId: $mealId}) {
-          _id
-          bonesRatio
-          calories
-          caloriesServing
-          categoryType
-          image
-          mealId
-          meatRatio
-          name
-          servingWeight
-          servings
-          templateId
-          units
-          weight
-          type
-          userId
-        }
-      }
-    `;
+  
+  // GraphQL query to fetch all  food for specificmeal
+  const getAllFoodForMeal = gql`
+  query getAllFoodForMeal($mealId: String!) {
+    foods(query: { mealId: $mealId}) {
+      _id
+      bonesRatio
+      calories
+      caloriesServing
+      categoryType
+      image
+      mealId
+      meatRatio
+      name
+      servingWeight
+      servings
+      templateId
+      units
+      weight
+      type
+      userId
+    }
+  }
+`;
 
   function handleWeightChange(e, foodItem) {
     const newValue = e.target.value;
@@ -97,36 +99,6 @@ function MealCard({ meal, updateMeals }) {
   };
 
  
-  // addFood function is responsible for adding the food
-  const addFood = async () => {
-    const headers = { Authorization: `Bearer ${accessToken}` };
-   
-    // GraphQL query to create food
-    const createFoodQuery = gql`
-    mutation AddFood($data: FoodInsertInput!) {
-      insertOneFood(data: $data) {
-        _id
-      }
-    }
-    `;
-
-    // All the data that needs to be sent to the GraphQL endpoint
-    // to create food will be passed through queryVariablesCreateFood.
-    const queryVariablesCreateFood = {
-      data: {
-        profileId: profileId,
-        userId: userId
-      }
-    };
-
-    try {
-      await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
-      loadFoodForMeal();
-    } catch (error) {
-      alert(error);
-    }
-  };
-
   // Function to calculate the total weight of food
   function calculateTotalWeight(foodItems) {
     return foodItems.reduce((total, foodItem) => total + foodItem.weight, 0);
@@ -159,15 +131,14 @@ function MealCard({ meal, updateMeals }) {
             </li>
           ))}
         </ul>
-        <button
+        <Button
+          startIcon={<Image imageName="plus_round_fill_white_button.svg" width="25" height="25" />}
+          component={Link}
+          to="/searchFood"
           css={styles.addButtonStyle}
-          onClick={addFood}
         >
-          <div css={styles.addButtonContentStyle}>
-            <Image imageName="plus_round_fill_white_button.svg" width="25" height="25"/>
-            <h4 css={styles.addButtonTitleStyle}>Add Food</h4>
-          </div>
-        </button>
+          Add Food
+        </Button>
       </div>
    );
 }

@@ -3,10 +3,10 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import { gql, request } from "graphql-request";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
-import ExpenseForm from "../components/ExpenseForm.component";
+import NewFoodForm from "../components/NewFoodForm.component";
 import { useParams, useNavigate } from "react-router-dom";
 
-const EditExpense = () => {
+const EditFood = () => {
   const { user } = useContext(UserContext);
   const [form, setForm] = useState({
     amount: "",
@@ -104,8 +104,8 @@ const EditExpense = () => {
   };
 
   return <PageContainer>
-    <ExpenseForm onSubmit={onSubmit} form={form} setForm={setForm} editing />
+    <NewFoodForm onSubmit={onSubmit} form={form} setForm={setForm} editing />
   </PageContainer>
 }
 
-export default EditExpense;
+export default EditFood;

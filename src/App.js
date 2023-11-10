@@ -10,13 +10,14 @@ import Signup from "./pages/Signup.page";
 import ForgotPassword from "./pages/ForgotPassword.page";
 import CreateNewFood from "./pages/CreateNewFood.page";
 import SearchFood from "./pages/SearchFood.page";
+
 function App() {
   return (
     <BrowserRouter>
       {/* We are wrapping our whole app with UserProvider so that */}
       {/* our user is accessible through out the app from any page*/}
       <UserProvider>
-        <NavBar />
+        <NavBar/>
         <Routes>
           <Route exact path="/login" element={<Login />} />
           {<Route exact path="/forgot" element={<ForgotPassword />} />}

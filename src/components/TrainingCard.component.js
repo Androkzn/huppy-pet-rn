@@ -1,10 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
+import request, { gql } from "graphql-request";
 import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
-import * as styles  from '../components/styles/Meals.css'
-import {ButtonWithImage, } from '../components/Buttons.components'
+import { GRAPHQL_ENDPOINT } from "../realm/constants";
+import * as styles  from './styles/Meals.css'
+import {Image} from './Image.components'
+import {Button, IconButton} from '@mui/material';
 import { getAllFoodForMeal, deleteMeal } from "../graphql/graphqlUtils";
 
 function MealCard({ meal, updateMeals }) {
@@ -12,6 +16,7 @@ function MealCard({ meal, updateMeals }) {
   const mealId = meal._id;
   const _id = meal._id;
 
+  
   // Define 'food' as a state variable using useState
   const [food, setFood] = useState([]);
 
@@ -77,14 +82,14 @@ function MealCard({ meal, updateMeals }) {
             </li>
           ))}
         </ul>
-        <ButtonWithImage
-          variant="addButton"
-          navigateTo="/searchFood"
-          imageName="plus_round_fill_white_button.svg"
-          imageSize={25}
+        <Button
+          startIcon={<Image imageName="plus_round_fill_white_button.svg" width="25" height="25" />}
+          component={Link}
+          to="/searchFood"
+          css={styles.addButtonStyle}
         >
           Add Food
-        </ButtonWithImage>
+        </Button>
       </div>
    );
 }

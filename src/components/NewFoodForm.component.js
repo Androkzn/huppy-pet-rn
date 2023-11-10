@@ -4,10 +4,10 @@ import { Button, TextField } from "@mui/material";
 import CustomDatePicker from "./CustomDatePicker.component";
 import PageContainer from "./PageContainer.component";
 import * as styles  from '../components/styles/CreateNewFood.css'
-import TitleAndDropdown from "./AddFoodTitleAndDropdown.component"
-import AddFoodTitleButtonsAndTextField from "./AddFoodTitleButtonsAndTextField.component"
-import AddFoodTitleAndTextInput from "./AddFoodTitleAndTextInput.componet"
-import AddFoodTitleDescriptionAndTextBox from "./AddFoodTitleDescriptionAndTextBox.component"
+import TitleAndDropdown from "./AddFoodName.component"
+import AddFoodTitleButtonsAndTextField from "./AddFoodNutrition.component"
+import AddFoodTitleAndTextInput from "./AddFoodTypes.componet"
+import AddFoodTitleDescriptionAndTextBox from "./AddFoodDescription.component"
 import * as enums from "../helpers/Enums.helper"
 
 const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
@@ -40,7 +40,7 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
       {Object.values(enums.AddFoodRowType).map((rowType, index) => (
         <AddFoodTitleButtonsAndTextField
           key={index}
-          title={enums.mapAddFoodRowType(rowType)}
+          title={enums.AddFoodRowType.title(rowType) }
           name={rowType}
           initialValue={0} 
           onChange={onFormInputChange}

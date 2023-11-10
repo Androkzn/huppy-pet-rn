@@ -1,25 +1,24 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useEffect, useState } from 'react';
-import request, { gql } from 'graphql-request';
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { Link } from "react-router-dom";
 import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, } from "../graphql/graphqlUtils";
-
+import ActivityCard from '../components/ActivityCard.component';
+ 
+ 
 const Home = () => {
   // Fetching user details from UserContext
   const { user, currentProfile } = useContext(UserContext);
-
   const [currentDate, setCurrentDate] = useState( new Date());
   const [meals, setMeals] = useState([]);
   const [activities, setActivities] = useState([]);
   const [trainings, setTrainings] = useState([]);
-
+ 
   // Function is responsible for making the GraphQL
   // request to Realm and update the meals array from the response. 
   const loadMealsForDate = async () => {
@@ -173,7 +172,7 @@ const Home = () => {
                   </div>
                   <button
                     css={styles.headerAddButtonStyle}
-                    onClick={addActivityForDate}
+                    onClick={addTrainingForDate}
                   >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
@@ -183,7 +182,7 @@ const Home = () => {
                   {activities.length > 0 ? (
                     activities.map((activity) => 
                     <div key={activity._id}>
-                      {activity.date}
+                      <ActivityCard  activity={activity} updateActivities={updateActivities}/>
                       </div>)
                   ) : (
                     <div css={styles.placeholderStyle}>
@@ -229,4 +228,3 @@ const Home = () => {
 }
 
 export default Home;
-

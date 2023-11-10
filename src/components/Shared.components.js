@@ -26,12 +26,11 @@ const buttonVariants = {
   },
 }
 const defaultButtonStyles = {
-  padding: '10px 10px',
-  border: '0',
-  height: '50px',
-  lineHeight: '1',
+
+  border: 'none',
   borderRadius: '10px',
-  width: '150px', // Default width
+  width: '150px', 
+  height: '50px',
 };
 
 const Button = styled.button(

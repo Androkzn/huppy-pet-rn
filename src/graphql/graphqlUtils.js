@@ -119,6 +119,66 @@ async function deleteMeal(user, _id) {
       }
 }
 
+// Func that is responsible for deleting a meal based on the expense-id
+// it return bool value
+async function deleteActivity(user, _id) {
+    const accessToken = user._accessToken;
+    const headers = { Authorization: `Bearer ${accessToken}` };
+
+    // GraphQL query to delete an meal
+    const deleteActivityQuery = gql`
+        mutation DeleteActivity($query: ActivityQueryInput!) {
+            deleteOneActivity(query: $query) {
+                _id
+            }
+        }
+    `;
+
+    const queryVariables = { query: { _id } };
+
+    // Confirming the user's action
+    const resp = window.confirm("Are you sure you want to delete this activity?");
+    if (!resp) return;
+
+    try {
+        await request(GRAPHQL_ENDPOINT, deleteActivityQuery, queryVariables, headers);
+        return true
+      } catch (error) {
+        alert('Error deleting meal with Id:',_id, error);
+        return false
+      }
+}
+
+// Func that is responsible for deleting a meal based on the expense-id
+// it return bool value
+async function deleteTraining(user, _id) {
+    const accessToken = user._accessToken;
+    const headers = { Authorization: `Bearer ${accessToken}` };
+
+    // GraphQL query to delete an meal
+    const deleteTrainingQuery = gql`
+        mutation DeleteTraining($query: TrainingQueryInput!) {
+            deleteOneTraining(query: $query) {
+                _id
+            }
+        }
+    `;
+
+    const queryVariables = { query: { _id } };
+
+    // Confirming the user's action
+    const resp = window.confirm("Are you sure you want to delete this training?");
+    if (!resp) return;
+
+    try {
+        await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
+        return true
+      } catch (error) {
+        alert('Error deleting meal with Id:',_id, error);
+        return false
+      }
+}
+
 // Func that is responsible for adding Food to DB   
 // it return bool value
 async function addFood(user, currentProfile, mealId, form) {
@@ -269,12 +329,14 @@ async function loadMeals(user, currentProfile, currentDate) {
 }
 
 async function loadActivities(user, currentProfile, currentDate) {
+  console.log("currentProfile", currentProfile)
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
     const headers = { Authorization: `Bearer ${accessToken}` };
     const { startToday, endToday } = getStartAndEndOfToday(currentDate);
 
+    console.log("currentProfile", currentProfile)
    // GraphQL query to fetch all the activities for specific time interval
    const getAllActivities = gql`
    query getAllActivities($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
@@ -458,11 +520,46 @@ async function addTraining(user, currentProfile, selectedDate) {
     }
 }
 
+// Function to update an activity
+async function updateActivity(user, activityId, updateData) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to update an activity
+  const updateActivityQuery = gql`
+      mutation UpdateActivity($activityId: ObjectId!, $updateData: ActivityUpdateInput!) {
+          updateOneActivity(query: { _id: $activityId }, set: $updateData) {
+              _id
+              burnedCalories
+              distance
+              duration
+              metric
+              type
+          }
+      }
+  `;
+
+  const queryVariables = {
+      activityId,
+      updateData,
+  };
+
+  try {
+      const updatedActivity = await request(GRAPHQL_ENDPOINT, updateActivityQuery, queryVariables, headers);
+      return updatedActivity;
+  } catch (error) {
+      alert(error);
+      return null;
+  }
+}
+
+
 export { 
     searchForFood, 
     getAllFoodForMeal, 
-    deleteMeal, 
-    addFood, 
+    deleteMeal,
+    deleteActivity,
+    deleteTraining,
     getUserProfiles,
     loadMeals,
     loadActivities,
@@ -470,4 +567,6 @@ export {
     addMeal,
     addActivity,
     addTraining,
+    addFood, 
+    updateActivity,
 };

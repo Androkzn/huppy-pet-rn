@@ -130,7 +130,7 @@ const Button = styled.button(
       width: width || buttonVariants[variant].width,
       height: height || buttonVariants[variant].height,
       cursor: disabled ? 'not-allowed' : 'pointer',
-      opacity: disabled ? 0.5 : 1,
+      opacity: disabled ? 0.4 : 1,
       pointerEvents: disabled ? 'none' : 'auto',
     })
   );

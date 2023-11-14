@@ -1,7 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
+
 import * as colors from './Colors'
  
+const rowStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+  width: '100%',
+};
+
 const headerMealStyle = {
   display: 'flex',
   borderRadius: '10px',
@@ -22,6 +30,14 @@ const headerFoodStyle = {
   width: '100%',
   marginTop: '0px',
   backgroundColor: colors.lightBrown2,
+};
+
+const topButtonsContainerStyle = {
+  ...rowStyle,
+  justifyContent: 'space-between',
+  marginTop: '20px',
+  textAlign: 'left',
+  fontSize: '15px',
 };
 
 const addFoodFormStyle = {
@@ -130,4 +146,5 @@ export {
   childConteinerStyle,
   headerTextStyle,
   nutritionFactsTitleStyle,
+  topButtonsContainerStyle,
 };

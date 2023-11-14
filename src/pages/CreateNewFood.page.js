@@ -6,6 +6,7 @@ import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
 import { addFood } from "../graphql/graphqlUtils";
+import * as styles  from '../components/styles/CreateNewFood.css'
 
 const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
   const { user, currentProfile } = useContext(UserContext);
@@ -49,14 +50,16 @@ const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
   };
 
   return <PageContainer>
-    <ButtonWithImage
+    <div  style={styles.topButtonsContainerStyle}>
+      <ButtonWithImage
           variant="backButton"
-          navigateTo="/"
+          navigateTo="/searchFood"
           imageName="back_arrow.svg"
           imageSize={20}
         >
          Back
-        </ButtonWithImage>
+      </ButtonWithImage>
+    </div>
     <NewFoodForm onSubmit={onSubmit} form={form} setForm={setForm} title="Add Food" />
   </PageContainer>
 }

@@ -37,10 +37,11 @@ import * as colors from './Colors'
   };
 
   const buttonsContainerStyle = {
-    padding: '5px',
-    margin: '0px',
+    ...rowStyle,
+    justifyContent: 'space-between',
+    marginTop: '20px',
     textAlign: 'left',
-    fontSize: '20px',
+    fontSize: '15px',
   };
 
   const labelTextFieldStyle = {
@@ -116,4 +117,5 @@ import * as colors from './Colors'
     radioButtonStyle,
     labelFilterStyle,
     labelTextFieldStyle,
+    buttonsContainerStyle,
 };

@@ -21,7 +21,7 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
     <form css={styles.addFoodFormStyle}>
       <h2  css={styles.addFoodTitleStyle}>{editing ? "Edit Food" : "Add Food"}</h2>
       
-      <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange}/>
+      <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange} placeholder={"Enter food name"}/>
       
       <TitleAndDropdown name={"type"} title={"Food type"} dropdownOptions={Object.values(enums.FoodType)}  onChange={onFormInputChange}/>
       <TitleAndDropdown name={"units"} title={"Units"} dropdownOptions={Object.values(enums.FoodUnits)}  onChange={onFormInputChange}/>

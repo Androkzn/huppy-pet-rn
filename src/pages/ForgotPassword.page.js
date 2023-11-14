@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles from '../components/styles/Login.css';
-import {Input, FormGroup } from '../components/Shared.components';
+import {LoginTextInput, FormGroup } from '../components/Form.components';
 import { Image } from '../components/Image.components';
 import {ButtonText} from '../components/Buttons.components'
 
@@ -21,6 +21,7 @@ function ForgotPasswordForm({ onSubmit}) {
       ...prevForm,
       [id]: value,
     }));
+
   }
 
   function handleSubmit() {
@@ -30,14 +31,14 @@ function ForgotPasswordForm({ onSubmit}) {
   return (
     <form css={styles.formStyle}>
       <FormGroup>
-        <Input
+        <LoginTextInput
           id="email"
           placeholder="Email"
           onChange={handleChange}
         />
       </FormGroup>
       <FormGroup>
-        <Input
+        <LoginTextInput
           id="password"
           type="password"
           placeholder="Password"
@@ -45,7 +46,7 @@ function ForgotPasswordForm({ onSubmit}) {
         />
       </FormGroup>
       <FormGroup>
-        <Input
+        <LoginTextInput
           id="passwordConfirmation"
           type="password"
           placeholder="Repeat password"

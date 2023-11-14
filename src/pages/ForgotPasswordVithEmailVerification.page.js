@@ -2,10 +2,11 @@
 
 import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
 import * as styles from '../components/styles/css';
 import { Button, Input, FormGroup } from '../components/Shared.componentsb';
 import { Image } from '../components/Image.components';
+import {LoginTextInput} from '../components/Form.components'
+import {ButtonText} from '../components/Buttons.components'
 
 function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPasswords, onSubmitReset }) {
   const [resetMode, setResetMode] = useState(false);
@@ -54,7 +55,7 @@ function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPassword
         // Render the password and passwordConfirmation fields when resetMode is true
         <>
           <FormGroup>
-            <Input
+            <LoginTextInput
               id="password"
               type="password"
               placeholder="Password"
@@ -62,7 +63,7 @@ function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPassword
             />
           </FormGroup>
           <FormGroup>
-            <Input
+            <LoginTextInput
               id="passwordConfirmation"
               type="password"
               placeholder="Repeat password"
@@ -71,22 +72,22 @@ function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPassword
           </FormGroup>
           <div css={styles.elementsInRow}>
             <FormGroup>
-              <Button variant="primary" type="button" width="120px" onClick={() => setResetMode(false)}>
+              <ButtonText variant="primary" type="button" width="120px" onClick={() => setResetMode(false)}>
                 Resend Email
-              </Button>
+              </ButtonText>
             </FormGroup>
             <FormGroup>
-              <Button variant="primary" type="button" width="120px" onClick={onSubmitReset}>
+              <ButtonText variant="primary" type="button" width="120px" onClick={onSubmitReset}>
                 Reset Password
-              </Button>
+              </ButtonText>
             </FormGroup>
           </div>
         </>
       ) : (
         <FormGroup>
-          <Button variant="primary" type="submit">
+          <ButtonText variant="primary" type="submit">
             Continue
-          </Button>
+          </ButtonText>
         </FormGroup>
       )}
     </form>

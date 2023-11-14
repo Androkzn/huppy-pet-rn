@@ -4,10 +4,9 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
-import PawActivityIndicatorView from '../components/Spinner.components';
-import {Input, FormGroup, Spinner} from '../components/Shared.components'
 import {Image} from '../components/Image.components'
 import {ButtonText} from '../components/Buttons.components'
+import {LoginTextInput, FormGroup} from '../components/Form.components'
 
 function LoginForm({onSubmit}) {
   const [form, setForm] = useState({
@@ -21,10 +20,12 @@ function LoginForm({onSubmit}) {
       ...prevForm,
       [id]: value,
     }));
+    console.log("Form id:", id);
+    console.log("Form value:", value);
   }
 
   function handleSubmit() {
-    console.log("Form state:", form);
+    console.log("handleSubmit:", form);
     onSubmit(form);
   }
   
@@ -34,11 +35,11 @@ function LoginForm({onSubmit}) {
       css={styles.formStyle}
     >
       <FormGroup>
-        <Input id="username" placeholder="Username" value={form.username}
-          onChange={handleChange}/>
+        <LoginTextInput id="username" placeholder="Username" value={form.username}
+          onChange={(e) => {handleChange(e);}}/>
       </FormGroup>
       <FormGroup>
-        <Input id="password" type="password" placeholder="Password" value={form.password}
+        <LoginTextInput id="password" type="password" placeholder="Password" value={form.password}
           onChange={handleChange}/>
       </FormGroup>
       <FormGroup>

@@ -5,8 +5,7 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
-import PawActivityIndicatorView from '../components/Spinner.components';
-import {Input, FormGroup, Spinner} from '../components/Shared.components'
+import {LoginTextInput, FormGroup} from '../components/Form.components'
 import {Image} from '../components/Image.components'
 import {ButtonText} from '../components/Buttons.components'
 
@@ -35,13 +34,13 @@ function SignUpForm({onSubmit, buttonText}) {
       css={styles.formStyle}
     >
       <FormGroup>
-        <Input id="email" placeholder="Email" onChange={handleChange}/>
+        <LoginTextInput id="email" placeholder="Email" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Input id="password" type="password" placeholder="Password" onChange={handleChange}/>
+        <LoginTextInput id="password" type="password" placeholder="Password" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Input id="passwordConfirmation" type="password" placeholder="Repeat password" onChange={handleChange}/>
+        <LoginTextInput id="passwordConfirmation" type="password" placeholder="Repeat password" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
         <ButtonText 

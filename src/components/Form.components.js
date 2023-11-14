@@ -2,8 +2,9 @@
 
 import * as colors from './styles/Colors'
 import { useState } from 'react';
+import styled from '@emotion/styled/macro'
 
-const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
+const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
     const containerStyle = {
       display: 'flex',
       flexDirection: 'column',
@@ -34,6 +35,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
       <div style={containerStyle}>
         <h3 style={titleStyle}>{title}</h3>
         <textarea
+          id={id}
           rows="4"
           style={textBoxStyle}
           placeholder="Enter description"
@@ -44,7 +46,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
     );
   };
 
-  const TitleAndDropdown = ({ title, name, value, dropdownOptions, onChange }) => {
+  const TitleAndDropdown = ({ id, title, name, value, dropdownOptions, onChange }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -74,6 +76,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
       <div style={containerStyle}>
         <h3 style={titleStyle}>{title}</h3>
         <select 
+          id={id}
           name={name}  
           value={value}  
           style={dropdownStyle}
@@ -89,7 +92,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
     );
   };
 
-  const TitleButtonsAndTextField = ({ title, initialValue, name, onChange, onChangeButton }) => {
+  const TitleButtonsAndTextField = ({ id, title, initialValue, name, onChange, onChangeButton }) => {
     const [count, setCount] = useState(initialValue);
   
     const decrementCount = () => {
@@ -162,6 +165,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
             -
           </button>
           <input
+            id={id}
             style={textFieldStyle}
             type="number"
             value={count}
@@ -179,7 +183,7 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
     );
   };
 
-  const TitleAndTextInput = ({ name, title, onChange, placeholder, borderColor }) => {
+  const TitleAndTextInput = ({ id, name, title, onChange, placeholder, borderColor }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -210,8 +214,9 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
   
     return (
       <div style={containerStyle}>
-        <h3 style={titleStyle}>{title}</h3>
+         <h3 style={titleStyle}>{title}</h3>
         <input
+          id={id}
           type="text"
           placeholder= {placeholder}  
           style={textFieldStyle}
@@ -221,11 +226,63 @@ const DescriptionTextBox = ({  name, title, onChange, borderColor }) => {
       </div>
     );
   };
+
+  const LoginTextInput = ({ id, name, onChange, placeholder, borderColor }) => {
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      background: colors.white,
+      padding: '8px 12px',
+      paddingRight: '15px',
+      paddingLeft: '15px', 
+      minWidth: '250px',
+      maxWidth: '300px',
+      border: `2px solid  ${borderColor || 'none'}`,
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'  
+    };
+  
+
+    const textFieldStyle = {
+      border: 'none', 
+      flex: 1,  
+      outline: 'none',  
+      alignItems: 'center',
+      textAlign: 'left',
+      marginLeft: '10px',
+      borderRadius: '10px',
+      height: '20px',
+    };
+
+    return (
+      <div style={containerStyle}>
+        <input
+          id={id}  
+          type="text"
+          placeholder= {placeholder}  
+          style={textFieldStyle}
+          name={name}  
+          onChange={onChange}  
+        />
+      </div>
+    );
+  };
+
+  const FormGroup = styled.div({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  })
+  
   
   export  {
     DescriptionTextBox, 
     TitleAndDropdown, 
     TitleAndTextInput, 
     TitleButtonsAndTextField,
+    LoginTextInput,
+    FormGroup
   };
   

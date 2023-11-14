@@ -107,7 +107,7 @@ const SearchFood = () => {
   };
 
   return <PageContainer>
-    <div  style={styles.rowStyle}>
+    <div  style={styles.buttonsContainerStyle}>
     <ButtonWithImage
           variant="backButton"
           navigateTo="/"

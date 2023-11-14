@@ -48,7 +48,7 @@ const Home = () => {
     } else if (dialogType === "addTraining") {
       let  customCategory = form.customCategory;
       // Check if custom type was selected  under base category
-      if (form.category !=  Enums.TrainingCategory.CUSTOM && form.type === Enums.TrainingType.CUSTOM) {
+      if (form.category !==  Enums.TrainingCategory.CUSTOM && form.type === Enums.TrainingType.CUSTOM) {
         customCategory = Enums.getTitleForTrainingCategory(form.category)
       }
 
@@ -151,12 +151,12 @@ const Home = () => {
   }
 
   return <PageContainer>
-    <div css={styles.rowStyle}> {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
-      <div css={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
+    <div style={styles.rowStyle}> {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+      <div style={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
-        <div css={styles.rowStyle}> {/* Date picker container*/}
-          <div css={styles.columnStyle}> 
-            <div css={styles.pickerContainerStyle}> 
+        <div style={styles.rowStyle}> {/* Date picker container*/}
+          <div style={styles.columnStyle}> 
+            <div style={styles.pickerContainerStyle}> 
               <CustomDatePickerWithArrows
                 label="Select date:"
                 value={currentDate}
@@ -167,14 +167,14 @@ const Home = () => {
           </div>
         </div>{/* Date picker container*/}
 
-        <div css={styles.rowStyle}> {/* Statistic container*/}
-          <div css={styles.columnStyle}> 
+        <div style={styles.rowStyle}> {/* Statistic container*/}
+          <div style={styles.columnStyle}> 
               <div >
-                <div css={styles.headerStyle}>
-                  <div css={styles.headerTextStyle}>
-                    <h3 css={styles.headingStyle}>STATS</h3>
-                    <h3 css={styles.headingStyle}>Today/goal</h3>
-                    <h3 css={styles.headingStyle}>DIET PERCENTAGE</h3>
+                <div style={styles.headerStyle}>
+                  <div style={styles.headerTextStyle}>
+                    <h3 style={styles.headingStyle}>STATS</h3>
+                    <h3 style={styles.headingStyle}>Today/goal</h3>
+                    <h3 style={styles.headingStyle}>DIET PERCENTAGE</h3>
                   </div>
                 </div>
                 <div>
@@ -184,26 +184,26 @@ const Home = () => {
           </div>
         </div>{/* Statistic container*/}
 
-        <div css={styles.rowStyle}>   {/* Meals + Activities container*/}
-          <div css={styles.twoColumnStyle}>   {/* Meals column container*/}
-              <div css={styles.childConteinerStyle}> {/* Meals container*/}
+        <div style={styles.rowStyle}>   {/* Meals + Activities container*/}
+          <div style={styles.twoColumnStyle}>   {/* Meals column container*/}
+              <div style={styles.childConteinerStyle}> {/* Meals container*/}
                 
-                <div css={styles.headerStyle}>{/* Header container*/}
-                  <div css={styles.headerTiteStyle}>
-                    <h3 css={styles.headingStyle}>MEALS</h3>
-                    <div css={styles.headerImageStyle} >
-                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height5="40"/>
+                <div style={styles.headerStyle}>{/* Header container*/}
+                  <div style={styles.headerTiteStyle}>
+                    <h3 style={styles.headingStyle}>MEALS</h3>
+                    <div style={styles.headerImageStyle} >
+                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height="40"/>
                     </div>
                   </div>
                   <button
-                    css={styles.headerAddButtonStyle}
+                    style={styles.headerAddButtonStyle}
                     onClick={addMealForDate}
                   >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
                 </div> {/* Header container*/}
                 
-                <div  css={styles.columnStyle}>  {/* Meal container*/}
+                <div  style={styles.columnStyle}>  {/* Meal container*/}
                   {/* Show meals cards if data avaliable, if not -> show placeholder*/}
                   {meals.length > 0 ? (
                     meals.map((meal) => 
@@ -211,7 +211,7 @@ const Home = () => {
                       <MealCard meal={meal} updateMeals={updateMeals}/>
                     </div>)
                   ) : (
-                    <div css={styles.placeholderStyle}>
+                    <div style={styles.placeholderStyle}>
                       <Image imageName="no_meals_placeholder.png" width="200" height="170" />
                     </div>
                   )}
@@ -220,18 +220,18 @@ const Home = () => {
               </div> {/* Meals column container*/}
           </div> {/* Meals container*/}
         
-          <div css={styles.twoColumnStyle}>  {/* Activities column container*/}
-              <div css={styles.childConteinerStyle}> {/* Activities container*/}
+          <div style={styles.twoColumnStyle}>  {/* Activities column container*/}
+              <div style={styles.childConteinerStyle}> {/* Activities container*/}
                 
-                <div css={styles.headerStyle}>{/* Header container*/}
-                  <div css={styles.headerTiteStyle}> 
-                    <h3 css={styles.headingStyle} >ACTIVITIES</h3>
-                    <div css={styles.headerImageStyle}>
+                <div style={styles.headerStyle}>{/* Header container*/}
+                  <div style={styles.headerTiteStyle}> 
+                    <h3 style={styles.headingStyle} >ACTIVITIES</h3>
+                    <div style={styles.headerImageStyle}>
                       <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
                     </div>
                   </div>
                   <button
-                    css={styles.headerAddButtonStyle}
+                    style={styles.headerAddButtonStyle}
                     onClick={() => {
                       openDialog("addActivity");
                     }}
@@ -239,7 +239,7 @@ const Home = () => {
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
                 </div>{/* Header container*/}
-                <div  css={styles.columnStyle}>{/* Activity container*/}
+                <div  style={styles.columnStyle}>{/* Activity container*/}
                   {/* Show activity cards if data avaliable, if not -> show placeholder*/}
                   {activities.length > 0 ? (
                     activities.map((activity) => 
@@ -247,7 +247,7 @@ const Home = () => {
                       <ActivityCard  activity={activity} updateActivities={updateActivities}/>
                       </div>)
                   ) : (
-                    <div css={styles.placeholderStyle}>
+                    <div style={styles.placeholderStyle}>
                       <Image imageName="no_activities_placeholder.png" width="200" height="170" />
                     </div>
                   )}
@@ -257,17 +257,17 @@ const Home = () => {
           </div>{/* Meals + Activities container*/}
       </div> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
-      <div css={styles.columnRightStyle }> {/* Right column (Training) */}
-        <div css={styles.childConteinerStyle}> {/* Trainings container*/}
-          <div css={styles.headerStyle}>{/* Header container*/}
-          <div css={styles.headerTiteStyle}> 
-            <h3 css={styles.headingStyle} >TRAINING</h3>
-            <div css={styles.headerImageStyle}>
+      <div style={styles.columnRightStyle }> {/* Right column (Training) */}
+        <div style={styles.childConteinerStyle}> {/* Trainings container*/}
+          <div style={styles.headerStyle}>{/* Header container*/}
+          <div style={styles.headerTiteStyle}> 
+            <h3 style={styles.headingStyle} >TRAINING</h3>
+            <div style={styles.headerImageStyle}>
               <Image imageName="training_tab_icon_unselected.svg" width="40" height="50"/>
             </div>
             </div>
             <button
-                    css={styles.headerAddButtonStyle}
+                    style={styles.headerAddButtonStyle}
                     onClick={() => {
                       openDialog("addTraining");
                     }}
@@ -276,13 +276,13 @@ const Home = () => {
             </button>
           </div>{/* Header container*/}
 
-          <div css={styles.columnStyle}>{/* Training container*/}
+          <div style={styles.columnStyle}>{/* Training container*/}
             {trainings.length > 0 ? (
               trainings.map((training) => <div key={training._id}>
                  <TrainingCard training={training} updateTrainings={updateTrainings}/>
                 </div>)
             ) : (
-              <div css={styles.placeholderStyle}>
+              <div style={styles.placeholderStyle}>
                 <Image imageName="no_trainings_placeholder.png" width="200" height="170" />
               </div>
             )}

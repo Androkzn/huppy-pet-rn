@@ -5,35 +5,44 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import PawActivityIndicatorView from '../components/Spinner.components';
-import {Button, Input, FormGroup, Spinner} from '../components/Shared.components'
+import {Input, FormGroup, Spinner} from '../components/Shared.components'
 import {Image} from '../components/Image.components'
+import {ButtonText} from '../components/Buttons.components'
 
 function LoginForm({onSubmit}) {
-  function handleSubmit(event) {
-    event.preventDefault()
-    const {username, password} = event.target.elements
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+  });
 
-    const formData = {
-      username: username.value,
-      password: password.value,
-    };
-
-    onSubmit(formData);
+  function handleChange(event) {
+    const { id, value } = event.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [id]: value,
+    }));
   }
+
+  function handleSubmit() {
+    console.log("Form state:", form);
+    onSubmit(form);
+  }
+  
 
   return (
     <form
-    css={styles.formStyle}
-    onSubmit={handleSubmit}
+      css={styles.formStyle}
     >
       <FormGroup>
-        <Input id="username" placeholder="Username" />
+        <Input id="username" placeholder="Username" value={form.username}
+          onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Input id="password" type="password" placeholder="Password"/>
+        <Input id="password" type="password" placeholder="Password" value={form.password}
+          onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Button variant="primary" type="submit">Login</Button>
+        <ButtonText variant="login"  onClick={handleSubmit} disabled={form.username.length === 0 || form.password.length === 0}>Login</ButtonText>
       </FormGroup>
     </form>
   )
@@ -46,13 +55,6 @@ const Login = () => {
   // We are consuming our user-management context to 
   // get & set the user details here
   const { user, fetchUser, emailPasswordLogin } = useContext(UserContext);
-
-  // We are using React's "useState" hook to keep track
-  //  of the form values.
-  const [form, setForm] = useState({
-    username: "",
-    password: ""
-  });
 
   // This function will redirect the user to the 
   // appropriate page once the authentication is done.

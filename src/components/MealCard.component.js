@@ -4,7 +4,7 @@ import { Delete } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
-import {ButtonWithImage, } from '../components/Buttons.components'
+import {ButtonWithImage} from '../components/Buttons.components'
 import { getAllFoodForMeal, deleteMeal } from "../graphql/graphqlUtils";
 
 function MealCard({ meal, updateMeals }) {

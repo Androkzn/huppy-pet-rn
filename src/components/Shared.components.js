@@ -4,73 +4,7 @@ import {FaSpinner} from 'react-icons/fa'
 import {Dialog as ReachDialog} from '@reach/dialog'
 import * as colors from './styles/Colors'
 import * as mq from './styles/media-queries'
-
-
-const buttonVariants = {
-  primary: {
-    background: colors.olive,
-    color: colors.white,
-    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)', 
-  },
-  primaryDisabled: {
-    background: colors.gray,
-    color: colors.white,
-  },
-  textPrimary: {
-    color: colors.black,
-    background: 'none',
-  },
-  textSecondary: {
-    color: colors.orange,
-    background: 'none',
-  },
-}
-const defaultButtonStyles = {
-
-  border: 'none',
-  borderRadius: '10px',
-  width: '150px', 
-  height: '50px',
-};
-
-const Button = styled.button(
-  {
-    ...defaultButtonStyles, // Include default styles
-  },
-  ({ variant = 'primary', width }) => ({
-    ...buttonVariants[variant], // Apply variant-specific styles
-    width: width || defaultButtonStyles.width, // Use the provided prop value or the default width
-  })
-);
-
-const BackButtonWithText = styled.button({
-  background: colors.brown,
-  marginTop: '10px',
-  marginLeft: '10px',
-  borderRadius: '10px',
-  color: colors.green,
-  border: 'none',
-  padding: '10px',
-  display: 'flex',
-  alignItems: 'center',
-  cursor: 'pointer',
-  fontWeight: "bold",
-  fontSize: '17px',
-  paddingRight: '25px',
-});
-
-const ArrowIcon = styled.div({
-  marginRight: '15px',
-  marginLeft: '15px',
-  fontSize: '20px',
-});
-
-const BackButton = ({ text }) => (
-  <BackButtonWithText>
-    <ArrowIcon>&#8592;</ArrowIcon> {text}
-  </BackButtonWithText>
-);
-
+ 
 const spin = keyframes({
   '0%': {transform: 'rotate(0deg)'},
   '100%': {transform: 'rotate(360deg)'},
@@ -127,4 +61,4 @@ const FormGroup = styled.div({
   alignItems: 'center',
 })
 
-export {Button, BackButton, Input, CircleButton, Dialog, FormGroup, Spinner}
+export {Input, CircleButton, Dialog, FormGroup, Spinner}

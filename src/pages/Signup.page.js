@@ -6,37 +6,49 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import PawActivityIndicatorView from '../components/Spinner.components';
-import {Button, Input, FormGroup, Spinner} from '../components/Shared.components'
+import {Input, FormGroup, Spinner} from '../components/Shared.components'
 import {Image} from '../components/Image.components'
+import {ButtonText} from '../components/Buttons.components'
 
-function SignUpForm({onSubmit, buttonText, onFormInputChange}) {
-  function handleSubmit(event) {
-    event.preventDefault()
-    const {username, password, passwordConfirmation} = event.target.elements
+function SignUpForm({onSubmit, buttonText}) {
+    
+  const [form, setForm] = useState({
+      email: "",
+      password: "",
+      passwordConfirmation: ""
+    });
 
-    onSubmit({
-      username: username.value,
-      password: password.value, 
-      passwordConfirmation: passwordConfirmation.value
-    })
+    function handleChange(event) {
+      const { id, value } = event.target;
+      setForm((prevForm) => ({
+        ...prevForm,
+        [id]: value,
+      }));
+    }
+
+  function handleSubmit() {
+    onSubmit(form)
   }
 
   return (
     <form
-    css={styles.formStyle}
-    onSubmit={handleSubmit}
+      css={styles.formStyle}
     >
       <FormGroup>
-        <Input id="email" placeholder="Email" onChange={onFormInputChange}/>
+        <Input id="email" placeholder="Email" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Input id="password" type="password" placeholder="Password" onChange={onFormInputChange}/>
+        <Input id="password" type="password" placeholder="Password" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Input id="passwordConfirmation" type="password" placeholder="Repeat password" onChange={onFormInputChange}/>
+        <Input id="passwordConfirmation" type="password" placeholder="Repeat password" onChange={handleChange}/>
       </FormGroup>
       <FormGroup>
-        <Button variant="primary" type="submit">{buttonText}</Button>
+        <ButtonText 
+        variant="login"  
+        onClick={handleSubmit}
+        disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
+        >{buttonText}</ButtonText>
       </FormGroup>
     </form>
   )
@@ -48,18 +60,6 @@ const Signup = () => {
 
   // As explained in the Login page.
   const { emailPasswordSignup } = useContext(UserContext);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: ""
-  });
-
-  // As explained in the Login page.
-  const onFormInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
 
   // As explained in the Login page.
   const redirectNow = () => {
@@ -68,9 +68,9 @@ const Signup = () => {
   }
 
   // As explained in the Login page.
-  const onSubmit = async () => {
+  const onSubmit = async (formData) => {
     try {
-      const user = await emailPasswordSignup(form.email, form.password);
+      const user = await emailPasswordSignup(formData.email, formData.password);
       if (user) {
         redirectNow();
       }
@@ -86,7 +86,7 @@ const Signup = () => {
           <h4 css={styles.headingLoginStyle} >CREATE ACCOUNT</h4>
           <Image imageName="dog_sit.png" width="40" height="50" />
         </div>
-          <SignUpForm onSubmit={onSubmit} buttonText="Continue" onChange={onFormInputChange}/>
+          <SignUpForm onSubmit={onSubmit} buttonText="Continue"/>
           <div css={styles.elementsInRow}>
             <p>Have an account already? <Link to="/login"  css={styles.linkSignup}>Login</Link></p>
           </div>

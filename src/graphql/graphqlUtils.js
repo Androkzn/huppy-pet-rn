@@ -9,8 +9,8 @@ async function searchForFood(searchQuery, user) {
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
 
-    const searchFoodQuery = gql`
-    query SearchFood($searchQuery: String!) {
+    const searchFoodTemplateQuery = gql`
+    query SearchFoodTemplate($searchQuery: String!) {
         search(input: $searchQuery) {
             _id
             bonesRatio
@@ -26,6 +26,7 @@ async function searchForFood(searchQuery, user) {
             weight
             type
             userId
+            isCustom
         }
     }
     `;
@@ -35,9 +36,10 @@ async function searchForFood(searchQuery, user) {
     };
 
     try {
-        const resp = await request(GRAPHQL_ENDPOINT, searchFoodQuery, queryVariables, headers);
+        const resp = await request(GRAPHQL_ENDPOINT, searchFoodTemplateQuery, queryVariables, headers);
         if (resp.search) {
-        return resp.search;
+          console.log(resp.search)
+           return resp.search;
         }
     } catch (error) {
         console.error('Error search for food with string:', searchQuery, error);

@@ -4,26 +4,36 @@ import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles from '../components/styles/Login.css';
-import { Button, Input, FormGroup } from '../components/Shared.components';
+import {Input, FormGroup } from '../components/Shared.components';
 import { Image } from '../components/Image.components';
+import {ButtonText} from '../components/Buttons.components'
 
-function ForgotPasswordForm({ onFormInputChange, onSubmit}) {
-  function handleSubmit(event) {
-    const { email, password, passwordConfirmation } = event.target.elements;
-      onSubmit({
-        email: email.value,
-        password: password.value,
-        passwordConfirmation: passwordConfirmation.value,
-      });
+function ForgotPasswordForm({ onSubmit}) {
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
+
+  function handleChange(event) {
+    const { id, value } = event.target;
+    setForm((prevForm) => ({
+      ...prevForm,
+      [id]: value,
+    }));
+  }
+
+  function handleSubmit() {
+    onSubmit(form);
   }
 
   return (
-    <form css={styles.formStyle} onSubmit={handleSubmit}>
+    <form css={styles.formStyle}>
       <FormGroup>
         <Input
           id="email"
           placeholder="Email"
-          onChange={onFormInputChange}
+          onChange={handleChange}
         />
       </FormGroup>
       <FormGroup>
@@ -31,7 +41,7 @@ function ForgotPasswordForm({ onFormInputChange, onSubmit}) {
           id="password"
           type="password"
           placeholder="Password"
-          onChange={onFormInputChange}
+          onChange={handleChange}
         />
       </FormGroup>
       <FormGroup>
@@ -39,19 +49,18 @@ function ForgotPasswordForm({ onFormInputChange, onSubmit}) {
           id="passwordConfirmation"
           type="password"
           placeholder="Repeat password"
-          onChange={onFormInputChange}
+          onChange={handleChange}
         />
       </FormGroup>
-      <div css={styles.elementsInRow}>
+      <div>
         <FormGroup>
-          <Button
-            variant="primary"
-            type="button"
-            width="120px"
-            onClick={onSubmit}
+          <ButtonText
+            variant="login"
+            onClick={handleSubmit}
+            disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
           >
             Reset Password
-          </Button>
+          </ButtonText>
         </FormGroup>
       </div>
     </form>
@@ -61,19 +70,7 @@ function ForgotPasswordForm({ onFormInputChange, onSubmit}) {
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFormFilled, setIsFormFilled] = useState(false);
   const { emailPasswordSignup } = useContext(UserContext);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: "",
-  });
-  
-
-  const onFormInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
 
   const redirectToLoginPage = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
@@ -81,9 +78,9 @@ const ForgotPassword = () => {
   };
 
 
-  const onSubmit = async () => {
+  const onSubmit = async (formData) => {
     try {
-      const user = await emailPasswordSignup(form.email, form.password);
+      const user = await emailPasswordSignup(formData.email, formData.password);
       if (user) {
         redirectToLoginPage();
       }
@@ -101,7 +98,6 @@ const ForgotPassword = () => {
           <Image imageName="dog_sit.png" width="40" height="50" />
         </div>
         <ForgotPasswordForm
-          onFormInputChange={onFormInputChange}
           onSubmit={onSubmit}
         />
         <div>

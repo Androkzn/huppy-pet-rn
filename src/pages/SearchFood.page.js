@@ -3,13 +3,14 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
-import { css } from "@emotion/react";
 import { searchForFood } from "../graphql/graphqlUtils";
 import * as Enums from "../helpers/Enums.helper"
-
-//import AddFoodPage from "./AddFood.page"; // Import the AddFood.page for opening when an item is clicked
+import FoodCard from "../components/FoodCard.component"
+import * as styles from "../components/styles/SearchFood.css"
+import {ButtonWithImage} from '../components/Buttons.components'
 
 const SearchFood = () => {
+ 
   const { user } = useContext(UserContext);
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,6 +22,7 @@ const SearchFood = () => {
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     console.log("Opening AddFoodPage for:", foodItem);
+
   };
 
   useEffect(() => {
@@ -57,53 +59,47 @@ const SearchFood = () => {
       };
     
       return (
-        <div>
+        <div style={styles.rowStyle}>
           {filterOptions.map((option) => (
-            <label
-              key={option}
-              css={css`
-                display: inline-block;
-                margin-right: 10px;
-                cursor: pointer;
-              `}
-            >
+              <label
+                key={option}
+                style={styles.labelFilterStyle}
+              >
               <input
+                style={styles.radioButtonStyle}
                 type="radio"
                 name="categoryOption"
                 value={option}
                 checked={selectedOption === option}
                 onChange={() => handleOptionChange(option)}
               />
-              {option === "Filter by category" ? (
-                <select 
-              >
-                {Object.values(Enums.FoodCategoryType).map((type, index) => (
-                  <option key={index} value={Enums.getTitleUpercased(type)}>
-                    {Enums.getTitleUpercased(type)}
-                  </option>
-                ))}
-              </select>
-              ) : (
-                option
-              )}
-            </label>
+                {option === "Filter by category" ? (
+                    <label >
+                    <span>Filter by category</span>
+                    <select style={styles.dropdownStyle}>
+                      {Object.values(Enums.FoodCategoryType).map((type, index) => (
+                        <option key={index} value={Enums.getTitleUpercased(type)}>
+                          {Enums.getTitleUpercased(type)}
+                        </option>
+                      ))}
+                    </select>
+                    </label>
+                ) : (
+                  option
+                )}
+              </label>
           ))}
         </div>
       );
     };
     
     
-
   const ResultContainer = ({ searchResult, openAddFoodPage }) => {
     return (
       <div>
         {searchResult.map((foodItem, index) => (
           <div key={index}>
-            <div>
-              <span>{foodItem.name}</span>
-              {foodItem.custom && <span>Custom</span>}
-            </div>
-            <button onClick={() => openAddFoodPage(foodItem)}>Open AddFoodPage</button>
+              <FoodCard food={foodItem} openAddFoodPage={openAddFoodPage}/>
           </div>
         ))}
       </div>
@@ -111,27 +107,49 @@ const SearchFood = () => {
   };
 
   return <PageContainer>
-      <h1>Search Food</h1>
-      <label htmlFor="searchField">Search for food:</label>
-        <input
-        type="text"
-        id="searchField"  // Add an id attribute
-        placeholder="Search for food"
-        value={searchQuery}
-        onChange={(e) => {
-            if (searchQuery !== e.target.value) {
-                setSearchQuery(e.target.value);
-            }
-        }}
+    <div  style={styles.rowStyle}>
+    <ButtonWithImage
+          variant="backButton"
+          navigateTo="/"
+          imageName="back_arrow.svg"
+          imageSize={20}
+        >
+         Back
+        </ButtonWithImage>
+      <ButtonWithImage
+          variant="addButton"
+          navigateTo="/createNewFood"
+          imageName="plus_round_fill_white_button.svg"
+          imageSize={25}
+        >
+          Add Food
+        </ButtonWithImage>
+      </div>
+      <div style={styles.mainConteinerStyle}>
+        <div style={styles.rowStyle}>
+          <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
+          <input
+          style={styles.textFieldStyle}
+          type="text"
+          id="searchField"  // Add an id attribute
+          placeholder="Enter food name"
+          value={searchQuery}
+          onChange={(e) => {
+              if (searchQuery !== e.target.value) {
+                  setSearchQuery(e.target.value);
+              }
+          }}
+          />
+        </div>
+        <FilterContainer
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
         />
-      <FilterContainer
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
+      </div>
       <ResultContainer
-        searchResult={searchResult}
-        openAddFoodPage={openAddFoodPage}
-      />
+          searchResult={searchResult}
+          openAddFoodPage={openAddFoodPage}
+        />
     </PageContainer>
   
 }

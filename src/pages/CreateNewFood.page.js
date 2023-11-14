@@ -4,14 +4,12 @@ import { useContext, useState } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
-import { useNavigate } from "react-router-dom";
-import {BackButton} from '../components/Shared.components'
+import {ButtonWithImage} from '../components/Buttons.components'
 import { addFood } from "../graphql/graphqlUtils";
 
 const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
   const { user, currentProfile } = useContext(UserContext);
-  const navigate = useNavigate();
-
+  
   // Some prefilled form state
   const [form, setForm] = useState({
     name: "",
@@ -51,7 +49,14 @@ const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
   };
 
   return <PageContainer>
-    <BackButton text="Back" onClick={navigate(`/`)}/>
+    <ButtonWithImage
+          variant="backButton"
+          navigateTo="/"
+          imageName="back_arrow.svg"
+          imageSize={20}
+        >
+         Back
+        </ButtonWithImage>
     <NewFoodForm onSubmit={onSubmit} form={form} setForm={setForm} title="Add Food" />
   </PageContainer>
 }

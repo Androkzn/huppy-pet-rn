@@ -13,7 +13,7 @@ const buttonVariants = {
     cursor: 'pointer',
     width: '130px',
     height: '35px',
-    marginBottom: '10px',
+    lineHeight: '20px',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
     display: 'flex',
     alignItems: 'center',
@@ -80,20 +80,64 @@ const buttonVariants = {
       background: colors.orange,
     },
   },
+
+  login: {
+    background: colors.olive,
+    textAlign: 'center',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    width: '150px',
+    height: '40px',
+    lineHeight: '40px',
+    marginTop: '15px',
+    marginBottom: '15px',
+    color: colors.white,
+    transition: 'background-color 0.3s', 
+    textDecoration: 'none',
+    '&:hover': {
+      background: colors.lightGreen,
+    },
+  },
+
+  backButton: {
+    background: colors.brown,
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    width: '130px',
+    height: '35px',
+    lineHeight: '`10`px',
+    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    color: colors.green,
+    paddingRight: "10px",
+    paddingLeft: "10px",
+    transition: 'background-color 0.3s',  
+    '&:hover': {
+      background: colors.orange,  
+    },
+    fill: colors.green
+  },
   
 };
 
 const Button = styled.button(
-    ({ variant = 'genericButton', width, height }) => ({
+    ({ variant = 'genericButton', width, height, disabled  }) => ({
       ...buttonVariants[variant],
       width: width || buttonVariants[variant].width,
       height: height || buttonVariants[variant].height,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.5 : 1,
+      pointerEvents: disabled ? 'none' : 'auto',
     })
   );
 
 const ImageContainer = styled.div(({ margin, padding }) => ({
-    margin: margin || '0 10px 0 10px',  
-    padding: padding || '0px',    
+    margin: margin || 'auto 10px auto 10px',  
+    padding: padding || '0px',
   }));
 
 const ButtonText = ({ variant, navigateTo, width, height, children, onClick, disabled }) => {

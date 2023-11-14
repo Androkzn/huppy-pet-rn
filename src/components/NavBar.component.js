@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
@@ -24,10 +24,10 @@ const NavBar = () => {
             <Image imageName="logo_green_stroke.png" width="260" height="77" />
           </div>
           {user && currentProfile && (
-            <div style={{ marginLeft: 'auto' }}>
-              <Typography variant="h6" component={Link} onClick={toggleDrawer} sx={{ flexGrow: 1, textDecoration: "none", color: colors.green, fontWeight: "bold" }}>
+            <div style={{ alignItems: "right", justifyContent: "flex-end", display: 'flex', width: '100%',}}>
+              <h2  component={Link} onClick={toggleDrawer} style={{ textDecoration: "none", cursor: 'pointer', margin: "auto 0 auto 0", color: colors.green, fontWeight: "bold", alignItems: 'center', textAlign: 'center' }}>
                 {currentProfile.name}
-              </Typography>
+              </h2>
               <IconButton
                 size="large"
                 edge="end"

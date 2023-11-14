@@ -9,6 +9,18 @@ import { Image } from '../components/Image.components';
 
 function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPasswords, onSubmitReset }) {
   const [resetMode, setResetMode] = useState(false);
+ 
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
+
+  const onFormInputChange = (event) => {
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
+  };
+
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -84,18 +96,6 @@ function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPassword
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { emailPasswordSignup } = useContext(UserContext);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: "",
-  });
-
-  const onFormInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
 
   const redirectToLoginPage = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");

@@ -26,7 +26,7 @@ function App() {
           {/* users by wrapping it with PrivateRoute here. */}
           <Route element={<PrivateRoute />}>
             <Route exact path="/" element={<Home />} />
-            <Route exact path="/newFood" element={<CreateNewFood />} />
+            <Route exact path="/createNewFood" element={<CreateNewFood />} />
             <Route exact path="/searchFood" element={<SearchFood />} />
             <Route exact path="/expense/:id/edit" element={<EditExpense />} />
             <Route exact path="/analytics" element={<Analytics />} />

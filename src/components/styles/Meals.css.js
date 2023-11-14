@@ -1,125 +1,109 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
+
 import * as colors from './Colors'
- 
-const headerMealStyle = css`
-  display: flex;
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 95%;
-  margin-top: 10px;
-  background-color: ${colors.lightBrown2};
-`;
 
-const headerFoodStyle = css`
-  display: flex;
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  margin-top: 0px;
-  background-color: ${colors.lightBrown2};
-`;
 
-const addButtonStyle = css`
-  background:  ${colors.lightGreen}; 
-  border: none;
-  border-radius: 10px;  
-  cursor: pointer;
-  width: 150px;
-  height: 35px;
-  margin-bottom: 10px;
- 
-  &:hover {
-    background: ${colors.orange}; 
-    
-  }
+const headerMealStyle = {
+  display: 'flex',
+  borderRadius: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+  backgroundColor: colors.lightBrown2,
+};
 
-  color:  ${colors.white}
-`;
+const headerFoodStyle = {
+  display: 'flex',
+  borderRadius: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+  marginTop: '0px',
+  backgroundColor: colors.lightBrown2,
+};
 
-const addButtonTitleStyle = css`
-  margin: 0px; 
-  margin-left: 10px;
-  color:  ${colors.white}
-`;
+const headingMealStyle = {
+  color: colors.green,
+};
 
-const addButtonContentStyle = css`
-  display: flex;
-  align-items: center;
-`;
+const headingFoodStyle = {
+  color: colors.green,
+  width: '100%',
+  textAlign: 'left',
+};
 
-const headingMealStyle = css`
-  color: ${colors.green};
-`;
+const headingTotalStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  color: colors.green,
+  backgroundColor: colors.oliveLight,
+  padding: '5px',
+  borderRadius: '10px',
+};
 
-const headingFoodStyle = css`
-  color: ${colors.green};
-  width: 100%;
-  text-align: left;
-`;
+const headingDeleteButonStyle = {
+  color: colors.green,
+};
 
-const headingTotalStyle = css`
-  display: flex;
-  align-items: center; 
-  color: ${colors.green};
-  background-color: ${colors.oliveLight};
-  padding: 5px;
-  border-radius: 10px;  
-`;
+const headerTextStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '90%',
+  alignItems: 'center',
+  margin: '0px',
+  height: '50px',
+};
 
-const headingDeleteButonStyle = css`
-  color: ${colors.green};
-`;
+const foodListStyle = {
+  display: 'flex',
+  width: '100%',
+  flexDirection: 'column',
+  listStyleType: 'none',
+  padding: '0',
+};
 
-const headerTextStyle = css`
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-  align-items: center;
-  margin: 0px;
-  height: 50px;
-`;
+const foodListRowStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  listStyleType: 'none',
+  alignItems: 'center',
+  textAlign: 'center',
+  borderRadius: '10px',
+  marginTop: '5px',
+  marginLeft: '10px',
+  marginRight: '10px',
+  backgroundColor: colors.lightBrown2,
+};
 
-const foodListStyle = css`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-`;
+const inputFieldStyle = {
+  width: '40px',
+  marginLeft: '10px',
+  marginRight: '10px',
+};
 
-const foodListRowStyle = css`
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  align-items: center;
-  text-align: center;
-  border-radius: 10px;
-  margin-top: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
-  background-color: ${colors.lightBrown2};
-`;
+const childConteinerStyle = {
+  display: 'flex',
+  flex: '1',
+  flexDirection: 'column',
+  alignItems: 'center',
+  margin: '10px',
+  padding: '10px',
+  borderRadius: '10px',
+  backgroundColor: colors.lightBrown,
+};
 
-const inputFieldStyle = css`
-  width:40px;
-  margin-left: 10px;
-  margin-right: 10px;
-`;
- 
- 
-const childConteinerStyle = css`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px;
-  border-radius: 10px;  
-  background-color: ${colors.lightBrown}
-`;
-
-export { headerMealStyle, headerFoodStyle, addButtonStyle, addButtonTitleStyle, addButtonContentStyle, headingFoodStyle, headingMealStyle, foodListRowStyle, inputFieldStyle, foodListStyle, headingDeleteButonStyle, headingTotalStyle, childConteinerStyle, headerTextStyle }
+export {
+  headerMealStyle,
+  headerFoodStyle,
+  headingFoodStyle,
+  headingMealStyle,
+  foodListRowStyle,
+  inputFieldStyle,
+  foodListStyle,
+  headingDeleteButonStyle,
+  headingTotalStyle,
+  childConteinerStyle,
+  headerTextStyle,
+};

@@ -1,70 +1,70 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
-import * as colors from './Colors'
 
+import * as colors from './Colors';
 
-const containerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
+const containerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+};
 
-const loginHeaderStyle = css`
-  display: flex;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-  background-color: ${colors.brown};
-`;
+const loginHeaderStyle = {
+  display: 'flex',
+  borderTopLeftRadius: '20px',
+  borderTopRightRadius: '20px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+  backgroundColor: colors.brown,
+};
 
-const headingLoginStyle = css`
-  color: ${colors.green};
-`;
+const headingLoginStyle = {
+  color: colors.green,
+};
 
-const loginConteinerStyle = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 350px; 
-  min-width: 350px; 
-  border-radius: 20px;  
-  padding: 0px;
-  margin: auto;
-  background-color: ${colors.lightBrown}
-`;
+const loginConteinerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  maxWidth: '350px',
+  minWidth: '350px',
+  borderRadius: '20px',
+  padding: '0px',
+  margin: 'auto',
+  backgroundColor: colors.lightBrown,
+};
 
-const formStyle = css` 
-display: flex;
-flex-direction: column;
-align-items: center; 
-justify-content: center; 
-margin-top: 20px;
-> div {
-  margin: 10px auto;
-  width: 100%;
-  max-width: 300px;
-}
-`
-const elementsInRow = css`
-    display: flex;   
-    justify-content: space-between;
-    width: 80%;
-  `;
+const formStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: '20px',
+  '> div': {
+    margin: '10px auto',
+    width: '100%',
+    maxWidth: '300px',
+  },
+};
 
-const linkForgot = css`
-  color: ${colors.black};   
-  margin-right: 10px; 
-  text-decoration: none; 
-`;
+const elementsInRow = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  width: '80%',
+};
 
-const linkSignup = css`
-  color: ${colors.orange};   
-  margin-right: 10px; 
-  text-decoration: none; 
-`;
+const linkForgot = {
+  color: colors.black,
+  marginRight: '10px',
+  textDecoration: 'none',
+};
 
-export {containerStyle, loginHeaderStyle, headingLoginStyle, loginConteinerStyle, formStyle, elementsInRow, linkForgot, linkSignup}
+const linkSignup = {
+  color: colors.orange,
+  marginRight: '10px',
+  textDecoration: 'none',
+};
+
+export { containerStyle, loginHeaderStyle, headingLoginStyle, loginConteinerStyle, formStyle, elementsInRow, linkForgot, linkSignup };

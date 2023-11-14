@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
-import * as colors from './colors'
+import * as colors from './Colors'
  
 const headerMealStyle = css`
   display: flex;
@@ -90,7 +90,7 @@ const headingTotalStyle = css`
   display: flex;
   align-items: center; 
   color: ${colors.green};
-  background-color: ${colors.blueLight};
+  background-color: ${colors.oliveLight};
   padding: 5px;
   border-radius: 10px;  
 `;

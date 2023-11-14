@@ -285,9 +285,6 @@ async function getUserProfiles(user) {
 }
 
 async function loadMeals(user, currentProfile, currentDate) {
-    console.log("user", user)
-    console.log("currentProfile", currentProfile)
-    console.log("currentDate", currentDate)
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -329,7 +326,7 @@ async function loadMeals(user, currentProfile, currentDate) {
 }
 
 async function loadActivities(user, currentProfile, currentDate) {
-  console.log("currentProfile", currentProfile)
+  
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -453,7 +450,7 @@ async function addMeal(user, currentProfile, selectedDate) {
     }
 }
 
-async function addActivity(user, currentProfile, selectedDate) {
+async function addActivity(user, currentProfile, selectedDate, data) {
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -472,6 +469,7 @@ async function addActivity(user, currentProfile, selectedDate) {
     // to create an Activity will be passed through queryVariablesCreateActivity.
     const queryVariablesCreateActivity = {
     data: {
+        ...data, // Merge the provided activity data  
         date: selectedDate.toISOString(),
         profileId: profileId,
         userId: userId
@@ -487,7 +485,7 @@ async function addActivity(user, currentProfile, selectedDate) {
     }
 }
 
-async function addTraining(user, currentProfile, selectedDate) {
+async function addTraining(user, currentProfile, selectedDate, data) {
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -495,9 +493,9 @@ async function addTraining(user, currentProfile, selectedDate) {
     // GraphQL query to create an Training
     const createTrainingQuery = gql`
     mutation AddTraining($data: TrainingInsertInput!) {
-    insertOneTraining(data: $data) {
-        _id
-    }
+      insertOneTraining(data: $data) {
+          _id
+      }
     }
     `;
 
@@ -505,6 +503,8 @@ async function addTraining(user, currentProfile, selectedDate) {
     // to create an Training will be passed through queryVariablesCreateTraining.
     const queryVariablesCreateTraining = {
         data: {
+            ...data, // Merge the provided activity data  
+            isCompleted: false,
             date: selectedDate.toISOString(),
             profileId: profileId,
             userId: userId
@@ -553,6 +553,42 @@ async function updateActivity(user, activityId, updateData) {
   }
 }
 
+// Function to update an training
+async function updateTraining(user, trainingId, updateData) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to update an training
+  const updateTrainingQuery = gql`
+      mutation UpdateTraining($trainingId: ObjectId!, $updateData: TrainingUpdateInput!) {
+          updateOneTraining(query: { _id: $trainingId }, set: $updateData) {
+            _id
+            date
+            category
+            customCategory
+            customType
+            desc
+            isCompleted
+            type
+            profileId
+            userId
+          }
+      }
+  `;
+
+  const queryVariables = {
+      trainingId,
+      updateData,
+  };
+
+  try {
+      const updatedTraining = await request(GRAPHQL_ENDPOINT, updateTrainingQuery, queryVariables, headers);
+      return updatedTraining;
+  } catch (error) {
+      alert(error);
+      return null;
+  }
+}
 
 export { 
     searchForFood, 
@@ -569,4 +605,5 @@ export {
     addTraining,
     addFood, 
     updateActivity,
+    updateTraining,
 };

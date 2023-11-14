@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './colors'
+import * as colors from './Colors'
 
   // Main container 
   const activityConteinerStyle = {
@@ -32,6 +32,8 @@ import * as colors from './colors'
   const bottomRowStyle = {
     ...rowStyle,
     justifyContent: 'left',
+    color: `${colors.orange}`,
+    fontWeight: "bold",
   };
 
   const bodyRowStyle = {
@@ -75,9 +77,13 @@ import * as colors from './colors'
   };
   
   const inputFieldStyle = {
-    width: '40px',
-    marginLeft: '10px',
-    marginRight: '10px',
+    border: `2px solid ${colors.green}`,  
+    width: '50px',
+    textAlign: 'center',
+    marginRight: '15px',
+    marginLeft: '15px',
+    borderRadius: '10px',
+    height: '30px',
   };
   
   const dropdownStyle = {
@@ -86,7 +92,7 @@ import * as colors from './colors'
     height: '35px',
     paddingRight: '15px',
     paddingLeft: '15px',
-    backgroundColor: colors.blueLight,
+    backgroundColor: colors.oliveLight,
   };
 
   const dropdownItemStyle = {

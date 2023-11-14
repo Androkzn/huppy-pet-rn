@@ -1,27 +1,19 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, TextField } from "@mui/material";
-import CustomDatePicker from "./CustomDatePicker.component";
+import { ButtonText } from "./Buttons.components"
 import PageContainer from "./PageContainer.component";
 import * as styles  from '../components/styles/CreateNewFood.css'
-import TitleAndDropdown from "./AddFoodName.component"
-import AddFoodTitleButtonsAndTextField from "./AddFoodNutrition.component"
-import AddFoodTitleAndTextInput from "./AddFoodTypes.componet"
-import AddFoodTitleDescriptionAndTextBox from "./AddFoodDescription.component"
+import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 
 const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
   
   const onFormInputChange = (event) => {
- 
-    console.log(event)
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
 
   const onButtonInputChange = (name, value) => {
-    console.log(name)
-    console.log(value)
     setForm({ ...form, [name]: value });
   };
 
@@ -29,7 +21,7 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
     <form css={styles.addFoodFormStyle}>
       <h2  css={styles.addFoodTitleStyle}>{editing ? "Edit Food" : "Add Food"}</h2>
       
-      <AddFoodTitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange}/>
+      <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange}/>
       
       <TitleAndDropdown name={"type"} title={"Food type"} dropdownOptions={Object.values(enums.FoodType)}  onChange={onFormInputChange}/>
       <TitleAndDropdown name={"units"} title={"Units"} dropdownOptions={Object.values(enums.FoodUnits)}  onChange={onFormInputChange}/>
@@ -38,7 +30,7 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>
       
       {Object.values(enums.AddFoodRowType).map((rowType, index) => (
-        <AddFoodTitleButtonsAndTextField
+        <TitleButtonsAndTextField
           key={index}
           title={enums.AddFoodRowType.title(rowType) }
           name={rowType}
@@ -48,11 +40,11 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
         />
       ))}
 
-      <AddFoodTitleDescriptionAndTextBox name={"description"} title={"Add Description"} />
+      <DescriptionTextBox name={"description"} title={"Add Description"} />
        <div css={styles.addFoodButtonContainerStyle}> 
-        <Button variant="contained" color="primary" onClick={onSubmit} type="submit" css={styles.addFoodButtonStyle}>
+       <ButtonText variant="rectangleTextButton" onClick={() => onSubmit}  >
           {editing ? "Update" : "Create"} Food
-        </Button>
+        </ButtonText>
       </div>
     </form>
   </PageContainer>;

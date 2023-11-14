@@ -1,97 +1,96 @@
 /** @jsxImportSource @emotion/react */
 
-import { Delete, Edit } from "@mui/icons-material";
-import request, { gql } from "graphql-request";
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
-import { GRAPHQL_ENDPOINT } from "../realm/constants";
-import * as styles  from './styles/Meals.css'
 import {Image} from './Image.components'
-import {Button, IconButton} from '@mui/material';
-import { getAllFoodForMeal, deleteMeal } from "../graphql/graphqlUtils";
+import { deleteTraining, updateTraining } from "../graphql/graphqlUtils";
+import * as styleTraining from './styles/Training.css'
+import {ButtonWithImage, ButtonText } from './Buttons.components'
+import * as Enums from "../helpers/Enums.helper"
+import CustomCheckbox from './Checkbox.component';
 
-function MealCard({ meal, updateMeals }) {
+// Function is responsible for updating the training 
+function TrainingCard({ training, updateTrainings}) {
   const { user } = useContext(UserContext);
-  const mealId = meal._id;
-  const _id = meal._id;
+ 
+  async function  handleCheckboxValueChange(){
+    const updateData = {
+      "isCompleted": !training.isCompleted,
+    };
+    const isUpdated = await updateTraining(user, training._id, updateData);
 
-  
-  // Define 'food' as a state variable using useState
-  const [food, setFood] = useState([]);
-
-  function handleWeightChange(e, foodItem) {
-    const newValue = e.target.value;
-    // Update the foodItem's weight with the new value
-    foodItem.weight = newValue;
-    // You may want to save the updated foodItem to your state or API here
+    if (isUpdated) {
+        console.log('Training updated successfully:', updateData);
+        updateTrainings()
+    } else {
+        console.log('Failed to update training.');
+    }
   }
   
-  useEffect(() => {
-    loadFoodForMeal(); // Load food data when the component mounts
-  }, []); // Empty dependency array to ensure it runs only once on mount
-
-  async function loadFoodForMeal() {
-    const results = await getAllFoodForMeal(user, mealId);
-      // Update the 'food' state with the fetched data
-      setFood(results);
-     
-  }
-
-  
-  // deleteMeal function is responsible for deleting the
-  // meal based on the expense-id provided and then calling the
-  // updateMeals function to do the cleanup. 
-  const deleteCurrentMeal = async () => {
-     const isDeleted = await deleteMeal(user, _id);
+  // Function is responsible for deleting the training 
+  const deleteCurrentTraining = async () => {
+      console.log('isDeletedPressed')
+     const isDeleted = await deleteTraining(user, training._id);
+     console.log('isDeleted', isDeleted)
      if (isDeleted) {
-        updateMeals()
+      updateTrainings()
      }
   };
 
- 
-  // Function to calculate the total weight of food
-  function calculateTotalWeight(foodItems) {
-    return foodItems.reduce((total, foodItem) => total + foodItem.weight, 0);
+  const getTainingCategory = () => {
+    // Check if traing is a custom training
+    if (training.customCategory.length > 0 && training.customType.length) {
+      return training.customCategory
+  } else {
+      return Enums.getTitleForTrainingCategory(training.category)
+  }
+  }
+
+  const getTainingType = () => {
+    // Check if traing is a custom training
+    if (training.customCategory.length > 0 && training.customType.length) {
+        return training.customType
+    } else {
+        return Enums.getTitleForTrainingType(training.type)
+    }
   }
 
   return (
-      <div css={styles.childConteinerStyle} >
-        <div css={styles.headerMealStyle}>
-          <div css={styles.headerTextStyle}>
-            <h3 css={styles.headingMealStyle}>MEALS</h3>
-            <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
-            <div css={styles.headingDeleteButonStyle}><Delete onClick={deleteCurrentMeal} /></div>
+      <div style={styleTraining.trainingConteinerStyle} > 
+        <div style={styleTraining.headerTrainingStyle(training.isCompleted)}>
+          <div style={styleTraining.rowStyle}>
+            <div style={styleTraining.iconContainerStyle}>
+              <Image imageName={`training_${training.category}.svg`} width="40" height="40" />
+            </div>  
+            
+            <div style={styleTraining.columnStyle}>
+              <h4 style={styleTraining.textTitleStyle}>{getTainingCategory()}</h4>
+              <h4 style={styleTraining.textStyle}>What to train: {getTainingType()}</h4>
+            </div>
+            { training.isCompleted && (    
+              <div>
+                <Image imageName="trophy.svg" width="40" height="40" />
+              </div>
+            )}
+            <CustomCheckbox
+              checked={training.isCompleted}
+              onChange={() => handleCheckboxValueChange()}
+            />
+
+            <ButtonWithImage
+              variant="iconButton"
+              imageName="delete_icon.svg"
+              imageSize={25}
+              onClick={() => deleteCurrentTraining()}
+            >
+            </ButtonWithImage>
+               
+              
+          
           </div> 
         </div>
-        <ul  css={styles.foodListStyle}>
-          {food.map((foodItem) => (
-            <li css={styles.foodListRowStyle} key={foodItem._id}>
-              <div css={styles.headerFoodStyle}>
-                <div css={styles.headerTextStyle}>
-                  <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
-                  <input
-                    type="text"
-                    css={styles.inputFieldStyle}
-                    value={foodItem.weight}
-                    onChange={(e) => handleWeightChange(e, foodItem)}
-                  />
-                  <div css={styles.headingDeleteButonStyle}><Delete/></div>
-                </div> 
-              </div>
-            </li>
-          ))}
-        </ul>
-        <Button
-          startIcon={<Image imageName="plus_round_fill_white_button.svg" width="25" height="25" />}
-          component={Link}
-          to="/searchFood"
-          css={styles.addButtonStyle}
-        >
-          Add Food
-        </Button>
       </div>
    );
 }
 
-export default MealCard;
+export default TrainingCard;

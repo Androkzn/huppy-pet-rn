@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Button from '@mui/material/Button';
 import dayjs from 'dayjs';
-import * as colors from './styles/colors'
+import * as colors from './styles/Colors'
 
 
 const CustomDatePickerWithArrows = ({ label, value, onChange, styleContainer })  => { 

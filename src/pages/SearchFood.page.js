@@ -1,15 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
-import request, { gql } from "graphql-request";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
-import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import PageContainer from "../components/PageContainer.component";
-import * as enums from "../helpers/Enums.helper"
 import { css } from "@emotion/react";
 import { searchForFood } from "../graphql/graphqlUtils";
-
+import * as Enums from "../helpers/Enums.helper"
 
 //import AddFoodPage from "./AddFood.page"; // Import the AddFood.page for opening when an item is clicked
 
@@ -79,13 +75,14 @@ const SearchFood = () => {
                 onChange={() => handleOptionChange(option)}
               />
               {option === "Filter by category" ? (
-                <span>
-                  Filter by category <select>
-                    <option>Dropdown Option 1</option>
-                    <option>Dropdown Option 2</option>
-                    <option>Dropdown Option 3</option>
-                  </select>
-                </span>
+                <select 
+              >
+                {Object.values(Enums.FoodCategoryType).map((type, index) => (
+                  <option key={index} value={Enums.getTitleUpercased(type)}>
+                    {Enums.getTitleUpercased(type)}
+                  </option>
+                ))}
+              </select>
               ) : (
                 option
               )}

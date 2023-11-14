@@ -3,8 +3,6 @@
 import { useContext, useState } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
-import { gql, request } from "graphql-request";
-import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import NewFoodForm from "../components/NewFoodForm.component";
 import { useNavigate } from "react-router-dom";
 import {BackButton} from '../components/Shared.components'

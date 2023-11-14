@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
-import * as colors from './colors'
+import * as colors from './Colors'
 
 const pickerStyle = css`   
 `;

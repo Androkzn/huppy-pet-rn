@@ -9,16 +9,72 @@ import {Image} from '../components/Image.components'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, } from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
- 
- 
+import TrainingCard from '../components/TrainingCard.component';
+import { Dialog, DialogContent } from '@mui/material';
+import NewActivityForm from "../components/NewActivityForm.component";
+import NewTrainingForm from "../components/NewTrainingForm.component";
+import * as Enums from "../helpers/Enums.helper"
+
 const Home = () => {
-  // Fetching user details from UserContext
-  const { user, currentProfile } = useContext(UserContext);
+  const {user, currentProfile } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState( new Date());
   const [meals, setMeals] = useState([]);
   const [activities, setActivities] = useState([]);
   const [trainings, setTrainings] = useState([]);
- 
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("addActivity");
+
+  const openDialog = (dialogTypeNew) => {
+    console.log("openDialog", dialogTypeNew)
+    setDialogType(dialogTypeNew)
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogSubmit = (form, dialogType) => {
+    if (dialogType === "addActivity") {
+      const data = {
+        "type": form.type,
+        "metric": form.metric,
+        "distance": form.distance,
+        "duration": form.duration,
+        "burnedCalories": form.burnedCalories,
+      }
+
+      addActivityForDate(data)
+    } else if (dialogType === "addTraining") {
+      let  customCategory = form.customCategory;
+      // Check if custom type was selected  under base category
+      if (form.category !=  Enums.TrainingCategory.CUSTOM && form.type === Enums.TrainingType.CUSTOM) {
+        customCategory = Enums.getTitleForTrainingCategory(form.category)
+      }
+
+      const data = {
+        "category": form.category,
+        "type": form.type,
+        "customCategory": customCategory,
+        "customType": form.customType,
+        "desc": form.description,
+      }
+
+      addTrainingForDate(data)
+    }
+      
+    closeDialog();
+  };
+
+  const getDialogContent = () => {
+    console.log("getDialogContent", dialogType)
+    if (dialogType === "addActivity") { 
+      return <NewActivityForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
+    } else if (dialogType === "addTraining") {
+      return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
+    } 
+  };
+
   // Function is responsible for making the GraphQL
   // request to Realm and update the meals array from the response. 
   const loadMealsForDate = async () => {
@@ -31,15 +87,19 @@ const Home = () => {
   // Function is responsible for making the GraphQL
   // request to Realm and update the activities array from the response. 
   const loadActivitiesForDate = async () => {
-    const activities = await loadActivities(user, currentProfile, currentDate); 
-    setActivities(activities);
+    if (currentProfile) {
+      const activities = await loadActivities(user, currentProfile, currentDate); 
+      setActivities(activities);
+    }
   };
 
   // Function is responsible for making the GraphQL
   // request to Realm and update the trainings array from the response. 
   const loadTrainingsForDate = async () => {
-    const trainings = await loadTrainings(user, currentProfile, currentDate); 
-    setTrainings(trainings);
+    if (currentProfile) {
+      const trainings = await loadTrainings(user, currentProfile, currentDate); 
+      setTrainings(trainings);
+    }
   };
 
   // Function is responsible for creating a new meal
@@ -51,16 +111,16 @@ const Home = () => {
   };
 
   // Function is responsible for creating a new activity
-  const addActivityForDate = async () => {
-    const isAdded = await addActivity(user, currentProfile, currentDate)  
+  const addActivityForDate = async (data) => {
+    const isAdded = await addActivity(user, currentProfile, currentDate, data)  
     if (isAdded) {
       updateActivities();
     }
   };
 
   // Function is responsible for creating a new training
-  const addTrainingForDate = async () => {
-    const isAdded = await addTraining(user, currentProfile, currentDate)  
+  const addTrainingForDate = async (data) => {
+    const isAdded = await addTraining(user, currentProfile, currentDate, data)  
     if (isAdded) {
       updateTrainings();
     }
@@ -69,8 +129,8 @@ const Home = () => {
   // Responsible for fetching data for  meals/traings/activities when data is changed
   useEffect(() => {
     updateAll()
-  }, [currentDate]);
-
+  }, [currentDate, currentProfile]);
+ 
   // Helper function to be performed after an meals/traing/activity has been deleted.
   const updateAll = () => {
     updateMeals()
@@ -172,7 +232,9 @@ const Home = () => {
                   </div>
                   <button
                     css={styles.headerAddButtonStyle}
-                    onClick={addTrainingForDate}
+                    onClick={() => {
+                      openDialog("addActivity");
+                    }}
                   >
                     <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
                   </button>
@@ -205,16 +267,20 @@ const Home = () => {
             </div>
             </div>
             <button
-              css={styles.headerAddButtonStyle}
-              onClick={addTrainingForDate}
-            >
+                    css={styles.headerAddButtonStyle}
+                    onClick={() => {
+                      openDialog("addTraining");
+                    }}
+                  >
               <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
             </button>
           </div>{/* Header container*/}
 
           <div css={styles.columnStyle}>{/* Training container*/}
             {trainings.length > 0 ? (
-              trainings.map((training) => <div key={training._id}>{training.date}</div>)
+              trainings.map((training) => <div key={training._id}>
+                 <TrainingCard training={training} updateTrainings={updateTrainings}/>
+                </div>)
             ) : (
               <div css={styles.placeholderStyle}>
                 <Image imageName="no_trainings_placeholder.png" width="200" height="170" />
@@ -224,6 +290,16 @@ const Home = () => {
         </div>{/* Trainings container*/}
       </div>{/* Right column (Training) */}
     </div>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+ 
+    {/* Dialog for delete confirmation */}
+    {dialogOpen && (          
+      <Dialog open={dialogOpen} >
+        <DialogContent>
+          {getDialogContent()}
+          </DialogContent>
+      </Dialog>
+    )}
+
   </PageContainer>
 }
 

@@ -39,6 +39,10 @@ export const FoodSection = {
     FIBER: 'fiber',
     OTHER: 'other',
   };
+
+  export const getTitleUpercased= (rawValue) => {
+    return String(rawValue).charAt(0).toUpperCase() + String(rawValue).slice(1);
+  };
   
   // AddFoodRowType.js
   export const AddFoodRowType = {
@@ -90,34 +94,35 @@ export const FoodSection = {
     RUN: 'run',
     SWIM: 'swim',
     FETCH: 'fetch',
-    
-    title(activity) {
-        switch (activity) {
-            case this.WALK: return 'Walk';
-            case this.RUN: return 'Run';
-            case this.SWIM: return 'Swim';
-            case this.FETCH: return 'Fetch game';
-        }
-    },
-    
-    caloriesForDistance(activity) {
-        switch (activity) {
-            case this.WALK: return 8;
-            case this.RUN: return 8;
-            case this.SWIM: return 8;
-            case this.FETCH: return 8;
-        }
-    },
-    
-    caloriesForDuration(activity) {
-        switch (activity) {
-            case this.WALK: return 64;
-            case this.RUN: return 64;
-            case this.SWIM: return 64;
-            case this.FETCH: return 64;
-        }
-    },
+
   };
+
+  export const getTitleForActivityType= (activity) => {
+    switch (activity) {
+        case ActivityType.WALK: return 'Walk';
+        case ActivityType.RUN: return 'Run';
+        case ActivityType.SWIM: return 'Swim';
+        case ActivityType.FETCH: return 'Fetch game';
+    }
+  };
+
+  export const getCaloriesForDistance= (activity) => {
+    switch (activity) {
+        case ActivityType.WALK: return 8;
+        case ActivityType.RUN: return 8;
+        case ActivityType.SWIM: return 8;
+        case ActivityType.FETCH: return 8;
+    }
+};
+
+export const getCaloriesForDuration= (activity) =>{
+    switch (activity) {
+        case ActivityType.WALK: return 64;
+        case ActivityType.RUN: return 64;
+        case ActivityType.SWIM: return 64;
+        case ActivityType.FETCH: return 64;
+    }
+};
 
   // ActivityMetric.js
   export const ActivityMetric = {
@@ -132,6 +137,20 @@ export const FoodSection = {
     },
   };
 
+  export const getTitleForActivityMetric= (metric) => {
+    switch (metric) {
+        case ActivityMetric.DISTANCE: return 'Distance, km';
+        case ActivityMetric.DURATION: return 'Duration, min';
+    }
+  };
+
+  export const getDDTitleForActivityMetric= (metric) => {
+    switch (metric) {
+        case ActivityMetric.DISTANCE: return 'Distance';
+        case ActivityMetric.DURATION: return 'Duration';
+    }
+  };
+
   // TrainingCategory.js
   export const TrainingCategory = {
     SOCIAL: 'social',
@@ -140,40 +159,87 @@ export const FoodSection = {
     SOUNDS: 'sounds',
     ITEMS: 'items',
     CUSTOM: 'custom',
-
-    title(category) {
-        switch (category) {
-            case this.SOCIAL: return 'Social';
-            case this.OBEDIENCE: return 'Obedience';
-            case this.POTTY: return 'Potty';
-            case this.SOUNDS: return 'Sounds';
-            case this.ITEMS: return 'Items';
-            case this.CUSTOM: return 'Custom';
-        }
-    },
-
-    types(category) {
-        switch (category) {
-            case this.SOCIAL: return [/* List of social training types */];
-            case this.OBEDIENCE: return [/* List of obedience training types */];
-            case this.POTTY: return [/* List of potty training types */];
-            case this.SOUNDS: return [/* List of sounds training types */];
-            case this.ITEMS: return [/* List of items training types */];
-            case this.CUSTOM: return [];
-        }
-    },
-
-    icon(category) {
-        switch (category) {
-            case this.SOCIAL: return 'Image(.socialTraining)';
-            case this.OBEDIENCE: return 'Image(.obedienceTraining)';
-            case this.POTTY: return 'Image(.pottyTraining)';
-            case this.SOUNDS: return 'Image(.soundTraining)';
-            case this.ITEMS: return 'Image(.itemsTraining)';
-            case this.CUSTOM: return 'Image(.customTraining)';
-        }
-    },
   };
+
+  export const getTrainingCategoryFor = (rawValue) => {
+    for (const category in TrainingCategory) {
+      if (TrainingCategory[category] === rawValue) {
+        return TrainingCategory[category];
+      }
+    }
+    return TrainingCategory.SOCIAL;  
+  };
+
+  export const getTitleForTrainingCategory = (category) => {
+        switch (category) {
+            case TrainingCategory.SOCIAL: return 'Social';
+            case TrainingCategory.OBEDIENCE: return 'Obedience';
+            case TrainingCategory.POTTY: return 'Potty';
+            case TrainingCategory.SOUNDS: return 'Sounds';
+            case TrainingCategory.ITEMS: return 'Items';
+            case TrainingCategory.CUSTOM: return 'Custom';
+        };
+    };
+
+    export const getTypesForTrainingTypeCategory = (category) => {
+      switch (category) {
+        case TrainingCategory.SOCIAL:
+          return [
+            TrainingType.LOOK,
+            TrainingType.ADULT_PERSON,
+            TrainingType.KIDS,
+            TrainingType.CARS,
+            TrainingType.TRUCKS,
+            TrainingType.BUSES,
+            TrainingType.DOGS,
+            TrainingType.CATS,
+            TrainingType.ANIMALS,
+            TrainingType.DOG_PARK,
+            TrainingType.CUSTOM,
+          ];
+        case TrainingCategory.OBEDIENCE:
+          return [
+            TrainingType.SIT,
+            TrainingType.STAY,
+            TrainingType.LIE_DOWN,
+            TrainingType.WAIT,
+            TrainingType.STAND,
+            TrainingType.HEEL,
+            TrainingType.LEAVE_IT,
+            TrainingType.DROP_IT,
+            TrainingType.COME,
+            TrainingType.PLACE,
+            TrainingType.LOOK,
+            TrainingType.CUSTOM,
+          ];
+        case TrainingCategory.POTTY:
+          return [
+            TrainingType.HURRY_UP, 
+            TrainingType.CUSTOM,
+          ];
+        case TrainingCategory.SOUNDS:
+          return [
+            TrainingType.TRAINS,
+            TrainingType.MUSIC,
+            TrainingType.GUN_SHOT,
+            TrainingType.FIREWORKS,
+            TrainingType.DOOR_BELL,
+            TrainingType.BABY_CRY,
+            TrainingType.CUSTOM,
+          ];
+        case TrainingCategory.ITEMS:
+          return [
+            TrainingType.UMBRELLA, 
+            TrainingType.CUTLERY,
+            TrainingType.CUSTOM,
+          ];
+        case TrainingCategory.CUSTOM:
+          return [];
+        default:
+          return [];
+      };
+    };
+
 
   // TrainingType.js
   export const TrainingType = {
@@ -207,9 +273,34 @@ export const FoodSection = {
     BABY_CRY: 'babyCry',
     UMBRELLA: 'umbrella',
     CUTLERY: 'cutlery',
+    CUSTOM: 'custom',
   };
 
-  
+  export const getTrainingTypeFor = (rawValue) => {
+    for (const type in TrainingType) {
+      if (TrainingType[type] === rawValue) {
+        return TrainingType[type];
+      }
+    }
+    return TrainingType.SIT;  
+  };
+
+  export const getTitleForTrainingType = (type) => {
+    switch (type) {
+      case type.LIE_DOWN: return 'Lie Down';
+      case type.LEAVE_IT: return '"Leave It';
+      case type.ADULT_PERSON: return 'Adult person';
+      case type.DOG_PARK: return 'Dog park';
+      case type.GUN_SHOT: return 'Gun Shot';
+      case type.DOOR_BELL: return 'Door Bell';
+      case type.BABY_CRY: return 'Baby Cry';
+      case type.HURRY_UP: return 'Hurry Up';
+      default: return String(type).charAt(0).toUpperCase() + String(type).slice(1);
+   };
+  };
+
+ 
+
   // FoodUnits.js
   export const FoodUnits = {
     GRAM: 'gram',

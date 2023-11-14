@@ -1,9 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Menu as MenuIcon, Add, PieChart, Logout, Home } from '@mui/icons-material/';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
-import * as colors from './styles/colors'
+import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 
 const NavBar = () => {

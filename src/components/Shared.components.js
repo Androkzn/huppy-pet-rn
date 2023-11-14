@@ -2,7 +2,7 @@ import styled from '@emotion/styled/macro'
 import {keyframes} from '@emotion/react'
 import {FaSpinner} from 'react-icons/fa'
 import {Dialog as ReachDialog} from '@reach/dialog'
-import * as colors from './styles/colors'
+import * as colors from './styles/Colors'
 import * as mq from './styles/media-queries'
 
 

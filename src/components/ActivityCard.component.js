@@ -1,21 +1,15 @@
 /** @jsxImportSource @emotion/react */
 
-import { Delete } from "@mui/icons-material";
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
 import {Image} from './Image.components'
-import {ButtonC} from '@mui/material';
 import { deleteActivity, updateActivity } from "../graphql/graphqlUtils";
 import * as stylesActivity from '../components/styles/Activity.css'
-import {ButtonWithImage, } from '../components/Buttons.components'
+import {ButtonWithImage, ButtonText } from '../components/Buttons.components'
 import * as enums from "../helpers/Enums.helper"
 
 function ActivityCard({ activity, updateActivities}) {
   const { user, currentProfile } = useContext(UserContext);
-  // const [activityType, setActivityType] = useState("walk");
-  // const [activityMetric, setActivityMetric] = useState("duration");
-  // const [activityValue, setActivityValue] = useState(0);
 
   function handleTextFieldValueChange(e) {
     const newValue = e.target.value;
@@ -103,7 +97,6 @@ function ActivityCard({ activity, updateActivities}) {
     }
   }
   
-
   function getActivityValue() {
     return  activity.metric === enums.ActivityMetric.DISTANCE ? activity.distance : activity.duration;
   }
@@ -132,7 +125,7 @@ function ActivityCard({ activity, updateActivities}) {
                   >
                     {Object.values(enums.ActivityType).map((option, index) => (
                       <option style={stylesActivity.dropdownItemStyle} key={index} value={option}>
-                        {enums.ActivityType.title(option)}
+                        {enums.getTitleForActivityType(option)}
                       </option>
                     ))}
                   </select>
@@ -165,30 +158,24 @@ function ActivityCard({ activity, updateActivities}) {
               ))}
             </select>
             <div style={stylesActivity.rowStyle}>
-              <ButtonWithImage
-                variant="iconButton"
-                imageName="minus_round_button.svg"
-                imageSize={25}
-                onClick={() => {
-                  handleButtonValueChange(-1 * getChangeValueStep())
-                }}
-              >
-              </ButtonWithImage>
+              <ButtonText 
+              variant="circleTextButton" 
+              onClick={() => { handleButtonValueChange(-1 * getChangeValueStep()) }}  
+              name={"integerMetric"} >
+                -
+              </ButtonText>
               <input
-                type="text"
+                type="number"
                 style={stylesActivity.inputFieldStyle}
                 value={getActivityValue()}
                 onChange={(e) => handleTextFieldValueChange(e, activity)}
               />
-              <ButtonWithImage
-                variant="iconButton"
-                imageName="plus_round_button.svg"
-                imageSize={25}
-                onClick={() => {
-                  handleButtonValueChange(getChangeValueStep())
-                }}
-              >
-              </ButtonWithImage>
+              <ButtonText 
+              variant="circleTextButton" 
+              onClick={() => { handleButtonValueChange(getChangeValueStep()) }}  
+              name={"integerMetric"} >
+                +
+              </ButtonText>
             </div>
           </div> 
         </div>

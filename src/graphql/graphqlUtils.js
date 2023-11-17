@@ -11,6 +11,7 @@ async function searchForFood(searchQuery, user) {
 
     const searchFoodTemplateQuery = gql`
     query SearchFoodTemplate($searchQuery: String!) {
+      
         search(input: $searchQuery) {
           _id
           ash
@@ -95,6 +96,102 @@ async function getAllFoodForMeal(user, mealId) {
     } catch (error) {
         alert('Error fetching food for meal with Id:', mealId, error);
     }
+}
+
+// Func that is responsible for fetching  all food for specific meal
+// it returna array of Food
+async function getAllCustomFoodTemplates(user) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to fetch all  food for specificmeal
+  const getAllCustomFoodTemplates = gql`
+      query getAllCustomFoodTemplates {
+        foodTemplates(query: { isCustom: true}) {
+            _id
+            ash
+            bonesRatio
+            calories
+            caloriesServing
+            carb
+            categoryType
+            desc
+            fat
+            fiber
+            image
+            isCustom
+            meatRatio
+            name
+            protein
+            servingWeight
+            servings
+            type
+            units
+            userId
+            weight
+          }
+      }
+  `;
+  const queryVariables = {};
+
+  try {
+      
+      const resp = await request(GRAPHQL_ENDPOINT, getAllCustomFoodTemplates, queryVariables, headers);
+      
+      // Update the 'food' state with the fetched data
+      return resp.foodTemplates;
+  } catch (error) {
+      alert(error);
+  }
+}
+
+// Func that is responsible for fetching  all food for specific meal
+// it returna array of Food
+async function getAllFoodTemplatesForCategory(user, categoryType) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to fetch all  food for specificmeal
+  const getAllFoodTemplatesForCategory = gql`
+      query getAllFoodTemplatesForCategory($categoryType: String!) {
+          foodTemplates(query: { categoryType: $categoryType}) {
+            _id
+            ash
+            bonesRatio
+            calories
+            caloriesServing
+            carb
+            categoryType
+            desc
+            fat
+            fiber
+            image
+            isCustom
+            meatRatio
+            name
+            protein
+            servingWeight
+            servings
+            type
+            units
+            userId
+            weight
+          }
+      }
+  `;
+  const queryVariables = {
+      "categoryType": categoryType.toLowerCase(),
+  };
+
+  try {
+      
+      const resp = await request(GRAPHQL_ENDPOINT, getAllFoodTemplatesForCategory, queryVariables, headers);
+      
+      // Update the 'food' state with the fetched data
+      return resp.foodTemplates;
+  } catch (error) {
+      alert(error);
+  }
 }
 
 // Func that is responsible for deleting a meal based on the expense-id
@@ -683,6 +780,8 @@ async function updateTraining(user, trainingId, updateData) {
 export { 
     searchForFood, 
     getAllFoodForMeal, 
+    getAllCustomFoodTemplates,
+    getAllFoodTemplatesForCategory,
     deleteMeal,
     deleteActivity,
     deleteTraining,

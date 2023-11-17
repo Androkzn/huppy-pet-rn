@@ -3,12 +3,13 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
-import { searchForFood } from "../graphql/graphqlUtils";
+import { getAllCustomFoodTemplates, getAllFoodTemplatesForCategory, searchForFood } from "../graphql/graphqlUtils";
 import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
 import * as styles from "../components/styles/SearchFood.css"
 import {ButtonWithImage} from '../components/Buttons.components'
 import { useNavigate, useLocation } from "react-router-dom";
+import {Image} from '../components/Image.components'
 
 const SearchFood = () => {
   const location = useLocation();
@@ -19,33 +20,48 @@ const SearchFood = () => {
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
   // State for selected category filter
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("meat");
    // State for searchResult 
   const [searchResult, setResults] = useState([]);
+   // State for radio buttons 
+  const [selectedFilter, setSelectedFilter] = useState("All");
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
-    console.log("Opening AddFoodPage for:", foodItem);
-    console.log("Opening AddFoodPage mealId:", mealId);
     navigate("/addFood", { state: { mealId, foodItem } });
   };
 
   const openCeateNewFoodPage = () => {
-    console.log("openCeateNewFoodPage mealId:", mealId);
     navigate("/createNewFood", { state: { mealId } });
   };
 
   useEffect(() => {
-    // Do not query an empty string
-    if (searchQuery.length > 0) {
-      searchFood(); // Load food data when the component mounts
+    // Do not query an empty string if selected filter is "All"
+    if (searchQuery.length > 0 || selectedFilter !== "All") {
+      searchFood(); 
+    } else {
+      setResults([]);
     }
-  }, [searchQuery]);
+  }, [searchQuery, selectedFilter, selectedCategory]);
 
-  // Func that is responsible for searching Food Templates in DB 
+  // Func that is responsible for searching Food Templates in DB based on search string
   async function searchFood() {
-    const results = await searchForFood(searchQuery, user);
-    setResults(results);
+    console.log("searchFood for:", selectedFilter);
+    if (selectedFilter === "All") {
+      const results = await searchForFood(searchQuery, user);
+      setResults(results);
+    } else if  (selectedFilter === "Filter by category") {
+      const results = await getAllFoodTemplatesForCategory(user, selectedCategory)
+      console.log("Filter by category results:", results);
+      setResults(results);
+    } else if  (selectedFilter === "My food") {
+      const results = await getAllCustomFoodTemplates(user)
+      console.log("My food results:", results);
+      setResults(results);
+    } else if  (selectedFilter === "My Recipe"){
+
+    }
+    console.log("searchFood results:", searchResult);
   }
  
     const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
@@ -56,55 +72,70 @@ const SearchFood = () => {
         "My Recipe",
       ];
     
-      const [selectedOption, setSelectedOption] = useState("All");
-    
-      const handleOptionChange = (option) => {
-        setSelectedOption(option);
-    
-        if (option === "Filter by category") {
-          setSelectedCategory("dropdown"); // Set to "dropdown" when "Filter by category" is selected
-        } else {
-          setSelectedCategory(option);
-        }
-      };
+      async function handleCategoryChange(e) {
+        const newValue = e.target.value;
+        console.log("handleCategoryChange:", newValue);
+        setSelectedCategory(newValue)
+      }
+
+      async function handleFilterChange(filter) {
+        console.log("handleFilterChange:", filter);
+        setSelectedFilter(filter)
+      }
     
       return (
         <div style={styles.rowStyle}>
-          {filterOptions.map((option) => (
-              <label
-                key={option}
-                style={styles.labelFilterStyle}
-              >
+          {filterOptions.map((filter) => (
+            <label key={filter} style={styles.labelFilterStyle}>
               <input
                 style={styles.radioButtonStyle}
                 type="radio"
                 name="categoryOption"
-                value={option}
-                checked={selectedOption === option}
-                onChange={() => handleOptionChange(option)}
+                value={selectedFilter}  
+                checked={selectedFilter === filter}
+                onChange={() => handleFilterChange(filter)}
               />
-                {option === "Filter by category" ? (
-                    <label >
-                    <span>Filter by category</span>
-                    <select style={styles.dropdownStyle}>
-                      {Object.values(Enums.FoodCategoryType).map((type, index) => (
-                        <option key={index} value={Enums.getTitleUpercased(type)}>
-                          {Enums.getTitleUpercased(type)}
-                        </option>
-                      ))}
-                    </select>
-                    </label>
-                ) : (
-                  option
-                )}
-              </label>
+              <span>{filter === "Filter by category" ? (
+                <>
+                  Filter by category
+                  <select
+                    style={styles.dropdownStyle}
+                    value={selectedCategory}
+                    onChange={(e) => {
+                      setSelectedFilter("Filter by category");
+                      handleCategoryChange(e)
+                    }}
+                  >
+                    {Object.values(Enums.FoodCategoryType).map((type, index) => (
+                      <option key={index} value={Enums.getTitleUpercased(type)}>
+                        {Enums.getTitleUpercased(type)}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              ) : (
+                filter
+              )}</span>
+            </label>
           ))}
         </div>
       );
+      
     };
     
     
   const ResultContainer = ({ searchResult, openAddFoodPage }) => {
+      // Check if searchResult is not defined or is an empty array
+    if (!searchResult || searchResult.length === 0) {
+      return <div style={styles.rowStyle}>
+        {selectedFilter === "All" &&  searchQuery.length === 0 ? (
+          <Image imageName="start_typing_placeholder.png" width="200" height="250"/>
+          ) : (
+            <Image imageName="no_results_placeholder.png" width="200" height="250"/>
+        )}
+        </div>;
+    }
+
     return (
       <div>
         {searchResult.map((foodItem, index) => (

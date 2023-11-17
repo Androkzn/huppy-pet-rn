@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
 import {Image} from './Image.components'
-import * as style from './styles/AddFood.css'
+import * as style from './styles/AddFoodCard.css'
 import {ButtonWithImage, ButtonText } from './Buttons.components'
 
 // Function is responsible for updating the training 

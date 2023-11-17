@@ -1,103 +1,113 @@
 /** @jsxImportSource @emotion/react */
 
 import * as colors from './Colors'
+ 
+const rowStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+  width: '100%',
+};
 
-  // Main container 
-  const mainConteinerStyle = {
-    display: 'flex',
-    flex: '1',
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: '5px 20px 0 20px',
-    padding: '10px',
-    borderRadius: '10px',
-    backgroundColor: colors.lightBrown,
-  };
+const columnStyle = {
+  display: 'flex',
+  justifyContent: 'top',
+  flexDirection: 'column',
+  width: '100%',
+};
 
-  const rowStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: '100%',
-  };
+const descriptionContainerStyle = {
+  ...columnStyle,
+  display: 'flex',
+  borderRadius: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+  marginTop: '10px',
+  backgroundColor: colors.lightBrown,
+};
 
-  const columnStyle = {
-    display: 'flex',
-    justifyContent: 'top',
-    flexDirection: 'column',
-    width: '100%',
-  };
-  const nameContainerStyle = {
-    ...rowStyle,
-    justifyContent: 'left',
+const descriptionStyle = {
+  alignItems: 'left',
+  textAlign: 'left',
+  width: '90%',
+  margin: '10px',
+  padding: '10px',
+  borderRadius: '10px',
+  backgroundColor: colors.white,
+};
 
- };
+const nutritionRowStyle = {
+  ...rowStyle, 
+  justifyContent: 'space-between',
+  width: '80%',
+  margin: '5px',
+};
 
-  const textTitleStyle = {
-    padding: '10px',
-    margin: '0px',
-    textAlign: 'left',
-    fontSize: '18px',
-    color: colors.green,
-    fontWeight: "bold"
-  };
+const nutritionContainerStyle = {
+  ...columnStyle,
+  display: 'flex',
+  borderRadius: '10px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  width: '100%',
+  marginTop: '10px',
+  backgroundColor: colors.lightBrown,
+};
 
- const textStyle = {
-    padding: '5px',
-    margin: '0px',
-    textAlign: 'left',
-    fontSize: '18px',
-    color: colors.green,
-  };
+const topButtonsContainerStyle = {
+  ...rowStyle,
+  justifyContent: 'space-between',
+  marginTop: '20px',
+  textAlign: 'left',
+  fontSize: '15px',
+};
 
-  const iconContainerStyle = {
-     width: '10%',
-  };
+const addFoodFormStyle = {
+  maxWidth: '450px',
+  minWidth: '350px',
+  margin: 'auto',
+};
 
-  const customContainerStyle = {
-    ...rowStyle,
-    justifyContent: 'center',
-    width: '10%',
-    height: '25px',
-    borderRadius: '10px',
-    backgroundColor: colors.lightGreen2,
- };
+const addFoodTitleStyle = {
+  textAlign: 'center',
+  color: colors.lightGreen,
+};
 
-  const headerTrainingStyle ={
-    display: 'flex',
-    flexDirection: 'row',
-    borderRadius: '10px',
-    textAlign: 'center',
-    width: '100%',
-    backgroundColor: colors.lightBrown2,
-  };
+const nutritionFactsTitleStyle = {
+  textAlign: 'center',
+  color: colors.lightGreen,
+  marginRight: '10px',
+  cursor: "pointer",
+};
 
-  const dropdownStyle = {
-    width: '150px',
-    borderRadius: '10px',
-    height: '35px',
-    paddingRight: '15px',
-    paddingLeft: '15px',
-    backgroundColor: colors.oliveLight,
-  };
+const addFoodButtonContainerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+};
 
-  const checkboxStyle = {
-    width: '150px',
-    borderRadius: '10px',
-    height: '35px',
-  };
+const imageContainerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  marginBottom: '10px',
+};
 
-  export {
-    headerTrainingStyle,
-    nameContainerStyle,
-    mainConteinerStyle,
-    iconContainerStyle, 
-    rowStyle, 
-    columnStyle,
-    dropdownStyle,
-    checkboxStyle,
-    textStyle,
-    textTitleStyle,
-    customContainerStyle
+
+
+export {
+  columnStyle,
+  rowStyle,
+  descriptionStyle,
+  nutritionRowStyle,
+  descriptionContainerStyle,
+  nutritionContainerStyle,
+  addFoodButtonContainerStyle,
+  addFoodFormStyle,
+  addFoodTitleStyle,
+  nutritionFactsTitleStyle,
+  topButtonsContainerStyle,
+  imageContainerStyle,
 };

@@ -58,7 +58,8 @@ const nutritionFactsTitleStyle = {
 
 const addFoodButtonContainerStyle = {
   display: 'flex',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
+  margin: '0 20px 0 20px',
 };
 
 const headingMealStyle = {

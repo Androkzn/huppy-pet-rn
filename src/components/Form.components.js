@@ -170,9 +170,15 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
             type="number"
             value={count}
             onChange={(e) => {
+              console.log("onChange event",e.target.value )
               setCount(parseInt(e.target.value, 10) || 0);
-              onChange(e);  
+              onChange(e);
+              e.preventDefault();  
             }}
+            onSubmit={(e) => {
+              e.preventDefault();  
+            }}
+
             name={name} 
           />
           <button style={buttonStyle} type="button" onClick={incrementCount}  name={name} >

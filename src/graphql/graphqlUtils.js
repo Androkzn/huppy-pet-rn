@@ -12,21 +12,27 @@ async function searchForFood(searchQuery, user) {
     const searchFoodTemplateQuery = gql`
     query SearchFoodTemplate($searchQuery: String!) {
         search(input: $searchQuery) {
-            _id
-            bonesRatio
-            calories
-            caloriesServing
-            categoryType
-            image
-            meatRatio
-            name
-            servingWeight
-            servings
-            units
-            weight
-            type
-            userId
-            isCustom
+          _id
+          ash
+          bonesRatio
+          calories
+          caloriesServing
+          carb
+          categoryType
+          desc
+          fat
+          fiber
+          image
+          isCustom
+          meatRatio
+          name
+          protein
+          servingWeight
+          servings
+          type
+          units
+          userId
+          weight
         }
     }
     `;
@@ -181,37 +187,61 @@ async function deleteTraining(user, _id) {
       }
 }
 
+// Func that is responsible for deleting a meal based on the expense-id
+// it return bool value
+async function deleteFood(user, _id) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to delete an meal
+  const deleteTrainingQuery = gql`
+      mutation DeleteFood($query: FoodQueryInput!) {
+          deleteOneFood(query: $query) {
+              _id
+          }
+      }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
+      return true
+    } catch (error) {
+      alert('Error deleting food with Id:',_id, error);
+      return false
+    }
+}
+
 // Func that is responsible for adding Food to DB   
 // it return bool value
-async function addFood(user, currentProfile, mealId, form) {
+async function addFood(user, mealId, foodItem) {
     const accessToken = user._accessToken;
-    const profileId = currentProfile._id
     const userId = user.id
     const headers = { Authorization: `Bearer ${accessToken}` };
-
         // All the data that needs to be sent to the GraphQL endpoint
     // to create food will be passed through queryVariablesCreateFood.
+    console.log("addFood", foodItem)
+    
     const queryVariablesCreateFood = {
         data: {
-          bonesRatio:  form.bonesRatio,
-          calories:  form.calories,
-          caloriesServing:  form.caloriesServing,
-          categoryType:  form.category,
+          bonesRatio:  foodItem.bonesRatio,
+          categoryType: foodItem.categoryType,
+          calories:  foodItem.calories,
+          caloriesServing:  foodItem.caloriesServing,
           image: "",
-          mealId:  form.mealId,
-          meatRatio:  form.meatRatio,
-          name:  form.name,
-          servingWeight:  form.servingWeight,
-          servings: form.servings,
-          templateId: "",
-          type:  form.type,
-          units: form.units, 
-          weight: 0,
-          profileId: profileId,
+          mealId: mealId,
+          meatRatio:  foodItem.meatRatio,
+          name:  foodItem.name,
+          servingWeight:  foodItem.servingWeight,
+          servings: foodItem.servings,
+          templateId: foodItem._id,
+          type:  foodItem.type,
+          units: foodItem.units, 
+          weight: foodItem.weight,
           userId: userId
         }
       };
-
       // GraphQL query to create food
     const createFoodQuery = gql`
         mutation AddFood($data: FoodInsertInput!) {
@@ -225,10 +255,68 @@ async function addFood(user, currentProfile, mealId, form) {
         await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
         return true
       } catch (error) {
-        alert('Error adding food:',error);
+        alert(error);
         return false
       }
 }
+
+// Func that is responsible for adding FoodTemplate to DB   
+// it return bool value
+async function addFoodTemplate(user, foodItem) {
+  const accessToken = user._accessToken;
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+      // All the data that needs to be sent to the GraphQL endpoint
+  // to create food will be passed through queryVariablesCreateFood.
+  console.log("addFoodTemplate", foodItem)
+  
+  const queryVariablesCreateFood = {
+      data: {
+        bonesRatio:  foodItem.bonesRatio,
+        categoryType: foodItem.categoryType,
+        calories:  foodItem.calories,
+        caloriesServing:  foodItem.caloriesServing,
+        image: "",
+        meatRatio:  foodItem.meatRatio,
+        name:  foodItem.name,
+        servingWeight:  foodItem.servingWeight,
+        servings: foodItem.servings,
+        type:  foodItem.type,
+        units: foodItem.units, 
+        weight: 0,
+        ash: foodItem.ash,
+        desc: foodItem.desc,
+        fat: foodItem.fat,
+        fiber: foodItem.fiber,
+        protein: foodItem.protein,
+        carb: foodItem.carb,
+        isCustom: true,
+        userId: userId
+      }
+    };
+    // GraphQL query to create food
+  const createFoodQuery = gql`
+      mutation AddFoodTemplate($data: FoodTemplateInsertInput!) {
+        insertOneFoodTemplate(data: $data) {
+            _id
+        }
+    }
+  `;
+
+  try {
+     const response =await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
+      // Extract the _id from the response
+     const templateId = response.insertOneFoodTemplate._id;
+     console.log('Created FoodTemplate _id:', templateId);
+ 
+      return { success: true, templateId: templateId };
+    } catch (error) {
+      alert(error);
+      
+       return { success: false, templateId: "" };
+    }
+}
+
 
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
@@ -598,6 +686,7 @@ export {
     deleteMeal,
     deleteActivity,
     deleteTraining,
+    deleteFood,
     getUserProfiles,
     loadMeals,
     loadActivities,
@@ -608,4 +697,5 @@ export {
     addFood, 
     updateActivity,
     updateTraining,
+    addFoodTemplate,
 };

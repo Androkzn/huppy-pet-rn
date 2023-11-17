@@ -10,6 +10,7 @@ import Signup from "./pages/Signup.page";
 import ForgotPassword from "./pages/ForgotPassword.page";
 import CreateNewFood from "./pages/CreateNewFood.page";
 import SearchFood from "./pages/SearchFood.page";
+import AddFood from "./pages/AddFood.page";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="/searchFood" element={<SearchFood />} />
             <Route exact path="/expense/:id/edit" element={<EditExpense />} />
             <Route exact path="/analytics" element={<Analytics />} />
+            <Route exact path="/addFood" element={<AddFood />} />
           </Route>
         </Routes>
       </UserProvider>

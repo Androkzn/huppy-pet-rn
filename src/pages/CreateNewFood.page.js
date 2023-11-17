@@ -5,18 +5,23 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
-import { addFood } from "../graphql/graphqlUtils";
+import { addFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
+import { useNavigate, useLocation } from "react-router-dom";
 
-const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
-  const { user, currentProfile } = useContext(UserContext);
-  
+const CreateNewFood = () => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { mealId } = location.state || {};
+
   // Some prefilled form state
-  const [form, setForm] = useState({
+  const [foodItem, setFoodItem] = useState({
+    _id : "",
     name: "",
     type: "",
     units: "",
-    category: "",
+    categoryType: "",
     protein: 0,
     fat: 0,
     fiber: 0,
@@ -28,25 +33,32 @@ const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
     servingWeight: 0,
     meatRatio: 0,
     bonesRatio: 0,
-    description: "",
+    desc: "",
+    weight: 0,
   });
 
   // addFood function is responsible for adding the Food
-  const addNewFood = async () => {
-    const isAdded = await addFood(user, currentProfile, mealId, form)  
-    if (isAdded) {
-      loadFoodForMeal();
-    }
-  };
+  const addNewFood = async (event) => {
+    const { name} = event.target;
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    console.log(form)
-    const { name, calories} = form;
-    if ( name.length === 0 || calories  === 0   ) {
+    if ( foodItem.name.length === 0 || foodItem.calories  === 0   ) {
       return;
     }
-    addNewFood()
+    const {success, templateId }= await addFoodTemplate(user, foodItem)  
+    if (success) {
+      // Function to open the AddFoodPage when a food item is clicked
+      if (name === 'createAndAddFood') {
+        foodItem._id = templateId
+        console.log("CreateNewFood", foodItem)
+        console.log("mealId", mealId)
+        navigate("/addFood", { state: { mealId, foodItem } });
+      } else {
+        navigate("/searchFood");
+      }
+     
+
+
+    }
   };
 
   return <PageContainer>
@@ -60,7 +72,7 @@ const CreateNewFood = ({ mealId, loadFoodForMeal }) => {
          Back
       </ButtonWithImage>
     </div>
-    <NewFoodForm onSubmit={onSubmit} form={form} setForm={setForm} title="Add Food" />
+    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} title="Add Food" />
   </PageContainer>
 }
 

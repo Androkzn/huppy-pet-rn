@@ -6,26 +6,26 @@ import * as styles  from '../components/styles/CreateNewFood.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 
-const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
+const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, editing }) => {
   
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
+    setFoodItem({ ...foodItem, [name]: value });
   };
 
   const onButtonInputChange = (name, value) => {
-    setForm({ ...form, [name]: value });
+    setFoodItem({ ...foodItem, [name]: value });
   };
 
   return <PageContainer>
     <form css={styles.addFoodFormStyle}>
-      <h2  css={styles.addFoodTitleStyle}>{editing ? "Edit Food" : "Add Food"}</h2>
+      <h2  css={styles.addFoodTitleStyle}>{editing ? "Edit Food" : "Add New Food"}</h2>
       
       <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange} placeholder={"Enter food name"}/>
       
       <TitleAndDropdown name={"type"} title={"Food type"} dropdownOptions={Object.values(enums.FoodType)}  onChange={onFormInputChange}/>
       <TitleAndDropdown name={"units"} title={"Units"} dropdownOptions={Object.values(enums.FoodUnits)}  onChange={onFormInputChange}/>
-      <TitleAndDropdown name={"category"} title={"Food category"} dropdownOptions={Object.values(enums.FoodCategoryType)}  onChange={onFormInputChange}/>
+      <TitleAndDropdown name={"categoryType"} title={"Food category"} dropdownOptions={Object.values(enums.FoodCategoryType)}  onChange={onFormInputChange}/>
      
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>
       
@@ -40,10 +40,13 @@ const NewFoodForm = ({ onSubmit, form, setForm, editing }) => {
         />
       ))}
 
-      <DescriptionTextBox name={"description"} title={"Add Description"} />
+      <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onFormInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 
-       <ButtonText variant="rectangleTextButton" onClick={() => onSubmit}  >
+       <ButtonText as= 'button' name="createFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
           {editing ? "Update" : "Create"} Food
+        </ButtonText> 
+        <ButtonText  as= 'button' name="createAndAddFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
+          {editing ? "Update" : "Create"} and Add to Meal
         </ButtonText>
       </div>
     </form>

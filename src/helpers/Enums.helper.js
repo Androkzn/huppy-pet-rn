@@ -53,10 +53,10 @@ export const FoodSection = {
     CARB: 'carb',
     CALORIES: 'calories',
     SERVINGS: 'servings',
-    CALORIES_SERVING: 'calories_serving',
-    SERVING_WEIGHT: 'serving_weight',
-    MEAT_RATIO: 'meat_ratio',
-    BONES_RATIO: 'bones_ratio',
+    CALORIES_SERVING: 'caloriesServing',
+    SERVING_WEIGHT: 'servingWeight',
+    MEAT_RATIO: 'meatRatio',
+    BONES_RATIO: 'bonesRatio',
 
     title(type){
       switch (type) {
@@ -74,13 +74,13 @@ export const FoodSection = {
           return 'Calories/100g';
         case 'servings':
           return 'Number of servings';
-        case 'calories_serving':
+        case 'caloriesServing':
           return 'Serving calories, kcal';
-        case 'serving_weight':
+        case 'servingWeight':
           return 'Serving weight, g';
-        case 'meat_ratio':
+        case 'meatRatioo':
           return 'Meat, %';
-        case 'bones_ratio':
+        case 'bonesRatio':
           return 'Bones, %';
         default:
           return type;

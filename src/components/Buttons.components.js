@@ -140,18 +140,18 @@ const ImageContainer = styled.div(({ margin, padding }) => ({
     padding: padding || '0px',
   }));
 
-const ButtonText = ({ variant, navigateTo, width, height, children, onClick, disabled }) => {
+const ButtonText = ({ variant, name, navigateTo, width, height, children, onClick, disabled }) => {
   return (
-      <Button variant={variant} as={Link} to={navigateTo} width={width} height={height} onClick={onClick} disabled={disabled}>
+      <Button name={name} variant={variant} as={Link} to={navigateTo} width={width} height={height} onClick={onClick} disabled={disabled}>
           {children}
       </Button>
   );
 };
 
 
-const ButtonWithImage = ({ variant, navigateTo, imageName, imageSize, width, height, margin, padding, children, onClick, disabled }) => {
+const ButtonWithImage = ({ variant, as: LinkComponent = Link, to = '/', imageName, imageSize, width, height, margin, padding, children, onClick, disabled }) => {
 return (
-    <Button variant={variant} as={Link} to={navigateTo} width={width} height={height} onClick={onClick} disabled={disabled}>
+    <Button variant={variant} as={LinkComponent} to={to} width={width} height={height} onClick={onClick} disabled={disabled}>
     {imageName && <ImageContainer margin={margin} padding={padding}>
         <Image  imageName={imageName} width={imageSize} height={imageSize}/>
         </ImageContainer>}

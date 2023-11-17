@@ -8,9 +8,13 @@ import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
 import * as styles from "../components/styles/SearchFood.css"
 import {ButtonWithImage} from '../components/Buttons.components'
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SearchFood = () => {
- 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { mealId } = location.state || {};
+
   const { user } = useContext(UserContext);
   // State for search query
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +26,13 @@ const SearchFood = () => {
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     console.log("Opening AddFoodPage for:", foodItem);
+    console.log("Opening AddFoodPage mealId:", mealId);
+    navigate("/addFood", { state: { mealId, foodItem } });
+  };
 
+  const openCeateNewFoodPage = () => {
+    console.log("openCeateNewFoodPage mealId:", mealId);
+    navigate("/createNewFood", { state: { mealId } });
   };
 
   useEffect(() => {
@@ -99,7 +109,7 @@ const SearchFood = () => {
       <div>
         {searchResult.map((foodItem, index) => (
           <div key={index}>
-              <FoodCard food={foodItem} openAddFoodPage={openAddFoodPage}/>
+              <FoodCard food={foodItem} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
           </div>
         ))}
       </div>
@@ -110,7 +120,7 @@ const SearchFood = () => {
     <div  style={styles.buttonsContainerStyle}>
     <ButtonWithImage
           variant="backButton"
-          navigateTo="/"
+          to="/"
           imageName="back_arrow.svg"
           imageSize={20}
         >
@@ -118,11 +128,13 @@ const SearchFood = () => {
         </ButtonWithImage>
       <ButtonWithImage
           variant="addButton"
-          navigateTo="/createNewFood"
+          width='180px'
+          as='button'
           imageName="plus_round_fill_white_button.svg"
-          imageSize={25}
+          imageSize={20}
+          onClick={openCeateNewFoodPage}
         >
-          Add Food
+          Create New Food
         </ButtonWithImage>
       </div>
       <div style={styles.mainConteinerStyle}>

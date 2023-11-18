@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import * as colors from './Colors'
-
   // Main container 
   const mainConteinerStyle = {
     display: 'flex',
@@ -29,9 +28,13 @@ import * as colors from './Colors'
     width: '100%',
   };
 
+  const placeholderStyle = {
+    ...rowStyle,
+    marginTop: '20px',
+  }
+
   const searchContainerStyle = {
     padding: '5px',
-    margin: '0px',
     textAlign: 'left',
     fontSize: '20px',
   };
@@ -107,6 +110,7 @@ import * as colors from './Colors'
 
   export {
     textFieldStyle,
+    placeholderStyle,
     searchContainerStyle,
     headerTrainingStyle,
     mainConteinerStyle,

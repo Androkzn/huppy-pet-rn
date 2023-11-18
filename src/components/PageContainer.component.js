@@ -1,22 +1,31 @@
 /** @jsxImportSource @emotion/react */
 
-import { Box, Paper, useTheme } from '@mui/material';
-import React from 'react'
+import { useTheme } from '@mui/material';
+import React from 'react';
 
 const PageContainer = (props) => {
   const theme = useTheme();
 
-  // return (<Box sx={{ backgroundColor: theme.palette.grey[200] }}>
-  //   <Paper sx={{ minWidth: "50rem", marginX: "auto", minHeight: "90vh", paddingX: "20px", paddingY: "10px" }}>
-  //     {props.children}
-  //   </Paper>
-  // </Box>
-  // )
+  const defaultPageStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 'auto',
+    padding: '15px',
+    borderRadius: '10px',
+    maxWidth: '900px',
+    width: '100%',
+    minHeight:'85vh',
+    justifyContent: 'stretch',
+  };
+
+  const mergedStyles = { ...defaultPageStyle, ...props.style };
+
   return (
-    <div style={{margin: "0 20px" }}>
+    <div style={mergedStyles}>
       {props.children}
-  </div>
-  )
-}
+    </div>
+  );
+};
 
 export default PageContainer;

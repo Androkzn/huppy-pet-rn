@@ -5,6 +5,10 @@ const pickerStyle = {
   // Your styles for picker
 };
 
+const pageStyle = {
+  maxWidth: '95%',
+};
+
 const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
@@ -62,25 +66,28 @@ const childConteinerStyle = {
   width: '100%',
   borderRadius: '20px',
   padding: '0px',
-  marginTop: '1rem',
   backgroundColor: colors.grayBackground,
+  height:'100%',
+};
+
+const mealConteinerStyle = {
+  ...childConteinerStyle,
+  marginRight: '5px'
 };
 
 const rowStyle = {
   display: 'flex',
   flexDirection: 'row',
+  width: '100%',
 };
 
 const twoColumnStyle = {
-  minHeight: '30px',
+  ...rowStyle,
+  marginTop: '10px',
   borderRadius: '5px',
-  margin: '5px',
-  flex: '1 0 auto',
-  width: '48%',
 };
 
 const columnStyle = {
-  minHeight: '30px',
   borderRadius: '5px',
   flex: '1 0 auto',
   width: '100%',
@@ -95,22 +102,19 @@ const placeholderStyle = {
 };
 
 const columnRightStyle = {
-  minHeight: '30px',
   borderRadius: '5px',
   margin: '5px',
   flex: '0 1 33%',
-  width: '48%',
 };
 
 const columnLeftStyle = {
-  minHeight: '30px',
   borderRadius: '5px',
   margin: '5px',
-  flex: '1 0 auto',
-  width: '48%',
+  flex: '0 1 66%',
 };
 
 export {
+  pageStyle,
   headerStyle,
   headerAddButtonStyle,
   headerTiteStyle,
@@ -126,4 +130,5 @@ export {
   columnLeftStyle,
   columnStyle,
   twoColumnStyle,
+  mealConteinerStyle,
 };

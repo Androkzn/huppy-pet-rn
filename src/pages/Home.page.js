@@ -150,7 +150,7 @@ const Home = () => {
     loadTrainingsForDate();
   }
 
-  return <PageContainer>
+  return <PageContainer style={styles.pageStyle}>
     <div style={styles.rowStyle}> {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
       <div style={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
@@ -169,7 +169,8 @@ const Home = () => {
 
         <div style={styles.rowStyle}> {/* Statistic container*/}
           <div style={styles.columnStyle}> 
-              <div >
+            <div style={styles.childConteinerStyle}>
+             
                 <div style={styles.headerStyle}>
                   <div style={styles.headerTextStyle}>
                     <h3 style={styles.headingStyle}>STATS</h3>
@@ -177,16 +178,17 @@ const Home = () => {
                     <h3 style={styles.headingStyle}>DIET PERCENTAGE</h3>
                   </div>
                 </div>
-                <div>
-                  Show statistic here
+                  <div style={{height: '250px'}}>
+                        Statistics will b e here
+                  </div>
                 </div>
-            </div>
+          
           </div>
         </div>{/* Statistic container*/}
 
         <div style={styles.rowStyle}>   {/* Meals + Activities container*/}
           <div style={styles.twoColumnStyle}>   {/* Meals column container*/}
-              <div style={styles.childConteinerStyle}> {/* Meals container*/}
+              <div style={styles.mealConteinerStyle}> {/* Meals container*/}
                 
                 <div style={styles.headerStyle}>{/* Header container*/}
                   <div style={styles.headerTiteStyle}>
@@ -205,7 +207,7 @@ const Home = () => {
                 
                 <div  style={styles.columnStyle}>  {/* Meal container*/}
                   {/* Show meals cards if data avaliable, if not -> show placeholder*/}
-                  {meals.length > 0 ? (
+                  {meals && meals.length > 0 ? (
                     meals.map((meal) => 
                     <div key={meal._id}>
                       <MealCard meal={meal} updateMeals={updateMeals}/>
@@ -241,7 +243,7 @@ const Home = () => {
                 </div>{/* Header container*/}
                 <div  style={styles.columnStyle}>{/* Activity container*/}
                   {/* Show activity cards if data avaliable, if not -> show placeholder*/}
-                  {activities.length > 0 ? (
+                  {activities && activities.length > 0 ? (
                     activities.map((activity) => 
                     <div key={activity._id}>
                       <ActivityCard  activity={activity} updateActivities={updateActivities}/>
@@ -277,7 +279,7 @@ const Home = () => {
           </div>{/* Header container*/}
 
           <div style={styles.columnStyle}>{/* Training container*/}
-            {trainings.length > 0 ? (
+            {trainings && trainings.length > 0 ? (
               trainings.map((training) => <div key={training._id}>
                  <TrainingCard training={training} updateTrainings={updateTrainings}/>
                 </div>)
@@ -301,6 +303,11 @@ const Home = () => {
     )}
 
   </PageContainer>
+
+  // return <PageContainer>
+  //   <div style={styles.rowStyle}>
+  //   </div>
+  // </PageContainer>
 }
 
 export default Home;

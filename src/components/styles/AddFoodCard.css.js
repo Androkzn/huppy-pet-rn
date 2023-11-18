@@ -22,6 +22,12 @@ import * as colors from './Colors'
     width: '100%',
   };
 
+  const customButtonContainerStyle = {
+    ...rowStyle,
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
   const columnStyle = {
     display: 'flex',
     justifyContent: 'top',
@@ -55,10 +61,18 @@ import * as colors from './Colors'
      width: '10%',
   };
 
+  const deleteButonStyle = {
+    color: colors.green,
+  };
+
+  const editButonStyle = {
+    color: colors.green,
+  };
+
   const customContainerStyle = {
     ...rowStyle,
     justifyContent: 'center',
-    width: '10%',
+    width: '100px',
     height: '25px',
     borderRadius: '10px',
     backgroundColor: colors.lightGreen2,
@@ -99,5 +113,8 @@ import * as colors from './Colors'
     checkboxStyle,
     textStyle,
     textTitleStyle,
-    customContainerStyle
+    customContainerStyle,
+    deleteButonStyle,
+    editButonStyle,
+    customButtonContainerStyle
 };

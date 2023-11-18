@@ -3,13 +3,13 @@
 import { useContext, useState } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
-import NewFoodForm from "../components/NewFoodForm.component";
+import EditFoodForm from "../components/NewFoodForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
 import { addFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
 
-const CreateNewFood = () => {
+const EditFood = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,8 +73,8 @@ const CreateNewFood = () => {
          Back
       </ButtonWithImage>
     </div>
-    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} title="Add Food" />
+    <EditFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} title="Add Food" />
   </PageContainer>
 }
 
-export default CreateNewFood;
+export default EditFood;

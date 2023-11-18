@@ -291,7 +291,7 @@ async function deleteFood(user, _id) {
   const headers = { Authorization: `Bearer ${accessToken}` };
 
   // GraphQL query to delete an meal
-  const deleteTrainingQuery = gql`
+  const deleteFoodQuery = gql`
       mutation DeleteFood($query: FoodQueryInput!) {
           deleteOneFood(query: $query) {
               _id
@@ -302,10 +302,40 @@ async function deleteFood(user, _id) {
   const queryVariables = { query: { _id } };
 
   try {
-      await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
+      await request(GRAPHQL_ENDPOINT, deleteFoodQuery, queryVariables, headers);
       return true
     } catch (error) {
       alert('Error deleting food with Id:',_id, error);
+      return false
+    }
+}
+
+// Func that is responsible for deleting a food template based on the expense-id
+// it return bool value
+async function deleteFoodTemplate(user, _id) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+   // Confirming the user's action
+   const resp = window.confirm("Are you sure you want to delete this food forever?");
+   if (!resp) return;
+
+  // GraphQL query to delete an food template
+  const deleteFoodTemplateQuery = gql`
+      mutation DeleteFoodTemplate($query: FoodTemplateQueryInput!) {
+          deleteOneFoodTemplate(query: $query) {
+              _id
+          }
+      }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, deleteFoodTemplateQuery, queryVariables, headers);
+      return true
+    } catch (error) {
+      alert(error);
       return false
     }
 }
@@ -786,6 +816,7 @@ export {
     deleteActivity,
     deleteTraining,
     deleteFood,
+    deleteFoodTemplate,
     getUserProfiles,
     loadMeals,
     loadActivities,

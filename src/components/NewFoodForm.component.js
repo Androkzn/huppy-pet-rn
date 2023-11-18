@@ -6,7 +6,7 @@ import * as styles  from '../components/styles/CreateNewFood.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 
-const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, editing }) => {
+const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, isEditingMode }) => {
   
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
@@ -19,7 +19,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, editing }) => {
 
   return <PageContainer>
     <form css={styles.addFoodFormStyle}>
-      <h2  css={styles.addFoodTitleStyle}>{editing ? "Edit Food" : "Add New Food"}</h2>
+      <h2  css={styles.addFoodTitleStyle}>{isEditingMode ? "Edit Food" : "Add New Food"}</h2>
       
       <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange} placeholder={"Enter food name"}/>
       
@@ -43,10 +43,10 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, editing }) => {
       <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onFormInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 
        <ButtonText as= 'button' name="createFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
-          {editing ? "Update" : "Create"} Food
+          {isEditingMode ? "Update" : "Create"} Food
         </ButtonText> 
         <ButtonText  as= 'button' name="createAndAddFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
-          {editing ? "Update" : "Create"} and Add to Meal
+          {isEditingMode ? "Update" : "Create"} and Add to Meal
         </ButtonText>
       </div>
     </form>

@@ -32,16 +32,21 @@ const SearchFood = () => {
   };
 
   const openCeateNewFoodPage = () => {
-    navigate("/createNewFood", { state: { mealId } });
+    navigate("/editFood", { state: { mealId } });
   };
 
-  useEffect(() => {
+  const updateSearchResults = () => {
     // Do not query an empty string if selected filter is "All"
     if (searchQuery.length > 0 || selectedFilter !== "All") {
       searchFood(); 
     } else {
       setResults([]);
     }
+  };
+
+
+  useEffect(() => {
+    updateSearchResults()
   }, [searchQuery, selectedFilter, selectedCategory]);
 
   // Func that is responsible for searching Food Templates in DB based on search string
@@ -127,7 +132,7 @@ const SearchFood = () => {
   const ResultContainer = ({ searchResult, openAddFoodPage }) => {
       // Check if searchResult is not defined or is an empty array
     if (!searchResult || searchResult.length === 0) {
-      return <div style={styles.rowStyle}>
+      return <div style={styles.placeholderStyle}>
         {selectedFilter === "All" &&  searchQuery.length === 0 ? (
           <Image imageName="start_typing_placeholder.png" width="200" height="250"/>
           ) : (
@@ -140,7 +145,7 @@ const SearchFood = () => {
       <div>
         {searchResult.map((foodItem, index) => (
           <div key={index}>
-              <FoodCard food={foodItem} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
+              <FoodCard food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
           </div>
         ))}
       </div>

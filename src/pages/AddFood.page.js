@@ -24,8 +24,6 @@ const AddFood = ({ }) => {
     }
   };
 
-
-
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
       <ButtonWithImage

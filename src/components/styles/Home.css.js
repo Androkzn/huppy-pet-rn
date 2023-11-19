@@ -1,5 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import * as colors from './Colors';
+import * as mq from './Media-queries';
+import styled from '@emotion/styled/macro'
+
+const rowAdaptiveStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  width: '100%',
+  [mq.large]: {
+    backgroundColor: colors.blueLight,
+    width: '50%',
+    margin: '10vh auto',
+  },
+   [mq.medium]: {
+    backgroundColor: colors.blueLight,
+    width: '50%',
+    margin: '10vh auto',
+  },
+   [mq.small]: {
+    backgroundColor: colors.blueLight,
+    width: '50%',
+    margin: '10vh auto',
+  },
+};
 
 const pickerStyle = {
   // Your styles for picker
@@ -113,6 +136,21 @@ const columnLeftStyle = {
   flex: '0 1 66%',
 };
 
+const responsiveContainer = styled.div({
+  ...rowStyle,
+  [mq.large]: {
+    flexDirection: 'row',
+  },
+   [mq.medium]: {
+    flexDirection: 'row',
+  },
+   [mq.small]: {
+    backgroundColor: colors.lightBrown2,
+    width: '100%',
+    flexDirection: 'column',
+  },
+})
+
 export {
   pageStyle,
   headerStyle,
@@ -131,4 +169,6 @@ export {
   columnStyle,
   twoColumnStyle,
   mealConteinerStyle,
+  rowAdaptiveStyle,
+  responsiveContainer
 };

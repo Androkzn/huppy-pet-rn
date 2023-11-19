@@ -151,7 +151,7 @@ const Home = () => {
   }
 
   return <PageContainer style={styles.pageStyle}>
-    <div style={styles.rowStyle}> {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+    <styles.responsiveContainer  > {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
       <div style={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
         <div style={styles.rowStyle}> {/* Date picker container*/}
@@ -186,7 +186,7 @@ const Home = () => {
           </div>
         </div>{/* Statistic container*/}
 
-        <div style={styles.rowStyle}>   {/* Meals + Activities container*/}
+        <styles.responsiveContainer>   {/* Meals + Activities container*/}
           <div style={styles.twoColumnStyle}>   {/* Meals column container*/}
               <div style={styles.mealConteinerStyle}> {/* Meals container*/}
                 
@@ -256,7 +256,7 @@ const Home = () => {
                 </div> {/* Activity container*/}
               </div>{/* Activities container*/}
             </div>{/* Activities column container*/} 
-          </div>{/* Meals + Activities container*/}
+          </styles.responsiveContainer>{/* Meals + Activities container*/}
       </div> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
       <div style={styles.columnRightStyle }> {/* Right column (Training) */}
@@ -291,7 +291,7 @@ const Home = () => {
           </div>{/* Training container*/}
         </div>{/* Trainings container*/}
       </div>{/* Right column (Training) */}
-    </div>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+    </styles.responsiveContainer>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
  
     {/* Dialog for delete confirmation */}
     {dialogOpen && (          

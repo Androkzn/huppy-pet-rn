@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar.component";
+import TabBar from "./components/TabBar.component";
 import { UserProvider } from "./contexts/user.context";
 import Analytics from "./pages/Analytics.page";
 import EditExpense from "./pages/EditExpense.page";
@@ -16,26 +17,27 @@ import EditFood from "./pages/EditFood.page";
 function App() {
   return (
     <BrowserRouter>
-      {/* We are wrapping our whole app with UserProvider so that */}
-      {/* our user is accessible through out the app from any page*/}
       <UserProvider>
-        <NavBar/>
-        <Routes>
-          <Route exact path="/login" element={<Login />} />
-          {<Route exact path="/forgot" element={<ForgotPassword />} />}
-          <Route exact path="/signup" element={<Signup />} />
-          {/* We are protecting our Home Page from unauthenticated */}
-          {/* users by wrapping it with PrivateRoute here. */}
-          <Route element={<PrivateRoute />}>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/createNewFood" element={<CreateNewFood />} />
-            <Route exact path="/searchFood" element={<SearchFood />} />
-            <Route exact path="/expense/:id/edit" element={<EditExpense />} />
-            <Route exact path="/analytics" element={<Analytics />} />
-            <Route exact path="/addFood" element={<AddFood />} />
-            <Route exact path="/editFood" element={<EditFood />} />
-          </Route>
-        </Routes>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+          <NavBar />
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgot" element={<ForgotPassword />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/createNewFood" element={<CreateNewFood />} />
+                <Route path="/searchFood" element={<SearchFood />} />
+                <Route path="/expense/:id/edit" element={<EditExpense />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/addFood" element={<AddFood />} />
+                <Route path="/editFood" element={<EditFood />} />
+              </Route>
+            </Routes>
+          </div>
+          <TabBar />
+        </div>
       </UserProvider>
     </BrowserRouter>
   );

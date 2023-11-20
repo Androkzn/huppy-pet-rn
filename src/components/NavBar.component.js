@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
+import { useMediaQuery } from '@mui/material/';
+import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
 
 const NavBar = () => {
+  const isSmallScreen = useMediaQuery('(max-width:500px)');
   const [show, setShow] = useState(false);
   const { user, currentProfile, profiles } = useContext(UserContext);
 
@@ -25,9 +28,11 @@ const NavBar = () => {
           </div>
           {user && currentProfile && (
             <div style={{ alignItems: "right", justifyContent: "flex-end", display: 'flex', width: '100%',}}>
-              <h2  component={Link} onClick={toggleDrawer} style={{ textDecoration: "none", cursor: 'pointer', margin: "auto 0 auto 0", color: colors.green, fontWeight: "bold", alignItems: 'center', textAlign: 'center' }}>
-                {currentProfile.name}
-              </h2>
+               {!isSmallScreen && (
+                <h2  component={Link} onClick={toggleDrawer} style={{ textDecoration: "none", cursor: 'pointer', margin: "auto 0 auto 0", color: colors.green, fontWeight: "bold", alignItems: 'center', textAlign: 'center' }}>
+                  {currentProfile.name}
+                </h2>
+               )}
               <IconButton
                 size="large"
                 edge="end"
@@ -65,37 +70,9 @@ const TemporaryDrawer = (props) => {
       link: '/',
     },
     {
-      text: 'Diary',
-      Icon: () => (
-        <Image imageName="diary_tab_icon_unselected.svg" width="50" height="50" />
-      ),
-      link: '/',
-    },
-    {
-      text: 'Dashboard',
-      Icon: () => (
-        <Image imageName="dashboard_tab_icon_unselected.svg" width="50" height="50" />
-      ),
-      link: '/analytics',
-    },
-    {
-      text: 'Training',
-      Icon: () => (
-        <Image imageName="training_tab_icon_unselected.svg" width="50" height="50" />
-      ),
-      link: '/newFood',
-    },
-    {
-      text: 'Health & Wellness',
-      Icon: () => (
-        <Image imageName="health_tab_icon_unselected.svg" width="50" height="50" />
-      ),
-      link: '/newFood',
-    },
-    {
       text: 'Logout',
       Icon: () => (
-        <Image imageName="logout_tab_icon_unselected.svg" width="50" height="50" />
+        <LogoutIcon  fill={colors.green}/>
       ),
       action: logOut,
     },

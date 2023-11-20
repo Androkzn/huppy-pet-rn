@@ -5,7 +5,11 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
+import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'
+import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon_unselected.svg'
+import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
+import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, } from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
@@ -151,7 +155,7 @@ const Home = () => {
   }
 
   return <PageContainer style={styles.pageStyle}>
-    <styles.responsiveContainer  > {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+    <styles.responsiveMainContainer  > {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
       <div style={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
         <div style={styles.rowStyle}> {/* Date picker container*/}
@@ -167,26 +171,39 @@ const Home = () => {
           </div>
         </div>{/* Date picker container*/}
 
-        <div style={styles.rowStyle}> {/* Statistic container*/}
-          <div style={styles.columnStyle}> 
-            <div style={styles.childConteinerStyle}>
-             
+        <styles.responsiveSubContainer>   {/* Statistic + Activities container*/}
+          <div style={styles.twoColumnStyle}>   {/* Statistic column container*/}
+
+            <div style={styles.mealConteinerStyle}>{/* Statistic column container*/} 
                 <div style={styles.headerStyle}>
                   <div style={styles.headerTextStyle}>
                     <h3 style={styles.headingStyle}>STATS</h3>
                     <h3 style={styles.headingStyle}>Today/goal</h3>
-                    <h3 style={styles.headingStyle}>DIET PERCENTAGE</h3>
                   </div>
                 </div>
                   <div style={{height: '250px'}}>
-                        Statistics will b e here
+                        Statistics will be here
+                  </div>
+                </div>{/* Statistic column container*/} 
+                </div >   {/* Statistic column container*/}
+                
+        
+          <div style={styles.twoColumnStyle}>   {/* Statistic column container*/}
+            <div style={styles.childConteinerStyle}>{/* Charts column container*/} 
+                <div style={styles.headerStyle}>
+                  <div style={styles.headerTextStyle}>
+                    <h3 style={styles.headingStyle}>DIET BALANCE</h3>
                   </div>
                 </div>
-          
-          </div>
-        </div>{/* Statistic container*/}
+                  <div style={{height: '250px'}}>
+                        Charts will be here
+                  </div>
+                </div>
+            </div>{/* Charts column container*/} 
 
-        <styles.responsiveContainer>   {/* Meals + Activities container*/}
+          </styles.responsiveSubContainer>{/* Statistic + Charts container*/}
+
+        <styles.responsiveSubContainer>   {/* Meals + Activities container*/}
           <div style={styles.twoColumnStyle}>   {/* Meals column container*/}
               <div style={styles.mealConteinerStyle}> {/* Meals container*/}
                 
@@ -194,7 +211,7 @@ const Home = () => {
                   <div style={styles.headerTiteStyle}>
                     <h3 style={styles.headingStyle}>MEALS</h3>
                     <div style={styles.headerImageStyle} >
-                      <Image imageName="diary_tab_icon_unselected.svg" width="40" height="40"/>
+                      <DiaryIcon fill={colors.green}/>
                     </div>
                   </div>
                   <button
@@ -229,7 +246,7 @@ const Home = () => {
                   <div style={styles.headerTiteStyle}> 
                     <h3 style={styles.headingStyle} >ACTIVITIES</h3>
                     <div style={styles.headerImageStyle}>
-                      <Image imageName="activity_tab_icon_unselected.svg" width="40" height="50"/>
+                      <ActivityIcon fill={colors.green}/>
                     </div>
                   </div>
                   <button
@@ -256,8 +273,8 @@ const Home = () => {
                 </div> {/* Activity container*/}
               </div>{/* Activities container*/}
             </div>{/* Activities column container*/} 
-          </styles.responsiveContainer>{/* Meals + Activities container*/}
-      </div> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
+          </styles.responsiveSubContainer>{/* Meals + Activities container*/}
+      </div> {/* Left columns (Picker, Statistic + Charts, Meals + Activities)*/} 
 
       <div style={styles.columnRightStyle }> {/* Right column (Training) */}
         <div style={styles.childConteinerStyle}> {/* Trainings container*/}
@@ -265,7 +282,7 @@ const Home = () => {
           <div style={styles.headerTiteStyle}> 
             <h3 style={styles.headingStyle} >TRAINING</h3>
             <div style={styles.headerImageStyle}>
-              <Image imageName="training_tab_icon_unselected.svg" width="40" height="50"/>
+              <TrainingIcon fill={colors.green}/>
             </div>
             </div>
             <button
@@ -291,7 +308,7 @@ const Home = () => {
           </div>{/* Training container*/}
         </div>{/* Trainings container*/}
       </div>{/* Right column (Training) */}
-    </styles.responsiveContainer>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+    </styles.responsiveMainContainer>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
  
     {/* Dialog for delete confirmation */}
     {dialogOpen && (          

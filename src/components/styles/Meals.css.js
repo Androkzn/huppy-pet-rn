@@ -92,7 +92,7 @@ const childConteinerStyle = {
   padding: '10px',
   borderRadius: '10px',
   backgroundColor: colors.lightBrown,
-  minWidth:'300px'
+  minWidth:'350px'
 };
 
 export {

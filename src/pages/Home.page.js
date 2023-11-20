@@ -154,131 +154,130 @@ const Home = () => {
     loadTrainingsForDate();
   }
 
-  return <PageContainer style={styles.pageStyle}>
-    <styles.responsiveMainContainer  > {/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
-      <div style={styles.columnLeftStyle}> {/* Left columns (Picker, Statistic, Meals+Activities)*/} 
 
-        <div style={styles.rowStyle}> {/* Date picker container*/}
-          <div style={styles.columnStyle}> 
-            <div style={styles.pickerContainerStyle}> 
-              <CustomDatePickerWithArrows
-                label="Select date:"
-                value={currentDate}
-                onChange={(date) => setCurrentDate(date) }
-                styleContainer= {styles.pickerStyle}
-              />
+  const DatePicker = () => {
+    return (
+    <div style={styles.rowStyle}>  
+      <div style={styles.columnStyle}> 
+        <div style={styles.pickerContainerStyle}> 
+          <CustomDatePickerWithArrows
+            label="Select date:"
+            value={currentDate}
+            onChange={(date) => setCurrentDate(date) }
+            styleContainer= {styles.pickerStyle}
+          />
+        </div>
+      </div>
+    </div>  
+    );
+  };
+  
+  const Statistic = () => {
+    return (
+      <div style={styles.childConteinerStyle}> 
+      <div style={styles.headerStyle}>
+        <div style={styles.headerTextStyle}>
+          <h3 style={styles.headingStyle}>STATS</h3>
+          <h3 style={styles.headingStyle}>Today/goal</h3>
+        </div>
+      </div>
+        <div style={{height: '250px'}}>
+              Statistics will be here
+        </div>
+      </div> 
+    );
+  };
+
+  const Chart = () => {
+    return (
+      <div style={styles.childConteinerStyle}> 
+        <div style={styles.headerStyle}>
+          <div style={styles.headerTextStyle}>
+            <h3 style={styles.headingStyle}>DIET BALANCE</h3>
+          </div>
+        </div>
+        <div style={{height: '250px'}}>
+              Charts will be here
+        </div>
+      </div>
+    );
+  };
+
+  const Meals = () => {
+    return (
+      <div style={styles.childConteinerStyle}> {/* Meals container*/}
+        <div style={styles.headerStyle}>{/* Header container*/}
+          <div style={styles.headerTiteStyle}>
+            <h3 style={styles.headingStyle}>MEALS</h3>
+            <div style={styles.headerImageStyle} >
+              <DiaryIcon fill={colors.green}/>
             </div>
           </div>
-        </div>{/* Date picker container*/}
-
-        <styles.responsiveSubContainer>   {/* Statistic + Activities container*/}
-          <div style={styles.twoColumnStyle}>   {/* Statistic column container*/}
-
-            <div style={styles.mealConteinerStyle}>{/* Statistic column container*/} 
-                <div style={styles.headerStyle}>
-                  <div style={styles.headerTextStyle}>
-                    <h3 style={styles.headingStyle}>STATS</h3>
-                    <h3 style={styles.headingStyle}>Today/goal</h3>
-                  </div>
-                </div>
-                  <div style={{height: '250px'}}>
-                        Statistics will be here
-                  </div>
-                </div>{/* Statistic column container*/} 
-                </div >   {/* Statistic column container*/}
-                
+          <button
+            style={styles.headerAddButtonStyle}
+            onClick={addMealForDate}
+          >
+            <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
+          </button>
+        </div> {/* Header container*/}
         
-          <div style={styles.twoColumnStyle}>   {/* Statistic column container*/}
-            <div style={styles.childConteinerStyle}>{/* Charts column container*/} 
-                <div style={styles.headerStyle}>
-                  <div style={styles.headerTextStyle}>
-                    <h3 style={styles.headingStyle}>DIET BALANCE</h3>
-                  </div>
-                </div>
-                  <div style={{height: '250px'}}>
-                        Charts will be here
-                  </div>
-                </div>
-            </div>{/* Charts column container*/} 
+        <div  style={styles.columnStyle}>  {/* Meal container*/}
+          {/* Show meals cards if data avaliable, if not -> show placeholder*/}
+          {meals && meals.length > 0 ? (
+            meals.map((meal) => 
+            <div key={meal._id}>
+              <MealCard meal={meal} updateMeals={updateMeals}/>
+            </div>)
+          ) : (
+            <div style={styles.placeholderStyle}>
+              <Image imageName="no_meals_placeholder.png" width="200" height="170" />
+            </div>
+          )}
+        </div> {/* Meals container*/}
+      </div>  
+    );
+  };
+  
+  const Activities = () => {
+    return (
+      <div style={styles.childConteinerStyle}> {/* Activities container*/}        
+        <div style={styles.headerStyle}>{/* Header container*/}
+          <div style={styles.headerTiteStyle}> 
+            <h3 style={styles.headingStyle} >ACTIVITIES</h3>
+            <div style={styles.headerImageStyle}>
+              <ActivityIcon fill={colors.green}/>
+            </div>
+          </div>
+          <button
+            style={styles.headerAddButtonStyle}
+            onClick={() => {
+              openDialog("addActivity");
+            }}
+          >
+            <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
+          </button>
+        </div>{/* Header container*/}
+        <div  style={styles.columnStyle}>{/* Activity container*/}
+          {/* Show activity cards if data avaliable, if not -> show placeholder*/}
+          {activities && activities.length > 0 ? (
+            activities.map((activity) => 
+            <div key={activity._id}>
+              <ActivityCard  activity={activity} updateActivities={updateActivities}/>
+              </div>)
+          ) : (
+            <div style={styles.placeholderStyle}>
+              <Image imageName="no_activities_placeholder.png" width="200" height="170" />
+            </div>
+          )}
+        </div> {/* Activity container*/}
+      </div> 
+    );
+  };
 
-          </styles.responsiveSubContainer>{/* Statistic + Charts container*/}
-
-        <styles.responsiveSubContainer>   {/* Meals + Activities container*/}
-          <div style={styles.twoColumnStyle}>   {/* Meals column container*/}
-              <div style={styles.mealConteinerStyle}> {/* Meals container*/}
-                
-                <div style={styles.headerStyle}>{/* Header container*/}
-                  <div style={styles.headerTiteStyle}>
-                    <h3 style={styles.headingStyle}>MEALS</h3>
-                    <div style={styles.headerImageStyle} >
-                      <DiaryIcon fill={colors.green}/>
-                    </div>
-                  </div>
-                  <button
-                    style={styles.headerAddButtonStyle}
-                    onClick={addMealForDate}
-                  >
-                    <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-                  </button>
-                </div> {/* Header container*/}
-                
-                <div  style={styles.columnStyle}>  {/* Meal container*/}
-                  {/* Show meals cards if data avaliable, if not -> show placeholder*/}
-                  {meals && meals.length > 0 ? (
-                    meals.map((meal) => 
-                    <div key={meal._id}>
-                      <MealCard meal={meal} updateMeals={updateMeals}/>
-                    </div>)
-                  ) : (
-                    <div style={styles.placeholderStyle}>
-                      <Image imageName="no_meals_placeholder.png" width="200" height="170" />
-                    </div>
-                  )}
-
-                </div> {/* Meals container*/}
-              </div> {/* Meals column container*/}
-          </div> {/* Meals container*/}
-        
-          <div style={styles.twoColumnStyle}>  {/* Activities column container*/}
-              <div style={styles.childConteinerStyle}> {/* Activities container*/}
-                
-                <div style={styles.headerStyle}>{/* Header container*/}
-                  <div style={styles.headerTiteStyle}> 
-                    <h3 style={styles.headingStyle} >ACTIVITIES</h3>
-                    <div style={styles.headerImageStyle}>
-                      <ActivityIcon fill={colors.green}/>
-                    </div>
-                  </div>
-                  <button
-                    style={styles.headerAddButtonStyle}
-                    onClick={() => {
-                      openDialog("addActivity");
-                    }}
-                  >
-                    <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-                  </button>
-                </div>{/* Header container*/}
-                <div  style={styles.columnStyle}>{/* Activity container*/}
-                  {/* Show activity cards if data avaliable, if not -> show placeholder*/}
-                  {activities && activities.length > 0 ? (
-                    activities.map((activity) => 
-                    <div key={activity._id}>
-                      <ActivityCard  activity={activity} updateActivities={updateActivities}/>
-                      </div>)
-                  ) : (
-                    <div style={styles.placeholderStyle}>
-                      <Image imageName="no_activities_placeholder.png" width="200" height="170" />
-                    </div>
-                  )}
-                </div> {/* Activity container*/}
-              </div>{/* Activities container*/}
-            </div>{/* Activities column container*/} 
-          </styles.responsiveSubContainer>{/* Meals + Activities container*/}
-      </div> {/* Left columns (Picker, Statistic + Charts, Meals + Activities)*/} 
-
-      <div style={styles.columnRightStyle }> {/* Right column (Training) */}
-        <div style={styles.childConteinerStyle}> {/* Trainings container*/}
-          <div style={styles.headerStyle}>{/* Header container*/}
+  const Training = () => {
+    return (
+      <div style={styles.childConteinerStyle}> {/* Trainings container*/}
+        <div style={styles.headerStyle}>{/* Header container*/}
           <div style={styles.headerTiteStyle}> 
             <h3 style={styles.headingStyle} >TRAINING</h3>
             <div style={styles.headerImageStyle}>
@@ -286,11 +285,11 @@ const Home = () => {
             </div>
             </div>
             <button
-                    style={styles.headerAddButtonStyle}
-                    onClick={() => {
-                      openDialog("addTraining");
-                    }}
-                  >
+              style={styles.headerAddButtonStyle}
+              onClick={() => {
+                openDialog("addTraining");
+              }}
+            >
               <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
             </button>
           </div>{/* Header container*/}
@@ -306,11 +305,28 @@ const Home = () => {
               </div>
             )}
           </div>{/* Training container*/}
-        </div>{/* Trainings container*/}
-      </div>{/* Right column (Training) */}
-    </styles.responsiveMainContainer>{/* Two columns (Picker, Statistic, Meals+Activities) and (Training) in a row*/}
+      </div> 
+    );
+  };
+
+  return <PageContainer style={styles.pageStyle}>
+      <div style={styles.columnStyle}>
+        <DatePicker/>
+        <styles.responsiveMainContainer>
+          <div style={styles.columnRightStyle}> 
+            <Statistic/>
+            <Chart/>
+          </div>
+           
+          <Meals/>
+
+          <Activities/>
+
+        </styles.responsiveMainContainer>
+      </div>  
+   
  
-    {/* Dialog for delete confirmation */}
+    {/* Dialog */}
     {dialogOpen && (          
       <Dialog open={dialogOpen} >
         <DialogContent>
@@ -320,11 +336,6 @@ const Home = () => {
     )}
 
   </PageContainer>
-
-  // return <PageContainer>
-  //   <div style={styles.rowStyle}>
-  //   </div>
-  // </PageContainer>
 }
 
 export default Home;

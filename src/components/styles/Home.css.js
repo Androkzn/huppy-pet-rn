@@ -15,8 +15,8 @@ const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
-  marginTop: '1rem',
-  marginBottom: '1rem',
+  marginTop: '10px',
+  marginBottom: '10px',
 };
 
 const headerStyle = {
@@ -67,26 +67,14 @@ const childConteinerStyle = {
   alignItems: 'center',
   width: '100%',
   borderRadius: '20px',
-  padding: '0px',
+  margin: '5px',
   backgroundColor: colors.grayBackground,
-  height:'100%',
-};
-
-const mealConteinerStyle = {
-  ...childConteinerStyle,
-  marginRight: '5px'
 };
 
 const rowStyle = {
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
-};
-
-const twoColumnStyle = {
-  ...rowStyle,
-  marginTop: '10px',
-  borderRadius: '5px',
 };
 
 const columnStyle = {
@@ -104,24 +92,24 @@ const placeholderStyle = {
 };
 
 const columnRightStyle = {
+  ...columnStyle,
   borderRadius: '5px',
-  margin: '5px',
-  flex: '0 1 33%',
+  marginRight: '5px',
+  flex: '0 1 40%',
+  
 };
 
 const columnLeftStyle = {
   borderRadius: '5px',
-  margin: '5px',
-  flex: '0 1 66%',
+  flex: '0 1 60%',
 };
 
 const responsiveMainContainer = styled.div({
   ...rowStyle,
-  marginBottom: '90px',
-   [mq.medium]: {
-    width: '100%',
-    flexDirection: 'column',
-  },
+  //  [mq.medium]: {
+  //   width: '100%',
+  //   flexDirection: 'column',
+  // },
    [mq.small]: {
     width: '100%',
     flexDirection: 'column',
@@ -152,8 +140,6 @@ export {
   columnRightStyle,
   columnLeftStyle,
   columnStyle,
-  twoColumnStyle,
-  mealConteinerStyle,
   responsiveMainContainer,
   responsiveSubContainer
 };

@@ -112,9 +112,8 @@ function ActivityCard({ activity, updateActivities}) {
         <div style={stylesActivity.headerActivityStyle}>
           <div style={stylesActivity.rowStyle}>
             <div style={stylesActivity.iconContainerStyle}>
-            <Image imageName={`activity_${activity.type}.svg`} width="40" height="40" />
-
-              </div>  
+              <Image imageName={`activity_${activity.type}.svg`} width="40" height="40" />
+            </div>  
             <div style={stylesActivity.columnStyle}>
               <div style={stylesActivity.topRowStyle}>
                 <select 

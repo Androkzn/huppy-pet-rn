@@ -762,11 +762,11 @@ async function updateActivity(user, activityId, updateData) {
   };
 
   try {
-      const updatedActivity = await request(GRAPHQL_ENDPOINT, updateActivityQuery, queryVariables, headers);
-      return updatedActivity;
+      await request(GRAPHQL_ENDPOINT, updateActivityQuery, queryVariables, headers);
+      return true;
   } catch (error) {
       alert(error);
-      return null;
+      return false;
   }
 }
 
@@ -799,11 +799,82 @@ async function updateTraining(user, trainingId, updateData) {
   };
 
   try {
-      const updatedTraining = await request(GRAPHQL_ENDPOINT, updateTrainingQuery, queryVariables, headers);
-      return updatedTraining;
+      await request(GRAPHQL_ENDPOINT, updateTrainingQuery, queryVariables, headers);
+      return true;
   } catch (error) {
       alert(error);
-      return null;
+      return false;
+  }
+}
+
+// Function to update an activity
+async function updateFoodTemplate(user, foodItem) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const templateId = foodItem._id
+  const userId = user.id
+  
+  // GraphQL query to update an activity
+  const updateFoodTemplateQuery = gql`
+      mutation UpdateActivity($templateId: ObjectId!, $updateData: FoodTemplateUpdateInput!) {
+          updateOneFoodTemplate(query: { _id: $templateId }, set: $updateData) {
+            _id
+            ash
+            bonesRatio
+            calories
+            caloriesServing
+            carb
+            categoryType
+            desc
+            fat
+            fiber
+            image
+            isCustom
+            meatRatio
+            name
+            protein
+            servingWeight
+            servings
+            type
+            units
+            userId
+            weight
+          }
+      }
+  `;
+
+  const queryVariables = {
+      templateId,
+      updateData: {
+        bonesRatio:  foodItem.bonesRatio,
+        categoryType: foodItem.categoryType,
+        calories:  foodItem.calories,
+        caloriesServing:  foodItem.caloriesServing,
+        image: "",
+        meatRatio:  foodItem.meatRatio,
+        name:  foodItem.name,
+        servingWeight:  foodItem.servingWeight,
+        servings: foodItem.servings,
+        type:  foodItem.type,
+        units: foodItem.units, 
+        weight: 0,
+        ash: foodItem.ash,
+        desc: foodItem.desc,
+        fat: foodItem.fat,
+        fiber: foodItem.fiber,
+        protein: foodItem.protein,
+        carb: foodItem.carb,
+        isCustom: true,
+        userId: userId
+      }
+  };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, updateFoodTemplateQuery, queryVariables, headers)
+      return true;
+  } catch (error) {
+      alert(error);
+      return false;
   }
 }
 
@@ -827,5 +898,6 @@ export {
     addFood, 
     updateActivity,
     updateTraining,
+    updateFoodTemplate,
     addFoodTemplate,
 };

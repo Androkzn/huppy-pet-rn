@@ -31,6 +31,7 @@ const buttonVariants = {
   iconButton: {
     cursor: 'pointer',
     background: 'none',
+    border: 'none',
     display: 'flex',
     alignItems: 'center',
     textDecoration: 'none',
@@ -58,7 +59,25 @@ const buttonVariants = {
     '&:hover': {  
       background: colors.orange,
     },
-     
+  },
+
+  circleTextButtonSmall: {
+    background: `${colors.lightGreen}`,
+    width: "25px",
+    height: "25px",
+    lineHeight: '22px',
+    fontSize: '18px', 
+    borderRadius: '20px',
+    textAlign: 'center',
+    border: `none`,
+    cursor: 'pointer',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s', 
+    color: colors.white,
+    '&:hover': {  
+      background: colors.orange,
+    },
   },
 
   rectangleTextButton: {
@@ -125,10 +144,11 @@ const buttonVariants = {
 };
 
 const Button = styled.button(
-    ({ variant = 'genericButton', width, height, disabled  }) => ({
+    ({ variant = 'genericButton', width, height, background, disabled  }) => ({
       ...buttonVariants[variant],
       width: width || buttonVariants[variant].width,
       height: height || buttonVariants[variant].height,
+      background: background || buttonVariants[variant].background,
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.4 : 1,
       pointerEvents: disabled ? 'none' : 'auto',
@@ -150,7 +170,7 @@ const ButtonText = ({ variant, name, navigateTo, width, height, children, onClic
 
 
 const ButtonWithImage = ({ variant, as: LinkComponent = Link, to = '/', imageName, imageSize, width, height, margin, padding, children, onClick, disabled }) => {
-return (
+  return (
     <Button variant={variant} as={LinkComponent} to={to} width={width} height={height} onClick={onClick} disabled={disabled}>
     {imageName && <ImageContainer margin={margin} padding={padding}>
         <Image  imageName={imageName} width={imageSize} height={imageSize}/>

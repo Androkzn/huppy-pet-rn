@@ -42,7 +42,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
   };
   
 
-  return <PageContainer>
+  return <div>
     <form style={styles.addTrainingFormStyle}>
       <div style={styles.closeButtonContainer}>
         <ButtonText
@@ -100,7 +100,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
     </div>
    
     </form>
-  </PageContainer>;
+  </div>;
 }
 
 export default NewTrainingForm;

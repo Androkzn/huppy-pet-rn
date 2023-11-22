@@ -17,6 +17,7 @@ const PageContainer = (props) => {
     width: '100%',
     minHeight:'85vh',
     justifyContent: 'stretch',
+    marginBottom: '100px',
   };
 
   const mergedStyles = { ...defaultPageStyle, ...props.style };

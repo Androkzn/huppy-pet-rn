@@ -1,4 +1,4 @@
-// FoodSection.js
+// Enum FoodSection definition
 export const FoodSection = {
     TREAT: 'treat',
     RECIPE: 'recipe',
@@ -16,7 +16,7 @@ export const FoodSection = {
     FIBER: 'fiber',
   };
   
-  // FoodType.js
+  // Enum FoodType definition
   export const FoodType = {
     TREAT: 'treat',
     RECIPE: 'recipe',
@@ -26,7 +26,7 @@ export const FoodSection = {
     WET_FOOD: 'wetFood',
   };
   
-  // FoodCategoryType.js
+  // Enum FoodCategoryType definition
   export const FoodCategoryType = {
     MEAT: 'meat',
     BONES: 'bones',
@@ -39,12 +39,60 @@ export const FoodSection = {
     FIBER: 'fiber',
     OTHER: 'other',
   };
-
+  // Enum FoodCategoryType methods
   export const getTitleUpercased= (rawValue) => {
     return String(rawValue).charAt(0).toUpperCase() + String(rawValue).slice(1);
   };
+
+  export const basePercentageFoodCategory = (category) => {
+    switch (category) {
+      case FoodCategoryType.MEAT: return 50;
+      case FoodCategoryType.BONES: return 20;
+      case FoodCategoryType.LIVER: return 10;
+      case FoodCategoryType.GIBLETS: return 15;
+      case FoodCategoryType.VEGGIE: return 5;
+      case FoodCategoryType.FRUITS: return 0;
+      case FoodCategoryType.SEEDS: return 0;
+      case FoodCategoryType.FISH: return 0;
+      case FoodCategoryType.FIBER: return 0;
+      case FoodCategoryType.OTHER: return 0;
+      default: return 0;
+    }
+  };
+
+  export const getIndexFoodCategory = (category) => {
+    switch (category) {
+      case FoodCategoryType.MEAT: return 1;
+      case FoodCategoryType.BONES: return 2;
+      case FoodCategoryType.LIVER: return 4;
+      case FoodCategoryType.GIBLETS: return 3;
+      case FoodCategoryType.VEGGIE: return 5;
+      case FoodCategoryType.FRUITS: return 6;
+      case FoodCategoryType.SEEDS: return 7;
+      case FoodCategoryType.FISH: return 8;
+      case FoodCategoryType.FIBER: return 9;
+      case FoodCategoryType.OTHER: return 10;
+      default: return 0;
+    }
+  };
+
+  export const getColorFoodCategory = (category) => {
+    switch (category) {
+      case FoodCategoryType.MEAT: return 'blue';
+      case FoodCategoryType.BONES: return 'gray';
+      case FoodCategoryType.LIVER: return 'brown';
+      case FoodCategoryType.GIBLETS: return 'yellow';
+      case FoodCategoryType.VEGGIE: return 'green';
+      case FoodCategoryType.FRUITS: return 'red';
+      case FoodCategoryType.SEEDS: return 'pink';
+      case FoodCategoryType.FISH: return 'orange';
+      case FoodCategoryType.FIBER: return 'purple';
+      case FoodCategoryType.OTHER: return 'gray';
+      default: return 'black';
+    }
+  };
   
-  // AddFoodRowType.js
+  // Enum AddFoodRowType definition
   export const AddFoodRowType = {
     PROTEIN: 'protein',
     FAT: 'fat',
@@ -57,38 +105,27 @@ export const FoodSection = {
     SERVING_WEIGHT: 'servingWeight',
     MEAT_RATIO: 'meatRatio',
     BONES_RATIO: 'bonesRatio',
-
-    title(type){
-      switch (type) {
-        case 'protein':
-          return 'Protein, %';
-        case 'fat':
-          return 'Fat, %';
-        case 'fiber':
-          return 'Fiber, %';
-        case 'ash':
-          return 'Ash, %';
-        case 'carb':
-          return 'Carbs, %';
-        case 'calories':
-          return 'Calories/100g';
-        case 'servings':
-          return 'Number of servings';
-        case 'caloriesServing':
-          return 'Serving calories, kcal';
-        case 'servingWeight':
-          return 'Serving weight, g';
-        case 'meatRatioo':
-          return 'Meat, %';
-        case 'bonesRatio':
-          return 'Bones, %';
-        default:
-          return type;
-      }
-    }
   };
 
-// ActivityType.js
+  // Enum AddFoodRowType methods
+  export const getTitleForAddFoodRowType= (type) => {
+    switch (type) {
+      case AddFoodRowType.PROTEIN: return 'Protein, %';
+      case AddFoodRowType.FAT: return 'Fat, %';
+      case AddFoodRowType.FIBER: return 'Fiber, %';
+      case AddFoodRowType.ASH: return 'Ash, %';
+      case AddFoodRowType.CARB: return 'Carbs, %';
+      case AddFoodRowType.CALORIES: return 'Calories/100g';
+      case AddFoodRowType.SERVINGS: return 'Number of servings';
+      case AddFoodRowType.CALORIES_SERVING: return 'Serving calories, kcal';
+      case AddFoodRowType.SERVING_WEIGHT: return 'Serving weight, g';
+      case AddFoodRowType.MEAT_RATIO: return 'Meat, %';
+      case AddFoodRowType.BONES_RATIO: return 'Bones, %';
+      default: return type;
+    }
+  }
+
+  // Enum ActivityType definition 
   export const ActivityType = {
     WALK: 'walk',
     RUN: 'run',
@@ -97,6 +134,7 @@ export const FoodSection = {
 
   };
 
+  // Enum ActivityType methods 
   export const getTitleForActivityType= (activity) => {
     switch (activity) {
         case ActivityType.WALK: return 'Walk';
@@ -113,18 +151,18 @@ export const FoodSection = {
         case ActivityType.SWIM: return 8;
         case ActivityType.FETCH: return 8;
     }
-};
+  };
 
-export const getCaloriesForDuration= (activity) =>{
-    switch (activity) {
-        case ActivityType.WALK: return 64;
-        case ActivityType.RUN: return 64;
-        case ActivityType.SWIM: return 64;
-        case ActivityType.FETCH: return 64;
-    }
-};
+  export const getCaloriesForDuration= (activity) =>{
+      switch (activity) {
+          case ActivityType.WALK: return 64;
+          case ActivityType.RUN: return 64;
+          case ActivityType.SWIM: return 64;
+          case ActivityType.FETCH: return 64;
+      }
+  };
 
-  // ActivityMetric.js
+  // Enum ActivityMetric definition 
   export const ActivityMetric = {
     DISTANCE: 'distance',
     DURATION: 'duration',
@@ -136,7 +174,8 @@ export const getCaloriesForDuration= (activity) =>{
         }
     },
   };
-
+  
+  // Enum ActivityMetric methods
   export const getTitleForActivityMetric= (metric) => {
     switch (metric) {
         case ActivityMetric.DISTANCE: return 'Distance, km';
@@ -151,7 +190,7 @@ export const getCaloriesForDuration= (activity) =>{
     }
   };
 
-  // TrainingCategory.js
+  // Enum TrainingCategory definition
   export const TrainingCategory = {
     SOCIAL: 'social',
     OBEDIENCE: 'obedience',
@@ -161,6 +200,7 @@ export const getCaloriesForDuration= (activity) =>{
     CUSTOM: 'custom',
   };
 
+  // Enum TrainingCategory methods
   export const getTrainingCategoryFor = (rawValue) => {
     for (const category in TrainingCategory) {
       if (TrainingCategory[category] === rawValue) {
@@ -171,142 +211,340 @@ export const getCaloriesForDuration= (activity) =>{
   };
 
   export const getTitleForTrainingCategory = (category) => {
-        switch (category) {
-            case TrainingCategory.SOCIAL: return 'Social';
-            case TrainingCategory.OBEDIENCE: return 'Obedience';
-            case TrainingCategory.POTTY: return 'Potty';
-            case TrainingCategory.SOUNDS: return 'Sounds';
-            case TrainingCategory.ITEMS: return 'Items';
-            case TrainingCategory.CUSTOM: return 'Custom';
-        };
+    switch (category) {
+        case TrainingCategory.SOCIAL: return 'Social';
+        case TrainingCategory.OBEDIENCE: return 'Obedience';
+        case TrainingCategory.POTTY: return 'Potty';
+        case TrainingCategory.SOUNDS: return 'Sounds';
+        case TrainingCategory.ITEMS: return 'Items';
+        case TrainingCategory.CUSTOM: return 'Custom';
     };
-
-    export const getTypesForTrainingTypeCategory = (category) => {
-      switch (category) {
-        case TrainingCategory.SOCIAL:
-          return [
-            TrainingType.LOOK,
-            TrainingType.ADULT_PERSON,
-            TrainingType.KIDS,
-            TrainingType.CARS,
-            TrainingType.TRUCKS,
-            TrainingType.BUSES,
-            TrainingType.DOGS,
-            TrainingType.CATS,
-            TrainingType.ANIMALS,
-            TrainingType.DOG_PARK,
-            TrainingType.CUSTOM,
-          ];
-        case TrainingCategory.OBEDIENCE:
-          return [
-            TrainingType.SIT,
-            TrainingType.STAY,
-            TrainingType.LIE_DOWN,
-            TrainingType.WAIT,
-            TrainingType.STAND,
-            TrainingType.HEEL,
-            TrainingType.LEAVE_IT,
-            TrainingType.DROP_IT,
-            TrainingType.COME,
-            TrainingType.PLACE,
-            TrainingType.LOOK,
-            TrainingType.CUSTOM,
-          ];
-        case TrainingCategory.POTTY:
-          return [
-            TrainingType.HURRY_UP, 
-            TrainingType.CUSTOM,
-          ];
-        case TrainingCategory.SOUNDS:
-          return [
-            TrainingType.TRAINS,
-            TrainingType.MUSIC,
-            TrainingType.GUN_SHOT,
-            TrainingType.FIREWORKS,
-            TrainingType.DOOR_BELL,
-            TrainingType.BABY_CRY,
-            TrainingType.CUSTOM,
-          ];
-        case TrainingCategory.ITEMS:
-          return [
-            TrainingType.UMBRELLA, 
-            TrainingType.CUTLERY,
-            TrainingType.CUSTOM,
-          ];
-        case TrainingCategory.CUSTOM:
-          return [];
-        default:
-          return [];
-      };
-    };
-
-
-  // TrainingType.js
-  export const TrainingType = {
-    SIT: 'sit',
-    STAY: 'stay',
-    LIE_DOWN: 'lieDown',
-    STAND: 'stand',
-    HEEL: 'heel',
-    LEAVE_IT: 'leaveIt',
-    DROP_IT: 'dropIt',
-    COME: 'come',
-    WAIT: 'wait',
-    LOOK: 'look',
-    PLACE: 'place',
-    ADULT_PERSON: 'adultPerson',
-    KIDS: 'kids',
-    CARS: 'cars',
-    TRUCKS: 'trucks',
-    BICYCLES: 'bicycles',
-    BUSES: 'buses',
-    DOGS: 'dogs',
-    CATS: 'cats',
-    ANIMALS: 'animals',
-    DOG_PARK: 'dogPark',
-    HURRY_UP: 'hurryUp',
-    TRAINS: 'trains',
-    MUSIC: 'music',
-    GUN_SHOT: 'gunShot',
-    FIREWORKS: 'fireworks',
-    DOOR_BELL: 'doorBell',
-    BABY_CRY: 'babyCry',
-    UMBRELLA: 'umbrella',
-    CUTLERY: 'cutlery',
-    CUSTOM: 'custom',
   };
 
-  export const getTrainingTypeFor = (rawValue) => {
-    for (const type in TrainingType) {
-      if (TrainingType[type] === rawValue) {
-        return TrainingType[type];
-      }
+  export const getTypesForTrainingTypeCategory = (category) => {
+    switch (category) {
+      case TrainingCategory.SOCIAL:
+        return [
+          TrainingType.LOOK,
+          TrainingType.ADULT_PERSON,
+          TrainingType.KIDS,
+          TrainingType.CARS,
+          TrainingType.TRUCKS,
+          TrainingType.BUSES,
+          TrainingType.DOGS,
+          TrainingType.CATS,
+          TrainingType.ANIMALS,
+          TrainingType.DOG_PARK,
+          TrainingType.CUSTOM,
+        ];
+      case TrainingCategory.OBEDIENCE:
+        return [
+          TrainingType.SIT,
+          TrainingType.STAY,
+          TrainingType.LIE_DOWN,
+          TrainingType.WAIT,
+          TrainingType.STAND,
+          TrainingType.HEEL,
+          TrainingType.LEAVE_IT,
+          TrainingType.DROP_IT,
+          TrainingType.COME,
+          TrainingType.PLACE,
+          TrainingType.LOOK,
+          TrainingType.CUSTOM,
+        ];
+      case TrainingCategory.POTTY:
+        return [
+          TrainingType.HURRY_UP, 
+          TrainingType.CUSTOM,
+        ];
+      case TrainingCategory.SOUNDS:
+        return [
+          TrainingType.TRAINS,
+          TrainingType.MUSIC,
+          TrainingType.GUN_SHOT,
+          TrainingType.FIREWORKS,
+          TrainingType.DOOR_BELL,
+          TrainingType.BABY_CRY,
+          TrainingType.CUSTOM,
+        ];
+      case TrainingCategory.ITEMS:
+        return [
+          TrainingType.UMBRELLA, 
+          TrainingType.CUTLERY,
+          TrainingType.CUSTOM,
+        ];
+      case TrainingCategory.CUSTOM:
+        return [];
+      default:
+        return [];
+    };
+  };
+
+// Enum TrainingType definition
+export const TrainingType = {
+  SIT: 'sit',
+  STAY: 'stay',
+  LIE_DOWN: 'lieDown',
+  STAND: 'stand',
+  HEEL: 'heel',
+  LEAVE_IT: 'leaveIt',
+  DROP_IT: 'dropIt',
+  COME: 'come',
+  WAIT: 'wait',
+  LOOK: 'look',
+  PLACE: 'place',
+  ADULT_PERSON: 'adultPerson',
+  KIDS: 'kids',
+  CARS: 'cars',
+  TRUCKS: 'trucks',
+  BICYCLES: 'bicycles',
+  BUSES: 'buses',
+  DOGS: 'dogs',
+  CATS: 'cats',
+  ANIMALS: 'animals',
+  DOG_PARK: 'dogPark',
+  HURRY_UP: 'hurryUp',
+  TRAINS: 'trains',
+  MUSIC: 'music',
+  GUN_SHOT: 'gunShot',
+  FIREWORKS: 'fireworks',
+  DOOR_BELL: 'doorBell',
+  BABY_CRY: 'babyCry',
+  UMBRELLA: 'umbrella',
+  CUTLERY: 'cutlery',
+  CUSTOM: 'custom',
+};
+
+// Enum TrainingType methods
+export const getTrainingTypeFor = (rawValue) => {
+  for (const type in TrainingType) {
+    if (TrainingType[type] === rawValue) {
+      return TrainingType[type];
     }
-    return TrainingType.SIT;  
-  };
+  }
+  return TrainingType.SIT;  
+};
 
-  export const getTitleForTrainingType = (type) => {
-    switch (type) {
-      case type.LIE_DOWN: return 'Lie Down';
-      case type.LEAVE_IT: return '"Leave It';
-      case type.ADULT_PERSON: return 'Adult person';
-      case type.DOG_PARK: return 'Dog park';
-      case type.GUN_SHOT: return 'Gun Shot';
-      case type.DOOR_BELL: return 'Door Bell';
-      case type.BABY_CRY: return 'Baby Cry';
-      case type.HURRY_UP: return 'Hurry Up';
-      default: return String(type).charAt(0).toUpperCase() + String(type).slice(1);
-   };
+export const getTitleForTrainingType = (type) => {
+  switch (type) {
+    case type.LIE_DOWN: return 'Lie Down';
+    case type.LEAVE_IT: return '"Leave It';
+    case type.ADULT_PERSON: return 'Adult person';
+    case type.DOG_PARK: return 'Dog park';
+    case type.GUN_SHOT: return 'Gun Shot';
+    case type.DOOR_BELL: return 'Door Bell';
+    case type.BABY_CRY: return 'Baby Cry';
+    case type.HURRY_UP: return 'Hurry Up';
+    default: return String(type).charAt(0).toUpperCase() + String(type).slice(1);
   };
+};
 
  
 
-  // FoodUnits.js
-  export const FoodUnits = {
-    GRAM: 'gram',
-    KG: 'kg',
-    SERVING: 'serv',
-    OZ: 'oz',
-    LB: 'lb',
-  };
+// Enum FoodUnits definition
+export const FoodUnits = {
+  GRAM: 'gram',
+  KG: 'kg',
+  SERVING: 'serv',
+  OZ: 'oz',
+  LB: 'lb',
+};
+
+// Enum BreedSize definition
+export const BreedSize = {
+  EXTRA_SMALL: 'extraSmall',
+  SMALL: 'small',
+  MEDIUM_SMALL: 'mediumSmall',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+  EXTRA_LARGE: 'extraLarge',
+};
   
+// Enum BreedSize methods
+export const getBreedSizeTitle = (size) => {
+  switch (size) {
+      case BreedSize.EXTRA_SMALL:
+          return 'Extra Small';
+      case BreedSize.SMALL:
+          return 'Small';
+      case BreedSize.MEDIUM_SMALL:
+          return 'Medium Small';
+      case BreedSize.MEDIUM:
+          return 'Medium';
+      case BreedSize.LARGE:
+          return 'Large';
+      case BreedSize.EXTRA_LARGE:
+          return 'Extra Large';
+      default:
+          return 'Unknown Size';
+  };
+};
+
+// Enum DogActivityType definition
+export const DogActivityType = {
+  NEUTERED: 'neutered',
+  INTACT: 'intact',
+  INACTIVE: 'inactive',
+  LOW_ACTIVITY: 'lowActivity',
+  ACTIVE: 'active',
+  MEDIUM: 'medium',
+  HIGH: 'high',
+  WORKING: 'working',
+};
+
+// Enum DogActivityType methods
+export const getDogActivityTitle = (type) => {
+  switch (type) {
+    case DogActivityType.NEUTERED:
+      return 'Neutered dog';
+    case DogActivityType.INTACT:
+      return 'Intact dog';
+    case DogActivityType.INACTIVE:
+      return 'Inactive';
+    case DogActivityType.LOW_ACTIVITY:
+      return 'Low activity';
+    case DogActivityType.ACTIVE:
+      return 'Active';
+    case DogActivityType.MEDIUM:
+      return 'Medium active';
+    case DogActivityType.HIGH:
+      return 'High active';
+    case DogActivityType.WORKING:
+      return 'Working dog';
+  }
+};
+
+export const calculateRER = function (weight, type ) {
+  const baseRER = DogActivityType.calculateBaseRER(weight);
+  let RER;
+
+  switch (type) {
+    case DogActivityType.NEUTERED:
+      RER = 1.6 * baseRER;
+      break;
+    case DogActivityType.INTACT:
+      RER = 1.8 * baseRER;
+      break;
+    case DogActivityType.INACTIVE:
+      RER = 1.2 * baseRER;
+      break;
+    case DogActivityType.LOW_ACTIVITY:
+      RER = 1.4 * baseRER;
+      break;
+    case DogActivityType.ACTIVE:
+      RER = 2.0 * baseRER;
+      break;
+    case DogActivityType.MEDIUM:
+      RER = 3.0 * baseRER;
+      break;
+    case DogActivityType.HIGH:
+      RER = 4.0 * baseRER;
+      break;
+    case DogActivityType.WORKING:
+      RER = 5.0 * baseRER;
+      break;
+  }
+
+  return RER;
+};
+
+export const calculateBaseRER = function (weight) {
+  return 70 * Math.pow(weight, 0.75);
+};
+
+
+// Enum RatioPresets definition
+export const RatioPresets = {
+  CUSTOM: 'custom',
+  BARF_ADULT: 'barfAdult',
+  BARF_PUPPY: 'barfPuppy',
+  BARF_TRADITIONAL_ADULT: 'barfTraditionalAdult',
+  BARF_TRADITIONAL_PUPPY: 'barfTraditionalPuppy',
+  PMR_ADULT: 'pmrAdult',
+  PMR_PUPPY: 'pmrPuppy',
+  PMR_TRADITIONAL_ADULT: 'pmrTraditionalAdult',
+  PMR_TRADITIONAL_PUPPY: 'pmrTraditionalPuppy',
+};
+
+// Enum RatioPresets methods
+export const getRatioPresetsTitle = function (type ) {
+  switch (type) {
+      case RatioPresets.CUSTOM: return 'Custom ratio';
+      case RatioPresets.BARF_ADULT: return 'BARF Adult';
+      case RatioPresets.BARF_PUPPY: return 'BARF Puppy';
+      case RatioPresets.BARF_TRADITIONAL_ADULT: return 'BARF Adult (traditional)';
+      case RatioPresets.BARF_TRADITIONAL_PUPPY: return 'BARF Puppy (traditional)';
+      case RatioPresets.PMR_ADULT: return 'PMR Adult';
+      case RatioPresets.PMR_PUPPY: return 'PMR Puppy';
+      case RatioPresets.PMR_TRADITIONAL_ADULT: return 'PMR Adult (traditional)';
+      case RatioPresets.PMR_TRADITIONAL_PUPPY: return 'PMR Puppy (traditional)';
+  }
+};
+
+// Function to calculate categories
+export const getCategoriesForRatioPreset = function (dailyPortion, profileId, type) {
+  switch (type) {
+      case RatioPresets.BARF_ADULT:
+        return [
+          { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 70 / 100, percentage: 70, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getRatioPresetsTitle(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getRatioPresetsTitle(FoodCategoryType.SEEDS), weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.SEEDS), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getRatioPresetsTitle(FoodCategoryType.FRUITS), weight: dailyPortion * 1 / 100, percentage: 1, color: getColorFoodCategory(FoodCategoryType.FRUITS), profileId: profileId },
+        ];
+        case RatioPresets.BARF_PUPPY:
+          return [
+            { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 58 / 100, percentage: 58, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getRatioPresetsTitle(FoodCategoryType.VEGGIE), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getRatioPresetsTitle(FoodCategoryType.SEEDS), weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.SEEDS), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getRatioPresetsTitle(FoodCategoryType.FRUITS), weight: dailyPortion * 1 / 100, percentage: 1, color: getColorFoodCategory(FoodCategoryType.FRUITS), profileId: profileId },
+          ];
+          case  RatioPresets.BARF_TRADITIONAL_ADULT:
+            return [
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 70 / 100, percentage: 70, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getRatioPresetsTitle(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
+            ];
+
+          case RatioPresets.BARF_TRADITIONAL_PUPPY:
+            return [
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 58 / 100, percentage: 58, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getRatioPresetsTitle(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
+            ];
+
+          case RatioPresets.PMR_PUPPY:
+            return [
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 67 / 100, percentage: 67, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.FIBER), type: FoodCategoryType.FIBER, name: getRatioPresetsTitle(FoodCategoryType.FIBER), weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.FIBER), profileId: profileId },
+            ];
+
+          case RatioPresets.PMR_TRADITIONAL_ADULT:
+            return [
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 80 / 100, percentage: 80, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+            ];
+
+          case RatioPresets.PMR_TRADITIONAL_PUPPY:
+            return [
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 69 / 100, percentage:69, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+            ];
+          }
+    }

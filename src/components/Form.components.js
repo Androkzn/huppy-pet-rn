@@ -3,8 +3,51 @@
 import * as colors from './styles/Colors'
 import { useState } from 'react';
 import styled from '@emotion/styled/macro'
+import Switch from '@mui/material/Switch';
+import { ButtonText, ButtonWithImage } from "./Buttons.components"
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import CustomDatePicker from "../components/CustomDatePicker.component";
+import { Delete } from "@mui/icons-material";
 
-const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
+const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    textAlign: 'center',
+    borderRadius: '10px',
+    margin: '3px',
+    background: `${colors.lightBrown}`,
+    paddingRight: '15px',
+    paddingLeft: '15px',
+  };
+
+  const titleStyle = {
+    marginRight: '10px',
+  };
+
+  const pickerStyle = {
+    width: '520px',
+  };
+
+  console.log("TitleAndDatePicker",selectedDate);
+  return (
+    <div style={containerStyle}>
+      <h3 style={titleStyle}>{title}</h3>
+      <CustomDatePicker
+        id={id}
+        value={selectedDate}
+        onChange={onChange}
+        dateFormat="yyyy-MM-dd" // Customize the date format if needed
+        style= {pickerStyle}
+      />
+    </div>
+  );
+};
+
+
+const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderColor }) => {
     const containerStyle = {
       display: 'flex',
       flexDirection: 'column',
@@ -36,6 +79,7 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
         <h3 style={titleStyle}>{title}</h3>
         <textarea
           id={id}
+          value={initialValue}
           rows="4"
           style={textBoxStyle}
           placeholder="Enter description"
@@ -46,7 +90,7 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
     );
   };
 
-  const TitleAndDropdown = ({ id, title, name, value, dropdownOptions, onChange }) => {
+  const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -78,7 +122,7 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
         <select 
           id={id}
           name={name}  
-          value={value}  
+          value={initialValue}  
           style={dropdownStyle}
           onChange={onChange}  
         >
@@ -88,6 +132,56 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
             </option>
           ))}
         </select>
+      </div>
+    );
+  };
+
+  const TitleTooltipAndValue = ({ title, value, tipText}) => {
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      paddingRight: '5px',
+      paddingLeft: '5px', 
+  };
+  
+  const titleStyle = {
+    marginRight: '10px',
+  };
+  
+  const textStyle = {
+    marginRight: '10px',
+  };
+
+  const CustomWidthTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 400,
+      fontSize: '15px',
+
+    },
+  });
+
+    return (
+      <div style={containerStyle}>
+        <div style={containerStyle}>
+          <h3 style={titleStyle}> {title} </h3>
+            <CustomWidthTooltip title={tipText}>
+              <Button sx={{ m: 1 }}>
+                <ButtonText
+                  variant="circleTextButtonSmall"
+                  height= '25px'
+                  width= '25px'
+                >
+                  ?
+                </ButtonText>
+              </Button>
+            </CustomWidthTooltip>
+          </div>
+          <h3 style={textStyle}>{value}</h3>
       </div>
     );
   };
@@ -129,23 +223,6 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
       alignItems: 'center',
     };
     
-    const buttonStyle = {
-      background: `${colors.lightGreen}`,
-      width: "35px",
-      height: "35px",
-      padding: '5px 10px',
-      cursor: 'pointer',
-      fontSize: '20px', 
-      borderRadius: '20px',
-      border: `none`,
-    
-      ':hover': {
-        background: `${colors.orange}`, 
-      },
-    
-      color: 'white',
-    };
-    
     const textFieldStyle = {
       border: 'none',
       outline: 'none',
@@ -161,9 +238,14 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
       <div style={containerStyle}>
         <h3 style={titleStyle}>{title}</h3>
         <div style={controlGroup}>
-        <button style={buttonStyle} type="button" onClick={() => decrementCount()} name={name}>
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => decrementCount()}
+          >
             -
-          </button>
+          </ButtonText>
           <input
             id={id}
             style={textFieldStyle}
@@ -181,15 +263,20 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
 
             name={name} 
           />
-          <button style={buttonStyle} type="button" onClick={incrementCount}  name={name} >
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => incrementCount()}
+          >
             +
-          </button>
+          </ButtonText>
         </div>
       </div>
     );
   };
 
-  const TitleAndTextInput = ({ id, name, title, onChange, placeholder, borderColor }) => {
+  const TitleAndTextInput = ({ id, initialValue, name, title, onChange, placeholder, borderColor }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -223,12 +310,300 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
          <h3 style={titleStyle}>{title}</h3>
         <input
           id={id}
+          value={initialValue}
           type="text"
           placeholder= {placeholder}  
           style={textFieldStyle}
           name={name}  
           onChange={onChange}  
         />
+      </div>
+    );
+  };
+
+  const TitleAndToggle = ({ id, name, title, onChange, initialValue }) => {
+    const [checked, setChecked] =  useState(initialValue);
+
+    const handleChange = (event) => {
+      setChecked(event.target.checked);
+      onChange()
+    };
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      margin: '3px',
+      background: `${colors.lightBrown}`, 
+      paddingRight: '15px',
+      paddingLeft: '15px', 
+    };
+  
+    const titleStyle = {
+      marginRight: '10px',
+    };
+  
+    return (
+      <div style={containerStyle}>
+         <h3 style={titleStyle}>{title}</h3>
+         <Switch
+          id={id}  
+          name={name}  
+          checked={checked}
+          onChange={handleChange}
+          inputProps={{ 'aria-label': 'controlled' }}
+          color='warning'
+          style={{ color: colors.green}}
+        />
+      </div>
+    );
+  };
+
+  const TitleToggleAndButtons = ({ id, name, title, onChange, initialValue, onChangeButton }) => {
+    const [checked, setChecked] =  useState(initialValue);
+    const [count, setCount] = useState(initialValue);
+  
+    const decrementCount = () => {
+      if (count > 0) {
+        setCount(count - 1);
+        onChangeButton(name, count - 1);
+      }
+    };
+  
+    const incrementCount = () => {
+      setCount(count + 1);
+      onChangeButton(name, count + 1);
+    };
+  
+    const handleChange = (event) => {
+      setChecked(event.target.checked);
+      onChange()
+    };
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      margin: '3px',
+      background: `${colors.lightBrown}`, 
+      paddingRight: '15px',
+      paddingLeft: '15px', 
+    };
+  
+    const titleStyle = {
+      marginRight: '10px',
+    };
+  
+    const controlGroup = {
+      display: 'flex',
+      alignItems: 'center',
+    };
+    
+    const textFieldStyle = {
+      border: 'none',
+      outline: 'none',
+      width: '50px',
+      textAlign: 'center',
+      marginRight: '15px',
+      marginLeft: '15px',
+      borderRadius: '10px',
+      height: '30px',
+    };
+  
+    return (
+      <div style={containerStyle}>
+         <h3 style={titleStyle}>{title}</h3>
+         <Switch
+          id={id}  
+          name={name}  
+          checked={checked}
+          onChange={handleChange}
+          inputProps={{ 'aria-label': 'controlled' }}
+          color='warning'
+          style={{ color: colors.green}}
+        />
+         {checked && (
+        <div style={controlGroup}>
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => decrementCount()}
+          >
+            -
+          </ButtonText>
+          <input
+            id={id}
+            style={textFieldStyle}
+            type="number"
+            value={count}
+            onChange={(e) => {
+              console.log("onChange event",e.target.value )
+              setCount(parseInt(e.target.value, 10) || 0);
+              onChange(e);
+              e.preventDefault();  
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();  
+            }}
+
+            name={name} 
+          />
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => incrementCount()}
+          >
+            +
+          </ButtonText>
+          </div>
+         )}
+      </div>
+    );
+  };
+
+  const SelectedFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton }) => {
+    const [count, setCount] = useState(value);
+  
+    const decrementCount = () => {
+      if (count > 0) {
+        setCount(count - 1);
+        onChangeButton(name, count - 1);
+      }
+    };
+  
+    const incrementCount = () => {
+      setCount(count + 1);
+      onChangeButton(name, count + 1);
+    };
+  
+ 
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      margin: '3px',
+      paddingRight: '15px',
+      paddingLeft: '15px', 
+    };
+  
+    const nameStyle = {
+      width: '100px',
+      borderRadius: '5px',
+      padding: '5px',
+      backgroundColor: `${color}`, 
+    };
+
+    const weightStyle = {
+       
+    };
+  
+    const controlGroup = {
+      display: 'flex',
+      alignItems: 'center',
+    };
+    
+    const textFieldStyle = {
+      border: 'none',
+      outline: 'none',
+      width: '50px',
+      textAlign: 'center',
+      marginRight: '15px',
+      marginLeft: '15px',
+      borderRadius: '10px',
+      height: '30px',
+    };
+
+    const deleteButonStyle = {
+      color: colors.green,
+      marginLeft: '20px',
+    };
+  
+    return (
+      <div style={containerStyle}>
+        <h3 style={nameStyle} >{name}</h3>  
+        <h3 style={weightStyle} >{weight}g</h3> 
+        <div style={controlGroup}>
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => decrementCount()}
+          >
+            -
+          </ButtonText>
+          <input
+            id={id}
+            style={textFieldStyle}
+            type="number"
+            value={count}
+            onChange={(e) => {
+              console.log("onChange event",e.target.value )
+              setCount(parseInt(e.target.value, 10) || 0);
+              onChange(e);
+              e.preventDefault();  
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();  
+            }}
+
+            name={name} 
+          />
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => incrementCount()}
+          >
+            +
+          </ButtonText>
+          <div css={deleteButonStyle}><Delete onClick={() => onDelete()} /></div>
+          </div>
+      </div>
+    );
+  };
+
+  const UnselectedFoodCategoryRow = ({name, onAdd, color }) => {
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      margin: '3px',
+      paddingRight: '15px',
+      paddingLeft: '15px', 
+    };
+    
+    const nameStyle = {
+      width: '100px',
+      borderRadius: '5px',
+      padding: '5px',
+      backgroundColor: `${color}`, 
+    };
+
+    return (
+      <div style={containerStyle}>
+        
+          <div style={nameStyle}>
+            {name}
+          </div>
+            <ButtonWithImage
+              variant="addButton"
+              width='100px'
+              as='button'
+              imageName="plus_round_fill_white_button.svg"
+              imageSize={20}
+              onClick={() => onAdd()}
+            >
+            Add
+          </ButtonWithImage>
+        
       </div>
     );
   };
@@ -284,11 +659,17 @@ const DescriptionTextBox = ({  id, name, title, onChange, borderColor }) => {
   
   
   export  {
+    TitleAndDatePicker,
     DescriptionTextBox, 
     TitleAndDropdown, 
     TitleAndTextInput, 
     TitleButtonsAndTextField,
     LoginTextInput,
-    FormGroup
+    FormGroup,
+    TitleAndToggle,
+    TitleTooltipAndValue,
+    TitleToggleAndButtons,
+    SelectedFoodCategoryRow,
+    UnselectedFoodCategoryRow,
   };
   

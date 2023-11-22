@@ -67,7 +67,7 @@ const TemporaryDrawer = (props) => {
       Icon: () => (
         <Image imageName="avatar_small_placeholder.png" width="50" height="50" />
       ),
-      link: '/',
+      link: '/profile',
     },
     {
       text: 'Logout',

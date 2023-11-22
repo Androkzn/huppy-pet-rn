@@ -2,7 +2,6 @@
 
 import * as colors from './Colors'
  
-
 const addActivityFormStyle = {
   maxWidth: '450px',
   minWidth: '350px',

@@ -28,7 +28,6 @@ const headerFoodStyle = {
   justifyContent: 'center',
   textAlign: 'center',
   width: '100%',
-  marginTop: '0px',
   backgroundColor: colors.lightBrown2,
 };
 
@@ -41,9 +40,8 @@ const topButtonsContainerStyle = {
 };
 
 const addFoodFormStyle = {
-  maxWidth: '450px',
-  minWidth: '350px',
-  margin: 'auto',
+  maxWidth: '30%',
+  minWidth: '90%',
 };
 
 const addFoodTitleStyle = {
@@ -57,9 +55,8 @@ const nutritionFactsTitleStyle = {
 };
 
 const addFoodButtonContainerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  margin: '0 20px 0 20px',
+  ...rowStyle,
+  justifyContent: 'space-around',
 };
 
 const headingMealStyle = {

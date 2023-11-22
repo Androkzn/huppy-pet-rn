@@ -35,7 +35,7 @@ const AddFood = ({ }) => {
          Back
       </ButtonWithImage>
     </div>
-    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} title="Add Food" />
+    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal}/>
   </PageContainer>
 }
 

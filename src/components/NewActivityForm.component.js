@@ -87,7 +87,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     }
   }
 
-  return <PageContainer>
+  return <div >
     <form style={styles.addActivityFormStyle}>
       <div style={styles.closeButtonContainer}>
         <ButtonText
@@ -152,7 +152,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     </div>
     )}
     </form>
-  </PageContainer>;
+  </div>;
 }
 
 export default NewActivityForm;

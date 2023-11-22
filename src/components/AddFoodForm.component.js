@@ -12,6 +12,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
  
+
   const onDDInputChange = (event) => {
     const { name, value } = event.target;
     foodItem.units = value
@@ -26,7 +27,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
     foodItem.weight = value
   };
 
-  return <PageContainer>
+  return <div>
     <form style={styles.addFoodFormStyle} onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.addFoodTitleStyle}>{"Add Food To Meal"}</h2>
   
@@ -34,6 +35,8 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
           <Image imageName="food_placeholder.png" width="150" height="150" />
       </div>
   
+      <h2 style={styles.addFoodTitleStyle}>{foodItem?.name}</h2>
+
       <TitleAndDropdown 
         name={"units"} 
         title={"Units"}
@@ -69,7 +72,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
             style={{ cursor: "pointer" }}
           />
         </div>
-        {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem.desc}</div>}
+        {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem?.desc}</div>}
       </div>
 
       <div style={styles.nutritionContainerStyle}>
@@ -92,31 +95,31 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
             <div style={styles.columnStyle}>
               <div  style={styles.nutritionRowStyle}>  
                 <div>Protein, %</div>  
-                <div>{foodItem.protein}</div> 
+                <div>{foodItem?.protein}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Fat, %</div>  
-                <div>{foodItem.fat}</div> 
+                <div>{foodItem?.fat}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Carbohydrates, %</div>  
-                <div>{foodItem.carb}</div> 
+                <div>{foodItem?.carb}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Fiber, %</div>  
-                <div>{foodItem.fiber}</div> 
+                <div>{foodItem?.fiber}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Ash, %</div>  
-                <div>{foodItem.ash}</div> 
+                <div>{foodItem?.ash}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Calories in 100g, kcal</div>  
-                <div>{foodItem.calories}</div> 
+                <div>{foodItem?.calories}</div> 
               </div> 
               <div  style={styles.nutritionRowStyle}>  
                 <div>Calories in serving, kcal</div>  
-                <div>{foodItem.caloriesServing}</div> 
+                <div>{foodItem?.caloriesServing}</div> 
               </div> 
             </div>
 
@@ -128,7 +131,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
         </ButtonText>
       </div>
     </form>
-  </PageContainer>;
+  </div>;
 }
 
 export default AddFoodForm;

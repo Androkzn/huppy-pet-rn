@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/user.context";
 import { useLocation, useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'
-import {ButtonWithImage, ButtonText } from './Buttons.components'
+import {ButtonWithImage } from './Buttons.components'
 import { Delete, Edit} from "@mui/icons-material";
 import { deleteFoodTemplate } from "../graphql/graphqlUtils";
 
@@ -27,20 +27,16 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
     navigate("/editFood", { state: { food } });
   };
   
-
-
   return (
       <div style={style.mainConteinerStyle} > 
         <div style={style.headerTrainingStyle}>
           <div style={style.rowStyle}>
 
-            
             <div style={style.nameContainerStyle} onClick={() => openAddFoodPage (food)}>
               <span style={style.textTitleStyle}>{food.name}</span>
               <span style={style.textStyle}>Calories: {food.calories} kcal</span>
             </div>
              
-
             { food.isCustom && (
               <div style={style.customButtonContainerStyle}> 
                 <div css={style.deleteButonStyle}><Delete onClick={() => deleteFoodTemplateHandler()} /></div>
@@ -56,7 +52,7 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
               as="button"
               variant="iconButton"
               imageName="arrow_right.svg"
-              imageSize={25}
+              imageSize={20}
               onClick={() => openAddFoodPage (food)}
             >
             </ButtonWithImage>

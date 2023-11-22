@@ -11,6 +11,8 @@ import * as colors from './Colors'
     padding: '15px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
+    maxHeight: '120px',
+    width: '100%',
   };
 
   const rowStyle = {
@@ -57,11 +59,19 @@ import * as colors from './Colors'
   };
 
   const textFieldStyle = {
-    padding: '5px',
+    padding: '10px',
+    height: '40px',
+    width: '300px',
     margin: '0px',
     textAlign: 'left',
     fontSize: '18px',
-    borderRadius: '10px',
+    borderRadius: '20px',
+    color: colors.green,
+    backgroundColor: colors.white,
+  };
+
+  const clearButonStyle = {
+    marginRight: '10px',
   };
 
   const labelFilterStyle = {
@@ -122,4 +132,5 @@ import * as colors from './Colors'
     labelFilterStyle,
     labelTextFieldStyle,
     buttonsContainerStyle,
+    clearButonStyle,
 };

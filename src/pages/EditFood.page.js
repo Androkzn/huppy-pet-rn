@@ -3,9 +3,9 @@
 import { useContext, useState } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
-import EditFoodForm from "../components/NewFoodForm.component";
+import EditFoodForm from "../components/EditFoodForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
-import { addFoodTemplate } from "../graphql/graphqlUtils";
+import { updateFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -13,67 +13,60 @@ const EditFood = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { mealId } = location.state || {};
+  const { food } = location.state || {};
 
-  // Some prefilled form state
+  console.log("EditFood  food",food)
+
   const [foodItem, setFoodItem] = useState({
-    _id : "",
-    name: "",
-    type: "",
-    units: "",
-    categoryType: "",
-    protein: 0,
-    fat: 0,
-    fiber: 0,
-    ash: 0,
-    carb: 0,
-    calories: 0,
-    servings: 0,
-    caloriesServing: 0,
-    servingWeight: 0,
-    meatRatio: 0,
-    bonesRatio: 0,
-    desc: "",
-    weight: 0,
+    _id : food?._id,
+    name: food?.name,
+    type: food?.type,
+    units: food?.units,
+    categoryType: food?.categoryType,
+    protein: food?.protein,
+    fat: food?.fat,
+    fiber: food?.fiber,
+    ash: food?.ash,
+    carb: food?.carb,
+    calories: food?.calories,
+    servings: food?.servings,
+    caloriesServing: food?.caloriesServing,
+    servingWeight: food?.servingWeight,
+    meatRatio: food?.meatRatio,
+    bonesRatio: food?.bonesRatio,
+    desc: food?.desc,
+    weight: food?.weight,
   });
 
-  // addFood function is responsible for adding the Food
-  const addNewFood = async (event) => {
-    const { name} = event.target;
-
+  // addFood function is responsible for editing the Food
+  const editFood = async () => {
     if ( foodItem.name.length === 0 || foodItem.calories  === 0   ) {
       return;
     }
-    const {success, templateId }= await addFoodTemplate(user, foodItem)  
-    
-    if (success) {
-      // Function to open the AddFoodPage when a food item is clicked
-      if (name === 'createAndAddFood') {
-        foodItem._id = templateId
-        console.log("CreateNewFood", foodItem)
-        console.log("mealId", mealId)
-        navigate("/addFood", { state: { mealId, foodItem } });
-      } else {
+    const isUpdated = await updateFoodTemplate(user, foodItem)  
+    console.log("updateFoodTemplate isSuccess", isUpdated )
+   
+    if (isUpdated) {
         navigate("/searchFood");
-      }
-     
+      } else {
+        
+      }     
 
 
-    }
   };
 
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
       <ButtonWithImage
           variant="backButton"
-          navigateTo="/searchFood"
+          to="/searchFood"
           imageName="back_arrow.svg"
           imageSize={20}
         >
          Back
       </ButtonWithImage>
     </div>
-    <EditFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} title="Add Food" />
+    <EditFoodForm editFood={editFood} foodItem={foodItem} setFoodItem={setFoodItem}/>
   </PageContainer>
 }
 

@@ -63,10 +63,12 @@ import * as colors from './Colors'
 
   const deleteButonStyle = {
     color: colors.green,
+    marginRight: '10px'
   };
 
   const editButonStyle = {
-    color: colors.green,
+    color: colors.orange,
+    marginRight: '10px'
   };
 
   const customContainerStyle = {

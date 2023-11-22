@@ -66,14 +66,14 @@ const CreateNewFood = () => {
     <div  style={styles.topButtonsContainerStyle}>
       <ButtonWithImage
           variant="backButton"
-          navigateTo="/searchFood"
+          to="/searchFood"
           imageName="back_arrow.svg"
           imageSize={20}
         >
          Back
       </ButtonWithImage>
     </div>
-    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} title="Add Food" />
+    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} />
   </PageContainer>
 }
 

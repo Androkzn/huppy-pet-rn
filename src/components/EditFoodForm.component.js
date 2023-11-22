@@ -1,134 +1,71 @@
 /** @jsxImportSource @emotion/react */
 
-import PageContainer from "./PageContainer.component";
-import * as styles  from './styles/AddFood.css'
-import {TitleAndDropdown, TitleButtonsAndTextField} from "./Form.components"
-import * as enums from "../helpers/Enums.helper"
-import {Image} from './Image.components'
-import { useState } from "react";
 import { ButtonText } from "./Buttons.components"
+import * as styles  from '../components/styles/CreateNewFood.css'
+import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
+import * as enums from "../helpers/Enums.helper"
 
-const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
-  const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
-  const [isNutritionExpanded, setNutritionExpanded] = useState(false);
- 
-  const onDDInputChange = (event) => {
+
+const EditFoodForm = ({ editFood, foodItem, setFoodItem }) => {
+  console.log("editFood foodItem",foodItem)
+  const onFormInputChange = (event) => {
     const { name, value } = event.target;
-    foodItem.units = value
+    setFoodItem({ ...foodItem, [name]: value });
   };
 
   const onButtonInputChange = (name, value) => {
-    foodItem.weight = value
+    setFoodItem({ ...foodItem, [name]: value });
   };
 
-  const onTextInputChange = (event) => {
-    const { value } = event.target;
-    foodItem.weight = value
-  };
+  const getInitialValue = (rawType) => {
+    switch (rawType) {
+      case 'protein': return foodItem.protein;
+      case 'fat': return foodItem.fat;
+      case 'fiber': return foodItem.fiber;
+      case 'ash': return foodItem.ash;
+      case 'carb': return foodItem.carb;
+      case 'calories': return foodItem.calories;
+      case 'servings':return foodItem.servings;
+      case 'caloriesServing': return foodItem.caloriesServing;
+      case 'servingWeight':return foodItem.servingWeight;
+      case 'meatRatioo':return foodItem.meatRatio;
+      case 'bonesRatio':return foodItem.bonesRatio;
+      default: return 0;
+    } 
 
-  return <PageContainer>
-    <form style={styles.addFoodFormStyle} onSubmit={(e) => {e.preventDefault(); }}>
-      <h2  style={styles.addFoodTitleStyle}>{"Add Food To Meal"}</h2>
+  }
   
-      <div style={styles.imageContainerStyle}> 
-          <Image imageName="food_placeholder.png" width="150" height="150" />
-      </div>
-  
-      <TitleAndDropdown 
-        name={"units"} 
-        title={"Units"}
-        dropdownOptions={Object.values(enums.FoodUnits)}  
-        onChange={onDDInputChange}
-       />
-      <TitleButtonsAndTextField
-          title={"Select weight"}
-          name={"weight"}
-          initialValue={0} 
-          onChange={(e) => {
-            onTextInputChange(e);  
-          }}
-          onSubmit={(e) => {
-            onTextInputChange(e);
-          }}
+  return <div  css={styles.addFoodFormStyle}>
+    <form >
+      <h2  css={styles.addFoodTitleStyle}>{"Edit Food"}</h2>
+      
+      <TitleAndTextInput name={"name"} title={"Name"} initialValue={foodItem.name} onChange={onFormInputChange} placeholder={"Enter food name"}/>
+      
+      <TitleAndDropdown name={"type"} title={"Food type"} initialValue={foodItem.type} dropdownOptions={Object.values(enums.FoodType)}  onChange={onFormInputChange}/>
+      <TitleAndDropdown name={"units"} title={"Units"} initialValue={foodItem.units} dropdownOptions={Object.values(enums.FoodUnits)}  onChange={onFormInputChange}/>
+      <TitleAndDropdown name={"categoryType"} initialValue={foodItem.categoryType}  title={"Food category"} dropdownOptions={Object.values(enums.FoodCategoryType)}  onChange={onFormInputChange}/>
+     
+      <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>
+      
+      {Object.values(enums.AddFoodRowType).map((rawType, index) => (
+        <TitleButtonsAndTextField
+          key={index}
+          title={enums.getTitleForAddFoodRowType(rawType) }
+          name={rawType}
+          initialValue={getInitialValue(rawType)} 
+          onChange={onFormInputChange}
           onChangeButton={onButtonInputChange}
         />
+      ))}
 
-      <div style={styles.descriptionContainerStyle}>
-        <div  style={styles.rowStyle}>
-          <h3
-            style={styles.nutritionFactsTitleStyle}
-            onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-          >
-            {"Description"}
-          </h3>
-          <Image
-            imageName={isDescriptionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
-            width="20"
-            height="20"
-            onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
-        {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem.desc}</div>}
-      </div>
-
-      <div style={styles.nutritionContainerStyle}>
-        <div  style={styles.rowStyle}>
-          <h3
-            style={styles.nutritionFactsTitleStyle}
-            onClick={() => setNutritionExpanded(!isNutritionExpanded)}
-          >
-            {"Nutrition Facts"}
-          </h3>
-          <Image
-            imageName={isNutritionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
-            width="20"
-            height="20"
-            onClick={() => setNutritionExpanded(!isNutritionExpanded)}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
-        {isNutritionExpanded && <div  style={styles.descriptionStyle}>
-            <div style={styles.columnStyle}>
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Protein, %</div>  
-                <div>{foodItem.protein}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Fat, %</div>  
-                <div>{foodItem.fat}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Carbohydrates, %</div>  
-                <div>{foodItem.carb}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Fiber, %</div>  
-                <div>{foodItem.fiber}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Ash, %</div>  
-                <div>{foodItem.ash}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Calories in 100g, kcal</div>  
-                <div>{foodItem.calories}</div> 
-              </div> 
-              <div  style={styles.nutritionRowStyle}>  
-                <div>Calories in serving, kcal</div>  
-                <div>{foodItem.caloriesServing}</div> 
-              </div> 
-            </div>
-
-          </div>}
-      </div>
-      <div style={styles.rowStyle}> 
-        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={() => addFoodToMeal()}  >
-          Add to Meal
-        </ButtonText>
+      <DescriptionTextBox  initialValue={foodItem.desc} name={"desc"} title={"Add Description"} onChange={onFormInputChange} />
+       <div css={styles.addFoodButtonContainerStyle}> 
+       <ButtonText as= 'button' name="createFood" width= '200px' variant="rectangleTextButton" onClick={(e) => editFood(e)}  >
+          {"Save changes"} Food
+        </ButtonText> 
       </div>
     </form>
-  </PageContainer>;
+  </div>;
 }
 
-export default AddFoodForm;
+export default EditFoodForm;

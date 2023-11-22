@@ -21,7 +21,7 @@ const TabBar = () => {
     setValue(newValue);
     switch (newValue) {
       case 0: return navigate("/");;
-      case 1: return navigate("/");
+      case 1: return navigate("/dashboard");
       case 2: return navigate("/");
       case 3: return navigate("/");
       case 4: return navigate("/");

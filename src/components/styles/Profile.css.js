@@ -17,7 +17,7 @@ const columnStyle = {
   width: '100%',
 };
 
-const descriptionContainerStyle = {
+const foodRatioContainerStyle = {
   ...columnStyle,
   display: 'flex',
   borderRadius: '10px',
@@ -29,7 +29,8 @@ const descriptionContainerStyle = {
   backgroundColor: colors.lightBrown,
 };
 
-const descriptionStyle = {
+
+const foodRatioExpandedContainerStyle = {
   alignItems: 'left',
   textAlign: 'left',
   width: '90%',
@@ -39,11 +40,42 @@ const descriptionStyle = {
   backgroundColor: colors.white,
 };
 
-const nutritionRowStyle = {
+
+const chartContainerStyle = {
+  height: '250px',
+  width: '90%',
+  margin: '10px',
+  padding: '10px',
+  borderRadius: '10px',
+  backgroundColor: colors.blueLight,
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const selectedCategoriesContainerStyle = {
+  height: '250px',
+  width: '90%',
+  margin: '10px',
+  padding: '10px',
+  borderRadius: '10px',
+  backgroundColor: colors.blueLight,
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const unselectedCategoriesContainerStyle = {
+  height: '250px',
+  width: '90%',
+  margin: '10px',
+  padding: '10px',
+  borderRadius: '10px',
+  backgroundColor: colors.blueLight,
+};
+
+const recommendedCaloriesStyle = {
   ...rowStyle, 
   justifyContent: 'space-between',
-  width: '80%',
-  margin: '5px',
+  width: '95%',
 };
 
 const nutritionContainerStyle = {
@@ -67,14 +99,24 @@ const topButtonsContainerStyle = {
 };
 
 const addFoodFormStyle = {
-  maxWidth: '450px',
-  minWidth: '350px',
-  margin: 'auto',
+  maxWidth: '30%',
+  minWidth: '90%',
 };
-
-const addFoodTitleStyle = {
+const profileTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+}
+const nameStyle = {
+  textAlign: 'center',
+  color: colors.lightGreen,
+};
+
+const ageStyle = {
+  textAlign: 'center',
+  color: colors.black,
+  backgroundColor: colors.blueLight,
+  borderRadius: '10px',
+  padding: '5px',
 };
 
 const nutritionFactsTitleStyle = {
@@ -90,11 +132,11 @@ const addFoodButtonContainerStyle = {
 };
 
 const imageContainerStyle = {
-  display: 'flex',
+  ...columnStyle,
   justifyContent: 'center',
   marginBottom: '10px',
-  borderRadius: '50%',  
-  overflow: 'hidden',
+  width: '30%',
+  margin: 'auto',
 };
 
 
@@ -102,14 +144,19 @@ const imageContainerStyle = {
 export {
   columnStyle,
   rowStyle,
-  descriptionStyle,
-  nutritionRowStyle,
-  descriptionContainerStyle,
+  foodRatioExpandedContainerStyle,
+  recommendedCaloriesStyle,
+  foodRatioContainerStyle,
   nutritionContainerStyle,
   addFoodButtonContainerStyle,
   addFoodFormStyle,
-  addFoodTitleStyle,
+  nameStyle,
+  ageStyle,
+  profileTitleStyle,
   nutritionFactsTitleStyle,
   topButtonsContainerStyle,
   imageContainerStyle,
+  selectedCategoriesContainerStyle,
+  chartContainerStyle,
+  unselectedCategoriesContainerStyle,
 };

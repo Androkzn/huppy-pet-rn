@@ -8,23 +8,41 @@ import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
 import * as styles from "../components/styles/SearchFood.css"
 import {ButtonWithImage} from '../components/Buttons.components'
+import { Clear} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import {Image} from '../components/Image.components'
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
+import SearchIcon from '@mui/icons-material/Search';
+
+// Function to load state from localStorage
+const loadState = (key, defaultValue) => {
+  const storedValue = localStorage.getItem(key);
+  return storedValue ? JSON.parse(storedValue) : defaultValue;
+};
+
+// Function to save state to localStorage
+const saveState = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
 
 const SearchFood = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { mealId } = location.state || {};
-
   const { user } = useContext(UserContext);
+
+  // State for meal ID
+  const [mealIdInitial, setMealId] = useState(loadState("mealId", mealId));
   // State for search query
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(loadState("searchQuery", ""));
   // State for selected category filter
-  const [selectedCategory, setSelectedCategory] = useState("meat");
+  const [selectedCategory, setSelectedCategory] = useState(loadState("selectedCategory", "meat"));
    // State for searchResult 
-  const [searchResult, setResults] = useState([]);
+  const [searchResult, setResults] = useState(loadState("searchResult", []));
    // State for radio buttons 
-  const [selectedFilter, setSelectedFilter] = useState("All");
+  const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", "All"));
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
@@ -32,7 +50,7 @@ const SearchFood = () => {
   };
 
   const openCeateNewFoodPage = () => {
-    navigate("/editFood", { state: { mealId } });
+    navigate("/createNewFood", { state: { mealId } });
   };
 
   const updateSearchResults = () => {
@@ -44,10 +62,35 @@ const SearchFood = () => {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setResults([]);
+  };
 
   useEffect(() => {
     updateSearchResults()
   }, [searchQuery, selectedFilter, selectedCategory]);
+
+  // Function to save state to localStorage whenever it changes
+  useEffect(() => {
+    saveState("searchQuery", searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    saveState("selectedCategory", selectedCategory);
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    saveState("searchResult", searchResult);
+  }, [searchResult]);
+
+  useEffect(() => {
+    saveState("selectedFilter", selectedFilter);
+  }, [selectedFilter]);
+
+  useEffect(() => {
+    saveState("mealId", mealIdInitial);
+  }, [mealIdInitial]);
 
   // Func that is responsible for searching Food Templates in DB based on search string
   async function searchFood() {
@@ -68,6 +111,31 @@ const SearchFood = () => {
     }
     console.log("searchFood results:", searchResult);
   }
+
+   const TopButtonContainer = () => {
+    return (
+      <div  style={styles.buttonsContainerStyle}>
+        <ButtonWithImage
+            variant="backButton"
+            to="/"
+            imageName="back_arrow.svg"
+            imageSize={20}
+          >
+          Back
+        </ButtonWithImage>
+        <ButtonWithImage
+            variant="addButton"
+            width='180px'
+            as='button'
+            imageName="plus_round_fill_white_button.svg"
+            imageSize={20}
+            onClick={openCeateNewFoodPage}
+          >
+            Create New Food
+        </ButtonWithImage>
+      </div>
+    )
+   }
  
     const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
       const filterOptions = [
@@ -142,53 +210,79 @@ const SearchFood = () => {
     }
 
     return (
-      <div>
+      <div style={styles.columnStyle}>
         {searchResult.map((foodItem, index) => (
-          <div key={index}>
-              <FoodCard food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
-          </div>
+            <FoodCard food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
         ))}
       </div>
     );
   };
 
-  return <PageContainer>
-    <div  style={styles.buttonsContainerStyle}>
-    <ButtonWithImage
-          variant="backButton"
-          to="/"
-          imageName="back_arrow.svg"
-          imageSize={20}
-        >
-         Back
-        </ButtonWithImage>
-      <ButtonWithImage
-          variant="addButton"
-          width='180px'
-          as='button'
-          imageName="plus_round_fill_white_button.svg"
-          imageSize={20}
-          onClick={openCeateNewFoodPage}
-        >
-          Create New Food
-        </ButtonWithImage>
-      </div>
-      <div style={styles.mainConteinerStyle}>
-        <div style={styles.rowStyle}>
-          <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
-          <input
-          style={styles.textFieldStyle}
-          type="text"
+  const SearchContainer = () => {
+    return (
+
+      <div style={styles.rowStyle}>
+         <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
+        <TextField 
           id="searchField"  // Add an id attribute
           placeholder="Enter food name"
           value={searchQuery}
           onChange={(e) => {
-              if (searchQuery !== e.target.value) {
-                  setSearchQuery(e.target.value);
-              }
+            if (searchQuery !== e.target.value) {
+                setSearchQuery(e.target.value);
+            }
+        }}
+          variant="outlined"
+          InputProps={{
+            style: styles.textFieldStyle,
+            
+            endAdornment: (
+              <>
+                {searchQuery ? (
+                  <IconButton onClick={handleClearSearch} size="small">
+                    <ClearIcon />
+                  </IconButton>
+                ) : (
+                  <SearchIcon />
+                )}
+              </>
+            ),
           }}
-          />
-        </div>
+          InputLabelProps={{
+            focused: true, // Set to true to change label color when focused
+          }}
+          onFocus={(e) => (e.target.placeholder = '')}
+          onBlur={(e) => (e.target.placeholder = 'Enter food name')}
+        />
+      </div>
+
+      // <div style={styles.rowStyle}>
+      //   <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
+      //   <input
+      //   style={styles.textFieldStyle}
+      //   type="text"
+      //   id="searchField"  // Add an id attribute
+      //   placeholder="Enter food name"
+      //   value={searchQuery}
+        // onChange={(e) => {
+        //     if (searchQuery !== e.target.value) {
+        //         setSearchQuery(e.target.value);
+        //     }
+        // }}
+      //   />
+
+ 
+      //   {searchQuery && (
+      //     <div css={styles.clearButonStyle}><Clear onClick={() => handleClearSearch()} /></div>   
+      //   )}
+      // </div>
+    );
+  };
+
+  return <PageContainer>
+      <TopButtonContainer/>
+      <div style={styles.mainConteinerStyle}>
+        {SearchContainer()}
         <FilterContainer
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}

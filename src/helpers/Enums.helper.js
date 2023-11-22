@@ -91,6 +91,20 @@ export const FoodSection = {
       default: return 'black';
     }
   };
+  export const getAllFoodCategories = (profileId) => {
+  return [
+    { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getTitleUpercased(FoodCategoryType.MEAT), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.MEAT)},
+    { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getTitleUpercased(FoodCategoryType.BONES), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.BONES)},
+    { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.LIVER)},
+    { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.GIBLETS)},
+    { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.VEGGIE)},
+    { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getTitleUpercased(FoodCategoryType.SEEDS), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.SEEDS)},
+    { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getTitleUpercased(FoodCategoryType.FRUITS), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.FRUITS)},
+    { index: getIndexFoodCategory(FoodCategoryType.FISH), type: FoodCategoryType.FISH, name: getTitleUpercased(FoodCategoryType.FISH), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.FISH)},
+    { index: getIndexFoodCategory(FoodCategoryType.FIBER), type: FoodCategoryType.FIBER, name: getTitleUpercased(FoodCategoryType.FIBER), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.SEEDS)},
+    { index: getIndexFoodCategory(FoodCategoryType.OTHER), type: FoodCategoryType.OTHER, name: getTitleUpercased(FoodCategoryType.OTHER), weight: 0, percentage: 0, color: getColorFoodCategory(FoodCategoryType.FRUITS)},
+  ];
+}
   
   // Enum AddFoodRowType definition
   export const AddFoodRowType = {

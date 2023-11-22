@@ -1,37 +1,34 @@
 /** @jsxImportSource @emotion/react */
 
+import { useContext, useState, useEffect  } from "react";
 import * as styles  from './styles/Profile.css'
 import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"
+import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
 import {ImageCircle} from './ImageCircle.components'
-import { useState } from "react";
 
-const Profile = ({ profile, setProfile }) => {
-  const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(false);
+const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory}) => {
+  const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
+  const [isDailyRatioSelected, setDailyRatioSelected] = useState(false);
+ 
   
   const getUnusedCategories = () => {
-    console.log("RatioPresets: ", profile?.preset)
-    if ( profile?.preset === Enums.RatioPresets.CUSTOM) {
-      let remainingCategories = []
-      const allCategories = Object.values(Enums.FoodCategoryType) 
-      console.log("allCategories: ", allCategories)
-      
-      const existingCategories = profile?.categories[0]
-      for (let i = 0; i <allCategories.length; i++) {
-        console.log(existingCategories.find(item => item.index === i) );
+    if (profile?.preset === Enums.RatioPresets.CUSTOM) {
+      const remainingCategories =  Enums.getAllFoodCategories(profile._id);
+      // Filter out categories that already exist
+      const unusedCategories = remainingCategories.filter(
+        (category) => !customFoodCategories.some((existingCategory) => existingCategory.index == category.index)
+      );
 
-        if (existingCategories.find(item => item.index === i) === null) {
-
-        }
-      }
-      
-      return remainingCategories;
+      return unusedCategories;
     } else {
-      return [1];
+      return [];
     }
-  }
+  };
+  
+  
 
   const getCategoriesForPresset = () => {
     if ( profile?.preset !== Enums.RatioPresets.CUSTOM) {
@@ -43,43 +40,87 @@ const Profile = ({ profile, setProfile }) => {
   }
 
   let categoriesCanBeAdded = getUnusedCategories()  
-  let isDailyRatioFromWeightSelected = false
-  let unusedCategoryPercentage = 0
+  let unusedCategoryPercentage = checkUnusedCategoryPercentage()
 
-  console.log("Profile: ", profile)
-  console.log("Categories: ", profile.categories)
+  // Save the profile to local storage whenever it changes
+  useEffect(() => {
+    profile.categories = getCategoriesForPresset()
+  }, [profile.preset]);
 
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
-    setProfile({ ...profile, [name]: value });
+    updateProfile(name, value)
   };
 
-  const onButtonInputChange = (name, value) => {
-    setProfile({ ...profile, [name]: value });
+  const onButtonInputChange = (name, value, id) => {
+    // Handle Profile props changes
+    if (name === "weight" || name === "dailyPortion" || name === "dailyRatio") {
+     
+      // Update dailyPortion if 
+      if ( name === "dailyRatio" && isDailyRatioSelected) {
+        let data = {
+          dailyRatio: value,
+          dailyPortion:  getPortionWeight(value)
+        }
+        console.log("onButtonInputChange with data: ", data)
+        updateProfile(data)
+      }  else {
+        updateProfile(name, value)
+      }
+
+    }  else {
+      updateCategory(id, value)
+      checkUnusedCategoryPercentage()
+    }
+
+    
   };
 
-  const onDDInputChange = (event) => {
-    const { name, value } = event.target;
-   
+  const handleToggleAndDDChange = (name, value) => {
+    updateProfile(name, value)
   };
 
-  const onTextInputChange = (event) => {
-    const { value } = event.target;
-   
+  const onTextInputChange = (event, id) => {
+    const { value, name } = event.target;
+    if (name === "weight" || name === "dailyPortion") {
+      //setProfile({ ...profile, [name]: value });
+      updateProfile(name, value)
+    }  else {
+      // Handle Food Category  changes
+        updateCategory(id, value)
+        checkUnusedCategoryPercentage()
+    }
   };
 
-  const handleToggle = () => {
-    profile.deductCalories = !profile?.deductCalories;
-  };
+  const onDatePickertChange = (event) => {
+    if (event.$d) {
+      // Check if toDate method is available (assuming toDate is used to convert)
+      const dateValue = new Date(event.$d.valueOf());
+    console.log("onDatePickertChange", dateValue);
+    updateProfile("dob", dateValue);
+    }
+  }
 
-  const deleteCurrentCategory= (category) => {
-    console.log("Category deleted: ", category)
-  };
-
-  const addCategory= (index) => {
-    console.log("Category added index: ", index)
-  };
+  function getPortionWeight(dailyRatio) {
+      const percentage = parseFloat(dailyRatio);
+      const weight = parseFloat(profile.weight);
+      const newPortionWeight = weight * (percentage / 100) * 1000;
+      return Math.round(newPortionWeight);
+  }
   
+
+  function getEstCalories() {
+    return Math.floor(Constants.estCalories * profile.weight * profile.dailyRatio);
+  }
+  
+  function checkUnusedCategoryPercentage() {
+    const usedPercentage = customFoodCategories.reduce((total, category) => {
+      return total + category.percentage;
+    }, 0);
+    const result = 100 - usedPercentage;
+    return result;
+  }
+
   function getAge(dob) {
     const currentDate = new Date();
     const dobDate = new Date(dob);
@@ -110,7 +151,7 @@ const Profile = ({ profile, setProfile }) => {
     }
   }
 
-  function calculateRecommendedCalories(profile) {
+  function calculateRecommendedCalories() {
     let caloriesRecommended = 0;
   
     const months = calculateAgeInMonths(profile?.dob)
@@ -132,6 +173,9 @@ const Profile = ({ profile, setProfile }) => {
     return caloriesRecommended;
   }
   
+  
+  
+
   
   function isAdultDog(dob) {
     const ageComponents = getAgeComponentForDOB(dob)
@@ -193,12 +237,17 @@ const Profile = ({ profile, setProfile }) => {
       <TitleAndTextInput  name={"breed"} title={"Breed"} initialValue={profile?.breed} onChange={onFormInputChange} placeholder={"Enter breed"}/>
       
       {isAdultDog(profile?.dob) && (
-        <TitleAndDropdown 
-          name={"size"} 
-          title={"Activity level"}
-          dropdownOptions={Object.values(Enums.DogActivityType).map((type) => Enums.getDogActivityTitle(type))}  
-          onChange={onDDInputChange}
-        />
+      <TitleAndDropdown
+      name={"activityType"}
+      title={"Activity level"}
+      dropdownOptions={Object.values(Enums.DogActivityType).map((type) => ({
+        rawValue: type,
+        title: Enums.getDogActivityTitle(type),
+      }))}
+      onChange={(value) => {
+        handleToggleAndDDChange("activityType", value);
+      }}
+    />
       )}
 
       <TitleButtonsAndTextField
@@ -218,7 +267,7 @@ const Profile = ({ profile, setProfile }) => {
           name={"dob"}
           selectedDate={new Date(profile?.dob)} 
           onChange={(e) => {
-           onTextInputChange(e);  
+            onDatePickertChange(e);  
          }}
 
         />
@@ -226,14 +275,19 @@ const Profile = ({ profile, setProfile }) => {
       <TitleAndDropdown 
         name={"size"} 
         title={"Breed size"}
-        dropdownOptions={Object.values(Enums.BreedSize).map((type) => Enums.getBreedSizeTitle(type))}  
-        onChange={onDDInputChange}
+        dropdownOptions={Object.values(Enums.BreedSize).map((type) => ({
+          rawValue: type,
+          title: Enums.getBreedSizeTitle(type),
+        }))}
+        onChange={(value) => {
+          handleToggleAndDDChange("size", value);
+        }}
        />
 
       <TitleAndToggle
         name={"deductCalories"} 
         title={"Deduct calories from activities"}
-        onChange={handleToggle}
+        onChange={ () => {handleToggleAndDDChange("deductCalories", !profile?.deductCalories)}}
         initialValue={profile?.deductCalories}
        />
 
@@ -253,33 +307,40 @@ const Profile = ({ profile, setProfile }) => {
             style={{ cursor: "pointer" }}
           />
         </div>
-        {isFoodRatioExpanded && <div style={styles.foodRatioExpandedContainerStyle}>
-          {
+        {isFoodRatioExpanded && <div style={styles.foodRatioExpandedContainerStyle}>{
             <div>
               <TitleTooltipAndValue
                 title="Recommended calories, kcal"
                 tipText="Pets’ energy (Calorie) needs to maintain a healthy weight for their life stage depends upon several factors. First, the energy to perform essential body functions like digestion, respiration, heart functions, brain functions, etc. Resting Energy Requirements (or RER), which can be calculated by multiplying the animal’s body weight in kilograms raised to the ¾ power by 70, for example, a 10kg (22lb) adult neutered dog of healthy weight needs RER = 70(10kg)3/4 ≈ 400 Calories/day."
-                value={calculateRecommendedCalories(profile)}
+                value={calculateRecommendedCalories()}
               />
 
-              <TitleTooltipAndValue
+              {isDailyRatioSelected &&<TitleTooltipAndValue
                 title="Estimated daily calories, kcal"
                 tipText="Estimated daily calories is calculated based on "
-                value={calculateRecommendedCalories(profile)}
+                value={getEstCalories()}
               />
+              }
 
               <TitleAndDropdown 
-                name={"size"} 
+                name={"preset"} 
                 title={"Food ratio preset"}
-                dropdownOptions={Object.values(Enums.RatioPresets).map((type) => Enums.getRatioPresetsTitle(type))}  
-                onChange={onDDInputChange}
+                dropdownOptions={Object.values(Enums.RatioPresets).map((type) => ({
+                  rawValue: type,
+                  title: Enums.getRatioPresetsTitle(type),
+                }))}
+                onChange={(value) => {
+                  handleToggleAndDDChange("preset", value);
+                }}
               />
 
               <TitleToggleAndButtons
                   name={"dailyRatio"} 
                   title={"Daily ratio from body weight"}
-                  initialValue={profile?.dailyRatio}
-                  onChange={onDDInputChange}
+                  dailyRatioValue={profile?.dailyRatio}
+                  toggleValue={isDailyRatioSelected}
+                  onChangeToggle={ (value) => { setDailyRatioSelected(value) }}
+                  onChangeDailyRatioValue={ (value) => {onButtonInputChange("dailyRatio", value)}}
               />
 
               <TitleButtonsAndTextField
@@ -299,23 +360,26 @@ const Profile = ({ profile, setProfile }) => {
               <div  style={styles.chartContainerStyle}>
                   CHART
               </div>
+              {/* Unused calories reminder */}
+              {unusedCategoryPercentage > 0 && <div style={styles.unusedCaloriesReminderStyle}> 
+                You have {unusedCategoryPercentage}% unused! 
+              </div>
+              }
 
               {/* Selected categories */}
               <div  style={styles.selectedCategoriesContainerStyle}>
               <div style={styles.columnStyle}>
-                {profile?.categories[0].map((category, index)  => (
+                {customFoodCategories.map((category)  => (
                     <SelectedFoodCategoryRow
+                      key={category?.name}
                       name={category?.name}
-                      weight={category?.weight}
+                      remainingPercentage= {unusedCategoryPercentage}
+                      weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
                       color={category?.color}
                       value={category?.percentage} 
-                      onChange={(e) => {
-                        onTextInputChange(e);  
-                      }}
-                      onDelete={(e) => {
-                        deleteCurrentCategory(category);
-                      }}
-                      onChangeButton={onButtonInputChange}
+                      onChange={(e) => {onTextInputChange(e, category?._id);  }}
+                      onDelete={() => {deleteCategory(category);}}
+                      onChangeButton={(name,value) => {onButtonInputChange(name,value, category?._id)}}
                     />
                 ))}
               </div>
@@ -324,6 +388,7 @@ const Profile = ({ profile, setProfile }) => {
               {/* Select custom category container */}
               { categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
               <div style={styles.foodRatioContainerStyle}>
+                <div  style={styles.columnStyle}>
                 <div  style={styles.rowStyle}>
                   <h3
                     style={styles.nutritionFactsTitleStyle}
@@ -338,29 +403,31 @@ const Profile = ({ profile, setProfile }) => {
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
                     style={{ cursor: "pointer" }}
                   />
-                </div>
-                {isFoodCategoryExpanded && <div style={styles.unselectedCategoriesContainerStyle}>
-              {
-                 <div  style={styles.selectedCategoriesContainerStyle}>
-                  <div style={styles.columnStyle}>
-                    {categoriesCanBeAdded.map((category, index)  => (
-                       <UnselectedFoodCategoryRow
-                       name={category.name} 
-                       color={category.color}
-                       onAdd={addCategory}
-                       />
-                    ))}
                   </div>
-                 </div>
-                } 
-              </div>
-              }
-              </div>
-              )}
 
-              
+                  {isFoodCategoryExpanded && <div style={styles.unselectedCategoriesContainerStyle}>{
+                    <div style={styles.unselectedFoodCategoryStyle}>
+                      {categoriesCanBeAdded.map((category)  => (
+                        <UnselectedFoodCategoryRow
+                        key={category?.name}
+                        name={category.name} 
+                        color={category.color}
+                        onAdd={() => {
+                          addCategory(category);  
+                        }}
+                        />
+                      ))}
+                    </div>
+                  } 
+                </div>
+                }
+              </div>
+            </div>
+              )}
+              )}
+            )}  
            </div>
-        } 
+            } 
         </div>}
       </div>
     </form>

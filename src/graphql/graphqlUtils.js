@@ -45,7 +45,6 @@ async function searchForFood(searchQuery, user) {
     try {
         const resp = await request(GRAPHQL_ENDPOINT, searchFoodTemplateQuery, queryVariables, headers);
         if (resp.search) {
-          console.log(resp.search)
            return resp.search;
         }
     } catch (error) {
@@ -88,9 +87,7 @@ async function getAllFoodForMeal(user, mealId) {
     };
  
     try {
-        
         const resp = await request(GRAPHQL_ENDPOINT, getAllFoodForMeal, queryVariables, headers);
-        
         // Update the 'food' state with the fetched data
         return resp.foods;
     } catch (error) {
@@ -135,9 +132,7 @@ async function getAllCustomFoodTemplates(user) {
   const queryVariables = {};
 
   try {
-      
       const resp = await request(GRAPHQL_ENDPOINT, getAllCustomFoodTemplates, queryVariables, headers);
-      
       // Update the 'food' state with the fetched data
       return resp.foodTemplates;
   } catch (error) {
@@ -189,6 +184,41 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
       
       // Update the 'food' state with the fetched data
       return resp.foodTemplates;
+  } catch (error) {
+      alert(error);
+  }
+}
+
+// Func that is responsible for fetching  all food for specific meal
+// it returna array of Food
+async function getAllFoodCategories(user, profileId) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to fetch all  food for specificmeal
+  const getAllFoodCategories = gql`
+      query getAllFoodCategories($profileId: String!) {
+        foodCategories(query: { profileId: $profileId}) {
+          _id
+          type
+          index
+          color
+          name
+          percentage
+          weight
+          profileId
+          userId
+          }
+      }
+  `;
+  const queryVariables = {
+    "profileId": profileId,
+  };
+
+  try {
+      const resp = await request(GRAPHQL_ENDPOINT, getAllFoodCategories, queryVariables, headers);
+      // Update the 'food' state with the fetched data
+      return resp.foodCategories;
   } catch (error) {
       alert(error);
   }
@@ -340,6 +370,36 @@ async function deleteFoodTemplate(user, _id) {
     }
 }
 
+// Func that is responsible for deleting a food template based on the expense-id
+// it return bool value
+async function deleteFoodCategory(user, _id) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+   // Confirming the user's action
+   const resp = window.confirm("Are you sure you want to delete this category?");
+   if (!resp) return;
+
+  // GraphQL query to delete an food template
+  const deleteFoodCategoryQuery = gql`
+      mutation DeleteFoodCategory($query:FoodCategoryQueryInput!) {
+          deleteOneFoodCategory(query: $query) {
+              _id
+          }
+      }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, deleteFoodCategoryQuery, queryVariables, headers);
+      return true
+    } catch (error) {
+      alert(error);
+      return false
+    }
+}
+
 // Func that is responsible for adding Food to DB   
 // it return bool value
 async function addFood(user, mealId, foodItem) {
@@ -393,10 +453,8 @@ async function addFoodTemplate(user, foodItem) {
   const accessToken = user._accessToken;
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
-      // All the data that needs to be sent to the GraphQL endpoint
+  // All the data that needs to be sent to the GraphQL endpoint
   // to create food will be passed through queryVariablesCreateFood.
-  console.log("addFoodTemplate", foodItem)
-  
   const queryVariablesCreateFood = {
       data: {
         bonesRatio:  foodItem.bonesRatio,
@@ -434,8 +492,6 @@ async function addFoodTemplate(user, foodItem) {
      const response =await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
       // Extract the _id from the response
      const templateId = response.insertOneFoodTemplate._id;
-     console.log('Created FoodTemplate _id:', templateId);
- 
       return { success: true, templateId: templateId };
     } catch (error) {
       alert(error);
@@ -550,7 +606,6 @@ async function loadActivities(user, currentProfile, currentDate) {
     const headers = { Authorization: `Bearer ${accessToken}` };
     const { startToday, endToday } = getStartAndEndOfToday(currentDate);
 
-    console.log("currentProfile", currentProfile)
    // GraphQL query to fetch all the activities for specific time interval
    const getAllActivities = gql`
    query getAllActivities($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
@@ -737,6 +792,39 @@ async function addTraining(user, currentProfile, selectedDate, data) {
     }
 }
 
+async function addFoodCategory(user, currentProfile, data) {
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  // GraphQL query to create an Training
+  const createFoodCategoryQuery = gql`
+  mutation AddFoodCategory($data: FoodCategoryInsertInput!) {
+    insertOneFoodCategory(data: $data) {
+        _id
+    }
+  }
+  `;
+
+  // All the data that needs to be sent to the GraphQL endpoint
+  // to create an Training will be passed through queryVariablesCreateTraining.
+  const queryVariablesCreateFoodCategory = {
+      data: {
+          ...data, // Merge the provided activity data  
+          profileId: profileId,
+          userId: userId
+      }
+  };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, createFoodCategoryQuery, queryVariablesCreateFoodCategory, headers);
+      return true
+  } catch (error) {
+      console.error('Error adding FoodCategory:', error);
+      return false
+  }
+}
+
 // Function to update an activity
 async function updateActivity(user, activityId, updateData) {
   const accessToken = user._accessToken;
@@ -807,14 +895,103 @@ async function updateTraining(user, trainingId, updateData) {
   }
 }
 
-// Function to update an activity
+// Function to update Profile
+async function updateProfile(user, profileId, updateData) {
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to update Profile
+  const updateProfileQuery = gql`
+      mutation UpdateProfile($profileId: ObjectId!, $updateData: ProfileUpdateInput!) {
+          updateOneProfile(query: { _id: $profileId }, set: $updateData) {
+            _id
+            avatar
+            breed
+            categories {
+                _id
+                color
+                index
+                name
+                profileId
+                percentage
+                type
+                userId
+                weight
+            }
+            dailyPortion
+            dailyRatio
+            dob
+            isCurrent
+            name
+            preset
+            size
+            userId
+            weight
+            activityType
+            deductCalories 
+          }
+      }
+  `;
+
+  const queryVariables = {
+    profileId,
+    updateData,
+  };
+
+  try {
+      const resp = await request(GRAPHQL_ENDPOINT, updateProfileQuery, queryVariables, headers);
+      return resp.updateOneProfile;
+  } catch (error) {
+      alert(error);
+      return false;
+  }
+}
+
+// Function to update an Food Category
+async function updateFoodCategory(user, categoryId, updateData) {
+  
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to update an Food Category
+  const updateFoodCategoryQuery = gql`
+      mutation UpdateFoodCategory($categoryId: ObjectId!, $updateData: FoodCategoryUpdateInput!) {
+          updateOneFoodCategory(query: { _id: $categoryId }, set: $updateData) {
+              _id
+              color
+              index
+              name
+              profileId
+              percentage
+              type
+              userId
+              weight
+          }
+      }
+  `;
+
+  const queryVariables = {
+    categoryId,
+    updateData,
+  };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, updateFoodCategoryQuery, queryVariables, headers);
+      return true;
+  } catch (error) {
+      alert(error);
+      return false;
+  }
+}
+
+// Function to update an Foof Template
 async function updateFoodTemplate(user, foodItem) {
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
   const templateId = foodItem._id
   const userId = user.id
   
-  // GraphQL query to update an activity
+  // GraphQL query to update Food Template
   const updateFoodTemplateQuery = gql`
       mutation UpdateActivity($templateId: ObjectId!, $updateData: FoodTemplateUpdateInput!) {
           updateOneFoodTemplate(query: { _id: $templateId }, set: $updateData) {
@@ -883,6 +1060,8 @@ export {
     getAllFoodForMeal, 
     getAllCustomFoodTemplates,
     getAllFoodTemplatesForCategory,
+    getAllFoodCategories,
+    deleteFoodCategory,
     deleteMeal,
     deleteActivity,
     deleteTraining,
@@ -896,8 +1075,11 @@ export {
     addActivity,
     addTraining,
     addFood, 
+    addFoodCategory,
+    addFoodTemplate,
     updateActivity,
     updateTraining,
+    updateProfile,
     updateFoodTemplate,
-    addFoodTemplate,
+    updateFoodCategory,
 };

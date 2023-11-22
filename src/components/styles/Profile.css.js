@@ -29,6 +29,26 @@ const foodRatioContainerStyle = {
   backgroundColor: colors.lightBrown,
 };
 
+const unselectedFoodCategoryStyle = {
+  display: 'flex',
+  borderRadius: '10px',
+  alignItems: 'center',
+  justifyContent: 'stretch',
+  textAlign: 'center',
+  width: '100%',
+  flexWrap: 'wrap', 
+};
+
+const unusedCaloriesReminderStyle  = {
+  textAlign: 'center',
+  width: '50%',
+  margin: 'auto',
+  padding: '10px',
+  borderRadius: '10px',
+  fontWeight: 'bold',
+  fontSize: '18px',
+  backgroundColor: colors.orange,
+};
 
 const foodRatioExpandedContainerStyle = {
   alignItems: 'left',
@@ -42,34 +62,19 @@ const foodRatioExpandedContainerStyle = {
 
 
 const chartContainerStyle = {
-  height: '250px',
-  width: '90%',
   margin: '10px',
-  padding: '10px',
-  borderRadius: '10px',
   backgroundColor: colors.blueLight,
-  alignItems: 'center',
-  justifyContent: 'center',
 };
 
 const selectedCategoriesContainerStyle = {
-  height: '250px',
-  width: '90%',
   margin: '10px',
-  padding: '10px',
-  borderRadius: '10px',
-  backgroundColor: colors.blueLight,
-  alignItems: 'center',
-  justifyContent: 'center',
 };
 
 const unselectedCategoriesContainerStyle = {
-  height: '250px',
-  width: '90%',
   margin: '10px',
   padding: '10px',
   borderRadius: '10px',
-  backgroundColor: colors.blueLight,
+  backgroundColor: colors.white,
 };
 
 const recommendedCaloriesStyle = {
@@ -159,4 +164,6 @@ export {
   selectedCategoriesContainerStyle,
   chartContainerStyle,
   unselectedCategoriesContainerStyle,
+  unselectedFoodCategoryStyle,
+  unusedCaloriesReminderStyle
 };

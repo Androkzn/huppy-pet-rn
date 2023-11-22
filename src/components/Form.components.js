@@ -28,10 +28,9 @@ const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
   };
 
   const pickerStyle = {
-    width: '520px',
+    
   };
 
-  console.log("TitleAndDatePicker",selectedDate);
   return (
     <div style={containerStyle}>
       <h3 style={titleStyle}>{title}</h3>
@@ -90,7 +89,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange }) => {
+  const TitleAndDropdown = ({ id, title, name, key, initialValue, dropdownOptions, onChange }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -118,21 +117,20 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     
     return (
       <div style={containerStyle}>
-        <h3 style={titleStyle}>{title}</h3>
-        <select 
-          id={id}
-          name={name}  
-          value={initialValue}  
-          style={dropdownStyle}
-          onChange={onChange}  
-        >
-          {dropdownOptions.map((item, index) => (
-            <option key={index} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-      </div>
+      <h3 style={titleStyle}>{title}</h3>
+      <select
+        name={name}
+        style={dropdownStyle}
+        onChange={(e) => onChange(e.target.value)} // Only pass the raw enum value to the onChange handler
+      >
+        {/* Key stores raw value of Enum */}
+        {dropdownOptions.map((item) => (
+          <option key={item.rawValue} value={item.rawValue}>
+            {item.title}
+          </option>
+        ))}
+      </select>
+    </div>
     );
   };
 
@@ -252,7 +250,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             type="number"
             value={count}
             onChange={(e) => {
-              console.log("onChange event",e.target.value )
               setCount(parseInt(e.target.value, 10) || 0);
               onChange(e);
               e.preventDefault();  
@@ -360,25 +357,25 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleToggleAndButtons = ({ id, name, title, onChange, initialValue, onChangeButton }) => {
-    const [checked, setChecked] =  useState(initialValue);
-    const [count, setCount] = useState(initialValue);
+  const TitleToggleAndButtons = ({ id, name, title, onChangeToggle, toggleValue, dailyRatioValue,  onChangeDailyRatioValue }) => {
+    const [checked, setChecked] =  useState(toggleValue);
+    const [count, setCount] = useState(dailyRatioValue);
   
     const decrementCount = () => {
       if (count > 0) {
         setCount(count - 1);
-        onChangeButton(name, count - 1);
+        onChangeDailyRatioValue(count - 1);
       }
     };
   
     const incrementCount = () => {
       setCount(count + 1);
-      onChangeButton(name, count + 1);
+      onChangeDailyRatioValue(count + 1);
     };
   
     const handleChange = (event) => {
       setChecked(event.target.checked);
-      onChange()
+      onChangeToggle(event.target.checked)
     };
     const containerStyle = {
       display: 'flex',
@@ -440,9 +437,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             type="number"
             value={count}
             onChange={(e) => {
-              console.log("onChange event",e.target.value )
               setCount(parseInt(e.target.value, 10) || 0);
-              onChange(e);
+              onChangeDailyRatioValue(parseInt(e.target.value, 10) || 0);
               e.preventDefault();  
             }}
             onSubmit={(e) => {
@@ -465,7 +461,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const SelectedFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton }) => {
+  const SelectedFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton, remainingPercentage }) => {
     const [count, setCount] = useState(value);
   
     const decrementCount = () => {
@@ -479,17 +475,15 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       setCount(count + 1);
       onChangeButton(name, count + 1);
     };
-  
- 
+
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'center',
       borderRadius: '10px',
-      margin: '3px',
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      margin: '0px',
+      padding:  '0px',
     };
   
     const nameStyle = {
@@ -517,13 +511,14 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: '15px',
       borderRadius: '10px',
       height: '30px',
+      backgroundColor: `${colors.oliveLight}`, 
     };
 
     const deleteButonStyle = {
       color: colors.green,
       marginLeft: '20px',
     };
-  
+    
     return (
       <div style={containerStyle}>
         <h3 style={nameStyle} >{name}</h3>  
@@ -534,19 +529,23 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             name={name}
             variant="circleTextButton"
             onClick={() => decrementCount()}
+            disabled={count === 0}
           >
             -
           </ButtonText>
           <input
             id={id}
             style={textFieldStyle}
-            type="number"
+            type="number" 
             value={count}
             onChange={(e) => {
-              console.log("onChange event",e.target.value )
-              setCount(parseInt(e.target.value, 10) || 0);
-              onChange(e);
-              e.preventDefault();  
+              const newValue = e.target.value
+              // Prevents more than 100% in total for all categories
+              if ((newValue > count && remainingPercentage >= (newValue-count)) || (newValue < count)) {
+                setCount(parseInt(newValue, 10) || 0);
+                onChange(e);
+              }
+              e.preventDefault();
             }}
             onSubmit={(e) => {
               e.preventDefault();  
@@ -559,6 +558,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             name={name}
             variant="circleTextButton"
             onClick={() => incrementCount()}
+            disabled={remainingPercentage <= 0 }
           >
             +
           </ButtonText>
@@ -576,8 +576,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       textAlign: 'center',
       borderRadius: '10px',
       margin: '3px',
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight: '5px',
+      paddingLeft: '5px', 
     };
     
     const nameStyle = {
@@ -589,11 +589,10 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
     return (
       <div style={containerStyle}>
-        
-          <div style={nameStyle}>
+          <div style={nameStyle}  onClick={() => onAdd()}>
             {name}
           </div>
-            <ButtonWithImage
+            {/* <ButtonWithImage
               variant="addButton"
               width='100px'
               as='button'
@@ -601,9 +600,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
               imageSize={20}
               onClick={() => onAdd()}
             >
-            Add
-          </ButtonWithImage>
-        
+              Add
+            </ButtonWithImage> */}
       </div>
     );
   };

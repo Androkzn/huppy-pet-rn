@@ -58,12 +58,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
      
       // Update dailyPortion if 
       if ( name === "dailyRatio" && isDailyRatioSelected) {
-        let data = {
-          dailyRatio: value,
-          dailyPortion:  getPortionWeight(value)
-        }
-        console.log("onButtonInputChange with data: ", data)
-        updateProfile(data)
+        updateProfile("dailyPortion", getPortionWeight(value))
       }  else {
         updateProfile(name, value)
       }
@@ -83,7 +78,6 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
   const onTextInputChange = (event, id) => {
     const { value, name } = event.target;
     if (name === "weight" || name === "dailyPortion") {
-      //setProfile({ ...profile, [name]: value });
       updateProfile(name, value)
     }  else {
       // Handle Food Category  changes
@@ -102,7 +96,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
   }
 
   function getPortionWeight(dailyRatio) {
-      const percentage = parseFloat(dailyRatio);
+      const percentage = parseFloat( dailyRatio);
       const weight = parseFloat(profile.weight);
       const newPortionWeight = weight * (percentage / 100) * 1000;
       return Math.round(newPortionWeight);
@@ -172,11 +166,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
  
     return caloriesRecommended;
   }
-  
-  
-  
 
-  
   function isAdultDog(dob) {
     const ageComponents = getAgeComponentForDOB(dob)
     const months = ageComponents.month || 1;
@@ -240,6 +230,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
       <TitleAndDropdown
       name={"activityType"}
       title={"Activity level"}
+      initialValue={profile?.activityType} 
       dropdownOptions={Object.values(Enums.DogActivityType).map((type) => ({
         rawValue: type,
         title: Enums.getDogActivityTitle(type),
@@ -275,6 +266,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
       <TitleAndDropdown 
         name={"size"} 
         title={"Breed size"}
+        initialValue={profile?.size} 
         dropdownOptions={Object.values(Enums.BreedSize).map((type) => ({
           rawValue: type,
           title: Enums.getBreedSizeTitle(type),
@@ -339,23 +331,37 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
                   title={"Daily ratio from body weight"}
                   dailyRatioValue={profile?.dailyRatio}
                   toggleValue={isDailyRatioSelected}
-                  onChangeToggle={ (value) => { setDailyRatioSelected(value) }}
+                  onChangeToggle={ (value) => { 
+                    setDailyRatioSelected(value) 
+                    if (value) {
+                      updateProfile("dailyPortion", getPortionWeight(profile?.dailyRatio))
+                    }
+                  }}
                   onChangeDailyRatioValue={ (value) => {onButtonInputChange("dailyRatio", value)}}
               />
 
-              <TitleButtonsAndTextField
-                title={"Daily portion, g"}
-                name={"dailyPortion"}
-                initialValue={profile?.dailyPortion} 
-                onChange={(e) => {
-                  onTextInputChange(e);  
-                }}
-                onSubmit={(e) => {
-                  onTextInputChange(e);
-                }}
-                onChangeButton={onButtonInputChange}
-              />
-
+              {/* {isDailyRatioSelected && */}
+              { isDailyRatioSelected ? (
+                  <TitleTooltipAndValue
+                  title="Daily portion, g"
+                  tipText="Calculated based on selected daily ratio"
+                  value={profile?.dailyPortion}
+                />
+                ) : (
+                  <TitleButtonsAndTextField
+                    title={"Daily portion, g"}
+                    name={"dailyPortion"}
+                    initialValue={profile?.dailyPortion} 
+                    onChange={(e) => {
+                      onTextInputChange(e);  
+                    }}
+                    onSubmit={(e) => {
+                      onTextInputChange(e);
+                    }}
+                    onChangeButton={onButtonInputChange}
+                  />
+                )}
+ 
               {/* Chart */}
               <div  style={styles.chartContainerStyle}>
                   CHART
@@ -423,11 +429,9 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
                 }
               </div>
             </div>
-              )}
-              )}
-            )}  
+            )}
            </div>
-            } 
+        } 
         </div>}
       </div>
     </form>

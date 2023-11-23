@@ -89,7 +89,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleAndDropdown = ({ id, title, name, key, initialValue, dropdownOptions, onChange }) => {
+  const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange }) => {
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -121,6 +121,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       <select
         name={name}
         style={dropdownStyle}
+        value={initialValue}
         onChange={(e) => onChange(e.target.value)} // Only pass the raw enum value to the onChange handler
       >
         {/* Key stores raw value of Enum */}
@@ -186,7 +187,9 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
   const TitleButtonsAndTextField = ({ id, title, initialValue, name, onChange, onChangeButton }) => {
     const [count, setCount] = useState(initialValue);
-  
+    
+    console.log("count", count)
+    console.log("initialValue", initialValue)
     const decrementCount = () => {
       if (count > 0) {
         setCount(count - 1);
@@ -248,7 +251,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             id={id}
             style={textFieldStyle}
             type="number"
-            value={count}
+            value={initialValue}
             onChange={(e) => {
               setCount(parseInt(e.target.value, 10) || 0);
               onChange(e);

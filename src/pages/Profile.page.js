@@ -111,6 +111,7 @@ const updateCurrentProfile= async (name, value, dataUpdated) => {
   if (updatedProfile) {
     console.log("SUCCESS to updateProfile: ", updatedProfile)
     setProfile(updatedProfile);
+    saveState('currentProfile', updatedProfile);
   }
 };
 

@@ -187,9 +187,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
   const TitleButtonsAndTextField = ({ id, title, initialValue, name, onChange, onChangeButton }) => {
     const [count, setCount] = useState(initialValue);
-    
-    console.log("count", count)
-    console.log("initialValue", initialValue)
     const decrementCount = () => {
       if (count > 0) {
         setCount(count - 1);
@@ -303,6 +300,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: '15px',
       borderRadius: '10px',
       height: '30px',
+      fontSize: '18px'
     };
   
     return (
@@ -360,8 +358,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleToggleAndButtons = ({ id, name, title, onChangeToggle, toggleValue, dailyRatioValue,  onChangeDailyRatioValue }) => {
-    const [checked, setChecked] =  useState(toggleValue);
+  const TitleToggleAndButtons = ({ id, name, title, onChangeToggle, toggleValue, dailyRatioValue, onChangeDailyRatioValue, maxCountValue = 3000 }) => {
+    const [checked, setChecked] = useState(toggleValue);
     const [count, setCount] = useState(dailyRatioValue);
   
     const decrementCount = () => {
@@ -372,14 +370,17 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     };
   
     const incrementCount = () => {
-      setCount(count + 1);
-      onChangeDailyRatioValue(count + 1);
+      if (count < maxCountValue) {
+        setCount(count + 1);
+        onChangeDailyRatioValue(count + 1);
+      }
     };
   
     const handleChange = (event) => {
       setChecked(event.target.checked);
-      onChangeToggle(event.target.checked)
+      onChangeToggle(event.target.checked);
     };
+  
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -414,55 +415,58 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   
     return (
       <div style={containerStyle}>
-         <h3 style={titleStyle}>{title}</h3>
-         <Switch
-          id={id}  
-          name={name}  
+        <h3 style={titleStyle}>{title}</h3>
+        <Switch
+          id={id}
+          name={name}
           checked={checked}
           onChange={handleChange}
           inputProps={{ 'aria-label': 'controlled' }}
           color='warning'
-          style={{ color: colors.green}}
+          style={{ color: colors.green }}
         />
-         {checked && (
-        <div style={controlGroup}>
-          <ButtonText
-            as="button"
-            name={name}
-            variant="circleTextButton"
-            onClick={() => decrementCount()}
-          >
-            -
-          </ButtonText>
-          <input
-            id={id}
-            style={textFieldStyle}
-            type="number"
-            value={count}
-            onChange={(e) => {
-              setCount(parseInt(e.target.value, 10) || 0);
-              onChangeDailyRatioValue(parseInt(e.target.value, 10) || 0);
-              e.preventDefault();  
-            }}
-            onSubmit={(e) => {
-              e.preventDefault();  
-            }}
-
-            name={name} 
-          />
-          <ButtonText
-            as="button"
-            name={name}
-            variant="circleTextButton"
-            onClick={() => incrementCount()}
-          >
-            +
-          </ButtonText>
+        {checked && (
+          <div style={controlGroup}>
+            <ButtonText
+              as="button"
+              name={name}
+              variant="circleTextButton"
+              onClick={decrementCount}
+              disabled={count === 0}
+            >
+              -
+            </ButtonText>
+            <input
+              id={id}
+              style={textFieldStyle}
+              type="number"
+              value={count}
+              onChange={(e) => {
+                const newValue = parseInt(e.target.value, 10) || 0;
+                setCount(newValue <= maxCountValue ? newValue : maxCountValue);
+                onChangeDailyRatioValue(newValue <= maxCountValue ? newValue : maxCountValue);
+                e.preventDefault();
+              }}
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+              name={name}
+            />
+            <ButtonText
+              as="button"
+              name={name}
+              variant="circleTextButton"
+              onClick={incrementCount}
+              disabled={count === maxCountValue}
+            >
+              +
+            </ButtonText>
           </div>
-         )}
+        )}
       </div>
     );
   };
+  
 
   const SelectedFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton, remainingPercentage }) => {
     const [count, setCount] = useState(value);

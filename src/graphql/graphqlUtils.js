@@ -530,6 +530,7 @@ async function getUserProfiles(user) {
             dailyRatio
             dob
             isCurrent
+            isRatioSelected
             name
             preset
             size
@@ -922,6 +923,7 @@ async function updateProfile(user, profileId, updateData) {
             dailyRatio
             dob
             isCurrent
+            isRatioSelected
             name
             preset
             size

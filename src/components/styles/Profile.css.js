@@ -122,6 +122,9 @@ const ageStyle = {
   backgroundColor: colors.blueLight,
   borderRadius: '10px',
   padding: '5px',
+  width: '50%',
+  margin: 'auto',
+  marginBottom: '15px',
 };
 
 const nutritionFactsTitleStyle = {

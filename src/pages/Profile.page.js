@@ -40,6 +40,7 @@ const Profile = () => {
     preset: currentProfile?.preset,
     size: currentProfile?.size,
     userId: currentProfile?.userId,
+    isRatioSelected: currentProfile?.isRatioSelected,
   })
 
  // Some prefilled form state
@@ -106,7 +107,10 @@ const updateCurrentProfile= async (name, value, dataUpdated) => {
   if (dataUpdated) { 
     data = dataUpdated
   }
-
+  console.log("updateCurrentProfile name: ", name)
+  console.log("updateCurrentProfile value: ", value)
+  console.log("updateCurrentProfile dataUpdated: ", dataUpdated)
+  console.log("updateCurrentProfile data: ", data)
   const updatedProfile = await updateProfile(user, profile._id, data)  
   if (updatedProfile) {
     console.log("SUCCESS to updateProfile: ", updatedProfile)

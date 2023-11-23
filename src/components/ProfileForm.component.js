@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect  } from "react";
 import * as styles  from './styles/Profile.css'
-import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
+import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, SelectedCustomFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"
 import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
@@ -407,17 +407,27 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
               <div  style={styles.selectedCategoriesContainerStyle}>
                 <div style={styles.columnStyle}>
                   {categories.map((category)  => (
-                      <SelectedFoodCategoryRow
-                        key={category?.name}
-                        name={category?.name}
-                        remainingPercentage= {unusedCategoryPercentage}
-                        weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
-                        color={category?.color}
-                        value={category?.percentage} 
-                        onChange={(e) => { onTextInputChange(e, category?._id) }}
-                        onDelete={() => { deleteCategory(category) }}
-                        onChangeButton={(name,value) => { onButtonInputChange(name,value, category?._id) }}
-                      />
+                   <div>
+                     { (profile?.preset === Enums.RatioPresets.CUSTOM) ? (
+                        <SelectedCustomFoodCategoryRow
+                          name={category?.name}
+                          remainingPercentage= {unusedCategoryPercentage}
+                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
+                          color={category?.color}
+                          value={category?.percentage} 
+                          onChange={(e) => { onTextInputChange(e, category?._id) }}
+                          onDelete={() => { deleteCategory(category) }}
+                          onChangeButton={(name,value) => { onButtonInputChange(name,value, category?._id) }}
+                        />
+                      ) : (
+                        <SelectedFoodCategoryRow
+                          name={category?.name}
+                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
+                          color={category?.color}
+                          value={category?.percentage} 
+                        />
+                      )}
+                   </div>
                   ))}
                 </div>
               </div>

@@ -468,7 +468,41 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
   
 
-  const SelectedFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton, remainingPercentage }) => {
+  const SelectedFoodCategoryRow = ({ name, value, color, weight }) => {
+
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      borderRadius: '10px',
+      height: '45px'
+    };
+  
+    const nameStyle = {
+      width: '100px',
+      borderRadius: '5px',
+      padding: '5px',
+      backgroundColor: `${color}`, 
+       
+    };
+
+    const weightStyle = {
+    };
+
+    const valueStyle = {
+    };
+
+    return (
+      <div style={containerStyle}>
+        <h3 style={nameStyle} >{name}</h3>  
+        <h3 style={weightStyle} >{weight} g</h3>  
+        <h3 style={valueStyle} >{value}%</h3>  
+      </div>
+    );
+  };
+
+  const SelectedCustomFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton, remainingPercentage }) => {
     const [count, setCount] = useState(value);
   
     const decrementCount = () => {
@@ -491,6 +525,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: '10px',
       margin: '0px',
       padding:  '0px',
+      height: '45px'
     };
   
     const nameStyle = {
@@ -675,6 +710,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     TitleTooltipAndValue,
     TitleToggleAndButtons,
     SelectedFoodCategoryRow,
+    SelectedCustomFoodCategoryRow,
     UnselectedFoodCategoryRow,
   };
   

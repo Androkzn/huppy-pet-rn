@@ -19,7 +19,8 @@ import NewActivityForm from "../components/NewActivityForm.component";
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
-import {SelectedFoodCategoryRow } from "../components/Form.components"
+import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
+ 
 
 const Home = () => {
   const {user, currentProfile } = useContext(UserContext);
@@ -31,7 +32,7 @@ const Home = () => {
   const [dialogType, setDialogType] = useState("addActivity");
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
-
+  const [isStatisticToday, setStatisticToday] = useState(true);
 
   const openDialog = (dialogTypeNew) => {
     console.log("openDialog", dialogTypeNew)
@@ -191,7 +192,6 @@ const Home = () => {
     loadTrainingsForDate();
   }
 
-
   const DatePicker = () => {
     return (
     <div style={styles.rowStyle}>  
@@ -218,8 +218,32 @@ const Home = () => {
           <h3 style={styles.headingStyle}>Today/goal</h3>
         </div>
       </div>
-        <div style={{height: '250px'}}>
-              Statistics will be here
+        <div style={styles.statisticContainerStyle}>
+          <CaloriesStatisticSection
+            percentage={32}
+            calories={258}
+            total={1385}
+          />
+          <CategoriesStatisticSection
+            name={"Meat"}
+            type={"meat"}
+            percentage={10}
+            weight={259}
+            total={2250}
+           />
+          <CategoriesStatisticSection
+            name={"Veggie"}
+            type={"veggie"}
+            percentage={73}
+            weight={220}
+            total={350}
+           />
+          <ToggleStatisticSection 
+            initialValue={isStatisticToday}
+            onChange ={() => {
+              setStatisticToday(!isStatisticToday)
+            }}
+          />
         </div>
       </div> 
     );
@@ -240,7 +264,7 @@ const Home = () => {
           </div>
           <div style={styles.chartLegentStyle}>
               {categories.map((category)  => (
-                <SelectedFoodCategoryRow
+                <FoodCategoryRow
                   name={category?.name}
                   weight={Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)}
                   color={category?.color}

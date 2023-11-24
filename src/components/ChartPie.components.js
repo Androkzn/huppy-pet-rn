@@ -17,7 +17,7 @@ const ChartPie = ({ data }) => {
       {
         data: data.map(item => item.weight),
         backgroundColor: data.map(item => item.color),
-        hoverOffset: 10
+        hoverOffset: 4
       },
     ],
   };
@@ -34,7 +34,8 @@ const ChartPie = ({ data }) => {
           label: (context) => {
             const label = data[context.dataIndex].name;
             const weight = data[context.dataIndex].weight;
-            return `${label}: ${weight}g`;
+            const percentage = data[context.dataIndex].percentage;
+            return `${label}: ${percentage}%`;
           },
         },
       },

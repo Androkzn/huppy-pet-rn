@@ -78,7 +78,6 @@ const rowStyle = {
 };
 
 const columnStyle = {
-  borderRadius: '5px',
   flex: '1 0 auto',
   width: '100%',
 };
@@ -122,20 +121,27 @@ const responsiveSubContainer = styled.div({
 
 const chartContainerStyle = {
   ...rowStyle,
-  width: '90%',
+  width: '100%',
 };
 
 const chartStyle = {
-  flex: '0 1 60%',
+  flex: '0 1 40%',  
   margin: '10px',
 };
 
 const chartLegentStyle = {
-  flex: '0 1 40%',
+  flex: '1 1 60%',
   margin: '10px',
 };
 
+const statisticContainerStyle = {
+  ...columnStyle,
+  width: '90%',
+};
+
+
 export {
+  statisticContainerStyle,
   chartContainerStyle,
   chartLegentStyle,
   chartStyle,

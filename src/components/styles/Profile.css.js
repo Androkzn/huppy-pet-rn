@@ -62,8 +62,12 @@ const foodRatioExpandedContainerStyle = {
 
 
 const chartContainerStyle = {
-  margin: '10px',
-  backgroundColor: colors.blueLight,
+  display: 'flex',
+ 
+  alignItems: 'center',
+  justifyContent: 'center',
+ 
+  marginTop: '20px',
 };
 
 const selectedCategoriesContainerStyle = {

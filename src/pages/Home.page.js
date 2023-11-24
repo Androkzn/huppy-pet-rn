@@ -11,13 +11,15 @@ import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon
 import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
 import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, } from "../graphql/graphqlUtils";
+import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
 import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
+import ChartPie from '../components/ChartPie.components'
+import {SelectedFoodCategoryRow } from "../components/Form.components"
 
 const Home = () => {
   const {user, currentProfile } = useContext(UserContext);
@@ -27,6 +29,9 @@ const Home = () => {
   const [trainings, setTrainings] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
+  const [categories, setCategories] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]);
+
 
   const openDialog = (dialogTypeNew) => {
     console.log("openDialog", dialogTypeNew)
@@ -106,6 +111,33 @@ const Home = () => {
     }
   };
 
+  // Fetch all Food categories for currentProfile
+ const loadFoodCategories = async () => {
+    if (currentProfile) {
+      if ( currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
+        const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(currentProfile?.dailyPortion, currentProfile?._id,  currentProfile?.preset) 
+        setCategories(allCategoriesForPresset)
+        const data = (allCategoriesForPresset).map((category) => ({
+          name: category.name,
+          weight: category.weight,
+          percentage: category.percentage,
+          color: category.color,
+        }));
+        setCategoriesData(data)
+      } else {
+        const categories = await getAllFoodCategories(user, currentProfile._id); 
+        setCategories(categories)
+        const data = (categories).map((category) => ({
+          name: category.name,
+          weight: category.weight,
+          percentage: category.percentage,
+          color: category.color,
+        }));
+        setCategoriesData(data)
+      }
+    }
+ };
+
   // Function is responsible for creating a new meal
   const addMealForDate = async () => {
     const isAdded = await addMeal(user, currentProfile, currentDate)  
@@ -140,6 +172,11 @@ const Home = () => {
     updateMeals()
     updateActivities()
     updateTrainings()
+    updateCategories()
+  }
+
+  const updateCategories= () => {
+    loadFoodCategories();
   }
 
   const updateMeals = () => {
@@ -196,8 +233,21 @@ const Home = () => {
             <h3 style={styles.headingStyle}>DIET BALANCE</h3>
           </div>
         </div>
-        <div style={{height: '250px'}}>
-              Charts will be here
+        <div style={styles.chartContainerStyle}>
+          {/* Chart */}
+          <div style={styles.chartStyle}>
+              <ChartPie data={categoriesData}/>
+          </div>
+          <div style={styles.chartLegentStyle}>
+              {categories.map((category)  => (
+                <SelectedFoodCategoryRow
+                  name={category?.name}
+                  weight={Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)}
+                  color={category?.color}
+                  value={category?.percentage} 
+                />
+              ))}
+          </div>
         </div>
       </div>
     );

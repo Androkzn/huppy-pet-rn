@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, useEffect  } from "react";
+import { useState, useEffect  } from "react";
 import * as styles  from './styles/Profile.css'
 import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, SelectedCustomFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"
 import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
+import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
 
 const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory}) => {
@@ -31,15 +32,17 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
   // Provides default presset categories or returns custom categories depends on preset value
   const getCategoriesForPresset = () => {
     if ( profile?.preset !== Enums.RatioPresets.CUSTOM) {
-      const allCategoriesForPresset = Enums.getCategoriesForRatioPreset( profile?._id,  profile?.dailyPortion,  profile?.preset) 
+      const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(  profile?.dailyPortion, profile?._id,  profile?.preset) 
       return allCategoriesForPresset;
     } else {
       return customFoodCategories;
     }
+    
   }
 
   let categoriesCanBeAdded = getUnusedCategories()  
   let unusedCategoryPercentage = checkUnusedCategoryPercentage()
+  let chartData = []
 
   //Set Food categories whenever preset changes
   useEffect(() => {
@@ -115,6 +118,20 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
       updateProfile("dob", dateValue);
     }
   }
+
+  function getChartData() {
+      const categoriesNew = getCategoriesForPresset()
+      console.log("getCategoriesForPresset", categoriesNew)
+      const data = (categoriesNew).map((category) => ({
+        name: category.name,
+        weight: category.weight,
+        percentage: category.percentage,
+        color: category.color,
+      }));
+      chartData  = data
+
+    return chartData
+}
 
   // Calculates portion weight based on Daily ratio % 
   function getPortionWeight(dailyRatio) {
@@ -394,7 +411,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
  
               {/* Chart */}
               <div  style={styles.chartContainerStyle}>
-                  CHART
+                  <ChartPie data={getChartData()}/>
               </div>
 
               {/* Unused calories reminder */}

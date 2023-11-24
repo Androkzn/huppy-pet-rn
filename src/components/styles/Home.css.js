@@ -106,10 +106,6 @@ const columnLeftStyle = {
 
 const responsiveMainContainer = styled.div({
   ...rowStyle,
-  //  [mq.medium]: {
-  //   width: '100%',
-  //   flexDirection: 'column',
-  // },
    [mq.small]: {
     width: '100%',
     flexDirection: 'column',
@@ -124,7 +120,25 @@ const responsiveSubContainer = styled.div({
   },
 })
 
+const chartContainerStyle = {
+  ...rowStyle,
+  width: '90%',
+};
+
+const chartStyle = {
+  flex: '0 1 60%',
+  margin: '10px',
+};
+
+const chartLegentStyle = {
+  flex: '0 1 40%',
+  margin: '10px',
+};
+
 export {
+  chartContainerStyle,
+  chartLegentStyle,
+  chartStyle,
   pageStyle,
   headerStyle,
   headerAddButtonStyle,

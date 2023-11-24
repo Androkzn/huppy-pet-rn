@@ -16,3 +16,15 @@ export const lightBrown = '#E9E4D7'
 export const lightBrown2 = '#FEFDFA'
 export const darkOrange = '#562A0D'
 export const coffe ="#E8D8C9"
+
+// Food categories colors
+export const meat = '#D3752B'
+export const bones = '#E4DDCB'
+export const liver = '#562A0D'
+export const giblets = '#C9B487'
+export const veggie = '#2B6362'
+export const fruits = '#F3BC48'
+export const seeds = '#939786'
+export const fish = '#2C5666'
+export const fiber = '#E8D8C9'
+export const other = '#3A87BD'

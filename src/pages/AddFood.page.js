@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import AddFoodForm from "../components/AddFoodForm.component";
@@ -13,7 +13,11 @@ const AddFood = ({ }) => {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const { mealId, foodItem } = location.state || {};
+   
+  const [foodItem, setFoodItem] = useState(location.state?.foodItem);
+  const [mealId, setMealId] = useState(location.state?.mealId);
+
+  console.log('AddFood',foodItem)
 
   // addFood function is responsible for adding the Food
   const addFoodToMeal = async () => {
@@ -23,6 +27,14 @@ const AddFood = ({ }) => {
       navigate("/searchFood");
     }
   };
+
+  useEffect(() => {
+    // Fetch or set foodItem if it's not available
+    if (!foodItem && !mealId && location.state) {
+      setFoodItem(location.state.foodItem);
+      setMealId(location.state.mealId)
+    }
+  }, [foodItem, location.state]);
 
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
@@ -35,7 +47,7 @@ const AddFood = ({ }) => {
          Back
       </ButtonWithImage>
     </div>
-    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal}/>
+    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} />
   </PageContainer>
 }
 

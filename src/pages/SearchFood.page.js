@@ -30,11 +30,10 @@ const saveState = (key, value) => {
 const SearchFood = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { mealId } = location.state || {};
   const { user } = useContext(UserContext);
 
   // State for meal ID
-  const [mealIdInitial, setMealId] = useState(loadState("mealId", mealId));
+  const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
   // State for search query
   const [searchQuery, setSearchQuery] = useState(loadState("searchQuery", ""));
   // State for selected category filter
@@ -50,7 +49,7 @@ const SearchFood = () => {
   };
 
   const openCeateNewFoodPage = () => {
-    navigate("/createNewFood", { state: { mealId } });
+   navigate("/createNewFood", { state: { mealId } });
   };
 
   const updateSearchResults = () => {
@@ -89,8 +88,12 @@ const SearchFood = () => {
   }, [selectedFilter]);
 
   useEffect(() => {
-    saveState("mealId", mealIdInitial);
-  }, [mealIdInitial]);
+   if (location.state?.mealId) {
+    setMealId(location.state?.mealId);
+    saveState("mealId", location.state?.mealId);
+    console.log("mealId",location.state?.mealId)
+   }
+  }, [location.state]);
 
   // Func that is responsible for searching Food Templates in DB based on search string
   async function searchFood() {
@@ -212,7 +215,7 @@ const SearchFood = () => {
     return (
       <div style={styles.columnStyle}>
         {searchResult.map((foodItem, index) => (
-            <FoodCard food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
+            <FoodCard key={foodItem.name} food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
         ))}
       </div>
     );

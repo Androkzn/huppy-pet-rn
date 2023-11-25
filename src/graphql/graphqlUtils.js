@@ -426,7 +426,8 @@ async function addFood(user, mealId, foodItem) {
           type:  foodItem.type,
           units: foodItem.units, 
           weight: foodItem.weight,
-          userId: userId
+          userId: userId,
+          date: new Date().toISOString(),
         }
       };
       // GraphQL query to create food

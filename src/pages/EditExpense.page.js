@@ -13,7 +13,7 @@ const EditFood = () => {
     category: "",
     mode: "",
     title: "",
-    createdAt: new Date()
+    createdAt: new Date(),
   });
 
   const { id: expenseId } = useParams();

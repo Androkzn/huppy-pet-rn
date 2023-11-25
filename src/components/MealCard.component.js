@@ -31,7 +31,7 @@ function MealCard({ meal, updateMeals }) {
  
   useEffect(() => {
     loadFoodForMeal(); // Load food data when the component mounts
-  }, []); // Empty dependency array to ensure it runs only once on mount
+  }, [meal]); // Empty dependency array to ensure it runs only once on mount
 
   async function loadFoodForMeal() {
     const results = await getAllFoodForMeal(user, mealId);

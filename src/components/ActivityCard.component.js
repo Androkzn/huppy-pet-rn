@@ -123,7 +123,7 @@ function ActivityCard({ activity, updateActivities}) {
                     onChange={(e) => handleTypeValueChange(e)}  
                   >
                     {Object.values(enums.ActivityType).map((option, index) => (
-                      <option style={stylesActivity.dropdownItemStyle} key={index} value={option}>
+                      <option style={stylesActivity.dropdownItemStyle} key={index}  >
                         {enums.getTitleForActivityType(option)}
                       </option>
                     ))}
@@ -151,7 +151,7 @@ function ActivityCard({ activity, updateActivities}) {
               onChange={(e) => handleMetricValueChange(e)}
             >
               {Object.values(enums.ActivityMetric).map((option, index) => (
-                <option key={index} value={option}>
+                <option key={index}>
                   {enums.ActivityMetric.title(option)}
                 </option>
               ))}

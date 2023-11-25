@@ -41,9 +41,34 @@ const EditFoodForm = ({ editFood, foodItem, setFoodItem }) => {
       
       <TitleAndTextInput name={"name"} title={"Name"} initialValue={foodItem.name} onChange={onFormInputChange} placeholder={"Enter food name"}/>
       
-      <TitleAndDropdown name={"type"} title={"Food type"} initialValue={foodItem.type} dropdownOptions={Object.values(enums.FoodType)}  onChange={onFormInputChange}/>
-      <TitleAndDropdown name={"units"} title={"Units"} initialValue={foodItem.units} dropdownOptions={Object.values(enums.FoodUnits)}  onChange={onFormInputChange}/>
-      <TitleAndDropdown name={"categoryType"} initialValue={foodItem.categoryType}  title={"Food category"} dropdownOptions={Object.values(enums.FoodCategoryType)}  onChange={onFormInputChange}/>
+      <TitleAndDropdown 
+        name={"type"} title={"Food type"} 
+        initialValue={foodItem.type} 
+        dropdownOptions={Object.values(enums.FoodType).map((type) => ({
+          rawValue: type,
+          title: enums.getTitleUpercased(type),
+        }))}  
+        onChange={onFormInputChange}
+      />
+      <TitleAndDropdown 
+        name={"units"} title={"Units"} 
+        initialValue={foodItem.units} 
+        dropdownOptions={Object.values(enums.FoodUnits).map((type) => ({
+          rawValue: type,
+          title: type,
+        }))}  
+        onChange={onFormInputChange}
+      />
+      <TitleAndDropdown 
+        name={"categoryType"} 
+        initialValue={foodItem.categoryType}  
+        title={"Food category"} 
+        dropdownOptions={Object.values(enums.FoodCategoryType).map((type) => ({
+          rawValue: type,
+          title: enums.getTitleUpercased(type),
+        }))} 
+        onChange={onFormInputChange}
+      />
      
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>
       

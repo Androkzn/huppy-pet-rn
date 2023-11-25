@@ -32,12 +32,17 @@ const NewActivityForm = ({ onCreated, onClose }) => {
   
   const getDropdownItems = (name) => {
     if (name === "type") {
-      const types = Object.values(Enums.ActivityType);
-      const dropdownItems = types.map((type) => Enums.getTitleForActivityType(type));
+      const dropdownItems=Object.values(Enums.ActivityType).map((type) => ({
+        rawValue: type,
+        title: Enums.getTitleForActivityType(type),
+      }))
+ 
       return dropdownItems;
     } else {
-      const types = Object.values(Enums.ActivityMetric);
-      const dropdownItems = types.map((type) => Enums.getDDTitleForActivityMetric(type));
+      const dropdownItems= Object.values(Enums.ActivityMetric).map((type) => ({
+        rawValue: type,
+        title: Enums.getDDTitleForActivityMetric(type),
+      }))
       return dropdownItems;
     }
   };

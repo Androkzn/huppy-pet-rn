@@ -33,8 +33,10 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
 
   const getDropdownItems = (name) => {
     if (name === "type") {
-      const types = Object.values(Enums.getTypesForTrainingTypeCategory(form.category));
-      const dropdownItems = types.map((type) => Enums.getTitleForTrainingType(type));
+      const dropdownItems=Object.values(Enums.getTypesForTrainingTypeCategory(form.category)).map((type) => ({
+        rawValue: type,
+        title:Enums.getTitleForTrainingType(type),
+      }))
       return dropdownItems;
     } else {
       return [];  
@@ -58,7 +60,10 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
         name={"category"} 
         title={"Category"} 
         value={Enums.getTitleForTrainingCategory(form.category)}
-        dropdownOptions={Object.values(Enums.TrainingCategory).map ((option) => (Enums.getTitleForTrainingType(option)))} 
+        dropdownOptions={Object.values(Enums.TrainingCategory).map((type) => ({
+          rawValue: type,
+          title: Enums.getTitleForTrainingType(type),
+        }))}
         onChange={(e) => {onDropdownInputChange(e);}}
       />
       

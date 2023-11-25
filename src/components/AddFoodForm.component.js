@@ -12,18 +12,22 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
  
-
-  const onDDInputChange = (event) => {
-    const { name, value } = event.target;
+  console.log('AddFoodForm',foodItem)
+  
+  const onDDInputChange = (value) => {
+    console.log('onDDInputChange',value)
     foodItem.units = value
   };
 
   const onButtonInputChange = (name, value) => {
+    console.log('onButtonInputChange',name)
+    console.log('onButtonInputChange',value)
     foodItem.weight = value
   };
 
   const onTextInputChange = (event) => {
     const { value } = event.target;
+    console.log('onTextInputChange',value)
     foodItem.weight = value
   };
 
@@ -40,20 +44,23 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
       <TitleAndDropdown 
         name={"units"} 
         title={"Units"}
-        dropdownOptions={Object.values(enums.FoodUnits)}  
-        onChange={onDDInputChange}
+        dropdownOptions={Object.values(enums.FoodUnits).map((type) => ({
+          rawValue: type,
+          title: type,
+        }))}  
+        onChange={(value) => { onDDInputChange(value)}}
        />
       <TitleButtonsAndTextField
           title={"Select weight"}
           name={"weight"}
-          initialValue={0} 
+          initialValue={foodItem.weight} 
           onChange={(e) => {
             onTextInputChange(e);  
           }}
           onSubmit={(e) => {
             onTextInputChange(e);
           }}
-          onChangeButton={onButtonInputChange}
+          onChangeButton={(name, value) => { onButtonInputChange(name, value) }}
         />
 
       <div style={styles.descriptionContainerStyle}>

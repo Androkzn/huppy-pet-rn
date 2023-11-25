@@ -11,7 +11,7 @@ import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon
 import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
 import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { loadMeals, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
+import { loadMeals, loadMealsWeekly, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
 import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
@@ -26,6 +26,7 @@ const Home = () => {
   const {user, currentProfile } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState( new Date());
   const [meals, setMeals] = useState([]);
+  const [mealsWeekly, setMealsWeekly] = useState([]);
   const [activities, setActivities] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -91,6 +92,16 @@ const Home = () => {
     if (currentProfile) {
       const meals = await loadMeals(user, currentProfile, currentDate); 
       setMeals(meals);
+    }
+  };
+
+  
+  // Function is responsible for making the GraphQL
+  // request to Realm and update the meals array from the response. 
+  const loadFoodForWeek = async () => {
+    if (currentProfile) {
+    //   const mealsWeekly = await loadMealsWeekly(user, currentProfile, currentDate); 
+    //   setMealsWeekly(mealsWeekly);
     }
   };
 
@@ -182,6 +193,7 @@ const Home = () => {
 
   const updateMeals = () => {
     loadMealsForDate();
+    loadFoodForWeek();
   }
 
   const updateActivities = () => {
@@ -265,6 +277,7 @@ const Home = () => {
           <div style={styles.chartLegentStyle}>
               {categories.map((category)  => (
                 <FoodCategoryRow
+                  key={category?.name}
                   name={category?.name}
                   weight={Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)}
                   color={category?.color}

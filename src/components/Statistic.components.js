@@ -186,14 +186,18 @@ const CaloriesStatisticSection = ({name, percentage, calories, total }) => {
   };
 
   const nameStyle = {
-    minWidth: '100px',
-    fontSize: '18px',
+    minWidth: '70px',
+    fontSize: '15px',
     fontWeight: 'bold',
     color: colors.green,
   };
 
   const valuesStyle = {
-     minWidth: '100px',
+     minWidth: '90px',
+     fontSize: '15px',
+     fontWeight: 'bold',
+     color: progressBarColor(percentage),
+
   };
 
   return (
@@ -201,7 +205,7 @@ const CaloriesStatisticSection = ({name, percentage, calories, total }) => {
         <div style={imageStyle}> <Image imageName={`calories.png`} width="40" height="40" /></div>
         <div style={nameStyle}>{"Calories"}</div>
         <ProgressBar
-          completed={percentage}
+          percentage={percentage}
         />
         <div style={valuesStyle}>{calories} g /{total}  </div>
 
@@ -225,23 +229,26 @@ const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => 
   };
 
   const nameStyle = {
-    minWidth: '100px',
-    fontSize: '18px',
+    minWidth: '70px',
+    fontSize: '15px',
     fontWeight: 'bold',
     color: colors.green,
   };
 
   const valuesStyle = {
-     minWidth: '100px'
-  };
+     minWidth: '90px',
+     fontSize: '15px',
+     fontWeight: 'bold',
+     color: progressBarColor(percentage),
 
+  };
 
   return (
     <div style={statisticCategoriesSectionStyle}>
       <div style={imageStyle}> <Image imageName={`${type}.png`} width="40" height="40" /></div>
         <div style={nameStyle}>{name}</div>
         <ProgressBar
-          completed={percentage}
+          percentage={percentage}
         />
         <div style={valuesStyle}>{weight} g /{total} </div>
     </div>
@@ -260,7 +267,7 @@ const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => 
       padding: '10px',
       margin: '10px',
       textAlign: 'left',
-      fontSize: '18px',
+      fontSize: '16px',
       fontWeight: "bold",
       color: colors.green,
     };
@@ -334,36 +341,53 @@ const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => 
     );
   };
 
+  function progressBarColor(value) {
+    if (value <= 100) {
+        return colors.green;
+    } else if (value <= 125) {
+      return colors.yellow;
+    }  else if (value <= 150) {
+      return colors.orange;
+    } else   {
+      return colors.red;
+    }
+  }
+
+
   const ProgressBar = (props) => {
-    const { bgcolor, completed } = props;
-  
+    const { bgcolor, percentage } = props;
     const containerStyles = {
-      height: 20,
-      width: '100%',
+      height: 25,
       backgroundColor: "#e0e0de",
-      borderRadius: 50,
-      margin: 50,
+      borderRadius: '10px',
+      borderBottomLeftRadius: '10px',
+      minWidth:  '120px',
     }
   
     const fillerStyles = {
       height: '100%',
-      width: `${completed}%`,
-      backgroundColor: colors.green,
+      width: percentage <= 100 ? `${percentage}%`: '100%',
+      backgroundColor: progressBarColor(percentage),
       transition: 'width 1s ease-in-out',
-      borderRadius: 'inherit',
+      borderTopLeftRadius: '10px',
+      borderBottomLeftRadius: '10px',
+      borderTopRightRadius: percentage < 95 ? '0px' : '10px',
+      borderBottomRightRadius: percentage < 95 ? '0px' : '10px',
       textAlign: 'right',
     }
   
     const labelStyles = {
       padding: 5,
-      color: 'white',
+      fontSize: '15px',
+      color: percentage <= 30 ? 'black' : 'white',
       fontWeight: 'bold',
+      marginLeft: percentage <= 30? `${percentage +5}px` : '0px',
     }
   
     return (
       <div style={containerStyles}>
         <div style={fillerStyles}>
-          <span style={labelStyles}>{`${completed}%`}</span>
+          <span style={labelStyles}>{`${percentage}%`}</span>
         </div>
       </div>
     );

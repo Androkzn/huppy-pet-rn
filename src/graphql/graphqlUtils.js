@@ -987,6 +987,36 @@ async function updateFoodCategory(user, categoryId, updateData) {
   }
 }
 
+// Function to update an Food Category
+async function updateFood(user, foodId, updateData) {
+  
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to update an Food Category
+  const updateFoodQuery = gql`
+      mutation UpdateFood($foodId: ObjectId!, $updateData: FoodUpdateInput!) {
+          updateOneFood(query: { _id: $foodId }, set: $updateData) {
+              _id
+              weight
+          }
+      }
+  `;
+
+  const queryVariables = {
+    foodId,
+    updateData,
+  };
+
+  try {
+      await request(GRAPHQL_ENDPOINT, updateFoodQuery, queryVariables, headers);
+      return true;
+  } catch (error) {
+      alert(error);
+      return false;
+  }
+}
+
 // Function to update an Foof Template
 async function updateFoodTemplate(user, foodItem) {
   const accessToken = user._accessToken;
@@ -1085,4 +1115,5 @@ export {
     updateProfile,
     updateFoodTemplate,
     updateFoodCategory,
+    updateFood,
 };

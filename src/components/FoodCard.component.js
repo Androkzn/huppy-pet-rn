@@ -12,7 +12,6 @@ import { deleteFoodTemplate } from "../graphql/graphqlUtils";
 // Function is responsible for updating the training 
 function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
   const { user } = useContext(UserContext);
-  const location = useLocation();
   const navigate = useNavigate();
   
   const deleteFoodTemplateHandler = async () => {

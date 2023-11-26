@@ -232,7 +232,7 @@ const Home = () => {
       </div>
         <div style={styles.statisticContainerStyle}>
           <CaloriesStatisticSection
-            percentage={32}
+            percentage={31}
             calories={258}
             total={1385}
           />
@@ -243,10 +243,31 @@ const Home = () => {
             weight={259}
             total={2250}
            />
+           <CategoriesStatisticSection
+            name={"Fruits"}
+            type={"fruits"}
+            percentage={110}
+            weight={259}
+            total={2250}
+           />
           <CategoriesStatisticSection
             name={"Veggie"}
             type={"veggie"}
-            percentage={73}
+            percentage={95}
+            weight={220}
+            total={350}
+           />
+           <CategoriesStatisticSection
+            name={"Liver"}
+            type={"liver"}
+            percentage={142}
+            weight={220}
+            total={350}
+           />
+            <CategoriesStatisticSection
+            name={"Giblets"}
+            type={"giblets"}
+            percentage={212}
             weight={220}
             total={350}
            />

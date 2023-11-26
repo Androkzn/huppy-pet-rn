@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonWithImage} from '../components/Buttons.components'
-import { getAllFoodForMeal, deleteMeal, deleteFood } from "../graphql/graphqlUtils";
+import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 
 function MealCard({ meal, updateMeals }) {
@@ -17,11 +17,16 @@ function MealCard({ meal, updateMeals }) {
   // Define 'food' as a state variable using useState
   const [food, setFood] = useState([]);
 
-  function handleWeightChange(e, foodItem) {
+  async function handleWeightChange(e, foodItem) {
     const newValue = e.target.value;
     // Update the foodItem's weight with the new value
-    foodItem.weight = newValue;
-    // You may want to save the updated foodItem to your state or API here
+    const data = {
+      weight: newValue
+    }
+    const isUpdated = await updateFood(user, foodItem._id, data);
+    if (isUpdated) {
+      setFood(prevFood => prevFood.map(item => (item._id === foodItem._id ? { ...item, weight: newValue } : item)));
+    }
   }
   
   const openAddFoodPage = () => {
@@ -81,7 +86,7 @@ function MealCard({ meal, updateMeals }) {
                 <div css={styles.headerTextStyle}>
                   <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
                   <input
-                    type="text"
+                    type="number"
                     css={styles.inputFieldStyle}
                     value={foodItem.weight}
                     onChange={(e) => handleWeightChange(e, foodItem)}

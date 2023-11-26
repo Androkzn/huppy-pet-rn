@@ -46,7 +46,7 @@ function ActivityCard({ activity, updateActivities}) {
     console.log("TypeValueChange:", newValue);
     
     const updateData = {
-      "type": newValue,
+      "type": newValue.toLowerCase(),
     };
     const isUpdated = await updateActivity(user, activity._id, updateData);
 

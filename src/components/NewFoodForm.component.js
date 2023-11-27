@@ -7,12 +7,13 @@ import * as enums from "../helpers/Enums.helper"
 
 const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
   
-  const onFormInputChange = (event) => {
+  const onTextInputChange = (event) => {
     const { name, value } = event.target;
     setFoodItem({ ...foodItem, [name]: value });
   };
 
-  const onButtonInputChange = (name, value) => {
+
+  const onButtonAndDDInputChange = (name, value) => {
     setFoodItem({ ...foodItem, [name]: value });
   };
 
@@ -20,7 +21,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
     <form >
       <h2  css={styles.addFoodTitleStyle}>{"Add New Food"}</h2>
       
-      <TitleAndTextInput name={"name"} title={"Name"}  onChange={onFormInputChange} placeholder={"Enter food name"}/>
+      <TitleAndTextInput name={"name"} title={"Name"}  onChange={(value) => { onTextInputChange(value)}} placeholder={"Enter food name"}/>
       
       <TitleAndDropdown 
         name={"type"} title={"Food type"} 
@@ -29,7 +30,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: enums.getTitleUpercased(type),
         }))}  
-        onChange={onFormInputChange}
+        onChange={(value) => { onButtonAndDDInputChange("type", value)}}
       />
       <TitleAndDropdown 
         name={"units"} title={"Units"} 
@@ -38,7 +39,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: type,
         }))}  
-        onChange={onFormInputChange}
+        onChange={(value) => { onButtonAndDDInputChange("units", value)}}
       />
       <TitleAndDropdown 
         name={"categoryType"} 
@@ -48,7 +49,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: enums.getTitleUpercased(type),
         }))} 
-        onChange={onFormInputChange}
+        onChange={(value) => { onButtonAndDDInputChange("categoryType", value)}}
       />
       
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>
@@ -58,13 +59,14 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
           key={index}
           title={enums.getTitleForAddFoodRowType(rowType) }
           name={rowType}
-          initialValue={0} 
-          onChange={onFormInputChange}
-          onChangeButton={onButtonInputChange}
+          initialValue={foodItem[rowType]} 
+          onChange={(e) => { onTextInputChange(e) }}
+          onSubmit={(e) => { onTextInputChange(e) }}
+          onChangeButton={onButtonAndDDInputChange}
         />
       ))}
 
-      <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onFormInputChange} />
+      <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onTextInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 
        <ButtonText as= 'button' name="createFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
           {"Create"} Food

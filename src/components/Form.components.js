@@ -248,10 +248,12 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             id={id}
             style={textFieldStyle}
             type="number"
-            value={initialValue}
+            value={count}
             onChange={(e) => {
-              setCount(parseInt(e.target.value, 10) || 0);
-              onChange(e);
+              const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+              console.log("newValue",newValue)
+              setCount(newValue);
+              onChange(newValue);
               e.preventDefault();  
             }}
             onSubmit={(e) => {
@@ -376,11 +378,17 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       }
     };
   
-    const handleChange = (event) => {
+    const handleToggleChange = (event) => {
       setChecked(event.target.checked);
       onChangeToggle(event.target.checked);
     };
-  
+
+    const handleTextFieldChange = (event) => {
+      const newValue = event.target.value === "" ? 0 : parseInt(event.target.value, 10);
+      setCount(newValue <= maxCountValue ? newValue : maxCountValue);
+      onChangeDailyRatioValue(newValue <= maxCountValue ? newValue : maxCountValue);
+    };
+
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -420,7 +428,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
           id={id}
           name={name}
           checked={checked}
-          onChange={handleChange}
+          onChange={handleToggleChange}
           inputProps={{ 'aria-label': 'controlled' }}
           color='warning'
           style={{ color: colors.green }}
@@ -441,15 +449,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
               style={textFieldStyle}
               type="number"
               value={count}
-              onChange={(e) => {
-                const newValue = parseInt(e.target.value, 10) || 0;
-                setCount(newValue <= maxCountValue ? newValue : maxCountValue);
-                onChangeDailyRatioValue(newValue <= maxCountValue ? newValue : maxCountValue);
-                e.preventDefault();
-              }}
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
+              onChange={(e) => {handleTextFieldChange(e)}}
+              onSubmit={(e) => {e.preventDefault();}}
               name={name}
             />
             <ButtonText
@@ -581,11 +582,11 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             type="number" 
             value={count}
             onChange={(e) => {
-              const newValue = e.target.value
+              const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
               // Prevents more than 100% in total for all categories
               if ((newValue > count && remainingPercentage >= (newValue-count)) || (newValue < count)) {
-                setCount(parseInt(newValue, 10) || 0);
-                onChange(e);
+                setCount(newValue);
+                onChange(newValue);
               }
               e.preventDefault();
             }}

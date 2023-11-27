@@ -48,7 +48,7 @@ const EditFoodForm = ({ editFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: enums.getTitleUpercased(type),
         }))}  
-        onChange={onFormInputChange}
+        onChange={(value) => { onFormInputChange("type", value)}}
       />
       <TitleAndDropdown 
         name={"units"} title={"Units"} 
@@ -57,7 +57,7 @@ const EditFoodForm = ({ editFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: type,
         }))}  
-        onChange={onFormInputChange}
+        onChange={(value) => { onFormInputChange("units", value)}}
       />
       <TitleAndDropdown 
         name={"categoryType"} 
@@ -67,7 +67,7 @@ const EditFoodForm = ({ editFood, foodItem, setFoodItem }) => {
           rawValue: type,
           title: enums.getTitleUpercased(type),
         }))} 
-        onChange={onFormInputChange}
+        onChange={(value) => { onFormInputChange("categoryType", value)}}
       />
      
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>

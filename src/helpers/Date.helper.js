@@ -12,8 +12,8 @@ export function getStartAndEndOfToday(currentDate) {
     const endTodayISOString = endToday.toISOString();
   
     return {
-      startToday: startTodayISOString,
-      endToday: endTodayISOString,
+      start: startTodayISOString,
+      end: endTodayISOString,
     };
   }
 
@@ -37,10 +37,9 @@ export function getStartAndEndOfToday(currentDate) {
     // Set the time to the end of the current date (right before midnight)
     currentDateCopy.setHours(23, 59, 59, 999);
     const endOfWeekISOString = currentDateCopy.toISOString();
-  
     return {
-      startOfWeek: startOfWeekISOString,
-      endOfWeek: endOfWeekISOString,
+      start: startOfWeekISOString,
+      end: endOfWeekISOString,
     };
   }
   

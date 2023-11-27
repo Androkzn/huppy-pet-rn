@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
@@ -13,7 +13,8 @@ const CreateNewFood = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { mealId } = location.state || {};
+  const [mealId, setMealId] = useState(location.state?.mealId);
+  const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
 
   // Some prefilled form state
   const [foodItem, setFoodItem] = useState({
@@ -36,6 +37,14 @@ const CreateNewFood = () => {
     desc: "",
     weight: 0,
   });
+
+  useEffect(() => {
+    // Fetch or set foodItem if it's not available
+    if (!foodItem && !mealId && location.state) {
+      setMealId(location.state.mealId)
+      setSelectedDate(location.state.selectedDate)
+    }
+  }, [location.state]);
 
   // addFood function is responsible for adding the Food
   const addNewFood = async (event) => {

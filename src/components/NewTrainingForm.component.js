@@ -23,11 +23,8 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
     setForm({ ...form, [name]: value.toLowerCase() });
   };
 
-  const onDropdownInputChange = (event) => {
-    const { name, value } = event.target;
+  const onDropdownInputChange = (name, value) => {
     const enumValue = name === "category" ? Enums.getTrainingCategoryFor(value.toLowerCase()) : Enums.getTrainingTypeFor(value.toLowerCase())
-
-
     setForm({ ...form, [name]: enumValue });
   };
 
@@ -64,7 +61,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
           rawValue: type,
           title: Enums.getTitleForTrainingType(type),
         }))}
-        onChange={(e) => {onDropdownInputChange(e);}}
+        onChange={(value) => { onDropdownInputChange("category", value)}}
       />
       
       {form.category === Enums.TrainingCategory.CUSTOM ? (
@@ -82,7 +79,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
             title={"Type"}
             value={Enums.getTitleForTrainingType(form.type)}
             dropdownOptions={getDropdownItems("type")}
-            onChange={(e) => {onDropdownInputChange(e);}}
+            onChange={(value) => { onDropdownInputChange("type", value)}}
           />
         
            <TitleAndTextInput name={"customType"} title={"Name"} onChange={(e) => { onTextInputChange(e); }} />
@@ -92,7 +89,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
           name={"type"}
           title={"Type"}
           dropdownOptions={getDropdownItems("type")}
-          onChange={(e) => {onDropdownInputChange(e);}}
+          onChange={(value) => { onDropdownInputChange("type", value)}}
         />
       )}
 

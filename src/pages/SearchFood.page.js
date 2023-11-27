@@ -16,7 +16,8 @@ import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 
-// Function to load state from localStorage
+const SearchFood = () => {
+  // Function to load state from localStorage
 const loadState = (key, defaultValue) => {
   const storedValue = localStorage.getItem(key);
   return storedValue ? JSON.parse(storedValue) : defaultValue;
@@ -27,7 +28,6 @@ const saveState = (key, value) => {
   localStorage.setItem(key, JSON.stringify(value));
 };
 
-const SearchFood = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -42,14 +42,16 @@ const SearchFood = () => {
   const [searchResult, setResults] = useState(loadState("searchResult", []));
    // State for radio buttons 
   const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", "All"));
+  // State for date
+  const [selectedDate, setSelectedDate] = useState(loadState("selectedDate", new Date() ));
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
-    navigate("/addFood", { state: { mealId, foodItem } });
+    navigate("/addFood", { state: { mealId, foodItem, selectedDate } });
   };
 
   const openCeateNewFoodPage = () => {
-   navigate("/createNewFood", { state: { mealId } });
+   navigate("/createNewFood", { state: { mealId, selectedDate } });
   };
 
   const updateSearchResults = () => {
@@ -91,7 +93,9 @@ const SearchFood = () => {
    if (location.state?.mealId) {
     setMealId(location.state?.mealId);
     saveState("mealId", location.state?.mealId);
-    console.log("mealId",location.state?.mealId)
+    setSelectedDate(location.state?.selectedDate)
+    saveState("selectedDate", location.state?.selectedDate);
+
    }
   }, [location.state]);
 

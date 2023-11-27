@@ -1,11 +1,12 @@
 
 import request, { gql } from "graphql-request";
 import { GRAPHQL_ENDPOINT } from "../realm/constants";
-import { getStartAndEndOfToday } from "../helpers/Date.helper";
+import { getStartAndEndOfToday, getStartAndEndOfWeek } from "../helpers/Date.helper";
 
 // Func that is responsible for searching Food Templates in DB 
 // it return array of FoodTemplates based on search string
 async function searchForFood(searchQuery, user) {
+  if (!user) { return []}
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -56,6 +57,7 @@ async function searchForFood(searchQuery, user) {
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 async function getAllFoodForMeal(user, mealId) {
+  if (!user) { return []}
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -79,6 +81,7 @@ async function getAllFoodForMeal(user, mealId) {
             weight
             type
             userId
+            date
             }
         }
     `;
@@ -98,6 +101,7 @@ async function getAllFoodForMeal(user, mealId) {
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 async function getAllCustomFoodTemplates(user) {
+  if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -143,6 +147,7 @@ async function getAllCustomFoodTemplates(user) {
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 async function getAllFoodTemplatesForCategory(user, categoryType) {
+  if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -192,6 +197,7 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 async function getAllFoodCategories(user, profileId) {
+  if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -227,96 +233,100 @@ async function getAllFoodCategories(user, profileId) {
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 async function deleteMeal(user, _id) {
-    const accessToken = user._accessToken;
-    const headers = { Authorization: `Bearer ${accessToken}` };
+  if (!user) { return false}
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
 
-    // GraphQL query to delete an meal
-    const deleteMealQuery = gql`
-        mutation DeleteMeal($query: MealQueryInput!) {
-            deleteOneMeal(query: $query) {
-                _id
-            }
-        }
-    `;
-
-    const queryVariables = { query: { _id } };
-
-    // Confirming the user's action
-    const resp = window.confirm("Are you sure you want to delete this meal?");
-    if (!resp) return;
-
-    try {
-        await request(GRAPHQL_ENDPOINT, deleteMealQuery, queryVariables, headers);
-        return true
-      } catch (error) {
-        alert('Error deleting meal with Id:',_id, error);
-        return false
+  // GraphQL query to delete an meal
+  const deleteMealQuery = gql`
+      mutation DeleteMeal($query: MealQueryInput!) {
+          deleteOneMeal(query: $query) {
+              _id
+          }
       }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  // Confirming the user's action
+  const resp = window.confirm("Are you sure you want to delete this meal?");
+  if (!resp) return;
+
+  try {
+      await request(GRAPHQL_ENDPOINT, deleteMealQuery, queryVariables, headers);
+      return true
+    } catch (error) {
+      alert('Error deleting meal with Id:',_id, error);
+      return false
+    }
 }
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 async function deleteActivity(user, _id) {
-    const accessToken = user._accessToken;
-    const headers = { Authorization: `Bearer ${accessToken}` };
+  if (!user) { return false}
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
 
-    // GraphQL query to delete an meal
-    const deleteActivityQuery = gql`
-        mutation DeleteActivity($query: ActivityQueryInput!) {
-            deleteOneActivity(query: $query) {
-                _id
-            }
-        }
-    `;
-
-    const queryVariables = { query: { _id } };
-
-    // Confirming the user's action
-    const resp = window.confirm("Are you sure you want to delete this activity?");
-    if (!resp) return;
-
-    try {
-        await request(GRAPHQL_ENDPOINT, deleteActivityQuery, queryVariables, headers);
-        return true
-      } catch (error) {
-        alert('Error deleting meal with Id:',_id, error);
-        return false
+  // GraphQL query to delete an meal
+  const deleteActivityQuery = gql`
+      mutation DeleteActivity($query: ActivityQueryInput!) {
+          deleteOneActivity(query: $query) {
+              _id
+          }
       }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  // Confirming the user's action
+  const resp = window.confirm("Are you sure you want to delete this activity?");
+  if (!resp) return;
+
+  try {
+    await request(GRAPHQL_ENDPOINT, deleteActivityQuery, queryVariables, headers);
+    return true
+  } catch (error) {
+    alert('Error deleting meal with Id:',_id, error);
+    return false
+  }
 }
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 async function deleteTraining(user, _id) {
-    const accessToken = user._accessToken;
-    const headers = { Authorization: `Bearer ${accessToken}` };
+  if (!user) { return false}
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
 
-    // GraphQL query to delete an meal
-    const deleteTrainingQuery = gql`
-        mutation DeleteTraining($query: TrainingQueryInput!) {
-            deleteOneTraining(query: $query) {
-                _id
-            }
-        }
-    `;
-
-    const queryVariables = { query: { _id } };
-
-    // Confirming the user's action
-    const resp = window.confirm("Are you sure you want to delete this training?");
-    if (!resp) return;
-
-    try {
-        await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
-        return true
-      } catch (error) {
-        alert('Error deleting meal with Id:',_id, error);
-        return false
+  // GraphQL query to delete an meal
+  const deleteTrainingQuery = gql`
+      mutation DeleteTraining($query: TrainingQueryInput!) {
+          deleteOneTraining(query: $query) {
+              _id
+          }
       }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  // Confirming the user's action
+  const resp = window.confirm("Are you sure you want to delete this training?");
+  if (!resp) return;
+
+  try {
+    await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
+    return true
+  } catch (error) {
+    alert('Error deleting meal with Id:',_id, error);
+    return false
+  }
 }
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 async function deleteFood(user, _id) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -343,6 +353,7 @@ async function deleteFood(user, _id) {
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
 async function deleteFoodTemplate(user, _id) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -373,6 +384,7 @@ async function deleteFoodTemplate(user, _id) {
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
 async function deleteFoodCategory(user, _id) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -402,7 +414,8 @@ async function deleteFoodCategory(user, _id) {
 
 // Func that is responsible for adding Food to DB   
 // it return bool value
-async function addFood(user, mealId, foodItem) {
+async function addFood(user, mealId, foodItem, selectedDate) {
+    if (!user) { return false}
     const accessToken = user._accessToken;
     const userId = user.id
     const headers = { Authorization: `Bearer ${accessToken}` };
@@ -427,7 +440,7 @@ async function addFood(user, mealId, foodItem) {
           units: foodItem.units, 
           weight: foodItem.weight,
           userId: userId,
-          date: new Date().toISOString(),
+          date: selectedDate,
         }
       };
       // GraphQL query to create food
@@ -451,6 +464,7 @@ async function addFood(user, mealId, foodItem) {
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
 async function addFoodTemplate(user, foodItem) {
+  if (!user) { return { success: false, templateId: "" }}
   const accessToken = user._accessToken;
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -505,6 +519,7 @@ async function addFoodTemplate(user, foodItem) {
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
 async function getUserProfiles(user) {
+  if (!user) { return {}}
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
     const userId = user.id
@@ -559,12 +574,13 @@ async function getUserProfiles(user) {
   }
 }
 
-async function loadMeals(user, currentProfile, currentDate) {
-    const accessToken = user._accessToken;
-    const profileId = currentProfile._id
-    const userId = user.id
-    const headers = { Authorization: `Bearer ${accessToken}` };
-    const { startToday, endToday } = getStartAndEndOfToday(currentDate);
+async function loadMeals(user, currentProfile, currentDate, isToday = true) {
+  if (!user || !currentProfile) { return []}
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const { start, end } = isToday ? getStartAndEndOfToday(currentDate) : getStartAndEndOfWeek(currentDate);
 
   // GraphQL query to fetch all the meals for specific time interval
   const getAllMeals = gql`
@@ -582,8 +598,8 @@ async function loadMeals(user, currentProfile, currentDate) {
   const queryVariables = {
     "userId": userId,
     "profileId": profileId,
-    "startDate": startToday,
-    "endDate": endToday,
+    "startDate": start,
+    "endDate": end,
   };
 
   try {
@@ -597,16 +613,69 @@ async function loadMeals(user, currentProfile, currentDate) {
   } catch (error) {
     console.error('Error loading meals:', error);
   }
+}
 
+async function loadFood(user, currentProfile, currentDate, isWeekly) {
+  if (!user || !currentProfile) { return []}
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const { start, end } = isWeekly ?  getStartAndEndOfWeek(currentDate) : getStartAndEndOfToday(currentDate);
+
+// GraphQL query to fetch all the meals for specific time interval
+const getAllFood = gql`
+  query getAllFood($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+    foods(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+      _id
+      bonesRatio
+      calories
+      caloriesServing
+      categoryType
+      image
+      mealId
+      meatRatio
+      name
+      servingWeight
+      servings
+      templateId
+      units
+      weight
+      type
+      userId
+      date
+    }
+  }
+`;
+
+// Filter only current user with current profile  
+const queryVariables = {
+  "userId": userId,
+  "profileId": profileId,
+  "startDate": start,
+  "endDate": end,
+};
+
+try {
+  const resp = await request(GRAPHQL_ENDPOINT,
+      getAllFood,
+      queryVariables,
+      headers
+    );
+    const food = resp.foods.map(food => ({ ...food, key: food._id }))
+    return(food) 
+} catch (error) {
+  console.error('Error loading meals:', error);
+}
 }
 
 async function loadActivities(user, currentProfile, currentDate) {
-  
-    const accessToken = user._accessToken;
-    const profileId = currentProfile._id
-    const userId = user.id
-    const headers = { Authorization: `Bearer ${accessToken}` };
-    const { startToday, endToday } = getStartAndEndOfToday(currentDate);
+  if (!user) { return []}
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const { start, end } = getStartAndEndOfToday(currentDate);
 
    // GraphQL query to fetch all the activities for specific time interval
    const getAllActivities = gql`
@@ -628,8 +697,8 @@ async function loadActivities(user, currentProfile, currentDate) {
   const queryVariables = {
     "userId": userId,
     "profileId": profileId,
-    "startDate": startToday,
-    "endDate": endToday,
+    "startDate": start,
+    "endDate": end,
   };
 
   try {
@@ -646,11 +715,12 @@ async function loadActivities(user, currentProfile, currentDate) {
 }
 
 async function loadTrainings(user, currentProfile, currentDate) {
-    const accessToken = user._accessToken;
-    const profileId = currentProfile._id
-    const userId = user.id
-    const headers = { Authorization: `Bearer ${accessToken}` };
-    const { startToday, endToday } = getStartAndEndOfToday(currentDate);
+  if (!user) { return []}
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const { start, end } = getStartAndEndOfToday(currentDate);
 
   // GraphQL query to fetch all the trainings for specific time interval
   const getAllTrainings = gql`
@@ -673,8 +743,8 @@ async function loadTrainings(user, currentProfile, currentDate) {
   const queryVariables = {
     "userId": userId,
     "profileId": profileId,
-    "startDate": startToday,
-    "endDate": endToday,
+    "startDate": start,
+    "endDate": end,
   };
 
   try {
@@ -691,6 +761,7 @@ async function loadTrainings(user, currentProfile, currentDate) {
 }
 
 async function addMeal(user, currentProfile, selectedDate) {
+    if (!user) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -705,11 +776,12 @@ async function addMeal(user, currentProfile, selectedDate) {
      }
      `;
 
+     console.log("selectedDate", selectedDate)
      // All the data that needs to be sent to the GraphQL endpoint
      // to create an meal will be passed through queryVariablesCreateMeal.
      const queryVariablesCreateMeal = {
        data: {
-         date: selectedDate.toISOString(),
+         date: selectedDate,
          profileId: profileId,
          userId: userId
        }
@@ -725,6 +797,7 @@ async function addMeal(user, currentProfile, selectedDate) {
 }
 
 async function addActivity(user, currentProfile, selectedDate, data) {
+    if (!user) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -744,7 +817,7 @@ async function addActivity(user, currentProfile, selectedDate, data) {
     const queryVariablesCreateActivity = {
     data: {
         ...data, // Merge the provided activity data  
-        date: selectedDate.toISOString(),
+        date: selectedDate,
         profileId: profileId,
         userId: userId
     }
@@ -760,6 +833,7 @@ async function addActivity(user, currentProfile, selectedDate, data) {
 }
 
 async function addTraining(user, currentProfile, selectedDate, data) {
+  if (!user) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -779,7 +853,7 @@ async function addTraining(user, currentProfile, selectedDate, data) {
         data: {
             ...data, // Merge the provided activity data  
             isCompleted: false,
-            date: selectedDate.toISOString(),
+            date: selectedDate,
             profileId: profileId,
             userId: userId
         }
@@ -795,6 +869,7 @@ async function addTraining(user, currentProfile, selectedDate, data) {
 }
 
 async function addFoodCategory(user, currentProfile, data) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -829,6 +904,7 @@ async function addFoodCategory(user, currentProfile, data) {
 
 // Function to update an activity
 async function updateActivity(user, activityId, updateData) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -862,6 +938,7 @@ async function updateActivity(user, activityId, updateData) {
 
 // Function to update an training
 async function updateTraining(user, trainingId, updateData) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -899,6 +976,7 @@ async function updateTraining(user, trainingId, updateData) {
 
 // Function to update Profile
 async function updateProfile(user, profileId, updateData) {
+  if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -952,7 +1030,8 @@ async function updateProfile(user, profileId, updateData) {
 
 // Function to update an Food Category
 async function updateFoodCategory(user, categoryId, updateData) {
-  
+  if (!user) { return false}
+
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -989,7 +1068,8 @@ async function updateFoodCategory(user, categoryId, updateData) {
 
 // Function to update an Food Category
 async function updateFood(user, foodId, updateData) {
-  
+  if (!user) { return false}
+
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1019,6 +1099,8 @@ async function updateFood(user, foodId, updateData) {
 
 // Function to update an Foof Template
 async function updateFoodTemplate(user, foodItem) {
+  if (!user) { return false}
+
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
   const templateId = foodItem._id
@@ -1102,6 +1184,7 @@ export {
     deleteFoodTemplate,
     getUserProfiles,
     loadMeals,
+    loadFood,
     loadActivities,
     loadTrainings,
     addMeal,

@@ -8,27 +8,29 @@ import {Image} from './Image.components'
 import { useState } from "react";
 import { ButtonText } from "./Buttons.components"
 
-const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
+const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
- 
-  console.log('AddFoodForm',foodItem)
-  
+
   const onDDInputChange = (value) => {
-    console.log('onDDInputChange',value)
-    foodItem.units = value
+    setFoodItem((prevFoodItem) => ({
+      ...prevFoodItem,
+      units: value,
+    }));
   };
 
   const onButtonInputChange = (name, value) => {
-    console.log('onButtonInputChange',name)
-    console.log('onButtonInputChange',value)
-    foodItem.weight = value
+    setFoodItem((prevFoodItem) => ({
+      ...prevFoodItem,
+      weight: value,
+    }));
   };
 
-  const onTextInputChange = (event) => {
-    const { value } = event.target;
-    console.log('onTextInputChange',value)
-    foodItem.weight = value
+  const onTextInputChange = (value) => {
+    setFoodItem((prevFoodItem) => ({
+      ...prevFoodItem,
+      weight: value,
+    }));
   };
 
   return <div>
@@ -54,11 +56,8 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
           title={"Select weight"}
           name={"weight"}
           initialValue={foodItem.weight} 
-          onChange={(e) => {
-            onTextInputChange(e);  
-          }}
-          onSubmit={(e) => {
-            onTextInputChange(e);
+          onChange={(value) => {
+            onTextInputChange(value);  
           }}
           onChangeButton={(name, value) => { onButtonInputChange(name, value) }}
         />

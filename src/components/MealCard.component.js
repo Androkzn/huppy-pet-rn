@@ -8,17 +8,18 @@ import {ButtonWithImage} from '../components/Buttons.components'
 import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 
-function MealCard({ meal, updateMeals }) {
+function MealCard({ meal, updateMeals,  updateFoods }) {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const mealId = meal._id;
+  const selectedDate = meal.date
   const _id = meal._id;
 
   // Define 'food' as a state variable using useState
   const [food, setFood] = useState([]);
 
   async function handleWeightChange(e, foodItem) {
-    const newValue = e.target.value;
+    const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
     // Update the foodItem's weight with the new value
     const data = {
       weight: newValue
@@ -26,12 +27,13 @@ function MealCard({ meal, updateMeals }) {
     const isUpdated = await updateFood(user, foodItem._id, data);
     if (isUpdated) {
       setFood(prevFood => prevFood.map(item => (item._id === foodItem._id ? { ...item, weight: newValue } : item)));
+      updateFoods()
     }
   }
   
   const openAddFoodPage = () => {
     console.log("Navigate to searchFood mealId", mealId)
-    navigate("/searchFood", { state: { mealId } });
+    navigate("/searchFood", { state: { mealId, selectedDate } });
   }
  
   useEffect(() => {
@@ -45,29 +47,32 @@ function MealCard({ meal, updateMeals }) {
      
   }
 
-
   // Function is responsible for deleting the Meal
   const deleteCurrentMeal = async () => {
      const isDeleted = await deleteMeal(user, _id);
      if (isDeleted) {
+      // Delete all associated food items
+      await Promise.all(food.map(async foodItem => {
+        await deleteFood(user, foodItem._id);
+      }));
         updateMeals()
+        updateFoods()
      }
   };
 
     // Function is responsible for deleting the Food
     const deleteCurrentFood = async (id) => {
-      console.log("deleteCurrentFood _id", id)
       const isDeleted = await deleteFood(user, id);
-      console.log("isDeleted _id", isDeleted)
       if (isDeleted) {
         loadFoodForMeal()
+        updateFoods()
      }
    };
-
  
   // Function to calculate the total weight of food
   function calculateTotalWeight(foodItems) {
-    return foodItems.reduce((total, foodItem) => total + foodItem.weight, 0);
+    const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.weight), 0);
+    return total;
   }
 
   return (
@@ -89,7 +94,8 @@ function MealCard({ meal, updateMeals }) {
                     type="number"
                     css={styles.inputFieldStyle}
                     value={foodItem.weight}
-                    onChange={(e) => handleWeightChange(e, foodItem)}
+                    onChange={(e) => 
+                      handleWeightChange(e, foodItem)}
                   />
                   <div css={styles.headingDeleteButonStyle}><Delete onClick={() => deleteCurrentFood(foodItem._id)} /></div>
                 </div> 

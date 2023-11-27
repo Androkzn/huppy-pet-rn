@@ -6,166 +6,156 @@ import styled from '@emotion/styled/macro'
 import Switch from '@mui/material/Switch';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import {Image} from '../components/Image.components'
+import * as Constants from "../helpers/Constants.helper"
+import { getStartAndEndOfToday } from "../helpers/Date.helper";
 
-
-function calculateTotalData(dataType, foodType, mealsToday, mealsThisWeek, isThisWeekSelected) {
-  let totalData = 0;
-
-  if (isThisWeekSelected) {
-    const currentDate = new Date();
-    const calendar = new Date(currentDate);
-    const dateComponents = {
-      year: calendar.getFullYear(),
-      month: calendar.getMonth(),
-      day: calendar.getDate(),
-      hour: calendar.getHours(),
-      minute: calendar.getMinutes(),
-      second: calendar.getSeconds(),
-    };
-
-    // Calculate the start of the week (Monday)
-    const todayWeekday = calendar.getDay();
-    const daysUntilMonday = (todayWeekday + 6) % 7; // 0 represents Monday, 1 for Tuesday, and so on
-    dateComponents.day = dateComponents.day - daysUntilMonday;
-    dateComponents.hour = 0;
-    dateComponents.minute = 0;
-    dateComponents.second = 0;
-
-    // Calculate the end of the week (Saturday)
-    dateComponents.day = dateComponents.day + 6;
-    dateComponents.hour = 23;
-    dateComponents.minute = 59;
-    dateComponents.second = 59;
-
-    totalData = mealsThisWeek.reduce((result, meal) => {
-      return (
-        result +
-        meal.food
-          .filter((food) => {
-            // If has both types meat and bones
-            // For bones add to calculations meat
-            if (
-              (doesHaveMeatAndBones() &&
-                foodType === 'bones' &&
-                dataType === 'weight' &&
-                (food.categoryType === 'bones' || food.categoryType === 'meat')) ||
-              (doesHaveMeatAndBones() &&
-                foodType === 'meat' &&
-                dataType === 'weight' &&
-                (food.categoryType === 'bones' || food.categoryType === 'meat'))
-            ) {
-              return foodType === 'bones' || foodType === 'meat';
-            }
-            return food.categoryType === foodType;
-          })
-          .reduce((sum, food) => {
-            switch (dataType) {
-              case 'weight':
-                if (doesHaveMeatAndBones() && foodType === 'bones') {
-                  return (
-                    sum +
-                    (food.units === 'serving'
-                      ? food.servings * food.servingWeight * (food.bonesRatio / 100)
-                      : food.weight * (food.bonesRatio / 100))
-                  );
-                } else if (doesHaveMeatAndBones() && foodType === 'meat') {
-                  return (
-                    sum +
-                    (food.units === 'serving'
-                      ? food.servings * food.servingWeight * (food.meatRatio / 100)
-                      : food.weight * (food.meatRatio / 100))
-                  );
-                } else {
-                  return sum + (food.units === 'serving' ? food.servings * food.servingWeight : food.weight);
-                }
-              case 'calories':
-                return sum + (food.units === 'serving' ? food.servings * food.caloriesServing : (food.weight / 100) * food.calories);
-              case 'nutrients':
-                return sum + food.weight;
-              default:
-                return sum;
-            }
-          }, 0)
-      );
+function calculateTotalDataForCategory(dataType, foodType, foodData, categories) {
+  let totalData = foodData
+    .filter((food) => {
+      if (
+        (doesHaveMeatAndBones(categories) &&
+          foodType === 'bones' &&
+          dataType === 'weight' &&
+          (food.categoryType === 'bones' || food.categoryType === 'meat')) ||
+        (doesHaveMeatAndBones(categories) &&
+          foodType === 'meat' &&
+          dataType === 'weight' &&
+          (food.categoryType === 'bones' || food.categoryType === 'meat'))
+      ) {
+        return foodType === 'bones' || foodType === 'meat';
+      }
+      return food.categoryType === foodType;
+    })
+    .reduce((sum, food) => {
+      switch (dataType) {
+        case 'weight':
+          if (doesHaveMeatAndBones(categories) && foodType === 'bones') {
+            return (
+              sum +
+              (food.units === 'serving'
+                ? food.servings * food.servingWeight * (food.bonesRatio / 100)
+                : food.weight * (food.bonesRatio / 100))
+            );
+          } else if (doesHaveMeatAndBones(categories) && foodType === 'meat') {
+            return (
+              sum +
+              (food.units === 'serving'
+                ? food.servings * food.servingWeight * (food.meatRatio / 100)
+                : food.weight * (food.meatRatio / 100))
+            );
+          } else {
+            return sum + (food.units === 'serving' ? food.servings * food.servingWeight : food.weight);
+          }
+        case 'calories':
+          return sum + (food.units === 'serving' ? food.servings * food.caloriesServing : (food.weight / 100) * food.calories);
+        case 'nutrients':
+          return sum + food.weight;
+        default:
+          return sum;
+      }
     }, 0);
-  } else {
-    // Calculate the total weight for the specified food type
-    totalData = mealsToday.reduce((result, meal) => {
-      const foodForType = meal.food.filter((food) => {
-        // If has both types meat and bones
-        // For bones add to calculations meat
-        if (
-          (doesHaveMeatAndBones() &&
-            foodType === 'bones' &&
-            dataType === 'weight' &&
-            (food.categoryType === 'bones' || food.categoryType === 'meat')) ||
-          (doesHaveMeatAndBones() &&
-            foodType === 'meat' &&
-            dataType === 'weight' &&
-            (food.categoryType === 'bones' || food.categoryType === 'meat'))
-        ) {
-          return foodType === 'bones' || foodType === 'meat';
-        }
-        return food.categoryType === foodType;
-      });
 
-      const weightForType = foodForType.reduce((sum, food) => {
-        // Sum the data of food for the food type
-        switch (dataType) {
-          case 'weight':
-            if (doesHaveMeatAndBones() && foodType === 'bones') {
-              return (
-                sum +
-                (food.units === 'serving'
-                  ? food.servings * food.servingWeight * (food.bonesRatio / 100)
-                  : food.weight * (food.bonesRatio / 100))
-              );
-            } else if (doesHaveMeatAndBones() && foodType === 'meat') {
-              return (
-                sum +
-                (food.units === 'serving'
-                  ? food.servings * food.servingWeight * (food.meatRatio / 100)
-                  : food.weight * (food.meatRatio / 100))
-              );
-            } else {
-              return sum + (food.units === 'serving' ? food.servings * food.servingWeight : food.weight);
-            }
-          case 'calories':
-            return sum + (food.units === 'serving' ? food.servings * food.caloriesServing : (food.weight / 100) * food.calories);
-          case 'nutrients':
-            return sum + food.weight;
-          default:
-            return sum;
-        }
+  return Math.floor(totalData);
+}
+
+function calculateGoalForCategory(category, currentProfile, isToday) {
+  const weight  = Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
+  return isToday ?  weight : weight * 7;
+}
+ 
+function calculatePercentage(value, goal) {
+  if (goal === 0) {
+    return 0;
+  } else { 
+  return  Math.floor(Math.max((value / goal) * 100, 0));
+  }
+}
+
+function doesHaveMeatAndBones(categories) {
+    return (
+      categories.filter((category) => category.type === 'bones').length > 0 &&
+      categories.filter((category) => category.type === 'meat').length > 0
+    );
+}
+
+function calculateTotalConsumedCalories(currentProfile, food, categories, activities) {
+  if (currentProfile) {
+
+    let totalCalories = 0;
+
+    for (const category of categories) {
+      totalCalories += calculateTotalDataForCategory("calories", category.type, food, categories);
+    }
+    
+    if (currentProfile && currentProfile.deductCalories && totalCalories > 0) {
+      totalCalories -= getTotalCaloriesBurnedFor(currentProfile, activities);
+    }
+
+    return  Math.floor(totalCalories);
+  }
+  return 0;
+}
+
+function getTotalCaloriesBurnedFor(currentProfile, activities) {
+ 
+  if (currentProfile && currentProfile.deductCalories) {
+    const totalCalories = activities
+      .reduce((result, activity) => {
+        const value = activity.metric === 'distance' ? activity.distance : activity.duration;
+        return result + getCaloriesBurnedFor(activity.metric, value);
       }, 0);
 
-      return result + weightForType;
-    }, 0);
+    return  Math.floor(totalCalories);
   }
-  return totalData;
+
+  return 0;
 }
 
-function doesHaveMeatAndBones(currentProfile) {
-  if (!currentProfile) {
-    return false;
+function getCaloriesBurnedFor(metricType, value, currentProfile) {
+  if (currentProfile) {
+    if (metricType === 'distance') {
+      // To calculate the number of calories burned during a walk,
+      // multiply the dog’s weight in pounds by the number of miles walked and then multiply by 0.8.
+      return currentProfile.weight * value * 0.8;
+    } else {
+      // For other metrics, such as duration, use a fixed value (e.g., 2 calories per minute).
+      return value * 2;
+    }
   }
 
-  if (currentProfile.preset === 'custom') {
-    return (
-      currentProfile.categories.filter((category) => category.type === 'bones').length > 0 &&
-      currentProfile.categories.filter((category) => category.type === 'meat').length > 0
-    );
-  } else {
-    const presetCategories = currentProfile.preset.categories(currentProfile.dailyPortion, currentProfile._id.toString());
-    return (
-      presetCategories.filter((category) => category.type === 'bones').length > 0 &&
-      presetCategories.filter((category) => category.type === 'meat').length > 0
-    );
-  }
+  return 0;
+}
+
+function getCaloriesGoal(currentProfile, isToday) {
+  if (currentProfile) {
+    const multiplier = isToday ? 1 : 7;
+     return Math.floor(Constants.estCalories * currentProfile.weight * currentProfile.dailyRatio * multiplier);
+  } 
+
+  return 0;
+}
+
+function filterFoodForToday(foodData, currentDate) {
+  // Get the start and end of today
+  const todayRange = getStartAndEndOfToday(currentDate);
+
+  // Filter food items for today
+  const foodForToday = foodData.filter((foodItem) => {
+    // Check if the food item's date is within today's range
+    return foodItem.date >= todayRange.start && foodItem.date <= todayRange.end;
+  }); 
+
+  return foodForToday;
 }
 
 
-const CaloriesStatisticSection = ({name, percentage, calories, total }) => { 
+const CaloriesStatisticSection = ({foodData, categories, activities, currentProfile, isStatisticToday, currentDate }) => { 
+  const food = isStatisticToday ? filterFoodForToday(foodData, currentDate) : foodData
+  
+  const calories= calculateTotalConsumedCalories(currentProfile, food, categories, activities)
+  const totalCalories = getCaloriesGoal(currentProfile, isStatisticToday)
+  const percentage = calculatePercentage(calories, totalCalories)
+
   const statisticCaloriesSectionStyle = {
     display: 'flex',
     flexDirection: 'row',
@@ -207,13 +197,19 @@ const CaloriesStatisticSection = ({name, percentage, calories, total }) => {
         <ProgressBar
           percentage={percentage}
         />
-        <div style={valuesStyle}>{calories} g /{total}  </div>
+        <div style={valuesStyle}>{calories} / {totalCalories} kcal</div>
 
     </div>
   )
 }
 
-const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => { 
+const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday, currentDate}) => { 
+  const food = isStatisticToday ? filterFoodForToday(foodData, currentDate) : foodData
+
+  const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
+  const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)
+  const percentage = calculatePercentage(weight, total)
+
   const statisticCategoriesSectionStyle = {
     display: 'flex',
     flexDirection: 'row',
@@ -245,12 +241,12 @@ const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => 
 
   return (
     <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> <Image imageName={`${type}.png`} width="40" height="40" /></div>
-        <div style={nameStyle}>{name}</div>
+      <div style={imageStyle}> <Image imageName={`${category.type}.png`} width="40" height="40" /></div>
+        <div style={nameStyle}>{category.name}</div>
         <ProgressBar
           percentage={percentage}
         />
-        <div style={valuesStyle}>{weight} g /{total} </div>
+        <div style={valuesStyle}>{weight} / {total} g </div>
     </div>
   )
 }
@@ -399,5 +395,9 @@ const CategoriesStatisticSection = ({name, type, percentage, weight, total}) => 
     ToggleStatisticSection,
     FoodCategoryRow,
     ProgressBar,
+    calculateTotalDataForCategory,
+    calculateGoalForCategory,
+    calculateTotalConsumedCalories,
+    getCaloriesGoal,
   };
   

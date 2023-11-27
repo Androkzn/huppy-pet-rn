@@ -12,7 +12,7 @@ function ActivityCard({ activity, updateActivities}) {
   const { user, currentProfile } = useContext(UserContext);
 
   function handleTextFieldValueChange(e) {
-    const newValue = e.target.value;
+    const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
 
     updateCurentActivity(newValue)
   }

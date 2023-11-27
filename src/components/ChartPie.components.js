@@ -6,7 +6,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, DoughnutController);
 
  
 
-const ChartPie = ({ data }) => {
+const ChartPie = ({ data, isAnimated = true }) => {
   // Calculate total weight
   const totalWeight = data.reduce((sum, item) => sum + item.weight, 0);
 
@@ -68,6 +68,7 @@ const ChartPie = ({ data }) => {
         ],
       },
     },
+    animation: true,
   };
 
   return (

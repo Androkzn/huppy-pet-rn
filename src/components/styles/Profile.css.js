@@ -47,7 +47,9 @@ const unusedCaloriesReminderStyle  = {
   borderRadius: '10px',
   fontWeight: 'bold',
   fontSize: '18px',
-  backgroundColor: colors.orange,
+  backgroundColor: colors.red,
+  color: colors.white,
+  marginTop: '10px',
 };
 
 const foodRatioExpandedContainerStyle = {
@@ -63,10 +65,8 @@ const foodRatioExpandedContainerStyle = {
 
 const chartContainerStyle = {
   display: 'flex',
- 
   alignItems: 'center',
   justifyContent: 'center',
- 
   marginTop: '20px',
 };
 

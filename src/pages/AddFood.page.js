@@ -16,13 +16,14 @@ const AddFood = ({ }) => {
    
   const [foodItem, setFoodItem] = useState(location.state?.foodItem);
   const [mealId, setMealId] = useState(location.state?.mealId);
+  const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
 
   console.log('AddFood',foodItem)
 
   // addFood function is responsible for adding the Food
   const addFoodToMeal = async () => {
-    console.log("mealId",mealId)
-    const isAdded = await addFood(user, mealId, foodItem)  
+    console.log("selectedDate", selectedDate)
+    const isAdded = await addFood(user, mealId, foodItem, selectedDate)  
     if (isAdded) {
       navigate("/searchFood");
     }
@@ -33,6 +34,7 @@ const AddFood = ({ }) => {
     if (!foodItem && !mealId && location.state) {
       setFoodItem(location.state.foodItem);
       setMealId(location.state.mealId)
+      setSelectedDate(location.state.selectedDate)
     }
   }, [foodItem, location.state]);
 
@@ -47,7 +49,7 @@ const AddFood = ({ }) => {
          Back
       </ButtonWithImage>
     </div>
-    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} />
+    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} setFoodItem={setFoodItem} />
   </PageContainer>
 }
 

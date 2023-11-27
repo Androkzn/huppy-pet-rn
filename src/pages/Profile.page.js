@@ -11,8 +11,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const Profile = () => {
   const { user, currentProfile } = useContext(UserContext);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -54,7 +52,6 @@ const Profile = () => {
     setCustomFoodCategories(categories);
   }
  };
-
 
 // Updates profile 
 const getProfile = () => {

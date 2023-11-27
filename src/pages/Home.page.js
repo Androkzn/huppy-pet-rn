@@ -11,7 +11,7 @@ import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon
 import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
 import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { loadMeals, loadMealsWeekly, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
+import { loadMeals, loadFood, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
 import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
@@ -23,10 +23,22 @@ import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, Categ
  
 
 const Home = () => {
+    // Function to load state from localStorage
+    const loadState = (key, defaultValue) => {
+      const storedValue = localStorage.getItem(key);
+      return storedValue ? JSON.parse(storedValue) : defaultValue;
+    };
+  
+    // Function to save state to localStorage
+    const saveState = (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    };
+
+    
   const {user, currentProfile } = useContext(UserContext);
-  const [currentDate, setCurrentDate] = useState( new Date());
+  const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [meals, setMeals] = useState([]);
-  const [mealsWeekly, setMealsWeekly] = useState([]);
+  const [food, setFood] = useState([]);
   const [activities, setActivities] = useState([]);
   const [trainings, setTrainings] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -98,10 +110,11 @@ const Home = () => {
   
   // Function is responsible for making the GraphQL
   // request to Realm and update the meals array from the response. 
-  const loadFoodForWeek = async () => {
+  const loadFoodForDate = async () => {
     if (currentProfile) {
-    //   const mealsWeekly = await loadMealsWeekly(user, currentProfile, currentDate); 
-    //   setMealsWeekly(mealsWeekly);
+      const food = await loadFood(user, currentProfile, currentDate, true); 
+      setFood(food);
+      console.log("loadFoodForDate", food)
     }
   };
 
@@ -177,6 +190,7 @@ const Home = () => {
   // Responsible for fetching data for  meals/traings/activities when data is changed
   useEffect(() => {
     updateAll()
+    saveState('currentDate', currentDate);
   }, [currentDate, currentProfile]);
  
   // Helper function to be performed after an meals/traing/activity has been deleted.
@@ -185,6 +199,7 @@ const Home = () => {
     updateActivities()
     updateTrainings()
     updateCategories()
+    updateFood()
   }
 
   const updateCategories= () => {
@@ -193,7 +208,10 @@ const Home = () => {
 
   const updateMeals = () => {
     loadMealsForDate();
-    loadFoodForWeek();
+  }
+
+  const updateFood = () => {
+    loadFoodForDate();
   }
 
   const updateActivities = () => {
@@ -202,6 +220,10 @@ const Home = () => {
 
   const updateTrainings = () => {
     loadTrainingsForDate();
+  }
+
+  function getTotalCategoryWeight (category) {
+    return Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
   }
 
   const DatePicker = () => {
@@ -232,47 +254,25 @@ const Home = () => {
       </div>
         <div style={styles.statisticContainerStyle}>
           <CaloriesStatisticSection
-            percentage={31}
-            calories={258}
-            total={1385}
+            foodData={food}
+            categories={categories}
+            activities={activities}
+            currentProfile={currentProfile}
+            isStatisticToday={isStatisticToday}
+            currentDate={currentDate}
+           />
+         {categories.map(category => (
+          <CategoriesStatisticSection
+            category={category}  
+            categories= {categories}
+            currentProfile={currentProfile}
+            foodData={food}
+            isStatisticToday={isStatisticToday}
+            currentDate={currentDate}
           />
-          <CategoriesStatisticSection
-            name={"Meat"}
-            type={"meat"}
-            percentage={10}
-            weight={259}
-            total={2250}
-           />
-           <CategoriesStatisticSection
-            name={"Fruits"}
-            type={"fruits"}
-            percentage={110}
-            weight={259}
-            total={2250}
-           />
-          <CategoriesStatisticSection
-            name={"Veggie"}
-            type={"veggie"}
-            percentage={95}
-            weight={220}
-            total={350}
-           />
-           <CategoriesStatisticSection
-            name={"Liver"}
-            type={"liver"}
-            percentage={142}
-            weight={220}
-            total={350}
-           />
-            <CategoriesStatisticSection
-            name={"Giblets"}
-            type={"giblets"}
-            percentage={212}
-            weight={220}
-            total={350}
-           />
+      ))}
           <ToggleStatisticSection 
-            initialValue={isStatisticToday}
+            initialValue={!isStatisticToday}
             onChange ={() => {
               setStatisticToday(!isStatisticToday)
             }}
@@ -300,7 +300,7 @@ const Home = () => {
                 <FoodCategoryRow
                   key={category?.name}
                   name={category?.name}
-                  weight={Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)}
+                  weight={getTotalCategoryWeight(category)}
                   color={category?.color}
                   value={category?.percentage} 
                 />
@@ -334,7 +334,7 @@ const Home = () => {
           {meals && meals.length > 0 ? (
             meals.map((meal) => 
             <div key={meal._id}>
-              <MealCard meal={meal} updateMeals={updateMeals}/>
+              <MealCard meal={meal} updateMeals={updateMeals} updateFoods={updateFood}/>
             </div>)
           ) : (
             <div style={styles.placeholderStyle}>

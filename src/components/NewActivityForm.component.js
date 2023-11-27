@@ -24,8 +24,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     setForm({ ...form, ["burnedCalories"]: getCaloriesBurnedFor(value) });
   };
 
-  const onDropdownInputChange = (event) => {
-    const { name, value } = event.target;
+  const onDropdownInputChange = (name, value) => {
     setForm({ ...form, [name]: value });
   };
 
@@ -104,8 +103,8 @@ const NewActivityForm = ({ onCreated, onClose }) => {
       </div>
       <h2  style={styles.addActivityTitleStyle}>{"Add Activity"}</h2>
       
-      <TitleAndDropdown name={"type"} title={"Activity"} dropdownOptions={getDropdownItems("type")} onChange={(e) => {onDropdownInputChange(e);}}/>
-      <TitleAndDropdown name={"metric"} title={"Metric"} dropdownOptions={getDropdownItems("metric")}  onChange={(e) => {onDropdownInputChange(e);}}/>
+      <TitleAndDropdown name={"type"} title={"Activity"} dropdownOptions={getDropdownItems("type")} onChange={(value) => { onDropdownInputChange("type", value)}}/>
+      <TitleAndDropdown name={"metric"} title={"Metric"} dropdownOptions={getDropdownItems("metric")}  onChange={(value) => { onDropdownInputChange("metric", value)}}/>
       <div style={styles.rowStyle}>
         <div style={styles.columnStyle}>
           <h4>{Enums.ActivityMetric.title(form.metric)}</h4> 

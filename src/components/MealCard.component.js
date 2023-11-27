@@ -37,8 +37,27 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
   }
  
   useEffect(() => {
-    loadFoodForMeal(); // Load food data when the component mounts
-  }, [meal]); // Empty dependency array to ensure it runs only once on mount
+    let isMounted = true;
+    // Load food data when the component mounts
+    const loadFoodForMeal = async () => {
+      try {
+        const results = await getAllFoodForMeal(user, mealId);
+        // Update the 'food' state with the fetched data only if the component is still mounted
+        if (isMounted) {
+          setFood(results);
+        }
+      } catch (error) {
+        // Handle errors here
+      }
+    };
+  
+    loadFoodForMeal();
+    // Cleanup function to set isMounted to false when the component is unmounted
+    return () => {
+      isMounted = false;
+    };
+  }, [meal]);
+  
 
   async function loadFoodForMeal() {
     const results = await getAllFoodForMeal(user, mealId);

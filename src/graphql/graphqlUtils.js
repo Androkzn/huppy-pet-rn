@@ -615,13 +615,13 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
   }
 }
 
-async function loadFood(user, currentProfile, currentDate, isWeekly) {
+async function loadFood(user, currentProfile, currentDate, isToday) {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
-  const { start, end } = isWeekly ?  getStartAndEndOfWeek(currentDate) : getStartAndEndOfToday(currentDate);
+  const { start, end } = isToday ? getStartAndEndOfToday(currentDate) : getStartAndEndOfWeek(currentDate);
 
 // GraphQL query to fetch all the meals for specific time interval
 const getAllFood = gql`

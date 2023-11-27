@@ -144,13 +144,14 @@ function filterFoodForToday(foodData, currentDate) {
     // Check if the food item's date is within today's range
     return foodItem.date >= todayRange.start && foodItem.date <= todayRange.end;
   }); 
-
+  console.log("filterFoodForToday", currentDate)
+  console.log("filterFoodForToday", foodForToday)
   return foodForToday;
 }
 
 
-const CaloriesStatisticSection = ({foodData, categories, activities, currentProfile, isStatisticToday, currentDate }) => { 
-  const food = isStatisticToday ? filterFoodForToday(foodData, currentDate) : foodData
+const CaloriesStatisticSection = ({foodData, categories, activities, currentProfile, isStatisticToday }) => { 
+  const food = foodData
   
   const calories= calculateTotalConsumedCalories(currentProfile, food, categories, activities)
   const totalCalories = getCaloriesGoal(currentProfile, isStatisticToday)
@@ -203,8 +204,8 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
   )
 }
 
-const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday, currentDate}) => { 
-  const food = isStatisticToday ? filterFoodForToday(foodData, currentDate) : foodData
+const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday}) => { 
+  const food = foodData
 
   const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
   const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)

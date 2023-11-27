@@ -9,18 +9,17 @@ import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'
 import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon_unselected.svg'
 import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
-import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 import { loadMeals, loadFood, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
-import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
- 
+import * as mq from '../components/styles/Media-queries';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Home = () => {
     // Function to load state from localStorage
@@ -40,23 +39,30 @@ const Home = () => {
   const [meals, setMeals] = useState([]);
   const [food, setFood] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [trainings, setTrainings] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
+  
+  const isSmallScreen = useMediaQuery('(max-width:430px)');
 
+  console.log("Main page reloaded")
+  console.log("isSmallScreen", isSmallScreen)
+
+  // Opens dialog 
   const openDialog = (dialogTypeNew) => {
     console.log("openDialog", dialogTypeNew)
     setDialogType(dialogTypeNew)
     setDialogOpen(true);
   };
-
+  
+  // Closes dialog
   const closeDialog = () => {
     setDialogOpen(false);
   };
 
+  // Handles dialog submission
   const handleDialogSubmit = (form, dialogType) => {
     if (dialogType === "addActivity") {
       const data = {
@@ -68,27 +74,12 @@ const Home = () => {
       }
 
       addActivityForDate(data)
-    } else if (dialogType === "addTraining") {
-      let  customCategory = form.customCategory;
-      // Check if custom type was selected  under base category
-      if (form.category !==  Enums.TrainingCategory.CUSTOM && form.type === Enums.TrainingType.CUSTOM) {
-        customCategory = Enums.getTitleForTrainingCategory(form.category)
-      }
-
-      const data = {
-        "category": form.category,
-        "type": form.type,
-        "customCategory": customCategory,
-        "customType": form.customType,
-        "desc": form.description,
-      }
-
-      addTrainingForDate(data)
-    }
+    } 
       
     closeDialog();
   };
-
+ 
+  // Returns dialog component based on dialog type
   const getDialogContent = () => {
     console.log("getDialogContent", dialogType)
     if (dialogType === "addActivity") { 
@@ -98,8 +89,7 @@ const Home = () => {
     } 
   };
 
-  // Function is responsible for making the GraphQL
-  // request to Realm and update the meals array from the response. 
+  // Updates the Meals  from the response. 
   const loadMealsForDate = async () => {
     if (currentProfile) {
       const meals = await loadMeals(user, currentProfile, currentDate); 
@@ -108,31 +98,20 @@ const Home = () => {
   };
 
   
-  // Function is responsible for making the GraphQL
-  // request to Realm and update the meals array from the response. 
+  // Updates the Food from the response. 
   const loadFoodForDate = async () => {
     if (currentProfile) {
-      const food = await loadFood(user, currentProfile, currentDate, true); 
-      setFood(food);
-      console.log("loadFoodForDate", food)
+      const foodUpdated = await loadFood(user, currentProfile, currentDate, isStatisticToday); 
+      setFood(foodUpdated);
     }
   };
 
-  // Function is responsible for making the GraphQL
-  // request to Realm and update the activities array from the response. 
+
+  // Updates the Activities from the response. 
   const loadActivitiesForDate = async () => {
     if (currentProfile) {
       const activities = await loadActivities(user, currentProfile, currentDate); 
       setActivities(activities);
-    }
-  };
-
-  // Function is responsible for making the GraphQL
-  // request to Realm and update the trainings array from the response. 
-  const loadTrainingsForDate = async () => {
-    if (currentProfile) {
-      const trainings = await loadTrainings(user, currentProfile, currentDate); 
-      setTrainings(trainings);
     }
   };
 
@@ -179,25 +158,16 @@ const Home = () => {
     }
   };
 
-  // Function is responsible for creating a new training
-  const addTrainingForDate = async (data) => {
-    const isAdded = await addTraining(user, currentProfile, currentDate, data)  
-    if (isAdded) {
-      updateTrainings();
-    }
-  };
-
-  // Responsible for fetching data for  meals/traings/activities when data is changed
+  // Responsible for fetching data for  meals/traings/activities/food when data is changed
   useEffect(() => {
     updateAll()
     saveState('currentDate', currentDate);
   }, [currentDate, currentProfile]);
  
-  // Helper function to be performed after an meals/traing/activity has been deleted.
+  // Helper function to be performed after an meals/traing/activity/food has been changed.
   const updateAll = () => {
     updateMeals()
     updateActivities()
-    updateTrainings()
     updateCategories()
     updateFood()
   }
@@ -216,10 +186,6 @@ const Home = () => {
 
   const updateActivities = () => {
     loadActivitiesForDate();
-  }
-
-  const updateTrainings = () => {
-    loadTrainingsForDate();
   }
 
   function getTotalCategoryWeight (category) {
@@ -243,7 +209,7 @@ const Home = () => {
     );
   };
   
-  const Statistic = () => {
+  const Statistic = ({ foodData }) => {
     return (
       <div style={styles.childConteinerStyle}> 
       <div style={styles.headerStyle}>
@@ -254,7 +220,7 @@ const Home = () => {
       </div>
         <div style={styles.statisticContainerStyle}>
           <CaloriesStatisticSection
-            foodData={food}
+            foodData={foodData}
             categories={categories}
             activities={activities}
             currentProfile={currentProfile}
@@ -263,10 +229,11 @@ const Home = () => {
            />
          {categories.map(category => (
           <CategoriesStatisticSection
+          key={category.name}
             category={category}  
             categories= {categories}
             currentProfile={currentProfile}
-            foodData={food}
+            foodData={foodData}
             isStatisticToday={isStatisticToday}
             currentDate={currentDate}
           />
@@ -282,7 +249,7 @@ const Home = () => {
     );
   };
 
-  const Chart = () => {
+  const Chart = ({categories}) => {
     return (
       <div style={styles.childConteinerStyle}> 
         <div style={styles.headerStyle}>
@@ -293,7 +260,7 @@ const Home = () => {
         <div style={styles.chartContainerStyle}>
           {/* Chart */}
           <div style={styles.chartStyle}>
-              <ChartPie data={categoriesData}/>
+              <ChartPie data={categories}/>
           </div>
           <div style={styles.chartLegentStyle}>
               {categories.map((category)  => (
@@ -311,7 +278,7 @@ const Home = () => {
     );
   };
 
-  const Meals = () => {
+  const Meals = ({ mealsData }) => {
     return (
       <div style={styles.childConteinerStyle}> {/* Meals container*/}
         <div style={styles.headerStyle}>{/* Header container*/}
@@ -331,8 +298,8 @@ const Home = () => {
         
         <div  style={styles.columnStyle}>  {/* Meal container*/}
           {/* Show meals cards if data avaliable, if not -> show placeholder*/}
-          {meals && meals.length > 0 ? (
-            meals.map((meal) => 
+          {mealsData && mealsData.length > 0 ? (
+            mealsData.map((meal) => 
             <div key={meal._id}>
               <MealCard meal={meal} updateMeals={updateMeals} updateFoods={updateFood}/>
             </div>)
@@ -346,7 +313,7 @@ const Home = () => {
     );
   };
   
-  const Activities = () => {
+  const Activities = ({activitiesData}) => {
     return (
       <div style={styles.childConteinerStyle}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
@@ -367,8 +334,8 @@ const Home = () => {
         </div>{/* Header container*/}
         <div  style={styles.columnStyle}>{/* Activity container*/}
           {/* Show activity cards if data avaliable, if not -> show placeholder*/}
-          {activities && activities.length > 0 ? (
-            activities.map((activity) => 
+          {activitiesData && activitiesData.length > 0 ? (
+            activitiesData.map((activity) => 
             <div key={activity._id}>
               <ActivityCard  activity={activity} updateActivities={updateActivities}/>
               </div>)
@@ -382,53 +349,18 @@ const Home = () => {
     );
   };
 
-  const Training = () => {
-    return (
-      <div style={styles.childConteinerStyle}> {/* Trainings container*/}
-        <div style={styles.headerStyle}>{/* Header container*/}
-          <div style={styles.headerTiteStyle}> 
-            <h3 style={styles.headingStyle} >TRAINING</h3>
-            <div style={styles.headerImageStyle}>
-              <TrainingIcon fill={colors.green}/>
-            </div>
-            </div>
-            <button
-              style={styles.headerAddButtonStyle}
-              onClick={() => {
-                openDialog("addTraining");
-              }}
-            >
-              <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-            </button>
-          </div>{/* Header container*/}
-
-          <div style={styles.columnStyle}>{/* Training container*/}
-            {trainings && trainings.length > 0 ? (
-              trainings.map((training) => <div key={training._id}>
-                 <TrainingCard training={training} updateTrainings={updateTrainings}/>
-                </div>)
-            ) : (
-              <div style={styles.placeholderStyle}>
-                <Image imageName="no_trainings_placeholder.png" width="200" height="170" />
-              </div>
-            )}
-          </div>{/* Training container*/}
-      </div> 
-    );
-  };
-
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
         <DatePicker/>
         <styles.responsiveMainContainer>
           <div style={styles.columnRightStyle}> 
-            <Statistic/>
-            <Chart/>
+            <Statistic foodData={food}/>
+            <Chart categories={categoriesData}/>
           </div>
            
-          <Meals/>
+          <Meals mealsData={meals}/>
 
-          <Activities/>
+          <Activities activitiesData={activities}/>
 
         </styles.responsiveMainContainer>
       </div>  

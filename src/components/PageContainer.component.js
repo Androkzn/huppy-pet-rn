@@ -11,12 +11,11 @@ const PageContainer = (props) => {
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    padding: '15px',
     borderRadius: '10px',
     maxWidth: '900px',
     width: '100%',
     minHeight:'85vh',
-    justifyContent: 'stretch',
+    justifyContent: 'centre',
     marginBottom: '100px',
   };
 

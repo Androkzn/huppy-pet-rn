@@ -14,7 +14,8 @@ const TabBar = () => {
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:500px)');
   const [value, setValue] = useState(0);
-  const { user, currentProfile, profiles } = useContext(UserContext);
+  const fontSize = isSmallScreen ? '11px' : '15px'
+  const imageSize = isSmallScreen ? '25px' : '50px'
 
   const handleChange = (event, newValue) => {
     console.log("newValue",newValue)
@@ -29,19 +30,34 @@ const TabBar = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: 0, width: '100%', height:'65px', backgroundColor: colors.brown, display: 'flex', justifyContent: 'center', padding: '10px' }}>
+    <div style={{ 
+      position: 'fixed', 
+      bottom: 0, 
+      width: '100%', 
+      height:'65px', 
+      backgroundColor: colors.brown, 
+      display: 'flex', 
+      justifyContent: 'space-around', 
+      padding: '5px' }}>
       <Tabs
         value={value}
         onChange={handleChange}
         aria-label="icon label tabs example"
         indicatorColor="none"
+        sx={{
+          
+        }}
       >
         <Tab 
           value={0} 
-          icon={<DiaryIcon fill={value === 0 ? colors.orange : colors.green}/>} 
+          icon={<DiaryIcon width= {imageSize} fill={value === 0 ? colors.orange : colors.green}/>} 
           label="Diary" 
           sx={{
+            minWidth:'15px',
+            margin: '0px',
+            padding: '10px',
             color: value === 0 ? colors.orange : colors.green,
+            fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,
               fontWeight: 'bold',
@@ -51,10 +67,14 @@ const TabBar = () => {
         />
         <Tab 
           value={1} 
-          icon={<DashboardIcon fill={value === 1 ? colors.orange : colors.green}/>} 
+          icon={<DashboardIcon width= {imageSize} fill={value === 1 ? colors.orange : colors.green}/>} 
           label="Dashboard" 
           sx={{
+            minWidth:'15px',
+            margin: '0px',
+            padding: '10px',
             color: value === 1 ? colors.orange : colors.green,
+            fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,
               fontWeight: 'bold',
@@ -64,10 +84,14 @@ const TabBar = () => {
         />
         <Tab 
           value={2} 
-          icon={<TrainingIcon fill={value === 2 ? colors.orange : colors.green}/>} 
+          icon={<TrainingIcon width= {imageSize} fill={value === 2 ? colors.orange : colors.green}/>} 
           label="Training" 
           sx={{
+            minWidth:'15px',
+            margin: '0px',
+            padding: '10px',
             color: value === 2 ? colors.orange : colors.green,
+            fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,
               fontWeight: 'bold',
@@ -77,10 +101,14 @@ const TabBar = () => {
         />
         <Tab 
           value={3} 
-          icon={ <HealthIcon fill={value === 3 ? colors.orange : colors.green}/>} 
-          label="Health & Wellness" 
+          icon={ <HealthIcon width= {imageSize} fill={value === 3 ? colors.orange : colors.green}/>} 
+          label= "Health"
           sx={{
+            minWidth:'15px',
+            margin: '0px',
+            padding: '10px',
             color: value === 3 ? colors.orange : colors.green,
+            fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,
               fontWeight: 'bold',
@@ -90,10 +118,14 @@ const TabBar = () => {
         />
         <Tab 
           value={4} 
-          icon={ <MoreIcon fill={value === 4 ? colors.orange : colors.green}/>} 
+          icon={ <MoreIcon width= {imageSize} fill={value === 4 ? colors.orange : colors.green}/>} 
           label="More" 
           sx={{
+            minWidth:'15px',
+            margin: '0px',
+            padding: '10px',
             color: value === 4 ? colors.orange : colors.green,
+            fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,
               fontWeight: 'bold',

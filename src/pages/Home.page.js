@@ -18,7 +18,6 @@ import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
-import * as mq from '../components/styles/Media-queries';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Home = () => {
@@ -45,7 +44,7 @@ const Home = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
   
-  const isSmallScreen = useMediaQuery('(max-width:820px)');
+  const isSmallScreen = useMediaQuery('(max-width:849px)');
 
   console.log("Main page reloaded")
   console.log("isSmallScreen", isSmallScreen)
@@ -352,20 +351,21 @@ const Home = () => {
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
         <DatePicker/>
-        <styles.responsiveSubContainer>
         <styles.responsiveMainContainer>
-          <div style={styles.columnRightStyle}>  
-            <Statistic foodData={food}/>
-            {/* Conditionally render Chart based on screen size */}
-            {!isSmallScreen && <Chart categories={categoriesData} />}
-          </div>  
-          <Meals mealsData={meals}/>
-        </styles.responsiveMainContainer>
+          <styles.responsiveSubContainer>
+            <styles.columnLeftStyle>  
+              <Statistic foodData={food}/>
+              {/* Conditionally render Chart based on screen size */}
+              {!isSmallScreen && <Chart categories={categoriesData} />}
+            </styles.columnLeftStyle>
+            <styles.columnLeftStyle>    
+            <Meals mealsData={meals}/>
+            </styles.columnLeftStyle>
+          </styles.responsiveSubContainer>
 
-        <Activities activitiesData={activities}/>
+          <Activities activitiesData={activities}/>
       
-
-        </styles.responsiveSubContainer>
+        </styles.responsiveMainContainer>
       </div>  
    
  

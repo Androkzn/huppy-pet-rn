@@ -349,7 +349,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
 
   const ProgressBar = (props) => {
-    const { bgcolor, percentage } = props;
+    const { percentage } = props;
     const containerStyles = {
       height: 25,
       backgroundColor: "#e0e0de",
@@ -363,7 +363,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   
     const fillerStyles = {
       height: '100%',
-      width: percentage <= 100 ? `${percentage}%`: '100%',
+      width:  (percentage < 5 && percentage > 0) ? '5%' : (percentage <= 100 ? `${percentage}%` : '100%'),
       backgroundColor: progressBarColor(percentage),
       transition: 'width 1s ease-in-out',
       borderTopLeftRadius: '10px',
@@ -378,7 +378,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
       fontSize: '15px',
       color: percentage <= 15 ? 'black' : 'white',
       fontWeight: 'bold',
-      marginLeft: percentage <= 15? `${percentage}px` : '0px',
+      marginLeft: percentage <= 15? `${percentage + 10 }px` : '0px',
     }
   
     return (

@@ -67,7 +67,7 @@ const childConteinerStyle = {
   alignItems: 'center',
   width: '100%',
   borderRadius: '20px',
-  margin: '5px',
+  marginTop: '10px',
   backgroundColor: colors.grayBackground,
 };
 
@@ -91,20 +91,29 @@ const placeholderStyle = {
   margin: '10px',
 };
 
+const columnLeftStyle =  styled.div({
+  ...columnStyle,
+  flex: '0 1 50%',
+  [mq.large]: {
+    marginRight: '10px',
+  },
+  [mq.medium]: {
+    marginRight: '10px',
+  },
+});
+
 const columnRightStyle = {
   ...columnStyle,
-  borderRadius: '5px',
-  marginRight: '5px',
   flex: '0 1 50%',
-  
+  [mq.large]: {
+    marginRight: '10px',
+  },
+  [mq.medium]: {
+    marginRight: '10px',
+  },
 };
 
-const columnLeftStyle = {
-  borderRadius: '5px',
-  flex: '0 1 60%',
-};
-
-const responsiveMainContainer = styled.div({
+const responsiveSubContainer = styled.div({
   ...rowStyle,
   flex: '0 1 66%',
    [mq.small]: {
@@ -113,7 +122,7 @@ const responsiveMainContainer = styled.div({
   },
 })
 
-const responsiveSubContainer = styled.div({
+const responsiveMainContainer = styled.div({
   ...rowStyle,
    [mq.medium]: {
     width: '100%',

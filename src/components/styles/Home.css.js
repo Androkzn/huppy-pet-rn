@@ -78,7 +78,8 @@ const rowStyle = {
 };
 
 const columnStyle = {
-  flex: '1 0 auto',
+  display: 'flex',
+  flexDirection: 'column',
   width: '100%',
 };
 
@@ -94,7 +95,7 @@ const columnRightStyle = {
   ...columnStyle,
   borderRadius: '5px',
   marginRight: '5px',
-  flex: '0 1 40%',
+  flex: '0 1 30%',
   
 };
 
@@ -105,6 +106,7 @@ const columnLeftStyle = {
 
 const responsiveMainContainer = styled.div({
   ...rowStyle,
+  
    [mq.small]: {
     width: '100%',
     flexDirection: 'column',
@@ -113,7 +115,11 @@ const responsiveMainContainer = styled.div({
 
 const responsiveSubContainer = styled.div({
   ...rowStyle,
-   [mq.small]: {
+   [mq.medium]: {
+    width: '100%',
+    flexDirection: 'column',
+  },
+  [mq.small]: {
     width: '100%',
     flexDirection: 'column',
   },
@@ -125,13 +131,15 @@ const chartContainerStyle = {
 };
 
 const chartStyle = {
-  flex: '0 1 40%',  
-  margin: '10px',
+  flex: '0 1 100%',  
+  margin: 'auto',
+  maxWidth: '200px',
 };
 
 const chartLegentStyle = {
-  flex: '1 1 60%',
+  flex: '1 1 100%',
   margin: '10px',
+  maxWidth: '230px',
 };
 
 const statisticContainerStyle = {

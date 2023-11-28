@@ -45,7 +45,7 @@ const Home = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
   
-  const isSmallScreen = useMediaQuery('(max-width:430px)');
+  const isSmallScreen = useMediaQuery('(max-width:800px)');
 
   console.log("Main page reloaded")
   console.log("isSmallScreen", isSmallScreen)
@@ -352,17 +352,20 @@ const Home = () => {
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
         <DatePicker/>
+        <styles.responsiveSubContainer>
         <styles.responsiveMainContainer>
-          <div style={styles.columnRightStyle}> 
+          <div style={styles.columnRightStyle}>  
             <Statistic foodData={food}/>
-            <Chart categories={categoriesData}/>
-          </div>
-           
-          <Meals mealsData={meals}/>
-
-          <Activities activitiesData={activities}/>
-
+            {/* Conditionally render Chart based on screen size */}
+            {!isSmallScreen && <Chart categories={categoriesData} />}
+          </div>  
+        <Meals mealsData={meals}/>
         </styles.responsiveMainContainer>
+
+        <Activities activitiesData={activities}/>
+      
+
+        </styles.responsiveSubContainer>
       </div>  
    
  

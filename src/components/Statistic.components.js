@@ -321,12 +321,12 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
     const weightStyle = {
       padding: '5px',
-      minWidth: '80px',
+      minWidth: '70px',
     };
 
     const valueStyle = {
       padding: '5px',
-      minWidth: '50px',
+      minWidth: '40px',
     };
 
     return (

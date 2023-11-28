@@ -45,7 +45,7 @@ const Home = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
   
-  const isSmallScreen = useMediaQuery('(max-width:800px)');
+  const isSmallScreen = useMediaQuery('(max-width:820px)');
 
   console.log("Main page reloaded")
   console.log("isSmallScreen", isSmallScreen)
@@ -359,7 +359,7 @@ const Home = () => {
             {/* Conditionally render Chart based on screen size */}
             {!isSmallScreen && <Chart categories={categoriesData} />}
           </div>  
-        <Meals mealsData={meals}/>
+          <Meals mealsData={meals}/>
         </styles.responsiveMainContainer>
 
         <Activities activitiesData={activities}/>

@@ -95,7 +95,7 @@ const columnRightStyle = {
   ...columnStyle,
   borderRadius: '5px',
   marginRight: '5px',
-  flex: '0 1 30%',
+  flex: '0 1 50%',
   
 };
 
@@ -106,7 +106,7 @@ const columnLeftStyle = {
 
 const responsiveMainContainer = styled.div({
   ...rowStyle,
-  
+  flex: '0 1 66%',
    [mq.small]: {
     width: '100%',
     flexDirection: 'column',

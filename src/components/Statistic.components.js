@@ -164,12 +164,9 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
     justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
-    height: '50px',
-    marginBottom: '15px',
-    marginTop: '15px',
-    borderRadius: '10px',
-    padding: '0px',
-    border: `2px solid  ${colors.green || "none"}`,
+    height: '45px',
+    marginBottom: '5px',
+    marginTop: '5px',
   };
 
   const imageStyle = {
@@ -184,7 +181,7 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
   };
 
   const valuesStyle = {
-     minWidth: '90px',
+     minWidth: '110px',
      fontSize: '15px',
      fontWeight: 'bold',
      color: progressBarColor(percentage),
@@ -218,7 +215,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
-    height: '50px'
+    height: '45px'
   };
 
   const imageStyle = {
@@ -233,7 +230,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   };
 
   const valuesStyle = {
-     minWidth: '90px',
+     minWidth: '110px',
      fontSize: '15px',
      fontWeight: 'bold',
      color: progressBarColor(percentage),
@@ -262,7 +259,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
     const statisticToggleLabelStyle = {
       padding: '10px',
-      margin: '10px',
+      margin: '5px',
       textAlign: 'left',
       fontSize: '16px',
       fontWeight: "bold",
@@ -358,7 +355,10 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
       backgroundColor: "#e0e0de",
       borderRadius: '10px',
       borderBottomLeftRadius: '10px',
-      minWidth:  '120px',
+      marginRight: '5px',
+      marginRiLeft: '5px',
+      maxWidth:  '350px',
+      width: '100%'
     }
   
     const fillerStyles = {

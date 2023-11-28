@@ -9,6 +9,7 @@ import * as Enums from "../helpers/Enums.helper"
 
 const NewActivityForm = ({ onCreated, onClose }) => {
   const {currentProfile } = useContext(UserContext);
+  const [value, setValue] = useState(0);
   // Some prefilled form state
   const [form, setForm] = useState({
     type: Enums.ActivityType.WALK,
@@ -20,12 +21,16 @@ const NewActivityForm = ({ onCreated, onClose }) => {
 
   const onTextInputChange = (event) => {
     const { value } = event.target;
-    form.metric === Enums.ActivityMetric.DISTANCE ?  setForm({ ...form, ["distance"]: value }) :  setForm({ ...form, ["duration"]: value });
-    setForm({ ...form, ["burnedCalories"]: getCaloriesBurnedFor(value) });
+    const valueActivity = value === "" ? 0 : parseInt(value, 10);
+    setValue(valueActivity)
+    form.metric === Enums.ActivityMetric.DISTANCE ?  setForm({ ...form, ["distance"]: valueActivity }) :  setForm({ ...form, ["duration"]: valueActivity });
+    setForm({ ...form, ["burnedCalories"]: getCaloriesBurnedFor(valueActivity) });
   };
 
   const onDropdownInputChange = (name, value) => {
     setForm({ ...form, [name]: value });
+    let valueActivity = getActivityValue()
+    setValue(valueActivity)
   };
 
   
@@ -51,11 +56,12 @@ const NewActivityForm = ({ onCreated, onClose }) => {
       const newValue = form.metric === Enums.ActivityMetric.DISTANCE
         ? Math.max(0, prevForm.distance - 1)
         : Math.max(0, prevForm.distance - 10);
-  
+     
       const updatedForm = form.metric === Enums.ActivityMetric.DISTANCE
         ? { ...prevForm, distance: newValue }
         : { ...prevForm, duration: newValue };
-  
+      
+      setValue(newValue)
       return { ...updatedForm, burnedCalories: getCaloriesBurnedFor(newValue) };
     });
   };
@@ -69,7 +75,8 @@ const NewActivityForm = ({ onCreated, onClose }) => {
       const updatedForm = form.metric === Enums.ActivityMetric.DISTANCE
         ? { ...prevForm, distance: newValue }
         : { ...prevForm, duration: newValue };
-  
+      
+      setValue(newValue)
       return { ...updatedForm, burnedCalories: getCaloriesBurnedFor(newValue) };
     });
   };
@@ -107,14 +114,14 @@ const NewActivityForm = ({ onCreated, onClose }) => {
       <TitleAndDropdown name={"metric"} title={"Metric"} dropdownOptions={getDropdownItems("metric")}  onChange={(value) => { onDropdownInputChange("metric", value)}}/>
       <div style={styles.rowStyle}>
         <div style={styles.columnStyle}>
-          <h4>{Enums.ActivityMetric.title(form.metric)}</h4> 
+          <h4>{Enums.getDDTitleForActivityMetric(form.metric)}</h4> 
           <div style={styles.circleButtonsGroupStyle}>
-          <ButtonText variant="circleTextButton" onClick={() => decrementCount()} name={"integerMetric"}>
+          <ButtonText variant="circleTextButton" onClick={ decrementCount } name={"integerMetric"}>
             -
           </ButtonText>
           <input
             style={styles.textFieldStyle}
-            value={getActivityValue()}
+            value={value.toString()}
             onChange={(e) => {onTextInputChange(e);}}
             name={"integerMetric"} 
             type='number'
@@ -152,7 +159,8 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     </div>
     {form.burnedCalories > 0 && (  
     <div style={styles.estimatedCaloriesContainerStyle}> 
-        <h4>Estimated burned calories: {form.burnedCalories} kcal</h4>
+        <h4 style={styles.burnedCaloriesStyle}>Burned calories:</h4>
+        <h4>{form.burnedCalories} kcal</h4>
     </div>
     )}
     </form>

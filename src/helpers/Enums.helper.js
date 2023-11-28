@@ -183,15 +183,8 @@ export const FoodSection = {
   export const ActivityMetric = {
     DISTANCE: 'distance',
     DURATION: 'duration',
-
-    title(metric) {
-        switch (metric) {
-            case this.DISTANCE: return 'Distance, km';
-            case this.DURATION: return 'Duration, min';
-        }
-    },
   };
-  
+
   // Enum ActivityMetric methods
   export const getTitleForActivityMetric= (metric) => {
     switch (metric) {

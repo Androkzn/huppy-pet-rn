@@ -4,7 +4,7 @@ import * as colors from './Colors'
  
 const addActivityFormStyle = {
   maxWidth: '450px',
-  minWidth: '350px',
+  minWidth: '250px',
   margin: 'auto',
 };
 
@@ -22,10 +22,14 @@ const addActivityButtonContainerStyle = {
 const estimatedCaloriesContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
-  border: `2px solid ${colors.green}`, 
+  textAlign: 'center',
   borderRadius: '10px', 
-  background: `${colors.lightBrown2}`,
-  color: `${colors.orange}`
+  backgroundColor: `${colors.lightBrown2}`,
+  color: `${colors.orange}`,
+};
+
+const burnedCaloriesStyle = {
+  marginRight: '5px',
 };
 
 const containerStyle = {
@@ -87,4 +91,5 @@ export {
   addActivityTitleStyle,
   closeButtonContainer,
   estimatedCaloriesContainerStyle,
+  burnedCaloriesStyle,
 }

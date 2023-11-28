@@ -152,7 +152,7 @@ function ActivityCard({ activity, updateActivities}) {
             >
               {Object.values(enums.ActivityMetric).map((option, index) => (
                 <option key={index}>
-                  {enums.ActivityMetric.title(option)}
+                  {enums.getDDTitleForActivityMetric(option)}
                 </option>
               ))}
             </select>

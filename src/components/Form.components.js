@@ -198,6 +198,12 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       setCount(count + 1);
       onChangeButton(name, count + 1);
     };
+
+    const onChangeTextField = (e) =>{
+      const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+      setCount(newValue);
+      onChange(newValue);
+    }
   
     const containerStyle = {
       display: 'flex',
@@ -248,13 +254,9 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             id={id}
             style={textFieldStyle}
             type="number"
-            value={count}
+            value={count.toString()}
             onChange={(e) => {
-              const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-              console.log("newValue",newValue)
-              setCount(newValue);
-              onChange(newValue);
-              e.preventDefault();  
+              onChangeTextField(e) 
             }}
             onSubmit={(e) => {
               e.preventDefault();  
@@ -385,6 +387,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
     const handleTextFieldChange = (event) => {
       const newValue = event.target.value === "" ? 0 : parseInt(event.target.value, 10);
+      console.log("newValue", newValue)
       setCount(newValue <= maxCountValue ? newValue : maxCountValue);
       onChangeDailyRatioValue(newValue <= maxCountValue ? newValue : maxCountValue);
     };
@@ -448,7 +451,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
               id={id}
               style={textFieldStyle}
               type="number"
-              value={count}
+              value={count.toString()}
               onChange={(e) => {handleTextFieldChange(e)}}
               onSubmit={(e) => {e.preventDefault();}}
               name={name}

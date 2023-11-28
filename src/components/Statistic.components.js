@@ -376,9 +376,9 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     const labelStyles = {
       padding: 5,
       fontSize: '15px',
-      color: percentage <= 30 ? 'black' : 'white',
+      color: percentage <= 15 ? 'black' : 'white',
       fontWeight: 'bold',
-      marginLeft: percentage <= 30? `${percentage +5}px` : '0px',
+      marginLeft: percentage <= 15? `${percentage}px` : '0px',
     }
   
     return (

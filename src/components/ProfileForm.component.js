@@ -57,20 +57,26 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
 
   // Handle "+" and "-" buttons changes
   const onButtonInputChange = (name, value, id) => {
-    console.log("onButtonInputChange")
-    if (name === "weight" || name === "dailyPortion" || name === "dailyRatio") {
-     
+    if (name === "weight") {
+      // Update dailyPortion if weight is changed
+      const updateData = {
+        weight: value,
+        dailyPortion: getPortionWeight(profile.dailyRatio, value)
+      }
+      updateProfile("", "", updateData)
+    } else if (name === "dailyPortion") {
+      updateProfile(name, value)
+    } else if (name === "dailyRatio") {
       // Update dailyPortion if dailyRatio is changed
-      if ( name === "dailyRatio" && profile?.isRatioSelected) {
+      if (profile?.isRatioSelected) {
         const updateData = {
           dailyRatio: value,
-          dailyPortion: getPortionWeight(value)
+          dailyPortion: getPortionWeight(value, profile.weight)
         }
         updateProfile("", "", updateData)
       }  else {
         updateProfile(name, value)
       }
-
     }  else {
       updateCategory(id, value)
       checkUnusedCategoryPercentage()
@@ -79,7 +85,6 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
 
   // Handle toggles and drop downs changes
   const handleToggleAndDDChange = (name, value) => {
-    console.log("handleToggleAndDDChange")
     // Update dailyPortion if dailyRatio is changed
     if ( name === "isRatioSelected") {
       // Update dailyPortion only when Daily ratio option is selected 
@@ -98,16 +103,14 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
   };
 
   // Handle text input fields changes
-  const onTextInputChange = (event, id) => {
-    console.log("onTextInputChange")
-    const { value, name } = event.target;
-    if (name === "weight" || name === "dailyPortion" || name === "dailyRatio") {
-      updateProfile(name, value)
-    }  else {
-      // Handle Food Category  changes
-        updateCategory(id, value)
-        checkUnusedCategoryPercentage()
-    }
+  const onTextInputChange = (name, value) => {
+    updateProfile(name, value)
+  };
+
+  // Handle text input fields changes
+  const onTextInputCategoryChange = (value, id) => {
+    updateCategory(id, value)
+    checkUnusedCategoryPercentage()
   };
 
   // Handle DOB changes
@@ -134,13 +137,11 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
 }
 
   // Calculates portion weight based on Daily ratio % 
-  function getPortionWeight(dailyRatio) {
+  function getPortionWeight(dailyRatio, weight) {
       const percentage = parseFloat( dailyRatio);
-      const weight = parseFloat(profile.weight);
-      const newPortionWeight = weight * (percentage / 100) * 1000;
+      const newPortionWeight = parseFloat(weight) * (percentage / 100) * 1000;
       const result = Math.round(newPortionWeight);
       return result
-
   }
   
   // Calculates estimated daily calories  weight based on Daily ratio %  and pet's weight
@@ -192,7 +193,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
   // Calculates recommended daily calories
   function calculateRecommendedCalories() {
     let caloriesRecommended = 0;
-  
+    console.log("calculateRecommendedCalories")
     const months = calculateAgeInMonths(profile?.dob)
 
     if (months < 4) {
@@ -306,8 +307,8 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
         title={"Weight, kg"}
         name={"weight"}
         initialValue={profile?.weight} 
-        onChange={(e) => { onTextInputChange(e) }}
-        onSubmit={(e) => { onTextInputChange(e) }}
+        onChange={(value) => { onTextInputChange("weight", value) }}
+        onSubmit={(value) => { onTextInputChange("weight", value) }}
         onChangeButton={ onButtonInputChange }
       />
       {/* Birthday field */}  
@@ -403,8 +404,8 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
                     title={"Daily portion, g"}
                     name={"dailyPortion"}
                     initialValue={profile?.dailyPortion} 
-                    onChange={(e) => { onTextInputChange(e) }}
-                    onSubmit={(e) => { onTextInputChange(e) }}
+                    onChange={(value) => { onTextInputChange("dailyPortion",value) }}
+                    onSubmit={(value) => { onTextInputChange("dailyPortion",value) }}
                     onChangeButton={ onButtonInputChange }
                   />
                 )}
@@ -432,7 +433,7 @@ const Profile = ({ profile, customFoodCategories, updateProfile, addCategory, de
                           weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
                           color={category?.color}
                           value={category?.percentage} 
-                          onChange={(e) => { onTextInputChange(e, category?._id) }}
+                          onChange={(value) => { onTextInputCategoryChange(value, category?._id) }}
                           onDelete={() => { deleteCategory(category) }}
                           onChangeButton={(name,value) => { onButtonInputChange(name,value, category?._id) }}
                         />

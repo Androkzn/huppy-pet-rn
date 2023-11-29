@@ -1,34 +1,38 @@
 /** @jsxImportSource @emotion/react */
 
+import styled from '@emotion/styled';
 import * as colors from './styles/Colors'
 import { useState } from 'react';
-import styled from '@emotion/styled/macro'
 import Switch from '@mui/material/Switch';
 import { ButtonText, ButtonWithImage } from "./Buttons.components"
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import CustomDatePicker from "../components/CustomDatePicker.component";
 import { Delete } from "@mui/icons-material";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import * as Constants from "../helpers/Constants.helper"
 
 const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    textAlign: 'center',
-    borderRadius: '10px',
-    margin: '3px',
+    textAlign: 'left',
+    borderRadius: Constants.mainBorderRadius,
+    margin: Constants.mainFormDevider,
     background: `${colors.lightBrown}`,
-    paddingRight: '15px',
-    paddingLeft: '15px',
+    paddingRight: Constants.mainPadding,
+    paddingLeft: Constants.mainPadding,
   };
 
   const titleStyle = {
-    marginRight: '10px',
+    marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
 
   const pickerStyle = {
-    
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
 
   return (
@@ -47,21 +51,23 @@ const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
 
 
 const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderColor }) => {
-    const containerStyle = {
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  const containerStyle = {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       border: `2px solid ${borderColor || "none"}`,  
       borderRadius: '10px',  
       background: `${colors.lightBrown}`,
-      marginTop: '10px', 
-      marginRight: '3px',
-      marginLeft: '3px',
-      marginBottom: '10px',  
+      marginTop: Constants.mainMargin, 
+      marginRight: Constants.mainFormDevider,
+      marginLeft: Constants.mainFormDevider,
+      marginBottom: Constants.mainMargin,  
     };
   
   const titleStyle = {
     margin: '5px',
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
   
   const textBoxStyle = {
@@ -69,7 +75,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     width: '95%',
     margin: '15px',
     borderRadius: '10px', 
-    border: `1px solid ${colors.gray}`,   
+    border: `1px solid ${colors.gray}`,
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,   
   };
     
     
@@ -90,28 +97,30 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
+      textAlign: 'left',
       borderRadius: '10px',
-      margin: '3px',
+      margin: Constants.mainFormDevider,
       background: `${colors.lightBrown}`, 
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding, 
   };
   
   const titleStyle = {
-    marginRight: '10px',
+    marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
   
   const dropdownStyle = {
-      width: '150px',
+      width: '210px',
       borderRadius: '10px',
       height: '35px',
-      paddingRight: '15px',
-      paddingLeft: '15px',
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding,
       backgroundColor: colors.oliveLight,
   };
     
@@ -136,40 +145,48 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleTooltipAndValue = ({ title, value, tipText}) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
+      textAlign: 'left',
       borderRadius: '10px',
-      paddingRight: '5px',
-      paddingLeft: '5px', 
+      paddingRight: Constants.smallPadding,
+      paddingLeft: Constants.mainPadding, 
   };
   
   const titleStyle = {
-    marginRight: '10px',
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
   
   const textStyle = {
-    marginRight: '10px',
+    marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize, 
   };
 
   const CustomWidthTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))({
     [`& .${tooltipClasses.tooltip}`]: {
-      maxWidth: 400,
-      fontSize: '15px',
-
+      maxWidth: isSmallScreen ? 250: 400,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     },
   });
 
+  const rowStyle = {
+    display: 'flex',
+    justifyContent: 'start',
+    alignItems: 'center',
+    flexDirection: 'row',
+  };
+
     return (
       <div style={containerStyle}>
-        <div style={containerStyle}>
-          <h3 style={titleStyle}> {title} </h3>
+          <div style={rowStyle}>
+            <h3 style={titleStyle}> {title} </h3>
             <CustomWidthTooltip title={tipText}>
-              <Button sx={{ m: 1 }}>
+              <Button sx={{ m: 1 , margin: '0px', margin: '0px' }}>
                 <ButtonText
                   variant="circleTextButtonSmall"
                   height= '25px'
@@ -186,6 +203,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleButtonsAndTextField = ({ id, title, initialValue, name, onChange, onChangeButton }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const [count, setCount] = useState(initialValue);
     const decrementCount = () => {
       if (count > 0) {
@@ -209,16 +227,17 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
+      textAlign: 'left',
       borderRadius: '10px',
-      paddingRight: '15px',
-      paddingLeft: '15px',
-      background: `${colors.lightBrown}`,
-      margin: '3px',  
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding,
+      background: `${colors.lightBrown}`, 
+      margin: Constants.mainFormDevider,
     };
     
     const titleStyle = {
-      marginRight: '0px',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     
     };
     
@@ -232,8 +251,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       outline: 'none',
       width: '50px',
       textAlign: 'center',
-      marginRight: '15px',
-      marginLeft: '15px',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
       borderRadius: '10px',
       height: '30px',
     };
@@ -278,21 +297,23 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleAndTextInput = ({ id, initialValue, name, title, onChange, placeholder, borderColor }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
+      textAlign: 'left',
       borderRadius: '10px',
-      margin: '3px',
+      margin: Constants.mainFormDevider,
       background: `${colors.lightBrown}`, 
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding, 
       border: `2px solid  ${borderColor || "none"}`,  
     };
   
     const titleStyle = {
-      marginRight: '10px',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize, 
     };
   
     const textFieldStyle = {
@@ -301,10 +322,10 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       outline: 'none',  
       alignItems: 'center',
       textAlign: 'center',
-      marginLeft: '15px',
-      borderRadius: '10px',
+      marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      borderRadius: Constants.mainBorderRadius,
       height: '30px',
-      fontSize: '18px'
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize, 
     };
   
     return (
@@ -324,6 +345,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleAndToggle = ({ id, name, title, onChange, initialValue }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const [checked, setChecked] =  useState(initialValue);
 
     const handleChange = (event) => {
@@ -334,16 +356,17 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
-      borderRadius: '10px',
-      margin: '3px',
+      textAlign: 'left',
+      borderRadius: Constants.mainBorderRadius,
       background: `${colors.lightBrown}`, 
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight:  isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      paddingLeft: Constants.mainPadding, 
+      margin: Constants.mainFormDevider,
     };
   
     const titleStyle = {
-      marginRight: '10px',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
   
     return (
@@ -363,6 +386,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const TitleToggleAndButtons = ({ id, name, title, onChangeToggle, toggleValue, dailyRatioValue, onChangeDailyRatioValue, maxCountValue = 3000 }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const [checked, setChecked] = useState(toggleValue);
     const [count, setCount] = useState(dailyRatioValue);
   
@@ -394,23 +418,26 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
     const containerStyle = {
       display: 'flex',
+      flexDirection: isSmallScreen ? 'column' :'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      textAlign: 'center',
-      borderRadius: '10px',
-      margin: '3px',
+      textAlign: 'left',
+      borderRadius: Constants.mainBorderRadius,
       background: `${colors.lightBrown}`, 
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight:  isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      paddingLeft: Constants.mainPadding,
+      margin: Constants.mainFormDevider, 
     };
   
     const titleStyle = {
-      marginRight: '10px',
+      marginRight: Constants.mainMargin,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
   
     const controlGroup = {
       display: 'flex',
       alignItems: 'center',
+      marginBottom: isSmallScreen ? Constants.smallMargin : '0px'
     };
     
     const textFieldStyle = {
@@ -418,83 +445,94 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       outline: 'none',
       width: '50px',
       textAlign: 'center',
-      marginRight: '15px',
-      marginLeft: '15px',
-      borderRadius: '10px',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      borderRadius: Constants.mainBorderRadius,
       height: '30px',
     };
+
+
   
     return (
       <div style={containerStyle}>
-        <h3 style={titleStyle}>{title}</h3>
-        <Switch
-          id={id}
-          name={name}
-          checked={checked}
-          onChange={handleToggleChange}
-          inputProps={{ 'aria-label': 'controlled' }}
-          color='warning'
-          style={{ color: colors.green }}
-        />
-        {checked && (
-          <div style={controlGroup}>
-            <ButtonText
-              as="button"
-              name={name}
-              variant="circleTextButton"
-              onClick={decrementCount}
-              disabled={count === 0}
-            >
-              -
-            </ButtonText>
-            <input
-              id={id}
-              style={textFieldStyle}
-              type="number"
-              value={count.toString()}
-              onChange={(e) => {handleTextFieldChange(e)}}
-              onSubmit={(e) => {e.preventDefault();}}
-              name={name}
-            />
-            <ButtonText
-              as="button"
-              name={name}
-              variant="circleTextButton"
-              onClick={incrementCount}
-              disabled={count === maxCountValue}
-            >
-              +
-            </ButtonText>
-          </div>
-        )}
+         <div style={controlGroup}> 
+          <h3 style={titleStyle}>{title}</h3>
+          <Switch
+            id={id}
+            name={name}
+            checked={checked}
+            onChange={handleToggleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            color='warning'
+            style={{ color: colors.green }}
+          />
+         </div>
+         <div style={controlGroup}>
+          {checked && (
+            <div style={controlGroup}>
+              <ButtonText
+                as="button"
+                name={name}
+                variant="circleTextButton"
+                onClick={decrementCount}
+                disabled={count === 0}
+              >
+                -
+              </ButtonText>
+              <input
+                id={id}
+                style={textFieldStyle}
+                type="number"
+                value={count.toString()}
+                onChange={(e) => {handleTextFieldChange(e)}}
+                onSubmit={(e) => {e.preventDefault();}}
+                name={name}
+              />
+              <ButtonText
+                as="button"
+                name={name}
+                variant="circleTextButton"
+                onClick={incrementCount}
+                disabled={count === maxCountValue}
+              >
+                +
+              </ButtonText>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
   
 
   const SelectedFoodCategoryRow = ({ name, value, color, weight }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'center',
-      borderRadius: '10px',
-      height: '45px'
+      borderRadius: Constants.mainBorderRadius,
+      height: isSmallScreen ? '35px': '45px',
+      
     };
   
     const nameStyle = {
       width: '100px',
-      borderRadius: '5px',
-      padding: '5px',
+      borderRadius: Constants.smallBorderRadius,
+      padding: Constants.smallPadding,
       backgroundColor: `${color}`, 
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
        
     };
 
     const weightStyle = {
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     const valueStyle = {
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     return (
@@ -507,6 +545,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const SelectedCustomFoodCategoryRow = ({ id, name, onChange, onDelete, value, color, weight, onChangeButton, remainingPercentage }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
+    
     const [count, setCount] = useState(value);
   
     const decrementCount = () => {
@@ -526,21 +566,20 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'center',
-      borderRadius: '10px',
-      margin: '0px',
-      padding:  '0px',
+      borderRadius: Constants.mainBorderRadius,
       height: '45px'
     };
   
     const nameStyle = {
-      width: '100px',
-      borderRadius: '5px',
-      padding: '5px',
-      backgroundColor: `${color}`, 
+      width:  isSmallScreen ? '60px' : '100px',
+      borderRadius: isSmallScreen ? Constants.smallBorderRadius : Constants.mainBorderRadius,
+      padding: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      backgroundColor: `${color}`,
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     const weightStyle = {
-       
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
   
     const controlGroup = {
@@ -551,18 +590,18 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     const textFieldStyle = {
       border: 'none',
       outline: 'none',
-      width: '50px',
+      width:  isSmallScreen ? '30px' :'50px',
       textAlign: 'center',
-      marginRight: '15px',
-      marginLeft: '15px',
-      borderRadius: '10px',
+      marginRight: Constants.smallMargin,
+      marginLeft: Constants.smallMargin,
+      borderRadius: Constants.mainBorderRadius,
       height: '30px',
       backgroundColor: `${colors.oliveLight}`, 
     };
 
     const deleteButonStyle = {
       color: colors.green,
-      marginLeft: '20px',
+      marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
     };
     
     return (
@@ -583,7 +622,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
             id={id}
             style={textFieldStyle}
             type="number" 
-            value={count}
+            value={count.toString()}
             onChange={(e) => {
               const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
               // Prevents more than 100% in total for all categories
@@ -615,22 +654,26 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const UnselectedFoodCategoryRow = ({name, onAdd, color }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
+
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'center',
-      borderRadius: '10px',
-      margin: '3px',
-      paddingRight: '5px',
-      paddingLeft: '5px', 
+      borderRadius: Constants.mainBorderRadius,
+      margin: Constants.mainFormDevider,
+      paddingRight: Constants.smallPadding,
+      paddingLeft: Constants.smallPadding, 
     };
     
     const nameStyle = {
       width: '100px',
-      borderRadius: '5px',
-      padding: '5px',
+      borderRadius: Constants.smallBorderRadius,
+      padding: Constants.smallPadding,
       backgroundColor: `${color}`, 
+      fontWeight: 'bold',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     return (
@@ -658,11 +701,11 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'center',
-      borderRadius: '10px',
+      borderRadius: Constants.mainBorderRadius,
       background: colors.white,
       padding: '8px 12px',
-      paddingRight: '15px',
-      paddingLeft: '15px', 
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding, 
       minWidth: '250px',
       maxWidth: '300px',
       border: `2px solid  ${borderColor || 'none'}`,
@@ -676,8 +719,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       outline: 'none',  
       alignItems: 'center',
       textAlign: 'left',
-      marginLeft: '10px',
-      borderRadius: '10px',
+      marginLeft: Constants.mainMargin,
+      borderRadius: Constants.mainBorderRadius,
       height: '20px',
     };
 

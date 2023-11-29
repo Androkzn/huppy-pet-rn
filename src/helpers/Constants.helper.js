@@ -1,5 +1,24 @@
 // Constants.helper.js
 
+// Media query
+export const smallScreen = '(max-width:849px)';
+
+// Fonts
+export const smallFontSize = '15px';
+export const mainFontSize = '18px';
+
+// Margins and Paddings
+export const smallMargin = '5px';
+export const mainMargin = '15px';
+export const smallPadding = '5px';
+export const mainPadding = '15px';
+export const mainFormDevider = '3px';
+
+// Border
+export const smallBorderRadius = '5px';
+export const mainBorderRadius = '10px';
+
+
 // Estimated calories per 1kg dog weight
 export const estCalories = 18.59;
 

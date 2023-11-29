@@ -19,6 +19,7 @@ import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
 import useMediaQuery from '@mui/material/useMediaQuery';
+import * as Constants from "../helpers/Constants.helper"
 
 const Home = () => {
     // Function to load state from localStorage
@@ -32,7 +33,6 @@ const Home = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-    
   const {user, currentProfile } = useContext(UserContext);
   const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [meals, setMeals] = useState([]);
@@ -43,11 +43,7 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
-  
-  const isSmallScreen = useMediaQuery('(max-width:849px)');
-
-  console.log("Main page reloaded")
-  console.log("isSmallScreen", isSmallScreen)
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {

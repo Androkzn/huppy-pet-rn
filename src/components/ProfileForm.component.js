@@ -261,6 +261,11 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     return ageComponents;
   }
 
+  const isChartDataAvailable = () => {
+    const isaAvailable  = getChartData().some((category) => category.percentage > 0);
+    return isaAvailable
+  };
+
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Profile"}</h2>
@@ -412,14 +417,28 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
  
               {/* Chart */}
               <div  style={styles.chartContainerStyle}>
-                  <ChartPie data={getChartData()}/>
+                {/* Show placeholder if no data */}
+                { isChartDataAvailable()  ? (
+                  <div>
+                    <ChartPie data={getChartData()}/>
+                    
+                    {/* Unused calories reminder */}
+                    {unusedCategoryPercentage > 0 && 
+                    <div style={styles.unusedCaloriesReminderStyle}> 
+                      You have {unusedCategoryPercentage}% unused! 
+                    </div>
+                    }
+                  </div>
+                  ) : (
+                  <Image
+                    imageName={ getChartData().length > 0 ? "no_percentage_placeholder.png" : "no_chart_placeholder.png"}
+                    width="190"
+                    height="200"
+                    onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
+                    style={{ cursor: "pointer" }}
+                  />
+                  )}
               </div>
-
-              {/* Unused calories reminder */}
-              {unusedCategoryPercentage > 0 && <div style={styles.unusedCaloriesReminderStyle}> 
-                You have {unusedCategoryPercentage}% unused! 
-              </div>
-              }
 
               {/* Selected categories section*/}
               <div  style={styles.selectedCategoriesContainerStyle}>

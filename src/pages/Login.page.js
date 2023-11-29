@@ -19,7 +19,7 @@ const Login = () => {
   // appropriate page once the authentication is done.
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
-    navigate(redirectTo ? redirectTo : "/register");
+    navigate(redirectTo ? redirectTo : "/");
   }
 
   // Since there can be chances that the user is already logged in

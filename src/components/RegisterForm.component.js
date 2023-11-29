@@ -9,7 +9,7 @@ import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
 
-const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory}) => {
+const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory, setIsFormCompleated}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
@@ -49,6 +49,15 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
     setCategories(getCategoriesForPresset())  
   }, [profile.preset, customFoodCategories]);
 
+  //Updates isFormCompleated flag
+  useEffect(() => {
+    console.log("profile.name.length", profile.name.length)
+    console.log("unusedCategoryPercentage", unusedCategoryPercentage)
+    const isCompleated = profile.name.length > 1 && unusedCategoryPercentage === 0
+    console.log("isCompleated", isCompleated)
+    setIsFormCompleated(isCompleated)
+  }, [profile.name, unusedCategoryPercentage]);
+
   // Handle form changes
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
@@ -70,7 +79,7 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
         setProfile({ ...profile, [name]: value });
       }
     } else {
-      updateCategory(id, value);
+      updateCategory(name, value);
       checkUnusedCategoryPercentage();
     }
   };
@@ -79,11 +88,13 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
   const handleToggleAndDDChange = (name, value) => {
     // Update dailyPortion if dailyRatio is changed
     if ( name === "isRatioSelected") {
-      // Update dailyPortion only when Daily ratio option is selected 
+      // Update dailyPortion only when Daily ratio option is selected
+      profile.isRatioSelected = value
       if (value) {
-        setProfile({ ...profile, [name]: value });
-        setProfile({ ...profile, "dailyPortion": getPortionWeight(profile?.dailyRatio, profile.weight) });
+        console.log("getPortionWeight", getPortionWeight(profile?.dailyRatio, profile.weight)) 
+        setProfile({ ...profile, [name]: value, "dailyPortion": getPortionWeight(profile?.dailyRatio, profile.weight) });
       } else {
+        console.log("isRatioSelected", value) 
         setProfile({ ...profile, [name]: value });
       }      
     }  else {
@@ -97,8 +108,10 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
   };
 
   // Handle text input fields changes
-  const onTextInputCategoryChange = (value, id) => {
-    updateCategory(id, value)
+  const onTextInputCategoryChange = (type, value) => {
+    console.log("onTextInputCategoryChange value", value)
+    console.log("onTextInputCategoryChange type" , type)
+    updateCategory(type, value)
     checkUnusedCategoryPercentage()
   };
 
@@ -110,6 +123,12 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
       setProfile({ ...profile, "dob": dateValue });
     }
   }
+
+   // Handle deleting category
+   const handleDeleteCategory = (category) => {
+      deleteCategory(category)
+      checkUnusedCategoryPercentage()
+   }
 
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
@@ -125,10 +144,14 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
 
   // Calculates portion weight based on Daily ratio % 
   function getPortionWeight(dailyRatio, weight) {
-      const percentage = parseFloat( dailyRatio);
-      const newPortionWeight = parseFloat(weight) * (percentage / 100) * 1000;
-      const result = Math.round(newPortionWeight);
-      return result
+      if (profile.isRatioSelected) {
+        const percentage = parseFloat( dailyRatio);
+        const newPortionWeight = parseFloat(weight) * (percentage / 100) * 1000;
+        const result = Math.round(newPortionWeight);
+        return result
+      } else {
+        return profile.dailyPortion
+      }
   }
   
   // Calculates estimated daily calories  weight based on Daily ratio %  and pet's weight
@@ -241,11 +264,16 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
         };
       },
     };
-  
+
     // Calculate the difference in years, months, and days
     const ageComponents = calendar.dateComponents(dob, currentDate);
     return ageComponents;
   }
+
+  const isChartDataAvailable = () => {
+    const isaAvailable  = getChartData().some((category) => category.percentage > 0);
+    return isaAvailable
+  };
 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
@@ -398,14 +426,28 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
  
               {/* Chart */}
               <div  style={styles.chartContainerStyle}>
-                  <ChartPie data={getChartData()}/>
+                {/* Show placeholder if no data */}
+                { isChartDataAvailable()  ? (
+                  <div>
+                    <ChartPie data={getChartData()}/>
+                    
+                    {/* Unused calories reminder */}
+                    {unusedCategoryPercentage > 0 && 
+                    <div style={styles.unusedCaloriesReminderStyle}> 
+                      You have {unusedCategoryPercentage}% unused! 
+                    </div>
+                    }
+                  </div>
+                  ) : (
+                  <Image
+                    imageName={ getChartData().length > 0 ? "no_percentage_placeholder.png" : "no_chart_placeholder.png"}
+                    width="190"
+                    height="200"
+                    onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
+                    style={{ cursor: "pointer" }}
+                  />
+                  )}
               </div>
-
-              {/* Unused calories reminder */}
-              {unusedCategoryPercentage > 0 && <div style={styles.unusedCaloriesReminderStyle}> 
-                You have {unusedCategoryPercentage}% unused! 
-              </div>
-              }
 
               {/* Selected categories section*/}
               <div  style={styles.selectedCategoriesContainerStyle}>
@@ -419,9 +461,9 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
                           weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
                           color={category?.color}
                           value={category?.percentage} 
-                          onChange={(value) => { onTextInputCategoryChange(value, category?._id) }}
-                          onDelete={() => { deleteCategory(category) }}
-                          onChangeButton={(name,value) => { onButtonInputChange(name,value, category?._id) }}
+                          onChange={(value) => { onTextInputCategoryChange(category.type, value) }}
+                          onDelete={() => { handleDeleteCategory(category) }}
+                          onChangeButton={(name,value) => { onButtonInputChange(category.type, value, "") }}
                         />
                       ) : (
                         <SelectedFoodCategoryRow

@@ -9,11 +9,12 @@ import { ReactComponent as DashboardIcon } from './assets/dashboard_tab_icon_uns
 import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unselected.svg'
 import { ReactComponent as HealthIcon } from './assets/health_tab_icon_unselected.svg'
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
+import * as Constants from "../helpers/Constants.helper"
 
 const TabBar = () => {
   const {user} = useContext(UserContext);
   const navigate = useNavigate();
-  const isSmallScreen = useMediaQuery('(max-width:500px)');
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px'
   const imageSize = isSmallScreen ? '25px' : '50px'
@@ -40,7 +41,7 @@ const TabBar = () => {
       display: 'flex', 
       justifyContent: 'space-around', 
       padding: '5px' }}>
-        
+
       {/* Do not show tabs if a user is not authorized */}
       { user && <Tabs
         value={value}

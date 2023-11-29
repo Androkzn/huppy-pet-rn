@@ -500,7 +500,7 @@ export const getCategoriesForRatioPreset = function (dailyPortion, profileId, ty
           { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getTitleUpercased(FoodCategoryType.BONES), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
           { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER),weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
           { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS),weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
-          { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
+          { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
           { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getTitleUpercased(FoodCategoryType.SEEDS), weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.SEEDS), profileId: profileId },
           { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getTitleUpercased(FoodCategoryType.FRUITS), weight: dailyPortion * 1 / 100, percentage: 1, color: getColorFoodCategory(FoodCategoryType.FRUITS), profileId: profileId },
         ];
@@ -531,6 +531,15 @@ export const getCategoriesForRatioPreset = function (dailyPortion, profileId, ty
               { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
               { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
             ];
+
+            case RatioPresets.PMR_ADULT:
+              return [
+                { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getTitleUpercased(FoodCategoryType.MEAT), weight: dailyPortion * 78 / 100, percentage: 78, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+                { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getTitleUpercased(FoodCategoryType.BONES), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+                { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+                { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 5 / 100, percentage: 5, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+                { index: getIndexFoodCategory(FoodCategoryType.FIBER), type: FoodCategoryType.FIBER, name: getTitleUpercased(FoodCategoryType.FIBER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.FIBER), profileId: profileId },
+              ];
 
           case RatioPresets.PMR_PUPPY:
             return [

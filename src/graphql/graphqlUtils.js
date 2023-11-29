@@ -616,25 +616,33 @@ async function addProfile(user, profile) {
   `;
   const queryVariablesCreateProfile = {
   data: {
-
+    name: profile.name,
+    activityType: profile.activityType, 
+    avatar: profile.avatar,
+    breed: profile.breed,
+    dailyPortion: profile.dailyPortion,
+    dailyRatio: profile.dailyRatio,
+    weight: profile.weight,
+    deductCalories: profile.deductCalories,
+    dob: profile.dob,
+    isCurrent: profile.isCurrent,
+    preset: profile.preset,
+    size: profile.size,
+    userId: user.id,
+    isRatioSelected: profile.isRatioSelected,
   }
-  };
-  // Filter only current user related data 
-  const queryVariablesProfiles = {
-  "userId": userId,
   };
 
   try {
-  const resp = await request(GRAPHQL_ENDPOINT, createProfileQuery, queryVariablesCreateProfile, headers);
-  // const profile = resp.profile.map(profile => ({ ...profile, key: profile._id })) 
-  // const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
-  // const currentProfile = currentProfileFetched[0];
-  // return { profilesFetched: profiles, currentProfileFetched: currentProfile };
+    const resp = await request(GRAPHQL_ENDPOINT, createProfileQuery, queryVariablesCreateProfile, headers);
+    const profileNew = resp.insertOneProfile 
+    console.log("resp: ", resp)
+    console.log("profileNew: ", profileNew)
+    return { profileNew: profileNew, isCreated: true };
   } catch (error) {
   console.error('Error creating profile:', error);
   }
 };
-
 
 async function loadMeals(user, currentProfile, currentDate, isToday = true) {
   if (!user || !currentProfile) { return []}
@@ -1253,6 +1261,7 @@ export {
     addActivity,
     addTraining,
     addFood, 
+    addProfile,
     addFoodCategory,
     addFoodTemplate,
     updateActivity,

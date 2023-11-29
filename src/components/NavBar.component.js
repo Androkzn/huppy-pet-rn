@@ -6,9 +6,10 @@ import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
+import * as Constants from "../helpers/Constants.helper"
 
 const NavBar = () => {
-  const isSmallScreen = useMediaQuery('(max-width:500px)');
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [show, setShow] = useState(false);
   const { user, currentProfile, profiles } = useContext(UserContext);
 

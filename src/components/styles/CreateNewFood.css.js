@@ -33,7 +33,7 @@ const headerFoodStyle = {
 
 const topButtonsContainerStyle = {
   ...rowStyle,
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   marginTop: '20px',
   textAlign: 'left',
   fontSize: '15px',

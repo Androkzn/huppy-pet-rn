@@ -46,7 +46,7 @@ function SignUpForm({onSubmit, buttonText}) {
         <ButtonText 
         variant="login"  
         onClick={handleSubmit}
-        disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
+        //disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
         >{buttonText}</ButtonText>
       </FormGroup>
     </form>
@@ -63,7 +63,7 @@ const Signup = () => {
   // As explained in the Login page.
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
-    navigate(redirectTo ? redirectTo : "/");
+    navigate(redirectTo ? redirectTo : "/register");
   }
 
   // As explained in the Login page.

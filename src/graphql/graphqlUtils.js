@@ -573,6 +573,68 @@ async function getUserProfiles(user) {
     console.error('Error loading profiles:', error);
   }
 }
+// Func that is responsible for adding FoodTemplate to DB   
+// it return bool value
+async function addProfile(user, profile) {
+  if (!user) { return {}}
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const userId = user.id
+
+  // GraphQL query to fetch all the meals for specific time interval
+  const createProfileQuery = gql`
+  mutation AddProfile($data: ProfileInsertInput!) {
+    insertOneProfile(data: $data) {
+      _id
+      avatar
+      breed
+      categories {
+          _id
+          color
+          index
+          name
+          profileId
+          percentage
+          type
+          userId
+          weight
+      }
+      dailyPortion
+      dailyRatio
+      dob
+      isCurrent
+      isRatioSelected
+      name
+      preset
+      size
+      userId
+      weight
+      activityType
+      deductCalories 
+    }
+  }
+  `;
+  const queryVariablesCreateProfile = {
+  data: {
+
+  }
+  };
+  // Filter only current user related data 
+  const queryVariablesProfiles = {
+  "userId": userId,
+  };
+
+  try {
+  const resp = await request(GRAPHQL_ENDPOINT, createProfileQuery, queryVariablesCreateProfile, headers);
+  // const profile = resp.profile.map(profile => ({ ...profile, key: profile._id })) 
+  // const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
+  // const currentProfile = currentProfileFetched[0];
+  // return { profilesFetched: profiles, currentProfileFetched: currentProfile };
+  } catch (error) {
+  console.error('Error creating profile:', error);
+  }
+};
+
 
 async function loadMeals(user, currentProfile, currentDate, isToday = true) {
   if (!user || !currentProfile) { return []}
@@ -1199,4 +1261,5 @@ export {
     updateFoodTemplate,
     updateFoodCategory,
     updateFood,
+
 };

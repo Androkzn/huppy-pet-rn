@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
-
+import * as mq from './Media-queries';
 import * as colors from './Colors'
+import styled from '@emotion/styled/macro'
+
   // Main container 
   const mainConteinerStyle = {
     display: 'flex',
     flex: '1',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '20px',
+    marginTop: '10px',
     padding: '15px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
@@ -45,7 +47,7 @@ import * as colors from './Colors'
     ...rowStyle,
     justifyContent: 'space-between',
     marginTop: '20px',
-    textAlign: 'left',
+    textAlign: 'center',
     fontSize: '15px',
   };
 
@@ -116,6 +118,30 @@ import * as colors from './Colors'
     fontSize: '18px',
   };
 
+  const responsiveSubContainer = styled.div({
+    ...rowStyle,
+    [mq.medium]: {
+      width: '100%',
+      flexDirection: 'column',
+    },
+    //flex: '0 1 66%',
+     [mq.small]: {
+      width: '100%',
+      flexDirection: 'column',
+    },
+  })
+  
+  const responsiveMainContainer = styled.div({
+    ...rowStyle,
+     [mq.medium]: {
+      width: '100%',
+      flexDirection: 'column',
+    },
+    [mq.small]: {
+      width: '100%',
+      flexDirection: 'column',
+    },
+  })
 
 
   export {
@@ -133,4 +159,6 @@ import * as colors from './Colors'
     labelTextFieldStyle,
     buttonsContainerStyle,
     clearButonStyle,
+    responsiveSubContainer,
+    responsiveMainContainer,
 };

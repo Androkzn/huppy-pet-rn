@@ -9,7 +9,7 @@ import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
 
-const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory}) => {
+const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
@@ -52,34 +52,26 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   // Handle form changes
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
-    updateProfile(name, value)
+    setProfile({ ...profile, [name]: value });
   };
 
   // Handle "+" and "-" buttons changes
   const onButtonInputChange = (name, value, id) => {
     if (name === "weight") {
       // Update dailyPortion if weight is changed
-      const updateData = {
-        weight: value,
-        dailyPortion: getPortionWeight(profile.dailyRatio, value)
-      }
-      updateProfile("", "", updateData)
+      setProfile({ ...profile, "dailyPortion": getPortionWeight(profile.dailyRatio, value), [name]: value });
     } else if (name === "dailyPortion") {
-      updateProfile(name, value)
+      setProfile({ ...profile, [name]: value });
     } else if (name === "dailyRatio") {
       // Update dailyPortion if dailyRatio is changed
       if (profile?.isRatioSelected) {
-        const updateData = {
-          dailyRatio: value,
-          dailyPortion: getPortionWeight(value, profile.weight)
-        }
-        updateProfile("", "", updateData)
-      }  else {
-        updateProfile(name, value)
+        setProfile({ ...profile, "dailyPortion": getPortionWeight(value, profile.weight), [name]: value });
+      } else {
+        setProfile({ ...profile, [name]: value });
       }
-    }  else {
-      updateCategory(id, value)
-      checkUnusedCategoryPercentage()
+    } else {
+      updateCategory(id, value);
+      checkUnusedCategoryPercentage();
     }
   };
 
@@ -89,22 +81,19 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     if ( name === "isRatioSelected") {
       // Update dailyPortion only when Daily ratio option is selected 
       if (value) {
-        const updateData = {
-          isRatioSelected: value,
-          dailyPortion: getPortionWeight(profile?.dailyRatio)
-        }
-        updateProfile("", "", updateData)
+        setProfile({ ...profile, [name]: value });
+        setProfile({ ...profile, "dailyPortion": getPortionWeight(profile?.dailyRatio, profile.weight) });
       } else {
-        updateProfile(name, value)
+        setProfile({ ...profile, [name]: value });
       }      
     }  else {
-      updateProfile(name, value)
+      setProfile({ ...profile, [name]: value });
     }
   };
 
   // Handle text input fields changes
   const onTextInputChange = (name, value) => {
-    updateProfile(name, value)
+    setProfile({ ...profile, [name]: value });
   };
 
   // Handle text input fields changes
@@ -118,21 +107,19 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     if (event.$d) {
       // Check if toDate method is available 
       const dateValue = new Date(event.$d.valueOf())
-      updateProfile("dob", dateValue);
+      setProfile({ ...profile, "dob": dateValue });
     }
   }
 
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
-      console.log("getCategoriesForPresset", categoriesNew)
       const data = (categoriesNew).map((category) => ({
         name: category.name,
         weight: category.weight,
         percentage: category.percentage,
         color: category.color,
       }));
-      chartData  = data
-
+      chartData = data
     return chartData
 }
 
@@ -193,7 +180,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   // Calculates recommended daily calories
   function calculateRecommendedCalories() {
     let caloriesRecommended = 0;
-    console.log("calculateRecommendedCalories")
     const months = calculateAgeInMonths(profile?.dob)
 
     if (months < 4) {
@@ -263,7 +249,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      <h2  style={styles.profileTitleStyle}>{"Profile"}</h2>
+      <h2  style={styles.profileTitleStyle}>{"Create profile"}</h2>
   
       <div style={styles.imageContainerStyle}> 
         <ImageCircle imageName="avatar_placeholder.png" width="150" height="150"/>
@@ -404,8 +390,8 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
                     title={"Daily portion, g"}
                     name={"dailyPortion"}
                     initialValue={profile?.dailyPortion} 
-                    onChange={(value) => { onTextInputChange("dailyPortion",value) }}
-                    onSubmit={(value) => { onTextInputChange("dailyPortion",value) }}
+                    onChange={(value) => { onTextInputChange("dailyPortion", value) }}
+                    onSubmit={(value) => { onTextInputChange("dailyPortion", value) }}
                     onChangeButton={ onButtonInputChange }
                   />
                 )}
@@ -495,4 +481,4 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   </div>;
 }
 
-export default ProfileForm;
+export default RegisterForm;

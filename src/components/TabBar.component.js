@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
+import { UserContext } from '../contexts/user.context';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors';
 import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as DiaryIcon } from './assets/diary_tab_icon_unselected.svg'
@@ -11,6 +11,7 @@ import { ReactComponent as HealthIcon } from './assets/health_tab_icon_unselecte
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
 
 const TabBar = () => {
+  const {user} = useContext(UserContext);
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery('(max-width:500px)');
   const [value, setValue] = useState(0);
@@ -39,7 +40,9 @@ const TabBar = () => {
       display: 'flex', 
       justifyContent: 'space-around', 
       padding: '5px' }}>
-      <Tabs
+        
+      {/* Do not show tabs if a user is not authorized */}
+      { user && <Tabs
         value={value}
         onChange={handleChange}
         aria-label="icon label tabs example"
@@ -134,6 +137,7 @@ const TabBar = () => {
           }}
         />
       </Tabs>
+      }
     </div>
   );
 };

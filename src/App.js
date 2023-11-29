@@ -13,6 +13,7 @@ import SearchFood from "./pages/SearchFood.page";
 import AddFood from "./pages/AddFood.page";
 import EditFood from "./pages/EditFood.page";
 import Profile from "./pages/Profile.page";
+import Register from "./pages/Register.page";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/addFood" element={<AddFood />} />
                 <Route path="/editFood" element={<EditFood />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/register" element={<Register />} />
               </Route>
             </Routes>
           </div>

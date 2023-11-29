@@ -39,6 +39,7 @@ const Profile = () => {
     size: currentProfile?.size,
     userId: currentProfile?.userId,
     isRatioSelected: currentProfile?.isRatioSelected,
+    weight: currentProfile?.weight
   })
 
  // Some prefilled form state

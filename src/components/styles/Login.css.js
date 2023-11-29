@@ -6,7 +6,9 @@ const containerStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh',
+  margin: 'auto',
+  flexDirection: 'column',
+  height: '70vh',
 };
 
 const loginHeaderStyle = {
@@ -29,7 +31,7 @@ const loginConteinerStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   maxWidth: '350px',
-  minWidth: '350px',
+  minWidth: '300px',
   borderRadius: '20px',
   padding: '0px',
   margin: 'auto',
@@ -44,8 +46,8 @@ const formStyle = {
   marginTop: '20px',
   '> div': {
     margin: '10px auto',
-    width: '100%',
-    maxWidth: '300px',
+    maxWidth: '400px',
+    minWidth: '350px',
   },
 };
 

@@ -12,7 +12,7 @@ import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.sv
 import * as Constants from "../helpers/Constants.helper"
 
 const TabBar = () => {
-  const {user} = useContext(UserContext);
+  const {user, currentProfile} = useContext(UserContext);
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [value, setValue] = useState(0);
@@ -43,7 +43,7 @@ const TabBar = () => {
       padding: '5px' }}>
 
       {/* Do not show tabs if a user is not authorized */}
-      { user && <Tabs
+      { user && currentProfile && <Tabs
         value={value}
         onChange={handleChange}
         aria-label="icon label tabs example"

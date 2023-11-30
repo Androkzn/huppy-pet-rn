@@ -5,8 +5,8 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import RegisterForm from "../components/RegisterForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
-import { addProfile } from "../graphql/graphqlUtils";
-import * as styles  from '../components/styles/CreateNewFood.css'
+import { addProfile, addFoodCategory } from "../graphql/graphqlUtils";
+import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Register = () => {
@@ -71,6 +71,15 @@ const saveProfile = async () => {
     console.log("SUCCESS to create Profile: ", profileNew)
     setProfiles([profileNew])
     setCurrentProfile(profileNew)
+
+
+    // Add food categories from customFoodCategories array if preset is custom
+    if (profileNew.preset === 'custom') {
+      for (const category of customFoodCategories) {
+        await addFoodCategory(user, profileNew, category)  
+      }
+    }
+
     redirectNow();
   } else { 
     alert("Profile cannot be created")
@@ -104,7 +113,7 @@ useEffect(() => {
 
   return <PageContainer>
     <RegisterForm profile={profile} customFoodCategories={customFoodCategories} setProfile={setProfile} addCategory={addCategory} deleteCategory={deleteCategory} updateCategory={updateCategory} setIsFormCompleated ={setIsFormCompleated}/>
-    <div  style={styles.topButtonsContainerStyle}>
+    <div  style={styles.saveButtonContainerStyle}>
       <ButtonWithImage
          variant="addButton"
          width='100px'

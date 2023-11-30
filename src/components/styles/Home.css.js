@@ -15,7 +15,7 @@ const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
-  marginTop: '10px',
+  marginTop: '20px',
   marginBottom: '10px',
 };
 

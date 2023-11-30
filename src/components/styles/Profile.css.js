@@ -78,7 +78,7 @@ const unselectedCategoriesContainerStyle = {
   margin: '10px',
   padding: '10px',
   borderRadius: '10px',
-   
+  backgroundColor: colors.white,
 };
 
 const recommendedCaloriesStyle = {
@@ -99,9 +99,18 @@ const nutritionContainerStyle = {
   backgroundColor: colors.lightBrown,
 };
 
-const topButtonsContainerStyle = {
+const backButtonContainerStyle = {
   ...rowStyle,
-  justifyContent: 'space-between',
+  justifyContent: 'start',
+  marginTop: '20px',
+  marginLeft: '20px',
+  textAlign: 'left',
+  fontSize: '15px',
+};
+
+const saveButtonContainerStyle = {
+  ...rowStyle,
+  justifyContent: 'center',
   marginTop: '20px',
   textAlign: 'left',
   fontSize: '15px',
@@ -166,7 +175,8 @@ export {
   ageStyle,
   profileTitleStyle,
   nutritionFactsTitleStyle,
-  topButtonsContainerStyle,
+  backButtonContainerStyle,
+  saveButtonContainerStyle,
   imageContainerStyle,
   selectedCategoriesContainerStyle,
   chartContainerStyle,

@@ -6,7 +6,7 @@ import { UserContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
 import {ButtonWithImage} from '../components/Buttons.components'
 import { addFoodCategory, updateProfile, deleteFoodCategory, getAllFoodCategories, updateFoodCategory } from "../graphql/graphqlUtils";
-import * as styles  from '../components/styles/CreateNewFood.css'
+import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Profile = () => {
@@ -126,7 +126,7 @@ useEffect(() => {
 }, []);
 
   return <PageContainer>
-    <div  style={styles.topButtonsContainerStyle}>
+    <div  style={styles.backButtonContainerStyle}>
       <ButtonWithImage
           variant="backButton"
           to="/"

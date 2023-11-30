@@ -13,7 +13,8 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
-  
+  const [selectedImage, setSelectedImage] = useState(null)
+
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
     if (profile?.preset === Enums.RatioPresets.CUSTOM) {
@@ -51,10 +52,7 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
 
   //Updates isFormCompleated flag
   useEffect(() => {
-    console.log("profile.name.length", profile.name.length)
-    console.log("unusedCategoryPercentage", unusedCategoryPercentage)
     const isCompleated = profile.name.length > 1 && unusedCategoryPercentage === 0
-    console.log("isCompleated", isCompleated)
     setIsFormCompleated(isCompleated)
   }, [profile.name, unusedCategoryPercentage]);
 
@@ -109,8 +107,6 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
 
   // Handle text input fields changes
   const onTextInputCategoryChange = (type, value) => {
-    console.log("onTextInputCategoryChange value", value)
-    console.log("onTextInputCategoryChange type" , type)
     updateCategory(type, value)
     checkUnusedCategoryPercentage()
   };
@@ -129,6 +125,13 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
       deleteCategory(category)
       checkUnusedCategoryPercentage()
    }
+
+   const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+    }
+  };
 
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
@@ -275,12 +278,27 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
     return isaAvailable
   };
 
+ 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Create profile"}</h2>
   
-      <div style={styles.imageContainerStyle}> 
-        <ImageCircle imageName="avatar_placeholder.png" width="150" height="150"/>
+      {/* Avatar section */}
+      <div style={styles.imageContainerStyle}>
+        <label htmlFor="avatarInput">
+          <ImageCircle
+            imageName={selectedImage ? selectedImage.name : "avatar_placeholder.png"}
+            width="150"
+            height="150"
+          />
+        </label>
+        <input
+          type="file"
+          id="avatarInput"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => handleAvatarChange(e)}
+        />
       </div>
   
       <h2 style={styles.nameStyle}>{profile?.name}</h2>

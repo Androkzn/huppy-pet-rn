@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import {Image} from '../components/Image.components'
 import LoginForm from '../components/LoginForm.components'
+import Spiner from '../components/Spinner.components'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Login = () => {
   // We are consuming our user-management context to 
   // get & set the user details here
   const { user, fetchUser, emailPasswordLogin } = useContext(UserContext);
+  // State variable to track the loading state
+  const [loading, setLoading] = useState(false);
 
   // This function will redirect the user to the 
   // appropriate page once the authentication is done.
@@ -29,10 +32,17 @@ const Login = () => {
   // Otherwise we will do nothing and let the user to login.
   const loadUser = async () => {
     if (!user) {
-      const fetchedUser = await fetchUser();
-      if (fetchedUser) {
-        // Redirecting them once fetched.
-        redirectNow();
+      try {
+        setLoading(true); // Set loading to true when starting to fetch user
+        const fetchedUser = await fetchUser();
+        if (fetchedUser) {
+          // Redirecting them once fetched.
+          redirectNow();
+        }
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false); // Set loading to false when fetch is complete (success or failure)
       }
     }
   }
@@ -47,21 +57,29 @@ const Login = () => {
   // This function gets fired when the user clicks on the "Login" button.
   const onSubmit = async (formData) => {
     try {
+      setLoading(true); // Set loading to true when starting to log in
       // Here we are passing user details to our emailPasswordLogin
       // function that we imported from our realm/authentication.js
-      // to validate the user credentials and login the user into our App.
+      // to validate the user credentials and log in the user into our App.
       //console.log(form)
-      const user = await emailPasswordLogin(formData.username, formData.password);
-      if (user) {
+      const loggedInUser = await emailPasswordLogin(formData.username, formData.password);
+      if (loggedInUser) {
         redirectNow();
       }
     } catch (error) {
-      alert(error)
+      alert(error);
+    } finally {
+      setLoading(false); // Set loading to false when login is complete (success or failure)
     }
   };
 
   return (
     <div css={styles.containerStyle}> 
+    {loading ? (
+      // Display loading spinner while waiting for fetchUser or login
+      <Spiner/> 
+    ) : (
+      // Display login form when not loading
       <div css={styles.loginConteinerStyle}>
         <div css={styles.loginHeaderStyle}>
           <h4 css={styles.headingLoginStyle} >WELCOME</h4>
@@ -73,8 +91,10 @@ const Login = () => {
             <p><Link to="/signup" css={styles.linkSignup}>Signup</Link></p>
           </div>
       </div>
+      
+    )}
     </div>
-    )
+  )
 }
 
 export default Login;

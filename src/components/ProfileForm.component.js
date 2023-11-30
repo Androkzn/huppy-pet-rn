@@ -13,7 +13,8 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
-  
+  const [selectedImage, setSelectedImage] = useState(null)
+
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
     if (profile?.preset === Enums.RatioPresets.CUSTOM) {
@@ -122,9 +123,30 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     }
   }
 
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+  
+    if (file) {
+      const reader = new FileReader();
+  
+      reader.onload = (e) => {
+        const imageDataUrl = e.target.result;
+  
+        // Now you can use imageDataUrl to display the image
+        console.log("IMAGE", file);
+        console.log("Image Data URL", imageDataUrl);
+
+        setSelectedImage(imageDataUrl);
+      };
+  
+      // Read the contents of the image file as a data URL
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
-      console.log("getCategoriesForPresset", categoriesNew)
       const data = (categoriesNew).map((category) => ({
         name: category.name,
         weight: category.weight,
@@ -193,7 +215,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   // Calculates recommended daily calories
   function calculateRecommendedCalories() {
     let caloriesRecommended = 0;
-    console.log("calculateRecommendedCalories")
     const months = calculateAgeInMonths(profile?.dob)
 
     if (months < 4) {
@@ -270,10 +291,24 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Profile"}</h2>
   
-      <div style={styles.imageContainerStyle}> 
-        <ImageCircle imageName="avatar_placeholder.png" width="150" height="150"/>
+      {/* Avatar section */}
+      <div style={styles.imageContainerStyle}>
+        <label htmlFor="avatarInput">
+          <ImageCircle
+            imageName={selectedImage ? selectedImage.name : "avatar_placeholder.png"}
+            width="150"
+            height="150"
+          />
+        </label>
+        <input
+          type="file"
+          id="avatarInput"
+          accept="image/*"
+          style={{ display: "none" }}
+          onChange={(e) => handleAvatarChange(e)}
+        />
       </div>
-  
+
       <h2 style={styles.nameStyle}>{profile?.name}</h2>
       
       <h3 style={styles.ageStyle}>{getAge(profile?.dob)}</h3>

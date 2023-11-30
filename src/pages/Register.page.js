@@ -8,6 +8,9 @@ import {ButtonWithImage} from '../components/Buttons.components'
 import { addProfile, addFoodCategory } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import { Dialog, DialogContent } from '@mui/material';
+import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -15,6 +18,84 @@ const Register = () => {
   const { user, setProfiles, setCurrentProfile } = useContext(UserContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("addActivity");
+  const [avatar, setAvatar] = useState(null);
+
+    // Opens dialog 
+    const openDialog = (dialogTypeNew) => {
+      setDialogType(dialogTypeNew)
+      setDialogOpen(true);
+    };
+  
+    // Closes dialog
+    const closeDialog = () => {
+      setDialogOpen(false);
+    };
+  
+    // Returns dialog component based on dialog type
+    const getDialogContent = () => {
+      if (dialogType === "avatar") { 
+        return <ChangeAvatarDialog avatar={avatar ? URL.createObjectURL(avatar) : null} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
+      } else if (dialogType === "error") {
+        
+      } 
+    };
+  
+    // Handles dialog submission
+    const saveAvatar = async () => {
+      try {
+        // Create an input element to trigger file selection
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (event) => {
+          const file = event.target.files[0];
+          setAvatar(file)
+          closeDialog();
+        };
+  
+        // Trigger the file input click programmatically
+        input.click();
+      } catch (error) {
+        console.error('Error selecting file:', error);
+      }
+    };
+
+    // Handles dialog submission
+    const uploadAvatar = async () => {
+      if (avatar) {
+        const data = new FormData();
+        data.append('image', avatar);
+        data.append('name', profile._id);
+        data.append('destination', 'avatar');
+        const result = await axios.post('/api/avatar', data);
+      }
+    };
+  
+    // Handles dialog submission
+    const deleteAvatar = async () => {
+      profile.avatar = ""
+      setAvatar(null)
+      closeDialog();
+    };
+  
+    //Callback func that opens avatar dialog 
+    const updateAvatar = async () => {
+      openDialog("avatar")
+    };
+  
+    // Function to fetch avatar data when component mounts
+    const fetchAvatarUrl = async () => {
+      try {
+        const destination = 'avatar'
+        const avatarResult = await axios.get(`/api/avatar/${profile?._id}?destination=${destination}`);
+        profile.avatar = avatarResult.data
+        return 
+      } catch (error) {
+        console.error("Error fetching avatar:", error);
+      }
+    };
 
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
@@ -63,10 +144,13 @@ const deleteCategory= async (categoryToDelete) => {
 };
 
 const saveProfile = async () => {
-  
+  // Get avatar URL first and add generated url to new profile
+  await fetchAvatarUrl()
+  // Upload avatar to AWS S3
+  await uploadAvatar()
+  // Save new profile to DB
   const {profileNew, isCreated } = await addProfile(user, profile)  
-  console.log("profileNew: ", profileNew)
-  console.log("isCreated: ", isCreated)
+
   if (isCreated && profileNew) {
     console.log("SUCCESS to create Profile: ", profileNew)
     setProfiles([profileNew])
@@ -112,7 +196,17 @@ useEffect(() => {
 
 
   return <PageContainer>
-    <RegisterForm profile={profile} customFoodCategories={customFoodCategories} setProfile={setProfile} addCategory={addCategory} deleteCategory={deleteCategory} updateCategory={updateCategory} setIsFormCompleated ={setIsFormCompleated}/>
+    <RegisterForm 
+      profile={profile} 
+      avatar={avatar}
+      customFoodCategories={customFoodCategories} 
+      setProfile={setProfile} 
+      addCategory={addCategory} 
+      deleteCategory={deleteCategory} 
+      updateCategory={updateCategory} 
+      setIsFormCompleated ={setIsFormCompleated}
+      updateAvatar={updateAvatar}
+    />
     <div  style={styles.saveButtonContainerStyle}>
       <ButtonWithImage
          variant="addButton"
@@ -126,6 +220,15 @@ useEffect(() => {
          SAVE
       </ButtonWithImage>
     </div>
+
+    {/* Dialog */}
+    {dialogOpen && (          
+      <Dialog open={dialogOpen} >
+        <DialogContent>
+          {getDialogContent()}
+          </DialogContent>
+      </Dialog>
+    )}
   </PageContainer>
 }
 

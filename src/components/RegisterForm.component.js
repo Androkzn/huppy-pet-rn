@@ -9,11 +9,10 @@ import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
 
-const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory, setIsFormCompleated}) => {
+const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory, setIsFormCompleated, updateAvatar}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
-  const [selectedImage, setSelectedImage] = useState(null)
 
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
@@ -38,7 +37,6 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
     } else {
       return customFoodCategories;
     }
-    
   }
 
   let categoriesCanBeAdded = getUnusedCategories()  
@@ -125,13 +123,6 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
       deleteCategory(category)
       checkUnusedCategoryPercentage()
    }
-
-   const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
 
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
@@ -282,22 +273,14 @@ const RegisterForm = ({ profile, customFoodCategories, setProfile, addCategory, 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Create profile"}</h2>
-  
       {/* Avatar section */}
       <div style={styles.imageContainerStyle}>
-        <label htmlFor="avatarInput">
-          <ImageCircle
-            imageName={selectedImage ? selectedImage.name : "avatar_placeholder.png"}
-            width="150"
-            height="150"
-          />
-        </label>
-        <input
-          type="file"
-          id="avatarInput"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={(e) => handleAvatarChange(e)}
+        <ImageCircle
+          imageName={"avatar_placeholder.png"}
+          width="150"
+          height="150"
+          imageDataUrl={avatar ? URL.createObjectURL(avatar) : null}
+          onClick={updateAvatar}
         />
       </div>
   

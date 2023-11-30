@@ -23,20 +23,21 @@ const ImageCircle = ({ imageName, imageDataUrl, width = '150', height = '150', b
 
   console.log("ImageCircle", imageDataUrl) 
   console.log("ImageCircle errorLoadingImage", errorLoadingImage) 
+
   return (
     <div onClick={onClick}>
-    { !errorLoadingImage ? (
-      <img
+    { errorLoadingImage || imageDataUrl === null ? (
+    <img
+      src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
+      alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
+      style={imageStyle}
+    />
+    ) : (
+    <img
       src={imageDataUrl}  
       alt={imageName.replace(/\.[^/.]+$/, '')}
       style={imageStyle}
       onError={handleImageError}
-    />
-    ) : (
-      <img
-      src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
-      alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
-      style={imageStyle}
     />
     )}
     </div>

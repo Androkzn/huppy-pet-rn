@@ -183,11 +183,15 @@ const avatarContainerStyle = {
 }
 
 
-const dialogButtonContainerStyle = {
+const leftDialogButtonStyle = {
+  marginRight: '20px',
+}
+
+const dialogButtonContainerStyle = (isSingleButton) => ({
   display: 'flex',
-  justifyContent: 'space-between',
-  marginTop: '20px',
-};
+  justifyContent: isSingleButton ? 'center' : 'space-between',
+  marginTop: '20px' 
+});
 
 export {
   columnStyle,
@@ -215,4 +219,5 @@ export {
   dialogTitleStyle,
   dialogButtonContainerStyle,
  avatarContainerStyle,
+ leftDialogButtonStyle
 };

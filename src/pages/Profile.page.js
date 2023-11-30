@@ -42,7 +42,7 @@ const Profile = () => {
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
     if (dialogType === "avatar") { 
-      return <ChangeAvatarDialog onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
+      return <ChangeAvatarDialog avatar={profile.avatar} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
     } else if (dialogType === "error") {
       
     } 

@@ -6,8 +6,7 @@ import * as styles  from './styles/Profile.css'
 import { ButtonText } from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
 
-const ChangeAvatarDialog = ({onSave, onDelete, onClose }) => {
-  const {currentProfile } = useContext(UserContext);
+const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar }) => {
 
   return <div>
     <form style={styles.dialogLargeContainerStyle}>
@@ -25,16 +24,16 @@ const ChangeAvatarDialog = ({onSave, onDelete, onClose }) => {
           imageName={"avatar_placeholder.png"}
           width="75"
           height="75"
-          imageDataUrl={currentProfile.avatar}
+          imageDataUrl={avatar}
       />
   </div>
-      <div style={styles.dialogButtonContainerStyle}> 
-        <ButtonText variant="rectangleTextButton" onClick={() => onSave()} >
+      <div style={styles.dialogButtonContainerStyle(avatar === "")}> 
+        <ButtonText  variant="rectangleTextButton" onClick={() => onSave()} >
           Upload avatar
         </ButtonText>
-        <ButtonText variant="rectangleTextButton" onClick={() => onDelete()} >
+        {avatar !== "" && <ButtonText variant="rectangleTextButton" onClick={() => onDelete()} >
           Delete avatar
-        </ButtonText>
+        </ButtonText>}
      </div>
    
     </form>

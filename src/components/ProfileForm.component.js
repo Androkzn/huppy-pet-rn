@@ -8,12 +8,13 @@ import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
+ 
 
-const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory}) => {
+const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [avatar, setAvatar] = useState(null)
 
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
@@ -50,6 +51,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     setCategories(getCategoriesForPresset())  
   }, [profile.preset, customFoodCategories]);
 
+ 
   // Handle form changes
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
@@ -123,28 +125,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     }
   }
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-  
-    if (file) {
-      const reader = new FileReader();
-  
-      reader.onload = (e) => {
-        const imageDataUrl = e.target.result;
-  
-        // Now you can use imageDataUrl to display the image
-        console.log("IMAGE", file);
-        console.log("Image Data URL", imageDataUrl);
-
-        setSelectedImage(imageDataUrl);
-      };
-  
-      // Read the contents of the image file as a data URL
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  
   function getChartData() {
       const categoriesNew = getCategoriesForPresset()
       const data = (categoriesNew).map((category) => ({
@@ -156,7 +136,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
       chartData  = data
 
     return chartData
-}
+ }
 
   // Calculates portion weight based on Daily ratio % 
   function getPortionWeight(dailyRatio, weight) {
@@ -290,22 +270,14 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Profile"}</h2>
-  
       {/* Avatar section */}
       <div style={styles.imageContainerStyle}>
-        <label htmlFor="avatarInput">
-          <ImageCircle
-            imageName={selectedImage ? selectedImage.name : "avatar_placeholder.png"}
-            width="150"
-            height="150"
-          />
-        </label>
-        <input
-          type="file"
-          id="avatarInput"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={(e) => handleAvatarChange(e)}
+        <ImageCircle
+          imageName={"avatar_placeholder.png"}
+          width="150"
+          height="150"
+          imageDataUrl={profile.avatar}
+          onClick={updateAvatar}
         />
       </div>
 
@@ -479,7 +451,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
               <div  style={styles.selectedCategoriesContainerStyle}>
                 <div style={styles.columnStyle}>
                   {categories.map((category)  => (
-                   <div>
+                   <div key={category.type}>
                      { (profile?.preset === Enums.RatioPresets.CUSTOM) ? (
                         <SelectedCustomFoodCategoryRow
                           name={category?.name}

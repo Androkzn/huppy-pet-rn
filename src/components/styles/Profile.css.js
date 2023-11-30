@@ -160,7 +160,34 @@ const imageContainerStyle = {
   margin: 'auto',
 };
 
+const dialogLargeContainerStyle = {
+  maxWidth: '450px',
+  minWidth: '350px',
+  margin: 'auto',
+};
 
+const closeDialogButtonContainer = {
+  display: 'flex',
+  justifyContent: 'flex-end',  
+};
+
+const dialogTitleStyle = {
+  textAlign: 'center',
+  color: colors.lightGreen,
+};
+
+const avatarContainerStyle = {
+  maxWidth: '250px',
+  minWidth: '250px',
+  margin: 'auto',
+}
+
+
+const dialogButtonContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginTop: '20px',
+};
 
 export {
   columnStyle,
@@ -182,5 +209,10 @@ export {
   chartContainerStyle,
   unselectedCategoriesContainerStyle,
   unselectedFoodCategoryStyle,
-  unusedCaloriesReminderStyle
+  unusedCaloriesReminderStyle,
+  dialogLargeContainerStyle,
+  closeDialogButtonContainer,
+  dialogTitleStyle,
+  dialogButtonContainerStyle,
+ avatarContainerStyle,
 };

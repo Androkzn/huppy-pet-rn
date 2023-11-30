@@ -14,6 +14,7 @@ const addTrainingTitleStyle = {
   color: colors.lightGreen,
 };
 
+
 const addTrainingButtonContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -33,7 +34,6 @@ const containerStyle = {
   margin: '3px',  
 };
 
- 
 const closeButtonContainer = {
   display: 'flex',
   justifyContent: 'flex-end',  

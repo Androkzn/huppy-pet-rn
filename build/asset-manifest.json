@@ -1,9 +1,11 @@
 {
   "files": {
     "main.css": "/static/css/main.e6c13ad2.css",
-    "main.js": "/static/js/main.243ccfb8.js",
+    "main.js": "/static/js/main.376b7cac.js",
     "static/js/787.a7ea92a3.chunk.js": "/static/js/787.a7ea92a3.chunk.js",
     "static/media/start_typing_placeholder.png": "/static/media/start_typing_placeholder.db05d48f828769be67dd.png",
+    "static/media/no_percentage_placeholder.png": "/static/media/no_percentage_placeholder.c636bee7f7de490c9734.png",
+    "static/media/no_chart_placeholder.png": "/static/media/no_chart_placeholder.3d79b4e18c0bbf6473e0.png",
     "static/media/no_results_placeholder.png": "/static/media/no_results_placeholder.3f8dc30b6f3f4c8c72fb.png",
     "static/media/no_weights_placeholder.png": "/static/media/no_weights_placeholder.c76ca0ef06e38f450594.png",
     "static/media/dog_sit.png": "/static/media/dog_sit.5f4435153777a0ca70b6.png",
@@ -43,11 +45,11 @@
     "static/media/arrow_down.svg": "/static/media/arrow_down.574d97e79f69deb16fa6.svg",
     "static/media/arrow_right.svg": "/static/media/arrow_right.f337d55b7d4f49efe8bd.svg",
     "main.e6c13ad2.css.map": "/static/css/main.e6c13ad2.css.map",
-    "main.243ccfb8.js.map": "/static/js/main.243ccfb8.js.map",
+    "main.376b7cac.js.map": "/static/js/main.376b7cac.js.map",
     "787.a7ea92a3.chunk.js.map": "/static/js/787.a7ea92a3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.243ccfb8.js"
+    "static/js/main.376b7cac.js"
   ]
 }

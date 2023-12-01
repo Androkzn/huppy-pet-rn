@@ -62,7 +62,8 @@ const Profile = () => {
           data.append('image', file);
           data.append('name', profile._id);
           data.append('destination', 'avatar');
-          const result = await axios.post('/api/avatar', data);
+          const backendServerURL = 'http://54.218.77.40:8080'
+          const result = await axios.post(`${backendServerURL}/api/avatar`, data); 
           await fetchAvatar()
         }
         closeDialog();

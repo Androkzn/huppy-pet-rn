@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Ignore Visual Studio Code settings folder
+.vscode
+
+# Ignore build folder
+build

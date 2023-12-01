@@ -29,6 +29,7 @@ const CustomDatePicker = ({ label, value, onChange, style }) => {
           slots={{
             textField: textFieldProps => <TextField {...textFieldProps} sx={mergedStyles} />
           }}
+          slotProps={{ textField: { size: 'small' } }}
         />
       </LocalizationProvider>
     </span>

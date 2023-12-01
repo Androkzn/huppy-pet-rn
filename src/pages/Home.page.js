@@ -43,6 +43,7 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
+  const [isStatisticExpanded, setStatisticExpanded] = useState(true);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
   // Opens dialog 
@@ -187,6 +188,7 @@ const Home = () => {
     return Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
   }
 
+
   const DatePicker = () => {
     return (
     <div style={styles.rowStyle}>  
@@ -207,7 +209,7 @@ const Home = () => {
   const Statistic = ({ foodData }) => {
     return (
       <div style={styles.childConteinerStyle}> 
-      <div style={styles.headerStyle}>
+      <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
         <div style={styles.headerTextStyle}>
           <h3 style={styles.headingStyle}>STATS</h3>
           <h3 style={styles.headingStyle}>Today/goal</h3>
@@ -222,17 +224,21 @@ const Home = () => {
             isStatisticToday={isStatisticToday}
             currentDate={currentDate}
            />
-         {categories.map(category => (
-          <CategoriesStatisticSection
-          key={category.name}
-            category={category}  
-            categories= {categories}
-            currentProfile={currentProfile}
-            foodData={foodData}
-            isStatisticToday={isStatisticToday}
-            currentDate={currentDate}
-          />
-      ))}
+           { isStatisticExpanded && (
+            <div>
+              {categories.map(category => (
+                <CategoriesStatisticSection
+                key={category.name}
+                  category={category}  
+                  categories= {categories}
+                  currentProfile={currentProfile}
+                  foodData={foodData}
+                  isStatisticToday={isStatisticToday}
+                  currentDate={currentDate}
+                />
+              ))}
+            </div>
+         )}
           <ToggleStatisticSection 
             initialValue={!isStatisticToday}
             onChange ={() => {

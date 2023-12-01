@@ -30,6 +30,14 @@ const headerStyle = {
   backgroundColor: colors.brown,
 };
 
+const headerArrowStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'end',
+  textAlign: 'center',
+  width: '100%',
+};
+
 const headerTiteStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -178,5 +186,6 @@ export {
   columnLeftStyle,
   columnStyle,
   responsiveMainContainer,
-  responsiveSubContainer
+  responsiveSubContainer,
+  headerArrowStyle,
 };

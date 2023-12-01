@@ -28,6 +28,7 @@ const CustomDatePickerWithArrows = ({ label, value, onChange, styleContainer }) 
             value={dayjs(value)}
             onChange={onChange}
             renderInput={(params) => <input {...params.inputProps} />}
+            slotProps={{ textField: { size: 'small' } }}
           />
         </LocalizationProvider>
         <Button onClick={() => onChange(new Date(dayjs(value) + 24 * 60 * 60 * 1000))}

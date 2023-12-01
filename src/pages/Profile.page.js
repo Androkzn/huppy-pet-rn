@@ -16,6 +16,7 @@ const Profile = () => {
   const { user, currentProfile, setCurrentProfile } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
+  const backendEndpoint = process.env.REACT_APP_BACKEND_URL
 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -62,8 +63,7 @@ const Profile = () => {
           data.append('image', file);
           data.append('name', profile._id);
           data.append('destination', 'avatar');
-          const backendServerURL = 'http://54.218.77.40:8080'
-          const result = await axios.post(`${backendServerURL}/api/avatar`, data); 
+          const result = await axios.post(`${backendEndpoint}/api/avatar`, data); 
           await fetchAvatar()
         }
         closeDialog();
@@ -79,7 +79,7 @@ const Profile = () => {
   // Handles dialog submission
   const deleteAvatar = async () => {
     const destination = 'avatar'
-    const avatarResult = await axios.delete(`/api/avatar/${profile?._id}?destination=${destination}`);  
+    const avatarResult = await axios.delete(`${backendEndpoint}/api/avatar/${profile?._id}?destination=${destination}`);  
     updateCurrentProfile("avatar", "")
     closeDialog();
   };
@@ -93,7 +93,7 @@ const Profile = () => {
   const fetchAvatar = async () => {
     try {
       const destination = 'avatar'
-      const avatarResult = await axios.get(`/api/avatar/${profile?._id}?destination=${destination}`);
+      const avatarResult = await axios.get(`${backendEndpoint}/api/avatar/${profile?._id}?destination=${destination}`);
       updateCurrentProfile("avatar", avatarResult.data)
       return 
     } catch (error) {

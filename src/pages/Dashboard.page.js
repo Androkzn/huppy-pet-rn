@@ -3,7 +3,6 @@ import { Button, Grid } from "@mui/material";
 import request, { gql } from "graphql-request";
 import { formatISO, subMonths, endOfToday, startOfDay, endOfDay } from "date-fns";
 import { UserContext } from "../contexts/user.context";
-import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import PageContainer from "../components/PageContainer.component";
 import CustomDatePicker from "../components/CustomDatePicker.component";
 import ModeAnalytics from "../components/ModeAnalytics.component";
@@ -24,37 +23,6 @@ const Analytics = () => {
 
   const loadAnalytics = async () => {
 
-    // GraphQL query to fetch mode analytics as well as the category analytics.
-    const getAnalyticsQuery = gql`
-      query getAnalytics($query: Filter!) {
-        modeAnalytics(input: $query) {
-          modes {
-            amount
-            mode
-          }
-        }
-        categoryAnalytics(input: $query) {
-          categories {
-            amount
-            category
-          }
-        }
-      }
-    `;
-
-    // Query variables that will be used to perform the analytics from a particular 
-    // date to a particular date.
-    const queryVariables = { query: { from: formatISO(startOfDay(fromDate)), to: formatISO(endOfDay(toDate)) } };
-
-    const headers = { Authorization: `Bearer ${user._accessToken}` };
-
-    try {
-      const resp = await request(GRAPHQL_ENDPOINT, getAnalyticsQuery, queryVariables, headers);
-      const { modeAnalytics: { modes }, categoryAnalytics: { categories } } = resp;
-      setAnalyticsData({ modes, categories });
-    } catch (error) {
-      alert(error);
-    }
   };
 
   useEffect(() => {

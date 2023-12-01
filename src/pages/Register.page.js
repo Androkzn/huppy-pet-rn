@@ -21,6 +21,7 @@ const Register = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const [avatar, setAvatar] = useState(null);
+  const backendEndpoint = process.env.REACT_APP_BACKEND_URL
 
     // Opens dialog 
     const openDialog = (dialogTypeNew) => {
@@ -63,13 +64,13 @@ const Register = () => {
     };
 
     // Handles dialog submission
-    const uploadAvatar = async () => {
+    const uploadAvatar = async (profileId) => {
       if (avatar) {
         const data = new FormData();
         data.append('image', avatar);
-        data.append('name', profile._id);
+        data.append('name', profileId);
         data.append('destination', 'avatar');
-        const result = await axios.post('/api/avatar', data);
+        const result = await axios.post(`${backendEndpoint}/api/avatar`, data);
       }
     };
   
@@ -85,18 +86,6 @@ const Register = () => {
       openDialog("avatar")
     };
   
-    // Function to fetch avatar data when component mounts
-    const fetchAvatarUrl = async () => {
-      try {
-        const destination = 'avatar'
-        const avatarResult = await axios.get(`/api/avatar/${profile?._id}?destination=${destination}`);
-        profile.avatar = avatarResult.data
-        return 
-      } catch (error) {
-        console.error("Error fetching avatar:", error);
-      }
-    };
-
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
     navigate(redirectTo ? redirectTo : "/");
@@ -144,10 +133,6 @@ const deleteCategory= async (categoryToDelete) => {
 };
 
 const saveProfile = async () => {
-  // Get avatar URL first and add generated url to new profile
-  await fetchAvatarUrl()
-  // Upload avatar to AWS S3
-  await uploadAvatar()
   // Save new profile to DB
   const {profileNew, isCreated } = await addProfile(user, profile)  
 
@@ -156,6 +141,8 @@ const saveProfile = async () => {
     setProfiles([profileNew])
     setCurrentProfile(profileNew)
 
+    // Upload avatar to AWS S3
+    await uploadAvatar(profileNew._id)
 
     // Add food categories from customFoodCategories array if preset is custom
     if (profileNew.preset === 'custom') {

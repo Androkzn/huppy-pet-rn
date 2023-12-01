@@ -1,8 +1,8 @@
 
 import request, { gql } from "graphql-request";
-import { GRAPHQL_ENDPOINT } from "../realm/constants";
 import { getStartAndEndOfToday, getStartAndEndOfWeek } from "../helpers/Date.helper";
 
+const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT
 // Func that is responsible for searching Food Templates in DB 
 // it return array of FoodTemplates based on search string
 async function searchForFood(searchQuery, user) {

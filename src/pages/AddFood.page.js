@@ -45,6 +45,7 @@ const AddFood = ({ }) => {
           to="/searchFood"
           imageName="arrow_left.svg"
           imageSize={20}
+          width='100px'
         >
          Back
       </ButtonWithImage>

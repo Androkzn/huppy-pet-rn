@@ -127,6 +127,7 @@ const profileTitleStyle = {
 const nameStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+  margin: 'auto',
 };
 
 const ageStyle = {
@@ -137,7 +138,8 @@ const ageStyle = {
   padding: '5px',
   width: '50%',
   margin: 'auto',
-  marginBottom: '15px',
+  marginTop: '10px',
+  marginBottom: '10px',
 };
 
 const nutritionFactsTitleStyle = {

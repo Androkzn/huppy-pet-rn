@@ -269,13 +269,13 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      <h2  style={styles.profileTitleStyle}>{"Profile"}</h2>
+      {/* <h2  style={styles.profileTitleStyle}>{"Profile"}</h2> */}
       {/* Avatar section */}
       <div style={styles.imageContainerStyle}>
         <ImageCircle
           imageName={"avatar_placeholder.png"}
-          width="150"
-          height="150"
+          width="200"
+          height="200"
           imageDataUrl={profile.avatar}
           onClick={updateAvatar}
         />

@@ -43,7 +43,7 @@ const AddFood = ({ }) => {
       <ButtonWithImage
           variant="backButton"
           to="/searchFood"
-          imageName="back_arrow.svg"
+          imageName="arrow_left.svg"
           imageSize={20}
         >
          Back

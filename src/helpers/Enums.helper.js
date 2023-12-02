@@ -1,5 +1,15 @@
 import * as colors from '../components/styles/Colors'
 
+
+  // Enum FilterFood definition 
+  export const FilterFood = {
+    ALL: 'All',
+    CATEGORY: 'Category',
+    CUSTOM: 'My food',
+    RECIPE: 'Recipe',
+
+  };
+
 // Enum FoodSection definition
 export const FoodSection = {
     TREAT: 'treat',

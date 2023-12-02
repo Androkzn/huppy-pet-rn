@@ -21,6 +21,7 @@ const buttonVariants = {
     color: colors.white,
     paddingRight: "10px",
     paddingLeft: "10px",
+    fontWeight: 'bold',
     transition: 'background-color 0.3s',  
     '&:hover': {
       background: colors.orange,  
@@ -124,7 +125,7 @@ const buttonVariants = {
     border: 'none',
     borderRadius: '10px',
     cursor: 'pointer',
-    width: '130px',
+    
     height: '35px',
     lineHeight: '10px',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -134,6 +135,7 @@ const buttonVariants = {
     color: colors.green,
     paddingRight: "10px",
     paddingLeft: "10px",
+    fontWeight: 'bold',
     transition: 'background-color 0.3s',  
     '&:hover': {
       background: colors.orange,  

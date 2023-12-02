@@ -45,7 +45,7 @@ const saveState = (key, value) => {
    // State for searchResult 
   const [searchResult, setResults] = useState(loadState("searchResult", []));
    // State for radio buttons 
-  const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", "All"));
+  const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", Enums.FilterFood.ALL));
   // State for date
   const [selectedDate, setSelectedDate] = useState(loadState("selectedDate", new Date() ));
 
@@ -60,7 +60,7 @@ const saveState = (key, value) => {
 
   const updateSearchResults = () => {
     // Do not query an empty string if selected filter is "All"
-    if (searchQuery.length > 0 || selectedFilter !== "All") {
+    if (searchQuery.length > 0 || selectedFilter !== Enums.FilterFood.ALL) {
       searchFood(); 
     } else {
       setResults([]);
@@ -106,19 +106,19 @@ const saveState = (key, value) => {
   // Func that is responsible for searching Food Templates in DB based on search string
   async function searchFood() {
     console.log("searchFood for:", selectedFilter);
-    if (selectedFilter === "All") {
+    if (selectedFilter === Enums.FilterFood.ALL) {
       const results = await searchForFood(searchQuery, user);
       setResults(results);
-    } else if  (selectedFilter === "Filter by category") {
+    } else if  (selectedFilter === Enums.FilterFood.CATEGORY) {
       const results = await getAllFoodTemplatesForCategory(user, selectedCategory)
       console.log("Filter by category results:", results);
       setResults(results);
-    } else if  (selectedFilter === "My food") {
+    } else if  (selectedFilter === Enums.FilterFood.CUSTOM) {
       const results = await getAllCustomFoodTemplates(user)
       console.log("My food results:", results);
       setResults(results);
-    } else if  (selectedFilter === "My Recipe"){
-
+    } else if  (selectedFilter === Enums.FilterFood.RECIPE){
+      setResults([]);
     }
     console.log("searchFood results:", searchResult);
   }
@@ -126,52 +126,43 @@ const saveState = (key, value) => {
    const TopButtonContainer = () => {
     return (
       <div  style={styles.buttonsContainerStyle}>
+        <div style={styles.buttonsStyle}>
         <ButtonWithImage
             variant="backButton"
+            width='120px'
             to="/"
-            imageName="back_arrow.svg"
+            imageName="arrow_left.svg"
             imageSize={20}
           >
           Back
         </ButtonWithImage>
         <ButtonWithImage
             variant="addButton"
-            width='180px'
+            width='150px'
             as='button'
             imageName="plus_round_fill_white_button.svg"
             imageSize={20}
             onClick={openCeateNewFoodPage}
           >
-            Create New Food
+            Create Food
         </ButtonWithImage>
+        </div>
       </div>
     )
    }
  
     const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
-      const filterOptions = [
-        "All",
-        "By category",
-        "My food",
-        "My Recipe",
-      ];
-    
-      async function handleCategoryChange(e) {
-        const newValue = e.target.value;
-        console.log("handleCategoryChange:", newValue);
-        setSelectedCategory(newValue)
-      }
-
+ 
       async function handleFilterChange(filter) {
         console.log("handleFilterChange:", filter);
         setSelectedFilter(filter)
       }
     
       const customTabStyle = {
-        
+         
         color:colors.green,
         fontWeight: 'bold',
-        margin: '0px', // Replace with your custom text color
+        margin: '0px 0px 0px 0px',
         '&.Mui-selected': {
           color: colors.orange,
           backgroundColor: colors.orange,
@@ -179,51 +170,37 @@ const saveState = (key, value) => {
       };
 
       const customTabButtonStyle = {
-        margin: '0px',
-        padding: '10px',
+        maxHeight: '20px',
+        maxWidth: '10px',
+        padding: '5px',
+        margin: '10px 0px 10px 0px',
         fontWeight: 'bold',
         '&.Mui-selected': {
           color:  colors.orange,
-          //backgroundColor: colors.orange,
+          backgroundColor: `rgba(43, 99, 98, 0.1)`,
+          borderRadius: '10px'
         },
       };
    
       return (
         <div>
-        <Box  sx={customTabStyle}>
-        <Tabs
-          variant="fullWidth"
-          value={selectedFilter}
-          onChange={(event, newValue) => {
-            console.log("e.target", newValue)
-            handleFilterChange(newValue)
-          }}
-          textColor='${colors.orange}'
-          indicatorColor="none"
-        >
-           {filterOptions.map((filter) => (
-            <Tab sx={customTabButtonStyle} value={filter} label={filter} />
-          ))}
-        </Tabs>
-      </Box>
-       {selectedFilter === "By category" && (
-          <select
-            style={styles.dropdownStyle}
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedFilter("Filter by category");
-              handleCategoryChange(e)
-            }}
-          >
-            {Object.values(Enums.FoodCategoryType).map((type, index) => (
-              <option key={index} value={Enums.getTitleUpercased(type)}>
-                {Enums.getTitleUpercased(type)}
-              </option>
-            ))}
-          </select>
-          )
-        }
-      </div>
+          <Box  sx={customTabStyle}>
+            <Tabs
+              variant="fullWidth"
+              value={selectedFilter}
+              onChange={(event, newValue) => {
+                console.log("e.target", newValue)
+                handleFilterChange(newValue)
+              }}
+              textColor='${colors.orange}'
+              indicatorColor="none"
+            >
+              {Object.values(Enums.FilterFood).map((filter) => (
+                <Tab sx={customTabButtonStyle} value={filter} label={filter} />
+              ))}
+            </Tabs>
+          </Box>
+        </div>
       )
     };
     
@@ -232,7 +209,7 @@ const saveState = (key, value) => {
       // Check if searchResult is not defined or is an empty array
     if (!searchResult || searchResult.length === 0) {
       return <div style={styles.placeholderStyle}>
-        {selectedFilter === "All" &&  searchQuery.length === 0 ? (
+        {selectedFilter === Enums.FilterFood.ALL &&  searchQuery.length === 0 ? (
           <Image imageName="start_typing_placeholder.png" width="200" height="250"/>
           ) : (
             <Image imageName="no_results_placeholder.png" width="200" height="250"/>
@@ -250,11 +227,32 @@ const saveState = (key, value) => {
   };
 
   const SearchContainer = () => {
-    return (
+    async function handleCategoryChange(e) {
+      const newValue = e.target.value;
+      console.log("handleCategoryChange:", newValue);
+      setSelectedCategory(newValue)
+    }
 
+    return (
       <div style={styles.rowStyle}>
          <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search:</label>
-        <TextField 
+         {selectedFilter ===  Enums.FilterFood.CATEGORY ? (
+          <select
+            style={styles.dropdownStyle}
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedFilter(Enums.FilterFood.CATEGORY);
+              handleCategoryChange(e)
+            }}
+          >
+            {Object.values(Enums.FoodCategoryType).map((type, index) => (
+              <option key={index} value={Enums.getTitleUpercased(type)}>
+                {Enums.getTitleUpercased(type)}
+              </option>
+            ))}
+          </select>
+          ) : (
+            <TextField 
           id="searchField"  // Add an id attribute
           placeholder="Enter food name"
           value={searchQuery}
@@ -284,29 +282,12 @@ const saveState = (key, value) => {
           }}
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'Enter food name')}
-        />
+          />
+          )
+        }
+        
+        
       </div>
-
-      // <div style={styles.rowStyle}>
-      //   <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
-      //   <input
-      //   style={styles.textFieldStyle}
-      //   type="text"
-      //   id="searchField"  // Add an id attribute
-      //   placeholder="Enter food name"
-      //   value={searchQuery}
-        // onChange={(e) => {
-        //     if (searchQuery !== e.target.value) {
-        //         setSearchQuery(e.target.value);
-        //     }
-        // }}
-      //   />
-
- 
-      //   {searchQuery && (
-      //     <div css={styles.clearButonStyle}><Clear onClick={() => handleClearSearch()} /></div>   
-      //   )}
-      // </div>
     );
   };
 

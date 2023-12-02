@@ -208,7 +208,7 @@ const Profile = () => {
       <ButtonWithImage
           variant="backButton"
           to="/"
-          imageName="back_arrow.svg"
+          imageName="arrow_left.svg"
           imageSize={20}
         >
          Back

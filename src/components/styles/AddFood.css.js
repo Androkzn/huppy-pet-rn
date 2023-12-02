@@ -64,6 +64,7 @@ const topButtonsContainerStyle = {
   marginTop: '20px',
   textAlign: 'left',
   fontSize: '15px',
+  padding: '10px',
 };
 
 const addFoodFormStyle = {

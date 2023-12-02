@@ -12,8 +12,8 @@ import styled from '@emotion/styled/macro'
     marginTop: '10px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
-    maxHeight: '150px',
-    minHeight: '100px',
+    maxHeight: '120px',
+    minHeight: '120px',
     width: '100%',
   };
 
@@ -50,6 +50,13 @@ import styled from '@emotion/styled/macro'
     textAlign: 'center',
     fontSize: '15px',
   };
+  const buttonsStyle = {
+    ...rowStyle,
+    justifyContent: 'space-between',
+    margin: '0px 10px 10px 10px',
+    textAlign: 'center',
+    fontSize: '15px',
+  };
 
   const labelTextFieldStyle = {
     padding: '10px',
@@ -57,18 +64,6 @@ import styled from '@emotion/styled/macro'
     fontSize: '20px',
     fontWeight: "bold",
     color: colors.green,
-  };
-
-  const textFieldStyle = {
-    padding: '10px',
-    height: '40px',
-    maxWidth: '300px',
-    marginRight: '10px',
-    textAlign: 'left',
-    fontSize: '18px',
-    borderRadius: '20px',
-    color: colors.green,
-    backgroundColor: colors.white,
   };
 
   const clearButonStyle = {
@@ -107,14 +102,29 @@ import styled from '@emotion/styled/macro'
     backgroundColor: colors.lightBrown2,
   };
 
-  const dropdownStyle = {
-    maxWidth: '150px',
-    borderRadius: '10px',
-    height: '30px',
-    paddingLeft: '10px',
-    marginLeft: '10px',
-    backgroundColor: colors.oliveLight,
+  const textFieldStyle = {
+    padding: '10px',
+    height: '40px',
+    maxWidth: '250px',
+    maxWidth: '250px',
+    marginRight: '10px',
+    textAlign: 'left',
     fontSize: '18px',
+    borderRadius: '10px',
+    color: colors.green,
+    backgroundColor: colors.white,
+  };
+
+  const dropdownStyle = {
+    maxWidth: '300px',
+    minWidth: '250px',
+    borderRadius: '10px',
+    height: '40px',
+    paddingLeft: '10px',
+    marginRight: '10px',
+    backgroundColor: colors.white,
+    fontSize: '18px',
+    color: colors.green,
   };
 
   const responsiveSubContainer = styled.div({
@@ -160,4 +170,5 @@ import styled from '@emotion/styled/macro'
     clearButonStyle,
     responsiveSubContainer,
     responsiveMainContainer,
+    buttonsStyle,
 };

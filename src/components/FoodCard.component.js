@@ -33,7 +33,7 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
 
             <div style={style.nameContainerStyle} onClick={() => openAddFoodPage (food)}>
               <span style={style.textTitleStyle}>{food.name}</span>
-              <span style={style.textStyle}>Calories: {food.calories} kcal</span>
+              <span style={style.textStyle}>{food.calories} kcal</span>
             </div>
              
             { food.isCustom && (

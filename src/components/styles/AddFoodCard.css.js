@@ -46,16 +46,18 @@ import * as colors from './Colors'
     textAlign: 'left',
     fontSize: '15px',
     color: colors.green,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    width: '70px',
   };
 
  const textStyle = {
     padding: '0px',
     marginRight: '5px',
-    textAlign: 'left',
+    textAlign: 'right',
     fontSize: '15px',
     color: colors.green,
     marginRight: '5px',
+    width: '60px',
   };
 
   const iconContainerStyle = {

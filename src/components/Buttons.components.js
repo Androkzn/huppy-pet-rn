@@ -126,7 +126,7 @@ const buttonVariants = {
     cursor: 'pointer',
     width: '130px',
     height: '35px',
-    lineHeight: '`10`px',
+    lineHeight: '10px',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
     display: 'flex',
     alignItems: 'center',

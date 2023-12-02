@@ -15,6 +15,10 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
+import * as colors from '../components/styles/Colors';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
 const SearchFood = () => {
   // Function to load state from localStorage
@@ -147,7 +151,7 @@ const saveState = (key, value) => {
     const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
       const filterOptions = [
         "All",
-        "Filter by category",
+        "By category",
         "My food",
         "My Recipe",
       ];
@@ -163,44 +167,64 @@ const saveState = (key, value) => {
         setSelectedFilter(filter)
       }
     
+      const customTabStyle = {
+        
+        color:colors.green,
+        fontWeight: 'bold',
+        margin: '0px', // Replace with your custom text color
+        '&.Mui-selected': {
+          color: colors.orange,
+          backgroundColor: colors.orange,
+        },
+      };
+
+      const customTabButtonStyle = {
+        margin: '0px',
+        padding: '10px',
+        fontWeight: 'bold',
+        '&.Mui-selected': {
+          color:  colors.orange,
+          //backgroundColor: colors.orange,
+        },
+      };
+   
       return (
-        <div style={styles.rowStyle}>
-          {filterOptions.map((filter) => (
-            <label key={filter} style={styles.labelFilterStyle}>
-              <input
-                style={styles.radioButtonStyle}
-                type="radio"
-                name="categoryOption"
-                value={selectedFilter}  
-                checked={selectedFilter === filter}
-                onChange={() => handleFilterChange(filter)}
-              />
-              <span>{filter === "Filter by category" ? (
-                <>
-                  Filter by category
-                  <select
-                    style={styles.dropdownStyle}
-                    value={selectedCategory}
-                    onChange={(e) => {
-                      setSelectedFilter("Filter by category");
-                      handleCategoryChange(e)
-                    }}
-                  >
-                    {Object.values(Enums.FoodCategoryType).map((type, index) => (
-                      <option key={index} value={Enums.getTitleUpercased(type)}>
-                        {Enums.getTitleUpercased(type)}
-                      </option>
-                    ))}
-                  </select>
-                </>
-              ) : (
-                filter
-              )}</span>
-            </label>
+        <div>
+        <Box  sx={customTabStyle}>
+        <Tabs
+          variant="fullWidth"
+          value={selectedFilter}
+          onChange={(event, newValue) => {
+            console.log("e.target", newValue)
+            handleFilterChange(newValue)
+          }}
+          textColor='${colors.orange}'
+          indicatorColor="none"
+        >
+           {filterOptions.map((filter) => (
+            <Tab sx={customTabButtonStyle} value={filter} label={filter} />
           ))}
-        </div>
-      );
-      
+        </Tabs>
+      </Box>
+       {selectedFilter === "By category" && (
+          <select
+            style={styles.dropdownStyle}
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedFilter("Filter by category");
+              handleCategoryChange(e)
+            }}
+          >
+            {Object.values(Enums.FoodCategoryType).map((type, index) => (
+              <option key={index} value={Enums.getTitleUpercased(type)}>
+                {Enums.getTitleUpercased(type)}
+              </option>
+            ))}
+          </select>
+          )
+        }
+      </div>
+      )
     };
     
     
@@ -229,7 +253,7 @@ const saveState = (key, value) => {
     return (
 
       <div style={styles.rowStyle}>
-         <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search for food:</label>
+         <label  style={styles.labelTextFieldStyle} htmlFor="searchField">Search:</label>
         <TextField 
           id="searchField"  // Add an id attribute
           placeholder="Enter food name"
@@ -289,11 +313,11 @@ const saveState = (key, value) => {
   return <PageContainer>
       <TopButtonContainer/>
       <div style={styles.mainConteinerStyle}>
-        {SearchContainer()}
         <FilterContainer
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
+         {SearchContainer()}
       </div>
       <ResultContainer
           searchResult={searchResult}

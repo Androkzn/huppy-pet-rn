@@ -8,7 +8,7 @@ import * as colors from './Colors'
     flex: '1',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '5px 20px 0 20px',
+    margin: '5px 0px 0 0px',
     padding: '10px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
@@ -41,20 +41,21 @@ import * as colors from './Colors'
  };
 
   const textTitleStyle = {
-    padding: '10px',
-    margin: '0px',
+    padding: '5px',
+    marginLeft: '5px',
     textAlign: 'left',
-    fontSize: '18px',
+    fontSize: '15px',
     color: colors.green,
     fontWeight: "bold"
   };
 
  const textStyle = {
-    padding: '5px',
-    margin: '0px',
+    padding: '0px',
+    marginRight: '5px',
     textAlign: 'left',
-    fontSize: '18px',
+    fontSize: '15px',
     color: colors.green,
+    marginRight: '5px',
   };
 
   const iconContainerStyle = {

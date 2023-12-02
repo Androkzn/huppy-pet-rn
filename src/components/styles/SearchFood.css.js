@@ -10,10 +10,10 @@ import styled from '@emotion/styled/macro'
     flexDirection: 'column',
     alignItems: 'center',
     marginTop: '10px',
-    padding: '15px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
-    maxHeight: '120px',
+    maxHeight: '150px',
+    minHeight: '100px',
     width: '100%',
   };
 
@@ -46,14 +46,13 @@ import styled from '@emotion/styled/macro'
   const buttonsContainerStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    marginTop: '20px',
+    margin: '20px 0 0 0',
     textAlign: 'center',
     fontSize: '15px',
   };
 
   const labelTextFieldStyle = {
     padding: '10px',
-    margin: '10px',
     textAlign: 'left',
     fontSize: '20px',
     fontWeight: "bold",
@@ -63,8 +62,8 @@ import styled from '@emotion/styled/macro'
   const textFieldStyle = {
     padding: '10px',
     height: '40px',
-    width: '300px',
-    margin: '0px',
+    maxWidth: '300px',
+    marginRight: '10px',
     textAlign: 'left',
     fontSize: '18px',
     borderRadius: '20px',
@@ -109,7 +108,7 @@ import styled from '@emotion/styled/macro'
   };
 
   const dropdownStyle = {
-    width: '150px',
+    maxWidth: '150px',
     borderRadius: '10px',
     height: '30px',
     paddingLeft: '10px',

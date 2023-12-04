@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
+import {ImageCircle} from './ImageCircle.components'
 import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
 import * as Constants from "../helpers/Constants.helper"
@@ -34,26 +35,23 @@ const NavBar = () => {
                   {currentProfile.name}
                 </h2>
                )}
-              <IconButton
-                size="large"
-                edge="end"
-                color="inherit"
-                aria-label="menu"
+              <ImageCircle
+                imageName={"avatar_placeholder.png"}
+                width="50px"
+                imageDataUrl={currentProfile.avatar}
                 onClick={toggleDrawer}
-              >
-                <Image imageName="avatar_small_placeholder.png" width="70" height="70" />
-              </IconButton>
+              />
             </div>
           )}
         </Toolbar>
       </AppBar>
-      <TemporaryDrawer show={show} setShow={setShow} toggleDrawer={toggleDrawer} />
+      <TemporaryDrawer currentProfile={currentProfile} show={show} setShow={setShow} toggleDrawer={toggleDrawer} />
     </>
   );
 };
 
 const TemporaryDrawer = (props) => {
-  const { show, toggleDrawer } = props;
+  const { show, toggleDrawer, currentProfile } = props;
   const { logOutUser } = useContext(UserContext);
 
   const logOut = async () => {
@@ -64,9 +62,14 @@ const TemporaryDrawer = (props) => {
 
   const navLinks = [
     {
-      text: 'Profile',
+      text:  currentProfile ? currentProfile.name : "Profile",
       Icon: () => (
-        <Image imageName="avatar_small_placeholder.png" width="50" height="50" />
+        <ImageCircle
+          imageName={"avatar_placeholder.png"}
+          width="50px"
+          imageDataUrl={currentProfile.avatar}
+          onClick={toggleDrawer}
+        />
       ),
       link: '/profile',
     },

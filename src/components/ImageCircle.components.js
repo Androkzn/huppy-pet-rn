@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const ImageCircle = ({ imageName, imageDataUrl, width = '150', height = '150', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
+const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
   const imageStyle = {
-    width: '100%', // Ensure the image takes up the entire container
-    height: 'auto', // Maintain the aspect ratio
+    maxWidth: width,  
+    height: width,  
     borderRadius: borderRadius,
     border: `${borderWidth} solid ${borderColor}`,
   };

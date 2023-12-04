@@ -158,7 +158,8 @@ const imageContainerStyle = {
   ...columnStyle,
   justifyContent: 'center',
   marginBottom: '10px',
-  width: '30%',
+  width: '100%',
+  textAlign: 'center',
   margin: 'auto',
 };
 

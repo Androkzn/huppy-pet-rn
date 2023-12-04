@@ -274,8 +274,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
       <div style={styles.imageContainerStyle}>
         <ImageCircle
           imageName={"avatar_placeholder.png"}
-          width="200"
-          height="200"
+          width="150px"
           imageDataUrl={profile.avatar}
           onClick={updateAvatar}
         />

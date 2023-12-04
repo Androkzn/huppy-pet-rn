@@ -149,7 +149,7 @@ function TrainingCard({ training, updateTrainings }) {
               <ButtonWithImage
                 variant="iconButton"
                 imageName="delete_green.svg"
-                imageSize={20}
+                imageSize={isSmallScreen ?  20: 30}
                 onClick={() => deleteCurrentTraining()}
               ></ButtonWithImage>
             </div>

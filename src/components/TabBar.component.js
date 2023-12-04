@@ -10,6 +10,7 @@ import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unsel
 import { ReactComponent as HealthIcon } from './assets/health_tab_icon_unselected.svg'
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
 import * as Constants from "../helpers/Constants.helper"
+import {Image} from '../components/Image.components'
 
 const TabBar = () => {
   const {user, currentProfile} = useContext(UserContext);
@@ -54,7 +55,9 @@ const TabBar = () => {
       >
         <Tab 
           value={0} 
-          icon={<DiaryIcon width= {imageSize} fill={value === 0 ? colors.orange : colors.green}/>} 
+          icon={
+           <DiaryIcon width= {imageSize} fill={value === 0 ? colors.orange : colors.green}/>
+        } 
           label="Diary" 
           sx={{
             minWidth:'15px',
@@ -71,7 +74,9 @@ const TabBar = () => {
         />
         <Tab 
           value={1} 
-          icon={<DashboardIcon width= {imageSize} fill={value === 1 ? colors.orange : colors.green}/>} 
+          icon={
+          <DashboardIcon width= {imageSize} fill={value === 1 ? colors.orange : colors.green}/>
+        } 
           label="Dashboard" 
           sx={{
             minWidth:'15px',

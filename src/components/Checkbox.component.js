@@ -6,7 +6,8 @@ import * as colors from './styles/Colors'
 const useStyles = makeStyles((theme) => ({
   customCheckbox: {
     '&$checked': {
-      color: colors.green, // Color of the checkmark when checked
+      color: colors.orange, // Color of the checkmark when checked
+      backgroundColor: colors.white
     },
   },
   checked: {}, // Empty class for checked state
@@ -21,7 +22,7 @@ const CustomCheckbox = ({ checked, onChange }) => {
         root: classes.customCheckbox,
         checked: classes.checked,
       }}
-      color="primary"
+      
       checked={checked}
       onChange={onChange}
       inputProps={{ 'aria-label': 'Select training' }}

@@ -6,7 +6,7 @@ import { UserContext } from "../contexts/user.context";
 import { Image } from "./Image.components";
 import { deleteTraining, updateTraining } from "../graphql/graphqlUtils";
 import * as styleTraining from "./styles/Training.css";
-import { ButtonWithImage, ButtonText } from "./Buttons.components";
+import { ButtonWithImage } from "./Buttons.components";
 import * as Enums from "../helpers/Enums.helper";
 import CustomCheckbox from "./Checkbox.component";
 import useMediaQuery from "@mui/material/useMediaQuery";

@@ -183,6 +183,7 @@ const avatarContainerStyle = {
   maxWidth: '250px',
   minWidth: '250px',
   margin: 'auto',
+  textAlign: 'center',
 }
 
 

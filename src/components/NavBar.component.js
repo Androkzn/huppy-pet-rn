@@ -5,8 +5,11 @@ import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 import {ImageCircle} from './ImageCircle.components'
+import Avatar from './Avatar.components'
 import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
+import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg'
+import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg'
 import * as Constants from "../helpers/Constants.helper"
 
 const NavBar = () => {
@@ -35,23 +38,22 @@ const NavBar = () => {
                   {currentProfile.name}
                 </h2>
                )}
-              <ImageCircle
-                imageName={"avatar_placeholder.png"}
+              <Avatar
                 width="50px"
-                imageDataUrl={currentProfile.avatar}
+                profile={currentProfile}
                 onClick={toggleDrawer}
               />
             </div>
           )}
         </Toolbar>
       </AppBar>
-      <TemporaryDrawer currentProfile={currentProfile} show={show} setShow={setShow} toggleDrawer={toggleDrawer} />
+      <TemporaryDrawer profiles={profiles} currentProfile={currentProfile} show={show} setShow={setShow} toggleDrawer={toggleDrawer} />
     </>
   );
 };
 
 const TemporaryDrawer = (props) => {
-  const { show, toggleDrawer, currentProfile } = props;
+  const { show, toggleDrawer, currentProfile, profiles } = props;
   const { logOutUser } = useContext(UserContext);
 
   const logOut = async () => {
@@ -62,14 +64,26 @@ const TemporaryDrawer = (props) => {
 
   const navLinks = [
     {
-      text:  currentProfile ? currentProfile.name : "Profile",
+      text:  "Profile",
       Icon: () => (
-        <ImageCircle
-          imageName={"avatar_placeholder.png"}
+        <Avatar
           width="50px"
-          imageDataUrl={currentProfile.avatar}
-          onClick={toggleDrawer}
+          profile={currentProfile}
         />
+      ),
+      link: '/profile',
+    },
+    {
+      text:  "Add dog",
+      Icon: () => (
+        <AddProfileIcon  fill={colors.green}/>
+      ),
+      link: '/register',
+    },
+    {
+      text:  "Change profile",
+      Icon: () => (
+        <ChangeProfileIcon  fill={colors.green}/>
       ),
       link: '/profile',
     },
@@ -82,6 +96,11 @@ const TemporaryDrawer = (props) => {
     },
   ];
 
+  // Filter out the "Change profile" item if the number of profiles is less than 2
+  const filteredNavLinks = profiles.length < 2
+    ? navLinks.filter(({ text }) => text !== "Change profile")
+    : navLinks;
+
   const DrawerList = () => (
     <Box
       sx={{ width: 250, height: "100%",  backgroundColor: colors.coffe }}
@@ -91,7 +110,7 @@ const TemporaryDrawer = (props) => {
     >
       <List>
         {
-          navLinks.map(({ text, Icon, link, action }) => {
+          filteredNavLinks.map(({ text, Icon, link, action }) => {
             return link ?
               <Link to={link} style={{ textDecoration: "none", color: "inherit" }} key={text}>
                 <ListItem button>

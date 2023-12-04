@@ -7,7 +7,7 @@ import { ButtonText,  ButtonWithImage } from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
 
 const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar }) => {
-
+  console.log("avatar", avatar)
   return <div>
     <form style={styles.dialogLargeContainerStyle}>
       <div style={styles.closeDialogButtonContainer}>
@@ -23,16 +23,15 @@ const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar }) => {
       <div style={styles.avatarContainerStyle}>
       <ImageCircle
           imageName={"avatar_placeholder.png"}
-          width="75"
-          height="75"
+          width="150px"
           imageDataUrl={avatar}
       />
   </div>
-      <div style={styles.dialogButtonContainerStyle(avatar === "")}> 
+      <div style={styles.dialogButtonContainerStyle(avatar === null || avatar === "")}> 
         <ButtonText  width= {100} variant="rectangleTextButton" onClick={() => onSave()} >
           Upload
         </ButtonText>
-        {avatar !== "" && <ButtonText width= {100} variant="rectangleTextButton" onClick={() => onDelete()} >
+        { avatar !== null && avatar !== "" && <ButtonText width= {100} variant="rectangleTextButton" onClick={() => onDelete()} >
           Delete
         </ButtonText>}
      </div>

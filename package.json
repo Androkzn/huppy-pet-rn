@@ -34,6 +34,7 @@
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.0",
+    "react-swipeable": "^7.0.1",
     "realm-web": "^1.7.1",
     "web-vitals": "^2.1.4"
   },
@@ -45,7 +46,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "stop": "npx kill-port --port 3000"
+    "stop": "npx kill-port --port 3000",
+    "sync": "aws s3 sync .build/ s3://huppyapp/ --profile huppy_dev --region us-west-2",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id E1CRWW9QIPV27 --paths '/*' --profile huppy_dev --region us-west-2",
+    "publish": "npm run build && npm run sync && npm run invalidate"
   },
   "eslintConfig": {
     "extends": [

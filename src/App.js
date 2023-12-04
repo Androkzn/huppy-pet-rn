@@ -14,6 +14,8 @@ import AddFood from "./pages/AddFood.page";
 import EditFood from "./pages/EditFood.page";
 import Profile from "./pages/Profile.page";
 import Register from "./pages/Register.page";
+import Training from "./pages/Training.page";
+import More from "./pages/More.page";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
                 <Route path="/editFood" element={<EditFood />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/training" element={<Training />} />
+                <Route path="/more" element={<More />} />
               </Route>
             </Routes>
           </div>

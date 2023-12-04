@@ -3,6 +3,20 @@ import request, { gql } from "graphql-request";
 import { getStartAndEndOfToday, getStartAndEndOfWeek } from "../helpers/Date.helper";
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT
+
+async function refreshAccessToken(user) {
+  try {
+    // Refresh the access token
+    await user.refreshAccessToken();
+    return user._accessToken;
+  } catch (error) {
+    // Handle the refresh error
+    console.error('Error refreshing access token:', error);
+    throw error; // Rethrow the error for the calling function to handle
+  }
+}
+
+
 // Func that is responsible for searching Food Templates in DB 
 // it return array of FoodTemplates based on search string
 async function searchForFood(searchQuery, user) {
@@ -933,8 +947,13 @@ async function addTraining(user, currentProfile, selectedDate, data) {
         await request(GRAPHQL_ENDPOINT, createTrainingQuery, queryVariablesCreateTraining, headers);
         return true
     } catch (error) {
-        console.error('Error adding training:', error);
-        return false
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        addTraining(user, currentProfile, selectedDate, data)
+      } 
+        
+      console.error('Error adding training:', error);
+      return false
     }
 }
 
@@ -1239,6 +1258,8 @@ async function updateFoodTemplate(user, foodItem) {
       return false;
   }
 }
+
+
 
 export { 
     searchForFood, 

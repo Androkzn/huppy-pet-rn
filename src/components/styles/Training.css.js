@@ -2,6 +2,10 @@
 
 import * as colors from './Colors'
 
+  const pageStyle = {
+    maxWidth: '95%',
+  };
+
   // Main container 
   const trainingConteinerStyle = {
     display: 'flex',
@@ -12,7 +16,7 @@ import * as colors from './Colors'
     padding: '10px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
-    minWidth:'350px'
+    minWidth:'300px'
   };
 
   const rowStyle = {
@@ -47,7 +51,8 @@ import * as colors from './Colors'
  
 
   const iconContainerStyle = {
-     width: '20%',
+     minWidth: '20%',
+     marginLeft: '5px',
   };
 
   const headerTrainingStyle = (isCompleted) => ({
@@ -75,7 +80,76 @@ import * as colors from './Colors'
     height: '35px',
   };
 
+  const pickerContainerStyle = {
+    display: 'flex',
+    flex: '1 1 auto',
+    justifyContent: 'center',
+    marginTop: '20px',
+    marginBottom: '10px',
+  };
+
+  const pickerStyle = {
+    // Your styles for picker
+  };
+
+  const headerStyle = {
+    display: 'flex',
+    borderTopLeftRadius: '20px',
+    borderTopRightRadius: '20px',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: '100%',
+    backgroundColor: colors.brown,
+  };
+
+    
+  const headerTiteStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    width: '100%',
+  };
+
+  const headingStyle = {
+    color: colors.green,
+  };
+  
+  const headerImageStyle = {
+    marginLeft: '20px',
+  };
+  
+  const headerAddButtonStyle = {
+    marginRight: '0px',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    marginRight: '20px'
+  };
+
+  const childConteinerStyle = {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: '20px',
+    marginTop: '10px',
+    backgroundColor: colors.grayBackground,
+  };
+
+  const placeholderStyle = {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: '10px',
+  };
+
+  
   export {
+    pageStyle, 
     headerTrainingStyle,
     trainingConteinerStyle,
     iconContainerStyle, 
@@ -85,4 +159,13 @@ import * as colors from './Colors'
     checkboxStyle,
     textStyle,
     textTitleStyle,
+    pickerContainerStyle,
+    pickerStyle, 
+    headerStyle,
+    headerTiteStyle,
+    headingStyle,
+    headerImageStyle,
+    headerAddButtonStyle,
+    childConteinerStyle,
+    placeholderStyle,
 };

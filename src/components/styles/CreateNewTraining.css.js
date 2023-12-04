@@ -5,7 +5,7 @@ import * as colors from './Colors'
 
 const addTrainingFormStyle = {
   maxWidth: '450px',
-  minWidth: '350px',
+  minWidth: '250px',
   margin: 'auto',
 };
 

@@ -25,9 +25,9 @@ const TabBar = () => {
     switch (newValue) {
       case 0: return navigate("/");;
       case 1: return navigate("/dashboard");
-      case 2: return navigate("/");
-      case 3: return navigate("/");
-      case 4: return navigate("/");
+      case 2: return navigate("/training");
+      //case 3: return navigate("/");
+      case 4: return navigate("/more");
   }
   };
 
@@ -103,7 +103,7 @@ const TabBar = () => {
             },
           }}
         />
-        <Tab 
+        {/* <Tab 
           value={3} 
           icon={ <HealthIcon width= {imageSize} fill={value === 3 ? colors.orange : colors.green}/>} 
           label= "Health"
@@ -119,7 +119,7 @@ const TabBar = () => {
               borderBottom: `3px solid ${colors.orange}`,
             },
           }}
-        />
+        /> */}
         <Tab 
           value={4} 
           icon={ <MoreIcon width= {imageSize} fill={value === 4 ? colors.orange : colors.green}/>} 

@@ -722,6 +722,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: Constants.mainMargin,
       borderRadius: Constants.mainBorderRadius,
       height: '20px',
+      fontSize: '16px',
     };
 
     return (

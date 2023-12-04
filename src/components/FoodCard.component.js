@@ -39,22 +39,21 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
               <div style={style.customButtonContainerStyle}> 
                 <div css={style.deleteButonStyle}>
                   <ButtonWithImage
-                        variant="iconButton"
-                        imageName="delete_green.svg"
-                        imageSize={25}
-                        onClick={() => deleteFoodTemplateHandler()}
-                      >
-                    </ButtonWithImage>
+                      variant="iconButton"
+                      as='button'
+                      imageName="delete_green.svg"
+                      imageSize={25}
+                      onClick={() => deleteFoodTemplateHandler()}
+                    />
                 </div>
                 <div css={style.editButonStyle}>
-                
                   <ButtonWithImage
                         variant="iconButton"
+                        as='button'
                         imageName="edit_orange.svg"
                         imageSize={20}
                         onClick={() => editFoodHandler()}
-                      >
-                    </ButtonWithImage>
+                  />
                 </div>    
                 <div style={style.customContainerStyle}>
                   <h6>CUSTOM</h6>
@@ -69,8 +68,8 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
               imageName="arrow_right.svg"
               imageSize={20}
               onClick={() => openAddFoodPage (food)}
-            >
-            </ButtonWithImage>
+            />
+        
                
               
           

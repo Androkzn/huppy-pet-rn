@@ -100,14 +100,13 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
             <h3 css={styles.headingMealStyle}>MEALS</h3>
             <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
             <div css={styles.headingDeleteButonStyle}>
-              
               <ButtonWithImage
-                        variant="iconButton"
-                        imageName="delete_orange.svg"
-                        imageSize={25}
-                        onClick={() => deleteCurrentMeal()}
-                      >
-                    </ButtonWithImage>
+                variant="iconButton"
+                as='button'
+                imageName="delete_orange.svg"
+                imageSize={25}
+                onClick={() => deleteCurrentMeal()}
+              />
               </div>
           </div> 
         </div>
@@ -126,12 +125,12 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
                   />
                   <div css={styles.headingDeleteButonStyle}>
                     <ButtonWithImage
-                        variant="iconButton"
-                        imageName="delete_orange.svg"
-                        imageSize={25}
-                        onClick={() => deleteCurrentFood(foodItem._id)}
-                      >
-                    </ButtonWithImage>
+                      variant="iconButton"
+                      as='button'
+                      imageName="delete_orange.svg"
+                      imageSize={25}
+                      onClick={() => deleteCurrentFood(foodItem._id)}
+                    />
                   </div>
                 </div> 
               </div>

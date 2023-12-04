@@ -131,6 +131,7 @@ function ActivityCard({ activity, updateActivities}) {
                
                   <ButtonWithImage
                     variant="iconButton"
+                    as='button'
                     imageName="delete_orange.svg"
                     imageSize={25}
                     onClick={deleteCurrentActivity}

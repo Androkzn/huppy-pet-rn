@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 
-import { Delete } from "@mui/icons-material";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
@@ -100,7 +99,16 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
           <div css={styles.headerTextStyle}>
             <h3 css={styles.headingMealStyle}>MEALS</h3>
             <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
-            <div css={styles.headingDeleteButonStyle}><Delete onClick={deleteCurrentMeal} /></div>
+            <div css={styles.headingDeleteButonStyle}>
+              
+              <ButtonWithImage
+                        variant="iconButton"
+                        imageName="delete_orange.svg"
+                        imageSize={25}
+                        onClick={() => deleteCurrentMeal()}
+                      >
+                    </ButtonWithImage>
+              </div>
           </div> 
         </div>
         <ul  css={styles.foodListStyle}>
@@ -116,7 +124,15 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
                     onChange={(e) => 
                       handleWeightChange(e, foodItem)}
                   />
-                  <div css={styles.headingDeleteButonStyle}><Delete onClick={() => deleteCurrentFood(foodItem._id)} /></div>
+                  <div css={styles.headingDeleteButonStyle}>
+                    <ButtonWithImage
+                        variant="iconButton"
+                        imageName="delete_orange.svg"
+                        imageSize={25}
+                        onClick={() => deleteCurrentFood(foodItem._id)}
+                      >
+                    </ButtonWithImage>
+                  </div>
                 </div> 
               </div>
             </li>

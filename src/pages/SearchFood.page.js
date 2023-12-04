@@ -192,7 +192,6 @@ const saveState = (key, value) => {
                 console.log("e.target", newValue)
                 handleFilterChange(newValue)
               }}
-              textColor='${colors.orange}'
               indicatorColor="none"
             >
               {Object.values(Enums.FilterFood).map((filter) => (

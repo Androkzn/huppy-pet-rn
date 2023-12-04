@@ -147,10 +147,35 @@ import * as colors from './Colors'
     margin: '10px',
   };
 
+ 
+
+
+  const checkmarkContainerStyle  = (isCompleted) => ({
+    width: '80px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: isCompleted? colors.yellow : colors.lightGreen2 ,
+    borderTopLeftRadius: '10px',
+    borderBottomLeftRadius: '10px',
+  });
+
+  const deleteContainerStyle =  {
+    width: '80px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.orange,
+    borderTopRightRadius: '10px',
+    borderBottomRightRadius: '10px',
+  };
+
   
   export {
     pageStyle, 
     headerTrainingStyle,
+    checkmarkContainerStyle, 
+    deleteContainerStyle,
     trainingConteinerStyle,
     iconContainerStyle, 
     rowStyle, 

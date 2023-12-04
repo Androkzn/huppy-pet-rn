@@ -55,7 +55,6 @@ function TrainingCard({ training, updateTrainings }) {
     const isUpdated = await updateTraining(user, training._id, updateData);
 
     if (isUpdated) {
-      console.log("Training updated successfully:", updateData);
       updateTrainings();
     } else {
       console.log("Failed to update training.");
@@ -63,9 +62,7 @@ function TrainingCard({ training, updateTrainings }) {
   }
 
   const deleteCurrentTraining = async () => {
-    console.log("isDeletedPressed");
     const isDeleted = await deleteTraining(user, training._id);
-    console.log("isDeleted", isDeleted);
     if (isDeleted) {
       updateTrainings();
     }
@@ -94,16 +91,26 @@ function TrainingCard({ training, updateTrainings }) {
       {isSmallScreen ? (
         // Render swipeable component for small screens
         <div
-          style={{ ...styleTraining.trainingConteinerStyle, transition: "transform 0.3s ease" }}
+          style={{ ...styleTraining.trainingConteinerStyle, transition: "transform 1s ease" }}
           {...handlers} // Spread the swipe handlers
         >
           <div
             style={{
               ...styleTraining.headerTrainingStyle(training.isCompleted),
-              transform:
-                swipeDirection === "left" ? `translateX(-${calculateIconWidth()})` : swipeDirection === "right" ? `translateX(${calculateIconWidth()})` : "translateX(0)",
             }}
           >
+          {/* Container for checkmark icon */}
+          {swipeDirection === "right" && <div
+              style={styleTraining.checkmarkContainerStyle(training.isCompleted)}
+            >
+              <Image 
+              imageName={training.isCompleted ? `cancel_green.svg` : `checkmark_orange.svg`} 
+              width= {training.isCompleted ? "20" : "25" }
+              height= {training.isCompleted ? "20" :"25" }
+              />
+            </div>
+           }
+
             <div style={styleTraining.rowStyle}>
               <div style={styleTraining.iconContainerStyle}>
                 <Image imageName={`training_${training.category}.svg`} width="40" height="40" />
@@ -114,6 +121,13 @@ function TrainingCard({ training, updateTrainings }) {
                 <h4 style={styleTraining.textStyle}>What to train: {getTainingType()}</h4>
               </div>
             </div>
+            {/* Container for delete icon */}
+            {swipeDirection === "left" && <div
+                style={styleTraining.deleteContainerStyle}
+              >
+                <Image imageName={`delete_white.svg`} width="35" height="35" />
+            </div>
+            }
           </div>
         </div>
       ) : (
@@ -134,8 +148,8 @@ function TrainingCard({ training, updateTrainings }) {
 
               <ButtonWithImage
                 variant="iconButton"
-                imageName="delete_icon.svg"
-                imageSize={25}
+                imageName="delete_green.svg"
+                imageSize={20}
                 onClick={() => deleteCurrentTraining()}
               ></ButtonWithImage>
             </div>
@@ -147,3 +161,4 @@ function TrainingCard({ training, updateTrainings }) {
 }
 
 export default TrainingCard;
+

@@ -17,6 +17,14 @@ function TrainingCard({ training, updateTrainings }) {
   const [swipeDirection, setSwipeDirection] = useState(null);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
+  // Calculate dynamic icon width based on the swipe position
+  const calculateIconWidth = () => {
+    const maxIconWidth = 80; // Maximum width for the icons
+    const swipeProgress = Math.abs(swipeDirection === "left" ? 100 : swipeDirection === "right" ? -100 : 0);
+    const iconWidth = Math.min(maxIconWidth, swipeProgress);
+    return `${iconWidth}px`;
+  };
+
   // Swipe handlers
   const handlers = useSwipeable({
     onSwiping: (event) => {
@@ -93,7 +101,7 @@ function TrainingCard({ training, updateTrainings }) {
             style={{
               ...styleTraining.headerTrainingStyle(training.isCompleted),
               transform:
-                swipeDirection === "left" ? "translateX(-50px)" : swipeDirection === "right" ? "translateX(50px)" : "translateX(0)",
+                swipeDirection === "left" ? `translateX(-${calculateIconWidth()})` : swipeDirection === "right" ? `translateX(${calculateIconWidth()})` : "translateX(0)",
             }}
           >
             <div style={styleTraining.rowStyle}>

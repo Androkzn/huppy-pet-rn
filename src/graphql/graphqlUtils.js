@@ -63,8 +63,14 @@ async function searchForFood(searchQuery, user) {
            return resp.search;
         }
     } catch (error) {
-        console.error('Error search for food with string:', searchQuery, error);
-        return [];
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        searchForFood(searchQuery, user)
+      } 
+      
+      alert('Error search for food with string:', searchQuery);
+      console.error('Error search for food', error);
+      return [];
     }
 }
 
@@ -108,7 +114,13 @@ async function getAllFoodForMeal(user, mealId) {
         // Update the 'food' state with the fetched data
         return resp.foods;
     } catch (error) {
-        alert('Error fetching food for meal with Id:', mealId, error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        getAllFoodForMeal(user, mealId)
+      } 
+      
+      alert('Error fetching food for meal with Id:', mealId);
+      console.error('Error fetching food for meal', error);
     }
 }
 
@@ -154,7 +166,13 @@ async function getAllCustomFoodTemplates(user) {
       // Update the 'food' state with the fetched data
       return resp.foodTemplates;
   } catch (error) {
-      alert(error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getAllCustomFoodTemplates(user)
+    } 
+    
+    alert('Error get All Custom Food Templates');
+    console.error('Error get All Custom Food Templates', error);
   }
 }
 
@@ -204,7 +222,13 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
       // Update the 'food' state with the fetched data
       return resp.foodTemplates;
   } catch (error) {
-      alert(error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getAllFoodTemplatesForCategory(user, categoryType)
+    } 
+    
+    alert('Error get All Custom Food Templates for category: ', categoryType);
+    console.error('Error get All Custom Food Templates for category: ', error);
   }
 }
 
@@ -240,7 +264,13 @@ async function getAllFoodCategories(user, profileId) {
       // Update the 'food' state with the fetched data
       return resp.foodCategories;
   } catch (error) {
-      alert(error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getAllFoodCategories(user, profileId)
+    } 
+    
+    alert('Error get All Food Categories');
+    console.error('Error get All Food Categories', error);
   }
 }
 
@@ -270,7 +300,13 @@ async function deleteMeal(user, _id) {
       await request(GRAPHQL_ENDPOINT, deleteMealQuery, queryVariables, headers);
       return true
     } catch (error) {
-      alert('Error deleting meal with Id:',_id, error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        deleteMeal(user, _id)
+      } 
+      
+      console.error('Error deleting meal', error);
+      alert('Error deleting meal');
       return false
     }
 }
@@ -301,7 +337,13 @@ async function deleteActivity(user, _id) {
     await request(GRAPHQL_ENDPOINT, deleteActivityQuery, queryVariables, headers);
     return true
   } catch (error) {
-    alert('Error deleting meal with Id:',_id, error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      deleteActivity(user, _id)
+    } 
+    
+    console.error('Error deleting activity', error);
+    alert('Error deleting activity');
     return false
   }
 }
@@ -332,7 +374,13 @@ async function deleteTraining(user, _id) {
     await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
     return true
   } catch (error) {
-    alert('Error deleting meal with Id:',_id, error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      deleteTraining(user, _id)
+    } 
+    
+    console.error('Error deleting training', error);
+    alert('Error deleting training');
     return false
   }
 }
@@ -359,7 +407,13 @@ async function deleteFood(user, _id) {
       await request(GRAPHQL_ENDPOINT, deleteFoodQuery, queryVariables, headers);
       return true
     } catch (error) {
-      alert('Error deleting food with Id:',_id, error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        deleteFood(user, _id)
+      } 
+      
+      console.error('Error deleting food', error);
+      alert('Error deleting food');
       return false
     }
 }
@@ -390,7 +444,13 @@ async function deleteFoodTemplate(user, _id) {
       await request(GRAPHQL_ENDPOINT, deleteFoodTemplateQuery, queryVariables, headers);
       return true
     } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        deleteFoodTemplate(user, _id)
+      } 
+      
+      console.error('Error deleting food template', error);
+      alert('Error deleting food template');
       return false
     }
 }
@@ -421,7 +481,13 @@ async function deleteFoodCategory(user, _id) {
       await request(GRAPHQL_ENDPOINT, deleteFoodCategoryQuery, queryVariables, headers);
       return true
     } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        deleteFoodCategory(user, _id)
+      } 
+      
+      console.error('Error deleting food category', error);
+      alert('Error deleting food category');
       return false
     }
 }
@@ -470,7 +536,13 @@ async function addFood(user, mealId, foodItem, selectedDate) {
         await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
         return true
       } catch (error) {
-        alert(error);
+        if (error.response.error_code === "InvalidSession") {
+          await refreshAccessToken(user)
+          addFood(user, mealId, foodItem, selectedDate)
+        } 
+        
+        console.error('Error add food', error);
+        alert('Error add food');
         return false
       }
 }
@@ -523,7 +595,13 @@ async function addFoodTemplate(user, foodItem) {
      const templateId = response.insertOneFoodTemplate._id;
       return { success: true, templateId: templateId };
     } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        addFoodTemplate(user, foodItem) 
+      } 
+      
+      console.error('Error add food template', error);
+      alert('Error add food template');
       
        return { success: false, templateId: "" };
     }
@@ -584,6 +662,13 @@ async function getUserProfiles(user) {
     const currentProfile = currentProfileFetched[0];
     return { profilesFetched: profiles, currentProfileFetched: currentProfile };
   } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getUserProfiles(user)
+    } 
+    
+    console.error(error);
+    alert('Error get profiles');
     console.error('Error loading profiles:', error);
   }
 }
@@ -654,7 +739,13 @@ async function addProfile(user, profile) {
     console.log("profileNew: ", profileNew)
     return { profileNew: profileNew, isCreated: true };
   } catch (error) {
-  console.error('Error creating profile:', error);
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getUserProfiles(user)
+    } 
+    
+    alert('Error get profiles');
+    console.error('Error creating profile:', error);
   }
 };
 
@@ -695,6 +786,12 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
       const meals = resp.meals.map(meal => ({ ...meal, key: meal._id }))
       return(meals) 
   } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      loadMeals(user, currentProfile, currentDate, isToday = true)
+    }
+    
+    alert('Error loading meals');
     console.error('Error loading meals:', error);
   }
 }
@@ -749,7 +846,13 @@ try {
     const food = resp.foods.map(food => ({ ...food, key: food._id }))
     return(food) 
 } catch (error) {
-  console.error('Error loading meals:', error);
+  if (error.response.error_code === "InvalidSession") {
+    await refreshAccessToken(user)
+    loadFood(user, currentProfile, currentDate, isToday)
+  }
+  
+  alert('Error loading food');
+  console.error('Error loading food:', error);
 }
 }
 
@@ -794,6 +897,12 @@ async function loadActivities(user, currentProfile, currentDate) {
     const activities = resp.activities.map(activity => ({ ...activity, key: activity._id}))
     return(activities) 
   } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      loadActivities(user, currentProfile, currentDate)
+    }
+    
+    alert('Error loading activities');
     console.error('Error loading Activities:', error);
   }
 }
@@ -840,6 +949,12 @@ async function loadTrainings(user, currentProfile, currentDate) {
     const trainings =  resp.trainings.map(training => ({ ...training, key: training._id }))
     return(trainings)
 } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      loadTrainings(user, currentProfile, currentDate)
+    }
+    
+    alert('Error loading trainings');
     console.error('Error loading trainings:', error);
   }
 }
@@ -875,6 +990,12 @@ async function addMeal(user, currentProfile, selectedDate) {
         await request(GRAPHQL_ENDPOINT, createMealQuery, queryVariablesCreateMeal, headers);
         return true
     } catch (error) {
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        addMeal(user, currentProfile, selectedDate)
+      }
+      
+      alert('Error adding meal');
       console.error('Error adding meal:', error);
       return false
     }
@@ -911,6 +1032,12 @@ async function addActivity(user, currentProfile, selectedDate, data) {
         await request(GRAPHQL_ENDPOINT, createActivityQuery, queryVariablesCreateActivity, headers);
         return true
     } catch (error) {
+        if (error.response.error_code === "InvalidSession") {
+          await refreshAccessToken(user)
+          addActivity(user, currentProfile, selectedDate, data) 
+        }
+        
+        alert('Error adding activity');
         console.error('Error adding activity:', error);
         return false
     }
@@ -951,7 +1078,7 @@ async function addTraining(user, currentProfile, selectedDate, data) {
         await refreshAccessToken(user)
         addTraining(user, currentProfile, selectedDate, data)
       } 
-        
+      alert('Error adding training');
       console.error('Error adding training:', error);
       return false
     }
@@ -986,7 +1113,12 @@ async function addFoodCategory(user, currentProfile, data) {
       await request(GRAPHQL_ENDPOINT, createFoodCategoryQuery, queryVariablesCreateFoodCategory, headers);
       return true
   } catch (error) {
-      console.error('Error adding FoodCategory:', error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        addFoodCategory(user, currentProfile, data)
+      } 
+      alert('Error adding food category');
+      console.error('Error adding Food Category:', error);
       return false
   }
 }
@@ -1020,7 +1152,12 @@ async function updateActivity(user, activityId, updateData) {
       await request(GRAPHQL_ENDPOINT, updateActivityQuery, queryVariables, headers);
       return true;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateActivity(user, activityId, updateData)
+      } 
+      alert('Error update activity');
+      console.error('Error update activity', error);
       return false;
   }
 }
@@ -1058,7 +1195,12 @@ async function updateTraining(user, trainingId, updateData) {
       await request(GRAPHQL_ENDPOINT, updateTrainingQuery, queryVariables, headers);
       return true;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateTraining(user, trainingId, updateData)
+      } 
+      alert('Error update training');
+      console.error('Error update training', error);
       return false;
   }
 }
@@ -1112,7 +1254,12 @@ async function updateProfile(user, profileId, updateData) {
       const resp = await request(GRAPHQL_ENDPOINT, updateProfileQuery, queryVariables, headers);
       return resp.updateOneProfile;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateProfile(user, profileId, updateData)
+      } 
+      alert('Error update profile');
+      console.error('Error update profile', error);
       return false;
   }
 }
@@ -1150,7 +1297,12 @@ async function updateFoodCategory(user, categoryId, updateData) {
       await request(GRAPHQL_ENDPOINT, updateFoodCategoryQuery, queryVariables, headers);
       return true;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateFoodCategory(user, categoryId, updateData)
+      } 
+      alert('Error update food category');
+      console.error('Error update food category', error);
       return false;
   }
 }
@@ -1181,7 +1333,12 @@ async function updateFood(user, foodId, updateData) {
       await request(GRAPHQL_ENDPOINT, updateFoodQuery, queryVariables, headers);
       return true;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateFood(user, foodId, updateData)
+      } 
+      alert('Error update food');
+      console.error('Error update food', error);
       return false;
   }
 }
@@ -1254,12 +1411,15 @@ async function updateFoodTemplate(user, foodItem) {
       await request(GRAPHQL_ENDPOINT, updateFoodTemplateQuery, queryVariables, headers)
       return true;
   } catch (error) {
-      alert(error);
+      if (error.response.error_code === "InvalidSession") {
+        await refreshAccessToken(user)
+        updateFoodTemplate(user, foodItem)
+      } 
+      alert('Error update food template');
+      console.error('Error update food template', error);
       return false;
   }
 }
-
-
 
 export { 
     searchForFood, 

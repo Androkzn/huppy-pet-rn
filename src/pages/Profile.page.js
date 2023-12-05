@@ -63,7 +63,7 @@ const Profile = () => {
           data.append('image', file);
           data.append('name', profile._id);
           data.append('destination', 'avatar');
-          const result = await axios.post(`${backendEndpoint}/api/avatar`, data); 
+          const result = await axios.post(`${backendEndpoint}/avatar`, data); 
           await fetchAvatar()
         }
         closeDialog();
@@ -79,7 +79,7 @@ const Profile = () => {
   // Handles dialog submission
   const deleteAvatar = async () => {
     const destination = 'avatar'
-    const avatarResult = await axios.delete(`${backendEndpoint}/api/avatar/${profile?._id}?destination=${destination}`);  
+    const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     updateCurrentProfile("avatar", "")
     closeDialog();
   };
@@ -93,7 +93,7 @@ const Profile = () => {
   const fetchAvatar = async () => {
     try {
       const destination = 'avatar'
-      const avatarResult = await axios.get(`${backendEndpoint}/api/avatar/${profile?._id}?destination=${destination}`);
+      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
       updateCurrentProfile("avatar", avatarResult.data)
       return 
     } catch (error) {

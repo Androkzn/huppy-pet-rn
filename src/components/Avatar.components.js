@@ -23,7 +23,6 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
     }
   };
 
-
   return (
     <ImageCircle
           imageName={"avatar_placeholder.png"}

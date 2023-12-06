@@ -50,67 +50,57 @@ const Profile = () => {
     } 
   };
 
-  // Handles dialog submission
-  const saveAvatar = async () => {
-    console.log("profile", profile)
-
-    try {
-      // Create an input element to trigger file selection
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const data = new FormData();
-          data.append('image', file);
-          data.append('name', profile._id);
-          data.append('destination', 'avatar');
-
-        // Include the X-Custom-Auth-Key header in the request
-        const headers = {
-          'X-Custom-Auth-Key': key,
-          'Content-Type': 'multipart/form-data', // Important when using FormData
+    // Handles dialog submission
+    const saveAvatar = async () => {
+      try {
+        // Create an input element to trigger file selection
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = async (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const data = new FormData();
+            data.append('image', file);
+            data.append('name', profile._id);
+            data.append('destination', 'avatar');
+            const result = await axios.post(`${backendEndpoint}/avatar`, data); 
+            await fetchAvatar()
+          }
+          closeDialog();
         };
-
-        const result = await axios.post(`${backendEndpoint}/avatar/${profile._id}`, data);
- 
-          await fetchAvatar()
-        }
-        closeDialog();
-      };
-
-      // Trigger the file input click programmatically
-      input.click();
-    } catch (error) {
-      console.error('Error selecting file:', error);
-    }
-  };
-
-  // Handles dialog submission
-  const deleteAvatar = async () => {
-    const destination = 'avatar'
-    const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}`);  
-    updateCurrentProfile("avatar", "")
-    closeDialog();
-  };
-
-  //Callback func that opens avatar dialog 
-  const updateAvatar = async () => {
-    openDialog("avatar")
-  };
-
-  // Function to fetch avatar data when component mounts
-  const fetchAvatar = async () => {
-    try {
+  
+        // Trigger the file input click programmatically
+        input.click();
+      } catch (error) {
+        console.error('Error selecting file:', error);
+      }
+    };
+  
+    // Handles dialog submission
+    const deleteAvatar = async () => {
       const destination = 'avatar'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}`);
-      updateCurrentProfile("avatar", avatarResult.data)
-      return 
-    } catch (error) {
-      console.error("Error fetching avatar:", error);
-    }
-  };
+      const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
+      updateCurrentProfile("avatar", "")
+      closeDialog();
+    };
+  
+    //Callback func that opens avatar dialog 
+    const updateAvatar = async () => {
+      openDialog("avatar")
+    };
+  
+    // Function to fetch avatar data when component mounts
+    const fetchAvatar = async () => {
+      try {
+        const destination = 'avatar'
+        const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
+        updateCurrentProfile("avatar", avatarResult.data)
+        return 
+      } catch (error) {
+        console.error("Error fetching avatar:", error);
+      }
+    };
 
   const cachedProfile = loadState('currentProfile', {
     _id : currentProfile?._id,

@@ -15,7 +15,7 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
   const fetchAvatar = async () => {
     try {
       const destination = 'avatar'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
+      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}`);
       setAvatar(avatarResult.data)
       return 
     } catch (error) {

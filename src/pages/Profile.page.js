@@ -17,6 +17,7 @@ const Profile = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
+  const key = process.env.REACT_APP_AUTH_KEY_SECRET
 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -51,6 +52,8 @@ const Profile = () => {
 
   // Handles dialog submission
   const saveAvatar = async () => {
+    console.log("profile", profile)
+
     try {
       // Create an input element to trigger file selection
       const input = document.createElement('input');
@@ -63,7 +66,15 @@ const Profile = () => {
           data.append('image', file);
           data.append('name', profile._id);
           data.append('destination', 'avatar');
-          const result = await axios.post(`${backendEndpoint}/avatar`, data); 
+
+        // Include the X-Custom-Auth-Key header in the request
+        const headers = {
+          'X-Custom-Auth-Key': key,
+          'Content-Type': 'multipart/form-data', // Important when using FormData
+        };
+
+        const result = await axios.post(`${backendEndpoint}/avatar/${profile._id}`, data);
+ 
           await fetchAvatar()
         }
         closeDialog();
@@ -79,7 +90,7 @@ const Profile = () => {
   // Handles dialog submission
   const deleteAvatar = async () => {
     const destination = 'avatar'
-    const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
+    const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}`);  
     updateCurrentProfile("avatar", "")
     closeDialog();
   };
@@ -93,7 +104,7 @@ const Profile = () => {
   const fetchAvatar = async () => {
     try {
       const destination = 'avatar'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
+      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}`);
       updateCurrentProfile("avatar", avatarResult.data)
       return 
     } catch (error) {

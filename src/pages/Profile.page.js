@@ -11,6 +11,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
+import Compress from 'compress.js';
+
 
 const Profile = () => {
   const { user, currentProfile, setCurrentProfile } = useContext(UserContext);
@@ -18,6 +20,7 @@ const Profile = () => {
   const [dialogType, setDialogType] = useState("addActivity");
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
   const key = process.env.REACT_APP_AUTH_KEY_SECRET
+  const compress = new Compress();
 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -50,39 +53,84 @@ const Profile = () => {
     } 
   };
 
-    // Handles dialog submission
-    const saveAvatar = async () => {
-      try {
-        // Create an input element to trigger file selection
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async (event) => {
-          const file = event.target.files[0];
-          if (file) {
-            const data = new FormData();
-            data.append('image', file);
-            data.append('name', profile._id);
-            data.append('destination', 'avatar');
-            const result = await axios.post(`${backendEndpoint}/avatar`, data); 
-            await fetchAvatar()
-          }
-          closeDialog();
-        };
-  
-        // Trigger the file input click programmatically
-        input.click();
-      } catch (error) {
-        console.error('Error selecting file:', error);
+  const compressImage = async (file, { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }) => {
+    // Get as image data
+    const imageBitmap = await createImageBitmap(file);
+
+    // Calculate new dimensions while maintaining the aspect ratio
+    let newWidth, newHeight;
+    if (imageBitmap.width > imageBitmap.height) {
+        newWidth = maxWidth;
+        newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
+    } else {
+        newHeight = maxHeight;
+        newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
+    }
+
+    // Draw to canvas with new dimensions
+    const canvas = document.createElement('canvas');
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
+
+    // Turn into Blob
+    return await new Promise((resolve) =>
+        canvas.toBlob(resolve, type, quality)
+    );
+  };
+
+
+// Handles dialog submission
+const saveAvatar = async () => {
+  try {
+    // Create an input element to trigger file selection
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          const compressedFile = await compressImage(file, {
+            type: 'image/jpeg',
+        });
+          // Create a new FormData object
+          const data = new FormData();
+          // Append the compressed file as a Blob
+          data.append('image', compressedFile);
+          // Append other form data fields
+          data.append('name', profile._id);
+          data.append('destination', 'avatar');
+          // Use Axios to send the FormData to the server
+          const result = await axios.post(`${backendEndpoint}/avatar/${profile._id}`, data);
+          await fetchAvatar();
+        } catch (error) {
+          console.log('Error uploading file:', error);
+        }
       }
+      closeDialog();
     };
+
+    // Trigger the file input click programmatically
+    input.click();
+  } catch (error) {
+    console.log('Error selecting file:', error);
+  }
+};
+
   
     // Handles dialog submission
     const deleteAvatar = async () => {
       const destination = 'avatar'
-      const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
-      updateCurrentProfile("avatar", "")
-      closeDialog();
+      // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
+      try {
+        const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
+        updateCurrentProfile("avatar", "")
+        closeDialog();
+      } catch (error) {
+        console.log("Error deleting avatar:", error);
+      }
     };
   
     //Callback func that opens avatar dialog 
@@ -92,13 +140,15 @@ const Profile = () => {
   
     // Function to fetch avatar data when component mounts
     const fetchAvatar = async () => {
+      console.log(`Fetch Avatar for`, profile)
       try {
-        const destination = 'avatar'
-        const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
-        updateCurrentProfile("avatar", avatarResult.data)
+        const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id} `);
+        const url = avatarResult.data
+        console.log(`avatar url`, url)
+        updateCurrentProfile("avatar", url)
         return 
       } catch (error) {
-        console.error("Error fetching avatar:", error);
+        console.log("Error fetching avatar:", error);
       }
     };
 
@@ -184,6 +234,7 @@ const Profile = () => {
     if (dataUpdated) { 
       data = dataUpdated
     }
+    console.log("updateCurrentProfile: ", data)
     const updatedProfile = await updateProfile(user, profile._id, data)  
     if (updatedProfile) {
       console.log("SUCCESS to updateProfile: ", updatedProfile)

@@ -7,7 +7,6 @@ import { ButtonText,  ButtonWithImage } from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
 
 const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar }) => {
-  console.log("avatar", avatar)
   return <div>
     <form style={styles.dialogLargeContainerStyle}>
       <div style={styles.closeDialogButtonContainer}>

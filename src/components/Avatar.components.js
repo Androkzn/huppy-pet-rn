@@ -19,7 +19,7 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
       setAvatar(avatarResult.data)
       return 
     } catch (error) {
-      console.error("Error fetching avatar:", error);
+      console.log("Error fetching avatar:", error);
     }
   };
 

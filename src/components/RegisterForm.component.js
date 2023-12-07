@@ -269,7 +269,6 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
     return isaAvailable
   };
 
- 
   return <div style={styles.addFoodFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       <h2  style={styles.profileTitleStyle}>{"Create profile"}</h2>

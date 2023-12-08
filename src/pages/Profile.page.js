@@ -11,7 +11,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
- 
+import '../index.css'
+
 const Profile = () => {
   const { user, currentProfile, setCurrentProfile } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);

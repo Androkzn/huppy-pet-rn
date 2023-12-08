@@ -5,16 +5,17 @@ import { UserContext } from "../contexts/user.context";
 import * as styles  from './styles/Profile.css'
 import {ButtonImage} from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
-import { Cropper } from 'react-mobile-cropper';
+import { Cropper, CircleStencil } from 'react-mobile-cropper';
 import 'react-mobile-cropper/dist/style.css'
 import Spiner from '../components/Spinner.components'
 import axios from "axios";
+import '../index.css'
+import './styles/styles.css';
 
 const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => {
     const [imageSelected, setImageSelected] = useState( null);
     const [croppedImage, setCroppedImage] = useState(null); 
-    console.log("avatar", avatar );
-    
+
     // Updates  the cropped image in the state
     const onChange = (cropper) => {
       setCroppedImage(cropper.getCanvas());
@@ -103,7 +104,12 @@ const fetchAvatar = async () => {
          <Cropper
             src={URL.createObjectURL(imageSelected)}
             onChange={onChange}
-            className={'cropper'}
+            className="cropper"
+            stencilProps={{ 
+              aspectRatio: 1 
+            }}
+            stencilComponent={CircleStencil}
+            backgroundProps={{color: "red"}}
         /> 
       ) : (  
         <div>

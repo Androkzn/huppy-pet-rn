@@ -166,6 +166,7 @@ const imageContainerStyle = {
 const dialogLargeContainerStyle = {
   maxWidth: '450px',
   minWidth: '250px',
+  maxHeight: '550px',
   margin: 'auto',
 };
 

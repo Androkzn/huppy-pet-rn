@@ -56,10 +56,12 @@ const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => 
 
 
     // Fetch the image from the URL and convert it to a file
-    const response = await fetchAvatar();
-    if (response) {
+    const url = await getAvatarUrl();
+    if (url) {
       try {
-        const response = await fetch(avatar);
+        console.log('url:', url);
+        const response = await fetch(url);
+        console.log('response:', response);
         const blob = await response.blob();
         const imageFile = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
         console.log('imageFile:', imageFile);
@@ -73,11 +75,11 @@ const ChangeAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => 
    }
 
 // Function to fetch avatar data when the component mounts
-const fetchAvatar = async () => {
+const getAvatarUrl = async () => {
   console.log(`Fetch Avatar for`, profileId);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
-    const type = 'object';
+    const type = 'url';
     const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profileId}?type=${type}`);
     const avatarData = avatarResult.data;
 
@@ -87,6 +89,7 @@ const fetchAvatar = async () => {
     return null;
   }
 };
+
   return <div>
     <form style={styles.dialogLargeContainerStyle}>
       <div style={styles.closeDialogButtonContainer}>

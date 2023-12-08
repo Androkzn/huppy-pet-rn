@@ -14,8 +14,8 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
   // Function to fetch avatar data when component mounts
   const fetchAvatar = async () => {
     try {
-      const destination = 'avatar'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}`);
+      const type = 'url'
+      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
       setAvatar(avatarResult.data)
       return 
     } catch (error) {

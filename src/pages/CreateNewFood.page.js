@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonLink} from '../components/Buttons.components'
 import { addFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
@@ -73,7 +73,7 @@ const CreateNewFood = () => {
 
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
-      <ButtonWithImage
+      <ButtonLink
           variant="backButton"
           to="/searchFood"
           imageName="arrow_left.svg"
@@ -81,7 +81,7 @@ const CreateNewFood = () => {
           width='100px'
         >
          Back
-      </ButtonWithImage>
+      </ButtonLink>
     </div>
     <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} />
   </PageContainer>

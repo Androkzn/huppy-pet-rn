@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/user.context";
 import { useLocation, useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'
-import {ButtonWithImage } from './Buttons.components'
+import {ButtonImage } from './Buttons.components'
 import { deleteFoodTemplate } from "../graphql/graphqlUtils";
 
 // Function is responsible for updating the training 
@@ -38,18 +38,16 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
             { food.isCustom && (
               <div style={style.customButtonContainerStyle}> 
                 <div css={style.deleteButonStyle}>
-                  <ButtonWithImage
+                  <ButtonImage
                       variant="iconButton"
-                      as='button'
                       imageName="delete_green.svg"
                       imageSize={25}
                       onClick={() => deleteFoodTemplateHandler()}
                     />
                 </div>
                 <div css={style.editButonStyle}>
-                  <ButtonWithImage
+                  <ButtonImage
                         variant="iconButton"
-                        as='button'
                         imageName="edit_orange.svg"
                         imageSize={20}
                         onClick={() => editFoodHandler()}
@@ -62,8 +60,7 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
               </div>
             )}
 
-            <ButtonWithImage
-              as="button"
+            <ButtonImage
               variant="iconButton"
               imageName="arrow_right.svg"
               imageSize={20}

@@ -4,24 +4,20 @@ import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonLink} from '../components/Buttons.components'
 import { addFoodCategory, updateProfile, deleteFoodCategory, getAllFoodCategories, updateFoodCategory } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
-import Compress from 'compress.js';
-
-
+ 
 const Profile = () => {
   const { user, currentProfile, setCurrentProfile } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
-  const key = process.env.REACT_APP_AUTH_KEY_SECRET
-  const compress = new Compress();
-
+ 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
     const storedValue = localStorage.getItem(key);
@@ -47,7 +43,7 @@ const Profile = () => {
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
     if (dialogType === "avatar") { 
-      return <ChangeAvatarDialog avatar={profile.avatar} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
+      return <ChangeAvatarDialog profileId={profile._id} avatar={profile.avatar} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
     } else if (dialogType === "error") {
       
     } 
@@ -82,14 +78,7 @@ const Profile = () => {
 
 
 // Handles dialog submission
-const saveAvatar = async () => {
-  try {
-    // Create an input element to trigger file selection
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (event) => {
-      const file = event.target.files[0];
+const saveAvatar = async (file) => {
       if (file) {
         try {
           const compressedFile = await compressImage(file, {
@@ -110,13 +99,7 @@ const saveAvatar = async () => {
         }
       }
       closeDialog();
-    };
-
-    // Trigger the file input click programmatically
-    input.click();
-  } catch (error) {
-    console.log('Error selecting file:', error);
-  }
+  
 };
 
   
@@ -142,7 +125,8 @@ const saveAvatar = async () => {
     const fetchAvatar = async () => {
       console.log(`Fetch Avatar for`, profile)
       try {
-        const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id} `);
+        const type = 'url'
+        const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
         const url = avatarResult.data
         console.log(`avatar url`, url)
         updateCurrentProfile("avatar", url)
@@ -257,7 +241,7 @@ const saveAvatar = async () => {
 
   return <PageContainer>
     <div  style={styles.backButtonContainerStyle}>
-      <ButtonWithImage
+      <ButtonLink
           variant="backButton"
           to="/"
           imageName="arrow_left.svg"
@@ -265,7 +249,7 @@ const saveAvatar = async () => {
           width='100px'
         >
          Back
-      </ButtonWithImage>
+      </ButtonLink>
     </div>
     <ProfileForm 
       profile={profile} 

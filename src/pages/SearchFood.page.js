@@ -7,7 +7,7 @@ import { getAllCustomFoodTemplates, getAllFoodTemplatesForCategory, searchForFoo
 import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
 import * as styles from "../components/styles/SearchFood.css"
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonImage, ButtonLink} from '../components/Buttons.components'
 import { Clear} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import {Image} from '../components/Image.components'
@@ -127,7 +127,7 @@ const saveState = (key, value) => {
     return (
       <div  style={styles.buttonsContainerStyle}>
         <div style={styles.buttonsStyle}>
-        <ButtonWithImage
+        <ButtonLink
             variant="backButton"
             width='100px'
             to="/"
@@ -135,17 +135,16 @@ const saveState = (key, value) => {
             imageSize={20}
           >
           Back
-        </ButtonWithImage>
-        <ButtonWithImage
+        </ButtonLink>
+        <ButtonImage
             variant="addButton"
             width='150px'
-            as='button'
             imageName="plus_round_fill_white_button.svg"
             imageSize={20}
             onClick={openCeateNewFoodPage}
           >
             Create Food
-        </ButtonWithImage>
+        </ButtonImage>
         </div>
       </div>
     )

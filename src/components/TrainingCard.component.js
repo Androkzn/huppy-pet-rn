@@ -6,7 +6,7 @@ import { UserContext } from "../contexts/user.context";
 import { Image } from "./Image.components";
 import { deleteTraining, updateTraining } from "../graphql/graphqlUtils";
 import * as styleTraining from "./styles/Training.css";
-import { ButtonWithImage } from "./Buttons.components";
+import { ButtonImage } from "./Buttons.components";
 import * as Enums from "../helpers/Enums.helper";
 import CustomCheckbox from "./Checkbox.component";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -146,9 +146,8 @@ function TrainingCard({ training, updateTrainings }) {
 
               <CustomCheckbox checked={training.isCompleted} onChange={() => handleCheckboxValueChange()} />
 
-              <ButtonWithImage
+              <ButtonImage
                 variant="iconButton"
-                as='button'
                 imageName="delete_green.svg"
                 imageSize={isSmallScreen ?  20: 30}
                 onClick={() => deleteCurrentTraining()}

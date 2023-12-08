@@ -4,7 +4,7 @@ import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import RegisterForm from "../components/RegisterForm.component";
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonImage} from '../components/Buttons.components'
 import { addProfile, addFoodCategory } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
@@ -195,17 +195,16 @@ useEffect(() => {
       updateAvatar={updateAvatar}
     />
     <div  style={styles.saveButtonContainerStyle}>
-      <ButtonWithImage
+      <ButtonImage
          variant="addButton"
          width='100px'
-         as='button'
          imageName="plus_round_fill_white_button.svg"
          imageSize={20}
          onClick={saveProfile}
          disabled = {!isFormCompleated}
         >
          SAVE
-      </ButtonWithImage>
+      </ButtonImage>
     </div>
 
     {/* Dialog */}

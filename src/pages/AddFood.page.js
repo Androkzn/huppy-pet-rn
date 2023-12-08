@@ -5,7 +5,7 @@ import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import AddFoodForm from "../components/AddFoodForm.component";
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonLink} from '../components/Buttons.components'
 import { addFood } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/AddFood.css'
 
@@ -40,7 +40,7 @@ const AddFood = ({ }) => {
 
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
-      <ButtonWithImage
+      <ButtonLink
           variant="backButton"
           to="/searchFood"
           imageName="arrow_left.svg"
@@ -48,7 +48,7 @@ const AddFood = ({ }) => {
           width='100px'
         >
          Back
-      </ButtonWithImage>
+      </ButtonLink>
     </div>
     <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} setFoodItem={setFoodItem} />
   </PageContainer>

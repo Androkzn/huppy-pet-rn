@@ -5,7 +5,7 @@ import { UserContext } from "../contexts/user.context";
 import {Image} from './Image.components'
 import { deleteActivity, updateActivity } from "../graphql/graphqlUtils";
 import * as stylesActivity from '../components/styles/Activity.css'
-import {ButtonWithImage, ButtonText } from '../components/Buttons.components'
+import {ButtonImage, ButtonText } from '../components/Buttons.components'
 import * as enums from "../helpers/Enums.helper"
 
 function ActivityCard({ activity, updateActivities}) {
@@ -129,14 +129,13 @@ function ActivityCard({ activity, updateActivities}) {
                     ))}
                   </select>
                
-                  <ButtonWithImage
+                  <ButtonImage
                     variant="iconButton"
-                    as='button'
+            
                     imageName="delete_orange.svg"
                     imageSize={25}
                     onClick={deleteCurrentActivity}
-                  >
-                  </ButtonWithImage>
+                  />
               </div>
               <div style={stylesActivity.bottomRowStyle}>Burned calories: {getCaloriesBurnedFor(getActivityValue())} kcal</div>
             </div>

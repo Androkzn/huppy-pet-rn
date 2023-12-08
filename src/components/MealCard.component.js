@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
-import {ButtonWithImage} from '../components/Buttons.components'
+import {ButtonImage} from '../components/Buttons.components'
 import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 
@@ -100,9 +100,8 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
             <h3 css={styles.headingMealStyle}>MEALS</h3>
             <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
             <div css={styles.headingDeleteButonStyle}>
-              <ButtonWithImage
+              <ButtonImage
                 variant="iconButton"
-                as='button'
                 imageName="delete_orange.svg"
                 imageSize={25}
                 onClick={() => deleteCurrentMeal()}
@@ -124,9 +123,8 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
                       handleWeightChange(e, foodItem)}
                   />
                   <div css={styles.headingDeleteButonStyle}>
-                    <ButtonWithImage
+                    <ButtonImage
                       variant="iconButton"
-                      as='button'
                       imageName="delete_orange.svg"
                       imageSize={25}
                       onClick={() => deleteCurrentFood(foodItem._id)}
@@ -137,16 +135,15 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
             </li>
           ))}
         </ul>
-        <ButtonWithImage
+        <ButtonImage
           variant="addButton"
           width='180px'
           imageName="plus_round_fill_white_button.svg"
           imageSize={20}
           onClick={openAddFoodPage}
-          as= 'button'
         >
           Add Food to Meal
-        </ButtonWithImage>
+        </ButtonImage>
       </div>
    );
 }

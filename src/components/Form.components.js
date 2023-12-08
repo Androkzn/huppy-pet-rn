@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import * as colors from './styles/Colors'
 import { useState } from 'react';
 import Switch from '@mui/material/Switch';
-import { ButtonText, ButtonWithImage } from "./Buttons.components"
+import { ButtonText, ButtonImage } from "./Buttons.components"
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import CustomDatePicker from "../components/CustomDatePicker.component";
@@ -681,7 +681,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
           <div style={nameStyle}  onClick={() => onAdd()}>
             {name}
           </div>
-            {/* <ButtonWithImage
+            {/* <ButtonImage
               variant="addButton"
               width='100px'
               as='button'
@@ -690,7 +690,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
               onClick={() => onAdd()}
             >
               Add
-            </ButtonWithImage> */}
+            </ButtonImage> */}
       </div>
     );
   };

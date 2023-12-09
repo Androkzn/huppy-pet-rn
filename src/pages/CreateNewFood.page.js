@@ -78,10 +78,11 @@ const CreateNewFood = () => {
           to="/searchFood"
           imageName="arrow_left.svg"
           imageSize={20}
-          width='100px'
         >
          Back
       </ButtonLink>
+      <div  css={styles.addFoodTitleStyle}>{"Add New Food"}</div>
+      <div style={{width: '100px'}}></div>
     </div>
     <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} />
   </PageContainer>

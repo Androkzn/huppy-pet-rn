@@ -62,7 +62,6 @@ function MealCard({ meal, updateMeals,  updateFoods }) {
     const results = await getAllFoodForMeal(user, mealId);
       // Update the 'food' state with the fetched data
       setFood(results);
-     
   }
 
   // Function is responsible for deleting the Meal

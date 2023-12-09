@@ -4,6 +4,7 @@ import { ButtonText } from "./Buttons.components"
 import * as styles  from '../components/styles/CreateNewFood.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
+import {Image} from '../components/Image.components'
 
 const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
   
@@ -18,8 +19,10 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem }) => {
 
   return <div css={styles.addFoodFormStyle}>
     <form >
-      <h2  css={styles.addFoodTitleStyle}>{"Add New Food"}</h2>
-      
+      <div style={styles.imageContainerStyle}> 
+          <Image imageName="food_placeholder.png" width="150" height="150" />
+      </div>
+
       <TitleAndTextInput name={"name"} title={"Name"}  onChange={(event) => { onTextInputChange(event)}} placeholder={"Enter food name"}/>
       
       <TitleAndDropdown 

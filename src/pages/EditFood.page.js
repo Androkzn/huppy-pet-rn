@@ -65,6 +65,8 @@ const EditFood = () => {
         >
          Back
       </ButtonLink>
+      <div  css={styles.addFoodTitleStyle}>{"Edit Food"}</div>
+      <div style={{width: '100px'}}></div>
     </div>
     <EditFoodForm editFood={editFood} foodItem={foodItem} setFoodItem={setFoodItem}/>
   </PageContainer>

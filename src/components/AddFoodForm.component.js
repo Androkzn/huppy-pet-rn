@@ -33,15 +33,13 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
     }));
   };
 
-  return <div>
+  return (
     <form style={styles.addFoodFormStyle} onSubmit={(e) => {e.preventDefault(); }}>
-      <h2  style={styles.addFoodTitleStyle}>{"Add Food To Meal"}</h2>
-  
       <div style={styles.imageContainerStyle}> 
           <Image imageName="food_placeholder.png" width="150" height="150" />
       </div>
   
-      <h2 style={styles.addFoodTitleStyle}>{foodItem?.name}</h2>
+      <div style={styles.addFoodTitleStyle}>{foodItem?.name}</div>
 
       <TitleAndDropdown 
         name={"units"} 
@@ -64,12 +62,12 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
 
       <div style={styles.descriptionContainerStyle}>
         <div  style={styles.rowStyle}>
-          <h3
+          <div
             style={styles.nutritionFactsTitleStyle}
             onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
           >
-            {"Description"}
-          </h3>
+            Description
+          </div>
           <Image
             imageName={isDescriptionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
             width="20"
@@ -83,12 +81,12 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
 
       <div style={styles.nutritionContainerStyle}>
         <div  style={styles.rowStyle}>
-          <h3
+          <div
             style={styles.nutritionFactsTitleStyle}
             onClick={() => setNutritionExpanded(!isNutritionExpanded)}
           >
-            {"Nutrition Facts"}
-          </h3>
+            Nutrition Facts
+          </div>
           <Image
             imageName={isNutritionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
             width="20"
@@ -137,7 +135,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
         </ButtonText>
       </div>
     </form>
-  </div>;
+  )
 }
 
 export default AddFoodForm;

@@ -46,14 +46,13 @@ import styled from '@emotion/styled/macro'
   const buttonsContainerStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    margin: '20px 0 0 0',
+    margin: '20px 0 10px 0',
     textAlign: 'center',
     fontSize: '15px',
   };
   const buttonsStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    margin: '0px 10px 10px 10px',
     textAlign: 'center',
     fontSize: '15px',
   };

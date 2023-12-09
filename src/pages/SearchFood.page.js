@@ -129,7 +129,6 @@ const saveState = (key, value) => {
         <div style={styles.buttonsStyle}>
         <ButtonLink
             variant="backButton"
-            width='100px'
             to="/"
             imageName="arrow_left.svg"
             imageSize={20}

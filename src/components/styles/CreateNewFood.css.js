@@ -16,7 +16,7 @@ const headerMealStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   textAlign: 'center',
-  width: '95%',
+  width: '100%',
   marginTop: '10px',
   backgroundColor: colors.lightBrown2,
 };
@@ -33,21 +33,23 @@ const headerFoodStyle = {
 
 const topButtonsContainerStyle = {
   ...rowStyle,
-  justifyContent: 'start',
-  marginTop: '20px',
-  marginLeft: '20px',
+  justifyContent: 'space-between',
+  margin: '20px 0 10px 0',
   textAlign: 'left',
   fontSize: '15px',
 };
 
 const addFoodFormStyle = {
   maxWidth: '30%',
-  minWidth: '90%',
+  minWidth: '100%',
 };
 
 const addFoodTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+  fontSize: '17px',
+  fontWeight: 'bold',
+
 };
 
 const nutritionFactsTitleStyle = {
@@ -129,7 +131,17 @@ const childConteinerStyle = {
   backgroundColor: colors.lightBrown,
 };
 
+const imageContainerStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  margin: '10px 0 10px 0',
+  borderRadius: '10px',
+  maxHeigh: "150px",  
+  overflow: 'hidden',
+};
+
 export {
+  imageContainerStyle,
   headerMealStyle,
   addFoodButtonContainerStyle,
   headerFoodStyle,

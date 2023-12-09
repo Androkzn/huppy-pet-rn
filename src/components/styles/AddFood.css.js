@@ -61,27 +61,31 @@ const nutritionContainerStyle = {
 const topButtonsContainerStyle = {
   ...rowStyle,
   justifyContent: 'space-between',
-  marginTop: '20px',
-  textAlign: 'left',
+  margin: '20px 0 10px 0',
+  textAlign: 'center',
   fontSize: '15px',
-  padding: '10px',
 };
 
 const addFoodFormStyle = {
   maxWidth: '450px',
   minWidth: '250px',
-  margin: 'auto',
+  width: '100%',
 };
 
 const addFoodTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+  margin: '10px',
+  fontSize: '17px',
+  fontWeight: 'bold',
 };
 
 const nutritionFactsTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
-  marginRight: '10px',
+  margin: '10px',
+  fontSize: '17px',
+  fontWeight: 'bold',
   cursor: "pointer",
 };
 
@@ -93,12 +97,11 @@ const addFoodButtonContainerStyle = {
 const imageContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
-  marginBottom: '10px',
-  borderRadius: '50%',  
+  marginTop: '10px',
+  borderRadius: '10px',
+  maxHeigh: "150px",  
   overflow: 'hidden',
 };
-
-
 
 export {
   columnStyle,

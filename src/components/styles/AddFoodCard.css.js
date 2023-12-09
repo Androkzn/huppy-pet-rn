@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
 import * as colors from './Colors'
+import * as mq from './Media-queries';
+import styled from '@emotion/styled/macro'
 
   // Main container 
   const mainConteinerStyle = {
@@ -24,9 +26,11 @@ import * as colors from './Colors'
 
   const customButtonContainerStyle = {
     ...rowStyle,
-    justifyContent: 'center',
+    justifyContent: 'start',
     alignItems: 'center',
+     
   };
+  
 
   const columnStyle = {
     display: 'flex',
@@ -36,7 +40,8 @@ import * as colors from './Colors'
   };
   const nameContainerStyle = {
     ...rowStyle,
-    justifyContent: 'left',
+    justifyContent: 'start',
+    margin: '5px 10px 5px 10px',
 
  };
 
@@ -47,7 +52,7 @@ import * as colors from './Colors'
     fontSize: '15px',
     color: colors.green,
     fontWeight: "bold",
-    width: '70px',
+    
   };
 
  const textStyle = {
@@ -106,8 +111,17 @@ import * as colors from './Colors'
     borderRadius: '10px',
     height: '35px',
   };
+ 
+  const responsiveMainContainer = styled.div({
+    ...rowStyle,
+    [mq.small]: {
+      width: '100%',
+      flexDirection: 'column',
+    },
+  })
 
   export {
+    responsiveMainContainer,
     headerTrainingStyle,
     nameContainerStyle,
     mainConteinerStyle,

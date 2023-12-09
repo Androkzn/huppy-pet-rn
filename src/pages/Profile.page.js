@@ -247,7 +247,6 @@ const saveAvatar = async (file) => {
           to="/"
           imageName="arrow_left.svg"
           imageSize={20}
-          width='100px'
         >
          Back
       </ButtonLink>

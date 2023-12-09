@@ -28,14 +28,16 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
   return (
       <div style={style.mainConteinerStyle} > 
         <div style={style.headerTrainingStyle}>
+        <div style={style.rowStyle}>
+        < style.responsiveMainContainer>
           <div style={style.rowStyle}>
-
             <div style={style.nameContainerStyle} onClick={() => openAddFoodPage (food)}>
               <span style={style.textTitleStyle}>{food.name}</span>
               <span style={style.textStyle}>{food.calories} kcal</span>
             </div>
-             
-            { food.isCustom && (
+          </div> 
+          <div style={style.customButtonContainerStyle}>
+          { food.isCustom && (
               <div style={style.customButtonContainerStyle}> 
                 <div css={style.deleteButonStyle}>
                   <ButtonImage
@@ -59,18 +61,15 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
                 </div>
               </div>
             )}
-
-            <ButtonImage
+          </div>
+          </style.responsiveMainContainer>
+          <ButtonImage
               variant="iconButton"
               imageName="arrow_right.svg"
               imageSize={20}
               onClick={() => openAddFoodPage (food)}
             />
-        
-               
-              
-          
-          </div> 
+          </div>
         </div>
       </div>
    );

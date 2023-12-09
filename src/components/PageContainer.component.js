@@ -13,7 +13,7 @@ const PageContainer = (props) => {
     margin: 'auto',
     borderRadius: '10px',
     maxWidth: '900px',
-    width: '100%',
+    width: '95%',
     minHeight:'85vh',
     justifyContent: 'centre',
     marginBottom: '100px',

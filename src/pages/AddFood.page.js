@@ -45,10 +45,11 @@ const AddFood = ({ }) => {
           to="/searchFood"
           imageName="arrow_left.svg"
           imageSize={20}
-          width='100px'
         >
          Back
       </ButtonLink>
+      <div  css={styles.addFoodTitleStyle}>{"Add to meal"}</div>
+      <div style={{width: '100px'}}></div>
     </div>
     <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} setFoodItem={setFoodItem} />
   </PageContainer>

@@ -101,9 +101,8 @@ const nutritionContainerStyle = {
 
 const backButtonContainerStyle = {
   ...rowStyle,
-  justifyContent: 'start',
-  marginTop: '20px',
-  marginLeft: '20px',
+  justifyContent: 'space-between',
+  margin: '20px 0 10px 0',
   textAlign: 'left',
   fontSize: '15px',
 };
@@ -116,13 +115,15 @@ const saveButtonContainerStyle = {
   fontSize: '15px',
 };
 
-const addFoodFormStyle = {
+const profileFormStyle = {
   maxWidth: '30%',
-  minWidth: '90%',
+  minWidth: '100%',
 };
 const profileTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+  fontSize: '17px',
+  fontWeight: 'bold',
 }
 const nameStyle = {
   textAlign: 'center',
@@ -206,7 +207,7 @@ export {
   foodRatioContainerStyle,
   nutritionContainerStyle,
   addFoodButtonContainerStyle,
-  addFoodFormStyle,
+  profileFormStyle,
   nameStyle,
   ageStyle,
   profileTitleStyle,

@@ -181,7 +181,7 @@ const ButtonLink = ({ variant, as: LinkComponent = Link, to = '/', imageName, im
   );
 };
 
-const ButtonImage = ({ variant, name, navigateTo,imageName, imageSize, width, height, children, onClick, disabled, margin, padding,  }) => {
+const ButtonImage = ({ variant, name, imageName, imageSize, width, height, children, onClick, disabled, margin, padding,  }) => {
   return (
     <Button name={name} variant={variant} width={width} height={height} onClick={onClick} disabled={disabled}>
            {imageName && <ImageContainer margin={margin} padding={padding}>

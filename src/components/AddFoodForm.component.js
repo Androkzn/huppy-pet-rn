@@ -4,11 +4,12 @@ import PageContainer from "./PageContainer.component";
 import * as styles  from './styles/AddFood.css'
 import {TitleAndDropdown, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
+import FoodImage from './FoodImage.components'
 import {Image} from './Image.components'
 import { useState } from "react";
 import { ButtonText } from "./Buttons.components"
 
-const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
+const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
 
@@ -36,7 +37,10 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem }) => {
   return (
     <form style={styles.addFoodFormStyle} onSubmit={(e) => {e.preventDefault(); }}>
       <div style={styles.imageContainerStyle}> 
-          <Image imageName="food_placeholder.png" width="150" height="150" />
+        <FoodImage 
+          foodItem={foodItem}
+          onClick={setImage} 
+        />
       </div>
   
       <div style={styles.addFoodTitleStyle}>{foodItem?.name}</div>

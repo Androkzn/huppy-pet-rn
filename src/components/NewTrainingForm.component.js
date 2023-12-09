@@ -42,7 +42,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
   
 
   return <div>
-    <form style={styles.addTrainingFormStyle}>
+    <form style={styles.addTrainingFormStyle} onSubmit={(e) => {e.preventDefault()}}>
       <div style={styles.closeButtonContainer}>
         <ButtonText
           variant="circleTextButton"

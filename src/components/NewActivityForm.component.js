@@ -99,7 +99,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
   }
 
   return <div >
-    <form style={styles.addActivityFormStyle}>
+    <form style={styles.addActivityFormStyle} onSubmit={(e) => {e.preventDefault()}}>
       <div style={styles.closeButtonContainer}>
         <ButtonText
           variant="circleTextButton"

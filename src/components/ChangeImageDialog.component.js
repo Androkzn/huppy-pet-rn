@@ -4,14 +4,14 @@ import { useContext, useState, useEffect } from 'react'
 import { UserContext } from "../contexts/user.context"
 import * as styles  from './styles/Profile.css'
 import {ButtonImage} from "./Buttons.components"
-import {ImageCircle} from './ImageCircle.components'
-import { Cropper, CircleStencil } from 'react-mobile-cropper'
+import {Image} from './Image.components'
+import { Cropper, RectangleStencil } from 'react-mobile-cropper'
 import 'react-mobile-cropper/dist/style.css'
-import Spiner from '../components/Spinner.components'
+import Spiner from './Spinner.components'
 import axios from "axios"
 import '../components/styles/styles.css'
 
-const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
+const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
     const [imageSelected, setImageSelected] = useState( null);
     const [croppedImage, setCroppedImage] = useState(null); 
     const backendEndpoint = process.env.REACT_APP_BACKEND_URL
@@ -21,7 +21,7 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
       if (cropper) {
         setCroppedImage(cropper.getCanvas());
       }
-    };
+    }
 
     const handleSelect = () => {
       try {
@@ -43,7 +43,7 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
 
     const handleSave = () => {
       // Use the cropped image when saving
-      saveAvatar(croppedImage || imageSelected);
+      saveImage(croppedImage || imageSelected);
       console.log('imageSelected:', imageSelected);
       console.log('croppedImage:', croppedImage);
     };
@@ -77,14 +77,14 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
   
         
   // Function to fetch avatar data when component mounts
-  const fetchAvatar = async () => {
-    console.log(`Fetch Avatar for`, profile._id)
+  const fetchImage = async () => {
+    console.log(`Fetch Image for`, foodItem.userId)
     try {
       const type = 'url'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
+      const avatarResult = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
       const url = avatarResult.data
-      console.log(`avatar url`, url)
-      updateCurrentProfile("avatar", url)
+      console.log(`image url`, url)
+      setFoodItem("image", url)
       return 
     } catch (error) {
       console.log("Error fetching avatar:", error);
@@ -92,7 +92,7 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
   };
   
   // Handles dialog submission
-  const saveAvatar = async (file) => {
+  const saveImage = async (file) => {
     if (file) {
       try {
         const compressedFile = await compressImage(file, {
@@ -103,11 +103,11 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
         // Append the compressed file as a Blob
         data.append('image', compressedFile);
         // Append other form data fields
-        data.append('name', profile._id);
-        data.append('destination', 'avatar');
+        data.append('name', foodItem._id);
+        data.append('destination', `food/${foodItem.userId}`);
         // Use Axios to send the FormData to the server
-        const result = await axios.post(`${backendEndpoint}/avatar/${profile._id}`, data);
-        await fetchAvatar();
+        const result = await axios.post(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}`, data);
+        await fetchImage();
       } catch (error) {
         console.log('Error uploading file:', error);
       }
@@ -116,35 +116,36 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
   };
   
   // Handles dialog submission
-  const deleteAvatar = async () => {
-    const destination = 'avatar'
+  const deleteImage = async () => {
+    const destination = 'food'
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
-      const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
-      updateCurrentProfile("avatar", "")
+      const avatarResult = await axios.delete(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?destination=${destination}`); 
+      setFoodItem("image", "")
       onClose();
     } catch (error) {
-      console.log("Error deleting avatar:", error);
+      console.log("Error deleting image:", error);
     }
   };
 
    useEffect(() => {
       // Function to fetch avatar data when component mounts
       convertUrlToImageFile()  
-   }, [profile.avatar]);
+      fetchImage()
+   }, [foodItem.image]);
 
    const convertUrlToImageFile = async () => {
-    console.log('avatar:', profile.avatar);
+    console.log('image:', foodItem.image);
 
     // Fetch the image from the URL and convert it to a file
-    const url = await getAvatarUrl();
+    const url = await getImageUrl();
     if (url) {
       try {
         console.log('url:', url);
         const response = await fetch(url);
         console.log('response:', response);
         const blob = await response.blob();
-        const imageFile = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+        const imageFile = new File([blob], 'image.jpg', { type: 'image/jpeg' });
         console.log('imageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
@@ -154,23 +155,23 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
    }
 
 // Function to fetch avatar data when the component mounts
-const getAvatarUrl = async () => {
-  console.log(`Fetch Avatar for`, profile._id);
+const getImageUrl = async () => {
+  console.log(`Fetch Image for`, foodItem._id);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';
-    const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile._id}?type=${type}`);
-    const avatarData = avatarResult.data;
+    const result = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
+    const data = result.data;
 
-    return avatarData;
+    return data;
   } catch (error) {
-    console.log("Error fetching avatar:", error);
+    console.log("Error fetching image:", error);
     return null;
   }
 };
 
-const isAvatarEmpty = () => {
-  return profile.avatar === null || profile.avatar === ""
+const isImageEmpty = () => {
+  return foodItem.image === null || foodItem.image === ""
 }
 
   return <div>
@@ -180,30 +181,31 @@ const isAvatarEmpty = () => {
           variant="iconButton"
           imageName="cancel_orange.svg"
           imageSize={15}
-          onClick={() => {onClose()}}
+          onClick={onClose}
         />
       </div>
-      <h2  style={styles.dialogTitleStyle}>{isAvatarEmpty ? "Add avatar" : "Edit avatar"}</h2>
+      <h2  style={styles.dialogTitleStyle}>{isImageEmpty ? "Add image" : "Edit image"}</h2>
       <div style={styles.avatarContainerStyle}>
       { imageSelected ? 
       (
          <Cropper
             src={URL.createObjectURL(imageSelected)}
-            onChange={() => {onChange()}}
+            onChange={onChange}
             className="cropper"
             stencilProps={{ 
               aspectRatio: 1 
             }}
-            stencilComponent={CircleStencil}
+            stencilComponent={RectangleStencil}
             backgroundProps={{color: "red"}}
         /> 
       ) : (  
         <div>
-        { (isAvatarEmpty) ? 
+        { (isImageEmpty) ? 
           (
-            <ImageCircle
-              imageName={"avatar_placeholder.png"}
+            <Image
+              imageName={"food_placeholder.png"}
               width="150px"
+              height="150px"
               imageDataUrl={null}
             />
           ) : (  
@@ -214,25 +216,25 @@ const isAvatarEmpty = () => {
     
       )}
       </div>
-      <div style={styles.dialogButtonContainerStyle(isAvatarEmpty)}> 
+      <div style={styles.dialogButtonContainerStyle(isImageEmpty)}> 
         <ButtonImage
           variant="iconButton"
           imageName="save_green.svg"
           imageSize={25}
-          onClick={() => {handleSave()}}
+         onClick={handleSave}
         />
         <ButtonImage
           variant="iconButton"
           imageName="add_green.svg"
           imageSize={25}
-          onClick={() => {handleSelect()}}
+          onClick={handleSelect}
         />
-        { !isAvatarEmpty && 
+        { !isImageEmpty && 
           <ButtonImage
             variant="iconButton"
             imageName="delete_orange.svg"
             imageSize={30}
-            onClick={() => {deleteAvatar()}}
+           onClick={deleteImage}
           />
         }
      </div>
@@ -240,8 +242,4 @@ const isAvatarEmpty = () => {
   </div>;
 }
 
-export default ChangeAvatarDialog;
-
-
-
- 
+export default ChangeImageDialog;

@@ -1,20 +1,19 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, useEffect } from 'react'
-import { UserContext } from "../contexts/user.context"
+import { useContext, useState, useEffect } from 'react';
+import { UserContext } from "../contexts/user.context";
 import * as styles  from './styles/Profile.css'
 import {ButtonImage} from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
-import { Cropper, CircleStencil } from 'react-mobile-cropper'
+import { Cropper, CircleStencil } from 'react-mobile-cropper';
 import 'react-mobile-cropper/dist/style.css'
-import Spiner from '../components/Spinner.components'
-import axios from "axios"
+import Spiner from './Spinner.components'
+import axios from "axios";
 import '../components/styles/styles.css'
 
-const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
+const AddAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => {
     const [imageSelected, setImageSelected] = useState( null);
     const [croppedImage, setCroppedImage] = useState(null); 
-    const backendEndpoint = process.env.REACT_APP_BACKEND_URL
 
     // Updates  the cropped image in the state
     const onChange = (cropper) => {
@@ -43,98 +42,19 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
 
     const handleSave = () => {
       // Use the cropped image when saving
-      saveAvatar(croppedImage || imageSelected);
+      onSave(croppedImage || imageSelected);
       console.log('imageSelected:', imageSelected);
       console.log('croppedImage:', croppedImage);
     };
 
-    const compressImage = async (file, { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }) => {
-      // Get as image data
-      const imageBitmap = await createImageBitmap(file);
-  
-      // Calculate new dimensions while maintaining the aspect ratio
-      let newWidth, newHeight;
-      if (imageBitmap.width > imageBitmap.height) {
-          newWidth = maxWidth;
-          newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
-      } else {
-          newHeight = maxHeight;
-          newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
-      }
-  
-      // Draw to canvas with new dimensions
-      const canvas = document.createElement('canvas');
-      canvas.width = newWidth;
-      canvas.height = newHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
-  
-      // Turn into Blob
-      return await new Promise((resolve) =>
-          canvas.toBlob(resolve, type, quality)
-      );
-    };
-  
-        
-  // Function to fetch avatar data when component mounts
-  const fetchAvatar = async () => {
-    console.log(`Fetch Avatar for`, profile._id)
-    try {
-      const type = 'url'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
-      const url = avatarResult.data
-      console.log(`avatar url`, url)
-      updateCurrentProfile("avatar", url)
-      return 
-    } catch (error) {
-      console.log("Error fetching avatar:", error);
-    }
-  };
-  
-  // Handles dialog submission
-  const saveAvatar = async (file) => {
-    if (file) {
-      try {
-        const compressedFile = await compressImage(file, {
-          type: 'image/jpeg',
-      });
-        // Create a new FormData object
-        const data = new FormData();
-        // Append the compressed file as a Blob
-        data.append('image', compressedFile);
-        // Append other form data fields
-        data.append('name', profile._id);
-        data.append('destination', 'avatar');
-        // Use Axios to send the FormData to the server
-        const result = await axios.post(`${backendEndpoint}/avatar/${profile._id}`, data);
-        await fetchAvatar();
-      } catch (error) {
-        console.log('Error uploading file:', error);
-      }
-    }
-    onClose(); 
-  };
-  
-  // Handles dialog submission
-  const deleteAvatar = async () => {
-    const destination = 'avatar'
-    // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
-    try {
-      const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
-      updateCurrentProfile("avatar", "")
-      onClose();
-    } catch (error) {
-      console.log("Error deleting avatar:", error);
-    }
-  };
-
    useEffect(() => {
       // Function to fetch avatar data when component mounts
       convertUrlToImageFile()  
-   }, [profile.avatar]);
+   }, [avatar]);
 
    const convertUrlToImageFile = async () => {
-    console.log('avatar:', profile.avatar);
+    console.log('avatar:', avatar);
+
 
     // Fetch the image from the URL and convert it to a file
     const url = await getAvatarUrl();
@@ -151,15 +71,17 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
         console.error('Error converting stream to blob:', error);
       }
     }
+    
+
    }
 
 // Function to fetch avatar data when the component mounts
 const getAvatarUrl = async () => {
-  console.log(`Fetch Avatar for`, profile._id);
+  console.log(`Fetch Avatar for`, profileId);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';
-    const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile._id}?type=${type}`);
+    const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profileId}?type=${type}`);
     const avatarData = avatarResult.data;
 
     return avatarData;
@@ -170,7 +92,7 @@ const getAvatarUrl = async () => {
 };
 
 const isAvatarEmpty = () => {
-  return profile.avatar === null || profile.avatar === ""
+  return avatar === null || avatar === ""
 }
 
   return <div>
@@ -180,7 +102,7 @@ const isAvatarEmpty = () => {
           variant="iconButton"
           imageName="cancel_orange.svg"
           imageSize={15}
-          onClick={() => {onClose()}}
+          onClick={onClose}
         />
       </div>
       <h2  style={styles.dialogTitleStyle}>{isAvatarEmpty ? "Add avatar" : "Edit avatar"}</h2>
@@ -189,7 +111,7 @@ const isAvatarEmpty = () => {
       (
          <Cropper
             src={URL.createObjectURL(imageSelected)}
-            onChange={() => {onChange()}}
+            onChange={onChange}
             className="cropper"
             stencilProps={{ 
               aspectRatio: 1 
@@ -219,28 +141,29 @@ const isAvatarEmpty = () => {
           variant="iconButton"
           imageName="save_green.svg"
           imageSize={25}
-          onClick={() => {handleSave()}}
+          onClick={handleSave}
         />
         <ButtonImage
           variant="iconButton"
           imageName="add_green.svg"
           imageSize={25}
-          onClick={() => {handleSelect()}}
+          onClick={handleSelect}
         />
         { !isAvatarEmpty && 
           <ButtonImage
             variant="iconButton"
             imageName="delete_orange.svg"
             imageSize={30}
-            onClick={() => {deleteAvatar()}}
+            onClick={onDelete}
           />
         }
      </div>
+   
     </form>
   </div>;
 }
 
-export default ChangeAvatarDialog;
+export default AddAvatarDialog;
 
 
 

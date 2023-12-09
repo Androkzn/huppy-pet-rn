@@ -8,6 +8,8 @@ import {ButtonLink} from '../components/Buttons.components'
 import { addFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
+import { Dialog, DialogContent } from '@mui/material';
+import AddImageDialog from "../components/AddImageDialog.component";
 
 const CreateNewFood = () => {
   const { user } = useContext(UserContext);
@@ -15,7 +17,29 @@ const CreateNewFood = () => {
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);
   const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("addActivity");
+  
+  // Opens dialog 
+  const openDialog = (dialogTypeNew) => {
+    setDialogType(dialogTypeNew)
+    setDialogOpen(true);
+  };
 
+  // Closes dialog
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  // Returns dialog component based on dialog type
+  const getDialogContent = () => {
+    if (dialogType === "image") { 
+      return <AddImageDialog  foodItem={foodItem} onClose={closeDialog} setFoodItem= {setFoodItem}/>
+    } else if (dialogType === "error") {
+      
+    } 
+  };
+  
   // Some prefilled form state
   const [foodItem, setFoodItem] = useState({
     _id : "",
@@ -65,10 +89,12 @@ const CreateNewFood = () => {
       } else {
         navigate("/searchFood");
       }
-     
-
-
     }
+  };
+
+  //Callback func that opens image dialog 
+  const updateImage = async () => {
+    openDialog("image")
   };
 
   return <PageContainer>
@@ -84,7 +110,16 @@ const CreateNewFood = () => {
       <div  css={styles.addFoodTitleStyle}>{"Add New Food"}</div>
       <div style={{width: '100px'}}></div>
     </div>
-    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} />
+    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} updateImage={updateImage} />
+  {/* Dialog */}
+  {dialogOpen && (          
+      <Dialog open={dialogOpen} >
+        <DialogContent>
+          {getDialogContent()}
+          </DialogContent>
+      </Dialog>
+    )}
+  
   </PageContainer>
 }
 

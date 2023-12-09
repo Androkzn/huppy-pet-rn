@@ -267,9 +267,8 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     return isaAvailable
   };
 
-  return <div style={styles.addFoodFormStyle}>
+  return <div style={styles.profileFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      {/* <h2  style={styles.profileTitleStyle}>{"Profile"}</h2> */}
       {/* Avatar section */}
       <div style={styles.imageContainerStyle}>
         <ImageCircle

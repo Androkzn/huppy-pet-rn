@@ -21,12 +21,11 @@ const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '
       setErrorLoadingImage(false);
     };
   }, [imageDataUrl]); 
-  //console.log("ImageCircle", imageDataUrl) 
-  // console.log("ImageCircle errorLoadingImage", errorLoadingImage) 
+ 
 
   return (
     <div onClick={onClick}>
-    { errorLoadingImage || imageDataUrl === null ? (
+    { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
     <img
       src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
       alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text

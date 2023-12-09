@@ -8,17 +8,39 @@ import AddFoodForm from "../components/AddFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
 import { addFood } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/AddFood.css'
+import { Dialog, DialogContent } from '@mui/material';
+import AddImageDialog from "../components/AddImageDialog.component";
 
 const AddFood = ({ }) => {
   const { user } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
-   
   const [foodItem, setFoodItem] = useState(location.state?.foodItem);
+  const [image, setImage] = useState(null);
   const [mealId, setMealId] = useState(location.state?.mealId);
   const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("addActivity");
 
-  console.log('AddFood',foodItem)
+   // Opens dialog 
+   const openDialog = (dialogTypeNew) => {
+    setDialogType(dialogTypeNew)
+    setDialogOpen(true);
+  };
+
+  // Closes dialog
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  // Returns dialog component based on dialog type
+  const getDialogContent = () => {
+    if (dialogType === "image") { 
+      return <AddImageDialog  foodItem={foodItem} onClose={closeDialog} setFoodItem= {setFoodItem}/>
+    } else if (dialogType === "error") {
+      
+    } 
+  };
 
   // addFood function is responsible for adding the Food
   const addFoodToMeal = async () => {
@@ -38,6 +60,12 @@ const AddFood = ({ }) => {
     }
   }, [foodItem, location.state]);
 
+  //Callback func that opens image dialog 
+  const updateImage = async () => {
+    console.log("updateImage" )
+    openDialog("image")
+  };
+
   return <PageContainer>
     <div  style={styles.topButtonsContainerStyle}>
       <ButtonLink
@@ -51,7 +79,24 @@ const AddFood = ({ }) => {
       <div  css={styles.addFoodTitleStyle}>{"Add to meal"}</div>
       <div style={{width: '100px'}}></div>
     </div>
-    <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} setFoodItem={setFoodItem} />
+      <AddFoodForm 
+        foodItem={foodItem} 
+        addFoodToMeal={addFoodToMeal} 
+        setFoodItem={setFoodItem} 
+        updateImage = {updateImage} 
+        image={image} 
+        setImage= {setImage}
+      />
+
+    {/* Dialog */}
+    {dialogOpen && (          
+      <Dialog open={dialogOpen} >
+        <DialogContent>
+          {getDialogContent()}
+          </DialogContent>
+      </Dialog>
+    )}
+
   </PageContainer>
 }
 

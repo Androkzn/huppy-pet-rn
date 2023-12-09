@@ -10,7 +10,7 @@ import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Dialog, DialogContent } from '@mui/material';
-import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
+import AddAvatarDialog from "../components/AddAvatarDialog.component";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Register = () => {
     // Returns dialog component based on dialog type
     const getDialogContent = () => {
       if (dialogType === "avatar") { 
-        return <ChangeAvatarDialog avatar={avatar ? URL.createObjectURL(avatar) : null} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
+        return <AddAvatarDialog avatar={avatar ? URL.createObjectURL(avatar) : null} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
       } else if (dialogType === "error") {
         
       } 

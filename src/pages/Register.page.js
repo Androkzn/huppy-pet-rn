@@ -37,30 +37,21 @@ const Register = () => {
     // Returns dialog component based on dialog type
     const getDialogContent = () => {
       if (dialogType === "avatar") { 
-        return <AddAvatarDialog avatar={avatar ? URL.createObjectURL(avatar) : null} onSave={saveAvatar} onDelete={deleteAvatar} onClose={closeDialog}/>
+        return <AddAvatarDialog 
+          avatar={avatar ? URL.createObjectURL(avatar) : null} 
+          onSave={saveAvatar} 
+          onDelete={deleteAvatar} 
+          onClose={closeDialog}
+        />
       } else if (dialogType === "error") {
         
       } 
     };
   
     // Handles dialog submission
-    const saveAvatar = async () => {
-      try {
-        // Create an input element to trigger file selection
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async (event) => {
-          const file = event.target.files[0];
-          setAvatar(file)
-          closeDialog();
-        };
-  
-        // Trigger the file input click programmatically
-        input.click();
-      } catch (error) {
-        console.error('Error selecting file:', error);
-      }
+    const saveAvatar = async (avatar) => {
+      setAvatar(avatar)
+      closeDialog();
     };
 
     // Handles dialog submission

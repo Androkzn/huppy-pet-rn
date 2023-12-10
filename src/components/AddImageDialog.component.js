@@ -11,8 +11,8 @@ import Spiner from './Spinner.components'
 import axios from "axios"
 import '../components/styles/styles.css'
 
-const AddImageDialog = ({foodItem, onClose, setFoodItem}) => {
-    const [imageSelected, setImageSelected] = useState( null);
+const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
+    const [imageSelected, setImageSelected] = useState( image);
     const [croppedImage, setCroppedImage] = useState(null); 
     const backendEndpoint = process.env.REACT_APP_BACKEND_URL
 
@@ -31,8 +31,12 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem}) => {
         input.accept = 'image/*';
         input.onchange = async (event) => {
           const file = event.target.files[0] 
+          setFoodItem((prevFoodItem) => ({
+              ...prevFoodItem,
+              image:  file ? URL.createObjectURL(file) : null,
+          }));
           setImageSelected(file)
-          console.log('file:', file);
+          setImage(file)
         };
         // Trigger the file input click programmatically
         input.click();

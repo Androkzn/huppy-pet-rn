@@ -19,7 +19,10 @@ const CreateNewFood = () => {
   const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
-  
+  const [image, setImage] = useState(null);
+
+  console.log("image", image)
+
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
     setDialogType(dialogTypeNew)
@@ -34,7 +37,13 @@ const CreateNewFood = () => {
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
     if (dialogType === "image") { 
-      return <AddImageDialog  foodItem={foodItem} onClose={closeDialog} setFoodItem= {setFoodItem}/>
+      return <AddImageDialog  
+      foodItem={foodItem} 
+      onClose={closeDialog} 
+      setFoodItem={setFoodItem}
+      image={image}
+      setImage={setImage}
+      />
     } else if (dialogType === "error") {
       
     } 
@@ -110,7 +119,13 @@ const CreateNewFood = () => {
       <div  css={styles.addFoodTitleStyle}>{"Add New Food"}</div>
       <div style={{width: '100px'}}></div>
     </div>
-    <NewFoodForm addNewFood={addNewFood} foodItem={foodItem} setFoodItem={setFoodItem} updateImage={updateImage} />
+    <NewFoodForm 
+      addNewFood={addNewFood} 
+      foodItem={foodItem} 
+      setFoodItem={setFoodItem} 
+      updateImage={updateImage} 
+      image={image}
+    />
   {/* Dialog */}
   {dialogOpen && (          
       <Dialog open={dialogOpen} >

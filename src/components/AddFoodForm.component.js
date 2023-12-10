@@ -39,7 +39,6 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
       <div style={styles.imageContainerStyle}> 
         <FoodImage 
           foodItem={foodItem}
-          onClick={setImage} 
         />
       </div>
   

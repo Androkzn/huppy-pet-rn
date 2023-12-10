@@ -45,7 +45,11 @@ const EditFood = () => {
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
     if (dialogType === "image") { 
-      return <ChangeImageDialog  foodItem={foodItem} onClose={closeDialog} setFoodItem= {setFoodItem}/>
+      return <ChangeImageDialog  
+        foodItem={foodItem} 
+        onClose={closeDialog} 
+        setFoodItem= {setFoodItem}
+      />
     } else if (dialogType === "error") {
       
     } 
@@ -126,7 +130,12 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
       <div  css={styles.addFoodTitleStyle}>{"Edit Food"}</div>
       <div style={{width: '100px'}}></div>
     </div>
-    <EditFoodForm editFood={editFood} foodItem={foodItem} setFoodItem={setFoodItem} updateImage={updateImage}/>
+    <EditFoodForm 
+      editFood={editFood} 
+      foodItem={foodItem} 
+      setFoodItem={setFoodItem} 
+      updateImage={updateImage}
+    />
     
     {/* Dialog */}
     {dialogOpen && (          

@@ -161,7 +161,6 @@ const imageContainerStyle = {
   marginBottom: '10px',
   width: '100%',
   textAlign: 'center',
-  margin: 'auto',
 };
 
 const dialogLargeContainerStyle = {

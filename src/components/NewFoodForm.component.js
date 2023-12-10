@@ -4,10 +4,9 @@ import { ButtonText } from "./Buttons.components"
 import * as styles  from '../components/styles/CreateNewFood.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
-import {Image} from '../components/Image.components'
-import ChangeImageDialog from "./AddImageDialog.component";
+import FoodImage from '../components/FoodImage.components'
 
-const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage }) => {
+const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) => {
   
   const onInputChange = (name, value) => {
     setFoodItem({ ...foodItem, [name]: value });
@@ -18,13 +17,28 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage }) => {
     setFoodItem({ ...foodItem, [name]: value });
   };
 
+
+  console.log("NewFoodForm image", image)
+
   return <div css={styles.addFoodFormStyle}>
     <form >
       <div style={styles.imageContainerStyle}> 
-          <Image imageName="food_placeholder.png" width="150" height="150" onClick={updateImage}/>
+          <FoodImage
+            foodItem ={foodItem}
+            imageName="food_placeholder.png" 
+            width="150px" 
+            height="150px"
+            imageDataUrl={image ? URL.createObjectURL(image) : null}
+            onClick={updateImage}
+          />
       </div>
 
-      <TitleAndTextInput name={"name"} title={"Name"}  onChange={(event) => { onTextInputChange(event)}} placeholder={"Enter food name"}/>
+      <TitleAndTextInput 
+        name={"name"} 
+        title={"Name"} 
+        onChange={(event) => { onTextInputChange(event)}} 
+        placeholder={"Enter food name"}
+      />
       
       <TitleAndDropdown 
         name={"type"} title={"Food type"} 

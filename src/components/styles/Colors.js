@@ -15,6 +15,7 @@ export const grayBackground = '#F5F4F3'
 export const lightBrown = '#E9E4D7'
 export const lightBrown2 = '#FEFDFA'
 export const darkOrange = '#562A0D'
+export const lightOrange = '#D8A67F'
 export const coffe ="#E8D8C9"
 export const red = '#9C4105'
 

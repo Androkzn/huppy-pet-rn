@@ -83,7 +83,6 @@ const addFoodFormStyle = {
 const addFoodTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
-  margin: '10px',
   fontSize: '17px',
   fontWeight: 'bold',
 };

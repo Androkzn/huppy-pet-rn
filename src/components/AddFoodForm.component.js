@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
-
 import * as styles  from './styles/AddFood.css'
 import {TitleAndDropdown, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 import FoodImage from './FoodImage.components'
 import {Image} from './Image.components'
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ButtonText } from "./Buttons.components"
 
 const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) => {
@@ -40,6 +39,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
       <div style={styles.imageContainerStyle}> 
         <FoodImage 
           foodItem={foodItem}
+          isEditing={false}
         />
       </div>
 

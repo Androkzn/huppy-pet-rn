@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, useEffect } from 'react'
-import { UserContext } from "../contexts/user.context"
+import { useState, useEffect, useRef } from 'react'
 import * as styles  from './styles/Profile.css'
 import {ButtonImage} from "./Buttons.components"
 import {ImageCircle} from './ImageCircle.components'
@@ -13,13 +12,27 @@ import '../components/styles/styles.css'
 
 const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     const [imageSelected, setImageSelected] = useState( null);
-    const [croppedImage, setCroppedImage] = useState(null); 
+    // const [croppedImage, setCroppedImage] = useState(null); 
     const backendEndpoint = process.env.REACT_APP_BACKEND_URL
+    const cropperRef = useRef(null);
+    let croppedImage = null; 
 
-    // Updates  the cropped image in the state
+    // Updates the cropped image in the state
     const onChange = (cropper) => {
-      if (cropper) {
-        setCroppedImage(cropper.getCanvas());
+      if (cropperRef.current) {
+        const canvas = cropperRef.current.getCanvas();
+        if (canvas) {
+          // Convert the canvas to a Blob
+          canvas.toBlob((blob) => {
+            if (blob) {
+              // Create a File from the Blob
+              const file = new File([blob], 'cropped_image.jpg', { type: 'image/jpeg' });
+
+              // Update the state with the cropped image File
+              croppedImage = file
+            }
+          }, 'image/jpeg');
+        }
       }
     };
 
@@ -188,6 +201,7 @@ const isAvatarEmpty = () => {
       { imageSelected ? 
       (
          <Cropper
+            ref={cropperRef}
             src={URL.createObjectURL(imageSelected)}
             onChange={() => {onChange()}}
             className="cropper"

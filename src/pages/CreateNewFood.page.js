@@ -38,11 +38,11 @@ const CreateNewFood = () => {
   const getDialogContent = () => {
     if (dialogType === "image") { 
       return <AddImageDialog  
-      foodItem={foodItem} 
-      onClose={closeDialog} 
-      setFoodItem={setFoodItem}
-      image={image}
-      setImage={setImage}
+        foodItem={foodItem} 
+        onClose={closeDialog} 
+        setFoodItem={setFoodItem}
+        image={image}
+        setImage={setImage}
       />
     } else if (dialogType === "error") {
       

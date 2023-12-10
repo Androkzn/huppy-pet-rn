@@ -36,7 +36,6 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
               image:  file ? URL.createObjectURL(file) : null,
           }));
           setImageSelected(file)
-          setImage(file)
         };
         // Trigger the file input click programmatically
         input.click();
@@ -48,6 +47,7 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
     const handleSave = () => {
       // Use the cropped image when saving
       saveImage(croppedImage || imageSelected);
+      setImage(croppedImage || imageSelected)
       console.log('imageSelected:', imageSelected);
       console.log('croppedImage:', croppedImage);
     };
@@ -174,7 +174,7 @@ const getImageUrl = async () => {
 };
 
 const isImageEmpty = () => {
-  return foodItem.image === null || foodItem.image === ""
+  return croppedImage === null && imageSelected === null
 }
 
   return <div>

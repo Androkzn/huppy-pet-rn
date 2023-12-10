@@ -68,7 +68,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
       console.log("newSize", newSize)
       console.log("scrollY", scrollY)
       
-      if (scrollY > 60) {
+      if (scrollY > 60 || scrollY <= 0) {
         return;
       }
 

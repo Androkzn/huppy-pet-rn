@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import * as colors from './Colors'
- 
+
 const rowStyle = {
   display: 'flex',
   justifyContent: 'center',

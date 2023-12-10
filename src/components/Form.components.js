@@ -119,9 +119,11 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       width: '210px',
       borderRadius: '10px',
       height: '35px',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
       paddingRight: Constants.mainPadding,
       paddingLeft: Constants.mainPadding,
       backgroundColor: colors.oliveLight,
+      color: colors.green,
   };
     
     return (
@@ -255,6 +257,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
       borderRadius: '10px',
       height: '30px',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
   
     return (
@@ -449,6 +452,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
       borderRadius: Constants.mainBorderRadius,
       height: '30px',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
 
@@ -597,6 +601,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: Constants.mainBorderRadius,
       height: '30px',
       backgroundColor: `${colors.oliveLight}`, 
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     const deleteButonStyle = {
@@ -696,6 +701,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
 
   const LoginTextInput = ({ id, name, onChange, placeholder, borderColor }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -722,7 +728,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginLeft: Constants.mainMargin,
       borderRadius: Constants.mainBorderRadius,
       height: '20px',
-      fontSize: '16px',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
 
     return (

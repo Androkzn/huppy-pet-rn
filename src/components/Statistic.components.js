@@ -2,12 +2,11 @@
 
 import * as colors from './styles/Colors'
 import { useState } from 'react';
-import styled from '@emotion/styled/macro'
 import Switch from '@mui/material/Switch';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import {Image} from '../components/Image.components'
 import * as Constants from "../helpers/Constants.helper"
 import { getStartAndEndOfToday } from "../helpers/Date.helper";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function calculateTotalDataForCategory(dataType, foodType, foodData, categories) {
   let totalData = foodData
@@ -151,6 +150,7 @@ function filterFoodForToday(foodData, currentDate) {
 
 
 const CaloriesStatisticSection = ({foodData, categories, activities, currentProfile, isStatisticToday }) => { 
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const food = foodData
   
   const calories= calculateTotalConsumedCalories(currentProfile, food, categories, activities)
@@ -175,14 +175,14 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
 
   const nameStyle = {
     minWidth: '70px',
-    fontSize: '15px',
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: 'bold',
     color: colors.green,
   };
 
   const valuesStyle = {
      minWidth: '110px',
-     fontSize: '15px',
+     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
      fontWeight: 'bold',
      color: progressBarColor(percentage),
 
@@ -202,6 +202,7 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
 }
 
 const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday}) => { 
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const food = foodData
 
   const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
@@ -224,14 +225,14 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
   const nameStyle = {
     minWidth: '70px',
-    fontSize: '15px',
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: 'bold',
     color: colors.green,
   };
 
   const valuesStyle = {
      minWidth: '110px',
-     fontSize: '15px',
+     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
      fontWeight: 'bold',
      color: progressBarColor(percentage),
 
@@ -250,6 +251,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 }
 
  const ToggleStatisticSection = ({initialValue, onChange}) => { 
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [checked, setChecked] =  useState(initialValue);
 
     const handleChange = (event) => {
@@ -261,7 +263,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
       padding: '10px',
       margin: '5px',
       textAlign: 'left',
-      fontSize: '16px',
+      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
       fontWeight: "bold",
       color: colors.green,
     };
@@ -294,6 +296,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
 
   const FoodCategoryRow = ({ name, value, color, weight }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -349,6 +352,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
 
   const ProgressBar = (props) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const { percentage } = props;
     const containerStyles = {
       height: 25,
@@ -375,7 +379,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   
     const labelStyles = {
       padding: 5,
-      fontSize: '15px',
+      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
       color: percentage <= 15 ? 'black' : 'white',
       fontWeight: 'bold',
       marginLeft: percentage <= 15? `${percentage + 10 }px` : '0px',

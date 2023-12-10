@@ -8,13 +8,14 @@ import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
- 
+import Avatar from './Avatar.components'
 
 const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
   const [avatar, setAvatar] = useState(null)
+  const [avatarWidth, setAvatarWidth] = useState(150);
 
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
@@ -50,6 +51,27 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   useEffect(() => {
     setCategories(getCategoriesForPresset())  
   }, [profile.preset, customFoodCategories]);
+
+  // Handle avatar size when scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      // Calculate the new avatar size based on the scroll position
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const newSize = Math.max(1, 140 - scrollY * 0.7); // Adjust the scroll factor as needed
+
+      // Update the avatar size
+      setAvatarWidth(newSize);
+      console.log("newSize", newSize)
+    };
+
+    // Attach the scroll event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once
 
  
   // Handle form changes
@@ -269,18 +291,19 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
 
   return <div style={styles.profileFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      {/* Avatar section */}
-      <div style={styles.imageContainerStyle}>
-        <ImageCircle
-          imageName={"avatar_placeholder.png"}
-          width="150px"
-          imageDataUrl={profile.avatar}
-          onClick={updateAvatar}
-        />
-      </div>
-
-      <h2 style={styles.nameStyle}>{profile?.name}</h2>
       
+  
+      {/* Avatar section */}
+      <div style={{ ...styles.imageContainerStyle, display: avatarWidth > 20 ? 'block' : 'none' }}>
+          <Avatar
+            profile={profile}
+            onClick={updateAvatar}
+            width={`${avatarWidth}px`}
+          />
+      </div>
+    
+      <h2 style={styles.nameStyle}>{profile?.name}</h2>
+  
       <h3 style={styles.ageStyle}>{getAge(profile?.dob)}</h3>
 
       {/* Name field */}

@@ -183,7 +183,7 @@ const isAvatarEmpty = () => {
           onClick={() => {onClose()}}
         />
       </div>
-      <h2  style={styles.dialogTitleStyle}>{isAvatarEmpty ? "Add avatar" : "Edit avatar"}</h2>
+      <h2  style={styles.dialogTitleStyle}>{isAvatarEmpty() ? "Add avatar" : "Edit avatar"}</h2>
       <div style={styles.avatarContainerStyle}>
       { imageSelected ? 
       (
@@ -199,7 +199,7 @@ const isAvatarEmpty = () => {
         /> 
       ) : (  
         <div>
-        { (isAvatarEmpty) ? 
+        { (isAvatarEmpty()) ? 
           (
             <ImageCircle
               imageName={"avatar_placeholder.png"}
@@ -214,7 +214,7 @@ const isAvatarEmpty = () => {
     
       )}
       </div>
-      <div style={styles.dialogButtonContainerStyle(isAvatarEmpty)}> 
+      <div style={styles.dialogButtonContainerStyle(isAvatarEmpty())}> 
         <ButtonImage
           variant="iconButton"
           imageName="save_green.svg"
@@ -227,7 +227,7 @@ const isAvatarEmpty = () => {
           imageSize={25}
           onClick={() => {handleSelect()}}
         />
-        { !isAvatarEmpty && 
+        { !isAvatarEmpty() && 
           <ButtonImage
             variant="iconButton"
             imageName="delete_orange.svg"

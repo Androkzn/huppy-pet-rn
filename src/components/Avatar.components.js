@@ -16,10 +16,12 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
     try {
       const type = 'url'
       const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
+      console.log("avatarResult.data:", avatarResult.data);
       setAvatar(avatarResult.data)
       return 
     } catch (error) {
       console.log("Error fetching avatar:", error);
+      setAvatar(profile.avatar)
     }
   };
 

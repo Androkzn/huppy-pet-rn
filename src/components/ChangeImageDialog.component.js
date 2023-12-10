@@ -184,7 +184,7 @@ const isImageEmpty = () => {
           onClick={onClose}
         />
       </div>
-      <h2  style={styles.dialogTitleStyle}>{isImageEmpty ? "Add image" : "Edit image"}</h2>
+      <h2  style={styles.dialogTitleStyle}>{isImageEmpty() ? "Add image" : "Edit image"}</h2>
       <div style={styles.avatarContainerStyle}>
       { imageSelected ? 
       (
@@ -200,7 +200,7 @@ const isImageEmpty = () => {
         /> 
       ) : (  
         <div>
-        { (isImageEmpty) ? 
+        { (isImageEmpty()) ? 
           (
             <Image
               imageName={"food_placeholder.png"}
@@ -216,7 +216,7 @@ const isImageEmpty = () => {
     
       )}
       </div>
-      <div style={styles.dialogButtonContainerStyle(isImageEmpty)}> 
+      <div style={styles.dialogButtonContainerStyle(isImageEmpty())}> 
         <ButtonImage
           variant="iconButton"
           imageName="save_green.svg"
@@ -229,7 +229,7 @@ const isImageEmpty = () => {
           imageSize={25}
           onClick={handleSelect}
         />
-        { !isImageEmpty && 
+        { !isImageEmpty() && 
           <ButtonImage
             variant="iconButton"
             imageName="delete_orange.svg"

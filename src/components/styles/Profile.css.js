@@ -224,5 +224,5 @@ export {
   dialogTitleStyle,
   dialogButtonContainerStyle,
  avatarContainerStyle,
- leftDialogButtonStyle
+ leftDialogButtonStyle,
 };

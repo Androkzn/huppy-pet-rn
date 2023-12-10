@@ -43,7 +43,7 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
-  const [isStatisticExpanded, setStatisticExpanded] = useState(true);
+  const [isStatisticExpanded, setStatisticExpanded] = useState(false);
   const [isMealsExpanded, setMealsExpanded] = useState(true);
   const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);

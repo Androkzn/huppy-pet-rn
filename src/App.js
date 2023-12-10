@@ -23,7 +23,7 @@ function App() {
       <UserProvider>
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
           <NavBar />
-          <div style={{ flex: 1, overflowY: 'auto' }}>
+          <div style={{ flex: 1 }}>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/forgot" element={<ForgotPassword />} />

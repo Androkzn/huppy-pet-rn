@@ -26,7 +26,7 @@ const NavBar = () => {
 
   return (
     <>
-      <AppBar position="static"  sx={{ backgroundColor: colors.brown }}>
+      <AppBar position="fixed"  sx={{ backgroundColor: colors.brown }}>
         <Toolbar>
           <div>
             <Image imageName="logo_green_stroke.png" width="260" height="77" />

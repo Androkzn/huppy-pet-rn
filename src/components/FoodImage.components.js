@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import {Image} from './Image.components'
+import {ImageCircle} from './ImageCircle.components'
 
 const FoodImage = ({ foodItem, imageDataUrl, width = '150px', height='150px',  borderWidth = '2px', borderColor = 'white', onClick  }) => {
   const [image, setImage] = useState(foodItem.image)
@@ -35,8 +35,8 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', height='150px',  b
   console.log("FoodImage  image",  image);
   return (
     <div onClick={onClick}>
-      <Image
-            imageName={"food_placeholder.png"}
+      <ImageCircle
+            imageName={"add_food_placeholder_green.png"}
             width= {width}
             height={height}
             imageDataUrl={imageDataUrl ? imageDataUrl : image}

@@ -11,6 +11,7 @@ const PageContainer = (props) => {
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
+    marginTop: '90px',
     borderRadius: '10px',
     maxWidth: '900px',
     width: '95%',

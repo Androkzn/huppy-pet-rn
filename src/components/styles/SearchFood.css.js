@@ -21,7 +21,8 @@ import styled from '@emotion/styled/macro'
     position: 'sticky',
     top: 80,
     zIndex: 1000,  
-    backgroundColor: 'white',    
+    backgroundColor: 'white',  
+    width: '100%',  
   };
 
   const rowStyle = {

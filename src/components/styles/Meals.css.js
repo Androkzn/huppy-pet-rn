@@ -78,9 +78,14 @@ const foodListRowStyle = {
 };
 
 const inputFieldStyle = {
+  border: `2px solid ${colors.green}`,  
   width: '40px',
   marginLeft: '10px',
   marginRight: '10px',
+  textAlign: 'center',
+  borderRadius: '10px',
+  height: '30px',
+  fontSize: '16px',
 };
 
 const childConteinerStyle = {

@@ -79,12 +79,13 @@ import * as colors from './Colors'
   
   const inputFieldStyle = {
     border: `2px solid ${colors.green}`,  
-    width: '50px',
+    width: '40px',
     textAlign: 'center',
     marginRight: '15px',
     marginLeft: '15px',
     borderRadius: '10px',
     height: '30px',
+    fontSize: '16px',
   };
   
   const dropdownStyle = {

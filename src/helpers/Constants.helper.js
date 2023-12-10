@@ -4,7 +4,7 @@
 export const smallScreen = '(max-width:849px)';
 
 // Fonts
-export const smallFontSize = '15px';
+export const smallFontSize = '16px';
 export const mainFontSize = '18px';
 
 // Margins and Paddings

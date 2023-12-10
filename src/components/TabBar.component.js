@@ -42,7 +42,7 @@ const TabBar = () => {
       display: 'flex', 
       justifyContent: 'space-around', 
       padding: '5px',
-      boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)', // Shadow added here
+      boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)',  
       
       }}>
 

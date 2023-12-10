@@ -154,6 +154,7 @@ const Profile = () => {
   }, []);
 
   return <PageContainer>
+    <div style={styles.fixedTopContainer}>
     <div  style={styles.backButtonContainerStyle}>
       <ButtonLink
           variant="backButton"
@@ -165,6 +166,7 @@ const Profile = () => {
       </ButtonLink>
       <div  css={styles.profileTitleStyle}>{"Profile"}</div>
       <div style={{width: '100px'}}></div>
+    </div>
     </div>
     <ProfileForm 
       profile={profile} 

@@ -38,7 +38,7 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', height='150px',  b
       <ImageCircle
             imageName={"add_food_placeholder_green.png"}
             width= {width}
-            height={height}
+            height={width}
             imageDataUrl={imageDataUrl ? imageDataUrl : image}
       />
     </div>

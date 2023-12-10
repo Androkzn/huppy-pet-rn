@@ -17,6 +17,13 @@ import styled from '@emotion/styled/macro'
     width: '100%',
   };
 
+  const fixedTopContainer = {
+    position: 'sticky',
+    top: 80,
+    zIndex: 1000,  
+    backgroundColor: 'white',    
+  };
+
   const rowStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -46,7 +53,7 @@ import styled from '@emotion/styled/macro'
   const buttonsContainerStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    margin: '20px 0 10px 0',
+    margin: '10px 0 10px 0',
     textAlign: 'center',
     fontSize: '15px',
   };
@@ -170,4 +177,5 @@ import styled from '@emotion/styled/macro'
     responsiveSubContainer,
     responsiveMainContainer,
     buttonsStyle,
+    fixedTopContainer,
 };

@@ -288,21 +288,24 @@ const saveState = (key, value) => {
     );
   };
 
-  return <PageContainer>
-      <TopButtonContainer/>
-      <div style={styles.mainConteinerStyle}>
-        <FilterContainer
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-         {SearchContainer()}
+  return (
+    <PageContainer>
+      <div style={styles.fixedTopContainer}>
+        <TopButtonContainer />
+        <div style={styles.mainConteinerStyle}>
+          <FilterContainer
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+          {SearchContainer()}
+        </div>
       </div>
       <ResultContainer
-          searchResult={searchResult}
-          openAddFoodPage={openAddFoodPage}
-        />
+        searchResult={searchResult}
+        openAddFoodPage={openAddFoodPage}
+      />
     </PageContainer>
-  
-}
+  );
+};
 
 export default SearchFood;

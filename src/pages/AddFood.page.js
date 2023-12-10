@@ -35,18 +35,21 @@ const AddFood = ({ }) => {
     }
   }, [foodItem, location.state]);
 
+  
   return <PageContainer>
-    <div  style={styles.topButtonsContainerStyle}>
-      <ButtonLink
-          variant="backButton"
-          to="/searchFood"
-          imageName="arrow_left.svg"
-          imageSize={20}
-        >
-         Back
-      </ButtonLink>
-      <div  css={styles.addFoodTitleStyle}>{"Add to meal"}</div>
-      <div style={{width: '100px'}}></div>
+    <div style={styles.fixedTopContainer}> 
+      <div  style={styles.topButtonsContainerStyle}>
+        <ButtonLink
+            variant="backButton"
+            to="/searchFood"
+            imageName="arrow_left.svg"
+            imageSize={20}
+          >
+          Back
+        </ButtonLink>
+        <div  css={styles.addFoodTitleStyle}>{"Add to meal"}</div>
+        <div style={{width: '100px'}}></div>
+      </div>
     </div>
       <AddFoodForm 
         foodItem={foodItem} 

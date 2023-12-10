@@ -1,17 +1,18 @@
 /** @jsxImportSource @emotion/react */
 
-import PageContainer from "./PageContainer.component";
+
 import * as styles  from './styles/AddFood.css'
 import {TitleAndDropdown, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 import FoodImage from './FoodImage.components'
 import {Image} from './Image.components'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ButtonText } from "./Buttons.components"
 
 const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
+  const [imageWidth, setImageWidth] = useState(150);
 
   const onDDInputChange = (value) => {
     setFoodItem((prevFoodItem) => ({
@@ -41,7 +42,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           foodItem={foodItem}
         />
       </div>
-  
+
       <div style={styles.addFoodTitleStyle}>{foodItem?.name}</div>
 
       <TitleAndDropdown 

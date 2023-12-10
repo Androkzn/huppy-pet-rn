@@ -34,9 +34,17 @@ const headerFoodStyle = {
 const topButtonsContainerStyle = {
   ...rowStyle,
   justifyContent: 'space-between',
-  margin: '20px 0 10px 0',
+  margin: '10px 0 10px 0',
   textAlign: 'left',
   fontSize: '15px',
+};
+
+const fixedTopContainer = {
+  position: 'sticky',
+  top: 80,
+  zIndex: 1000,   
+  backgroundColor: 'white',  
+  width: '100%',
 };
 
 const addFoodFormStyle = {
@@ -157,4 +165,5 @@ export {
   headerTextStyle,
   nutritionFactsTitleStyle,
   topButtonsContainerStyle,
+  fixedTopContainer,
 };

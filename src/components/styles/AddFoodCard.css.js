@@ -10,7 +10,7 @@ import styled from '@emotion/styled/macro'
     flex: '1',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '5px 0px 0 0px',
+    margin: '5px 0px 0 0',
     padding: '10px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
@@ -28,7 +28,7 @@ import styled from '@emotion/styled/macro'
     ...rowStyle,
     justifyContent: 'start',
     alignItems: 'center',
-     
+    marginBottom: '2px',
   };
   
 

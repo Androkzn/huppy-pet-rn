@@ -53,27 +53,36 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   }, [profile.preset, customFoodCategories]);
 
   // Handle avatar size when scrolling
-  useEffect(() => {
-    const handleScroll = () => {
-      // Calculate the new avatar size based on the scroll position
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-      const newSize = Math.max(1, 140 - scrollY * 0.7); // Adjust the scroll factor as needed
-
-      // Update the avatar size
-      setAvatarWidth(newSize);
-      console.log("newSize", newSize)
+   useEffect(() => {
+    const debounce = (func, delay) => {
+      let timeoutId;
+      return (...args) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func(...args), delay);
+      };
     };
 
-    // Attach the scroll event listener
+    const handleScroll = debounce(() => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const newSize = Math.max(1, 140 - scrollY * 1.5);
+      console.log("newSize", newSize)
+      console.log("scrollY", scrollY)
+      
+      if (scrollY > 60) {
+        return;
+      }
+
+      setAvatarWidth(newSize);
+    }, 10);
+
     window.addEventListener('scroll', handleScroll);
 
-    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []); // Empty dependency array ensures that the effect runs only once
+  }, []);
 
- 
+
   // Handle form changes
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
@@ -289,12 +298,10 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     return isaAvailable
   };
 
-  return <div style={styles.profileFormStyle}>
+  return <div style={{...styles.profileFormStyle}}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      
-  
       {/* Avatar section */}
-      <div style={{ ...styles.imageContainerStyle, display: avatarWidth > 20 ? 'block' : 'none' }}>
+      <div style={{ ...styles.imageContainerStyle,  display: avatarWidth > 20 ? 'block' : 'none' }}>
           <Avatar
             profile={profile}
             onClick={updateAvatar}

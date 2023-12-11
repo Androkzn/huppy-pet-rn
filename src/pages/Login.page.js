@@ -82,8 +82,7 @@ const Login = () => {
       // Display login form when not loading
       <div css={styles.loginConteinerStyle}>
         <div css={styles.loginHeaderStyle}>
-          <h4 css={styles.headingLoginStyle} >WELCOME</h4>
-          <Image imageName="dog_sit.png" width="40" height="50" />
+          <div css={styles.headingLoginStyle} >WELCOME TO HUPPY!</div>
         </div>
           <LoginForm onSubmit={onSubmit} />
           <div css={styles.elementsInRow}>

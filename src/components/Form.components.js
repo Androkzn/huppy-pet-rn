@@ -727,8 +727,9 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       textAlign: 'left',
       marginLeft: Constants.mainMargin,
       borderRadius: Constants.mainBorderRadius,
-      height: '20px',
+      height: '30px',
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+      fontFamily: "'Balsamiq Sans', sans-serif",
     };
 
     return (

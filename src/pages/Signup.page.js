@@ -44,10 +44,12 @@ function SignUpForm({onSubmit, buttonText}) {
       </FormGroup>
       <FormGroup>
         <ButtonText 
-        variant="login"  
-        onClick={handleSubmit}
-        //disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
-        >{buttonText}</ButtonText>
+          variant="login"  
+          onClick={handleSubmit}
+          disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
+        >
+          {buttonText}
+        </ButtonText>
       </FormGroup>
     </form>
   )
@@ -83,7 +85,6 @@ const Signup = () => {
       <div css={styles.loginConteinerStyle}>
         <div css={styles.loginHeaderStyle}>
           <h4 css={styles.headingLoginStyle} >CREATE ACCOUNT</h4>
-          <Image imageName="dog_sit.png" width="40" height="50" />
         </div>
           <SignUpForm onSubmit={onSubmit} buttonText="Continue"/>
           <div css={styles.elementsInRow}>

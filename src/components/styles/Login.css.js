@@ -3,27 +3,26 @@
 import * as colors from './Colors';
 
 const containerStyle = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  margin: 'auto',
-  flexDirection: 'column',
-  height: '70vh',
+  width: '100%',
+  height: '100%',
+  backgroundColor: colors.lightBrown,
 };
 
 const loginHeaderStyle = {
   display: 'flex',
-  borderTopLeftRadius: '20px',
-  borderTopRightRadius: '20px',
   alignItems: 'center',
   justifyContent: 'center',
   textAlign: 'center',
   width: '100%',
-  backgroundColor: colors.brown,
+  marginTop: '200px',
+  fontSize: '25px',
+  fontWeight: 'bold',
+
 };
 
 const headingLoginStyle = {
   color: colors.green,
+  width: "170px"
 };
 
 const loginConteinerStyle = {
@@ -32,8 +31,6 @@ const loginConteinerStyle = {
   alignItems: 'center',
   maxWidth: '350px',
   minWidth: '300px',
-  borderRadius: '20px',
-  padding: '0px',
   margin: 'auto',
   backgroundColor: colors.lightBrown,
 };
@@ -59,13 +56,11 @@ const elementsInRow = {
 
 const linkForgot = {
   color: colors.black,
-  marginRight: '10px',
   textDecoration: 'none',
 };
 
 const linkSignup = {
-  color: colors.orange,
-  marginRight: '10px',
+  color: colors.orange,  
   textDecoration: 'none',
 };
 

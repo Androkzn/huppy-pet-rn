@@ -1,16 +1,18 @@
  /** @jsxImportSource @emotion/react */
 
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs  } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Button from '@mui/material/Button';
+import { enGB } from "date-fns/locale";
 import dayjs from 'dayjs';
 import * as colors from './styles/Colors'
 import { styled } from '@mui/system';
 import {Image} from '../components/Image.components'
+import React, { useState } from 'react';
 
 const CustomDatePickerWithArrows = ({ label, value, onChange, styleContainer, stylePicker,  backgroundColor, borderColor })  => { 
-  
+  const [selectedDate, setSelectedDate] = useState(dayjs(value));
+
 // Create the CustomTextField component using Emotion's styled
 const CustomTextField = styled('input')({
   background: backgroundColor || "none",
@@ -24,6 +26,24 @@ const CustomTextField = styled('input')({
   ...stylePicker
 });
 
+const dateLabels = [
+  { date: dayjs(), label: 'Today', color: 'green' },
+  { date: dayjs().add(1, 'day'), label: 'Tomorrow', color: 'blue' },
+  { date: dayjs().subtract(1, 'day'), label: 'Yesterday', color: 'red' },
+];
+
+const renderLabel = (date) => {
+  console.log("renderLabel")
+  const matchedLabel = dateLabels.find((item) => dayjs(item.date).isSame(date, 'day'));
+
+  // Update text field value if the date matches the selected date
+  if (dayjs(date).isSame(selectedDate, 'day')) {
+    onChange(date.toDate());
+  }
+
+  return matchedLabel ? <div style={{ color: matchedLabel.color, fontWeight: 'bold' }}>{matchedLabel.label}</div> : null;
+};
+
   return (
     <span style={styleContainer}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -34,14 +54,24 @@ const CustomTextField = styled('input')({
           onClick={() => onChange(new Date(dayjs(value) - 24 * 60 * 60 * 1000))}
           style={{ cursor: "pointer" }}
         />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+         <LocalizationProvider dateAdapter={AdapterDayjs} locale={enGB}>
           <DatePicker
-            label={label}
+            label="Small picker"
+     
             value={dayjs(value)}
-            onChange={onChange}
+            onChange={(newDate) => {
+              setSelectedDate(newDate);
+              onChange();
+            }}
             renderInput={(params) => <CustomTextField {...params.inputProps}/>}
             slots={{ textField: CustomTextField }}
             slotProps={{ textField: { size: 'small'} }}
+            renderDay={(date, value, dayInCurrentMonth, dayComponent) => (
+              <>
+                {dayComponent}
+                {renderLabel(date)}
+              </>
+            )}
           />
         </LocalizationProvider>
         <Image

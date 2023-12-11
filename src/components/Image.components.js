@@ -19,7 +19,6 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }
     };
   }, [imageDataUrl]); 
  
-  console.log("Image imageDataUrl:", imageDataUrl);
   return (
     <div >
     { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (

@@ -84,10 +84,10 @@ const Signup = () => {
     <div css={styles.containerStyle}> 
       <div css={styles.loginConteinerStyle}>
         <div css={styles.loginHeaderStyle}>
-          <h4 css={styles.headingLoginStyle} >CREATE ACCOUNT</h4>
+          <div css={styles.headingLoginStyle} >CREATE ACCOUNT</div>
         </div>
           <SignUpForm onSubmit={onSubmit} buttonText="Continue"/>
-          <div css={styles.elementsInRow}>
+          <div  >
             <p>Have an account already? <Link to="/login"  css={styles.linkSignup}>Login</Link></p>
           </div>
       </div>

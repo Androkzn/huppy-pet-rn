@@ -112,7 +112,7 @@ const CreateNewFood = () => {
         <ButtonLink
             variant="backButton"
             to="/searchFood"
-            imageName="arrow_left.svg"
+            imageName="arrow_left_green.svg"
             imageSize={20}
           >
           Back

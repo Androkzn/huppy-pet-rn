@@ -159,7 +159,7 @@ const Profile = () => {
       <ButtonLink
           variant="backButton"
           to="/"
-          imageName="arrow_left.svg"
+          imageName="arrow_left_green.svg"
           imageSize={20}
         >
          Back

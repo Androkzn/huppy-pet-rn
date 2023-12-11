@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Image = ({ imageName, imageDataUrl, width = '48', height = '48' }) => {
+const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }) => {
   const imageStyle = {
     width: width,
     height: height,
@@ -28,6 +28,7 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48' }) => {
       alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
       width={width}
       height={height}
+      onClick={onClick}
     />
     ) : (
     <img

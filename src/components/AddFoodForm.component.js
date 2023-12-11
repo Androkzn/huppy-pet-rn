@@ -73,7 +73,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
             Description
           </div>
           <Image
-            imageName={isDescriptionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+            imageName={isDescriptionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
@@ -92,7 +92,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
             Nutrition Facts
           </div>
           <Image
-            imageName={isNutritionExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+            imageName={isNutritionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={() => setNutritionExpanded(!isNutritionExpanded)}

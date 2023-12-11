@@ -33,8 +33,8 @@ const Home = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-  const {user, currentProfile } = useContext(UserContext);
-  const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
+  const {user, currentProfile, currentDate, setCurrentDate} = useContext(UserContext);
+  //const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [meals, setMeals] = useState([]);
   const [food, setFood] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -159,7 +159,12 @@ const Home = () => {
   // Responsible for fetching data for  meals/traings/activities/food when data is changed
   useEffect(() => {
     updateAll()
-    saveState('currentDate', currentDate);
+    if (currentDate === null || currentDate === undefined) {
+      setCurrentDate( new Date())
+      saveState('currentDate',  new Date());
+    } else {    
+      saveState('currentDate', currentDate);
+    }
   }, [currentDate, currentProfile]);
  
   // Helper function to be performed after an meals/traing/activity/food has been changed.
@@ -193,18 +198,14 @@ const Home = () => {
 
   const DatePicker = () => {
     return (
-    <div style={styles.rowStyle}>  
-      <div style={styles.columnStyle}> 
         <div style={styles.pickerContainerStyle}> 
           <CustomDatePickerWithArrows
             label="Select date:"
             value={currentDate}
             onChange={(date) => setCurrentDate(date) }
-            styleContainer= {styles.pickerStyle}
+            stylePicker={styles.pickerStyle}
           />
         </div>
-      </div>
-    </div>  
     );
   };
   
@@ -215,7 +216,7 @@ const Home = () => {
         <div style={styles.headerTiteStyle}>
           {isStatisticExpanded && (
               <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down.svg" width="20" height="20" />
+                <Image imageName="arrow_down_green.svg" width="20" height="20" />
               </div>
           )}
           <h3 style={styles.headingStyle}>STATISTIC</h3>
@@ -227,7 +228,7 @@ const Home = () => {
         </div>
         {!isStatisticExpanded && (
               <div style={{marginRight: 40}} >
-                <Image imageName="arrow_right.svg" width="20" height="20" />
+                <Image imageName="arrow_right_green.svg" width="20" height="20" />
               </div>
           )}
       </div>
@@ -302,7 +303,7 @@ const Home = () => {
           <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setMealsExpanded(!isMealsExpanded) : setMealsExpanded(isMealsExpanded)}}>
             {isMealsExpanded && (
               <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down.svg" width="20" height="20" />
+                <Image imageName="arrow_down_green.svg" width="20" height="20" />
               </div>
             ) }
             <h3 style={styles.headingStyle}>MEALS</h3>
@@ -324,7 +325,7 @@ const Home = () => {
              { isMealsExpanded ? (
               <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
              ) : (
-              <Image imageName="arrow_right.svg" width="20" height="20" />
+              <Image imageName="arrow_right_green.svg" width="20" height="20" />
              )
             }
           </button>
@@ -358,7 +359,7 @@ const Home = () => {
           <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setActivitiesExpanded(!isActivitiesExpanded) : setActivitiesExpanded(isActivitiesExpanded)}}> 
           {isActivitiesExpanded && (
               <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down.svg" width="20" height="20" />
+                <Image imageName="arrow_down_green.svg" width="20" height="20" />
               </div>
             ) }
             <h3 style={styles.headingStyle} >ACTIVITIES</h3>
@@ -378,7 +379,7 @@ const Home = () => {
           >  { isActivitiesExpanded ? (
               <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
               ) : (
-                <Image imageName="arrow_right.svg" width="20" height="20" />
+                <Image imageName="arrow_right_green.svg" width="20" height="20" />
               )
             }
             </button>
@@ -406,7 +407,7 @@ const Home = () => {
 
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
-        <DatePicker/>
+        {!isSmallScreen && <DatePicker/>}
         <styles.responsiveMainContainer>
           <styles.responsiveSubContainer>
             <styles.columnLeftStyle>  

@@ -11,25 +11,14 @@ import Spiner from '../components/Spinner.components'
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // We are consuming our user-management context to 
-  // get & set the user details here
   const { user, fetchUser, emailPasswordLogin } = useContext(UserContext);
-  // State variable to track the loading state
   const [loading, setLoading] = useState(false);
 
-  // This function will redirect the user to the 
-  // appropriate page once the authentication is done.
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
     navigate(redirectTo ? redirectTo : "/");
   }
 
-  // Since there can be chances that the user is already logged in
-  // but whenever the app gets refreshed the user context will become
-  // empty. So we are checking if the user is already logged in and
-  // if so we are redirecting the user to the home page.
-  // Otherwise we will do nothing and let the user to login.
   const loadUser = async () => {
     if (!user) {
       try {

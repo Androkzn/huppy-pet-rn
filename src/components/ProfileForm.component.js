@@ -386,7 +386,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
             {"Food Ratio"}
           </h3>
           <Image
-            imageName={isFoodRatioExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+            imageName={isFoodRatioExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
@@ -516,7 +516,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
                     {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
                   </h3>
                   <Image
-                    imageName={isFoodCategoryExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+                    imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
                     width="20"
                     height="20"
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}

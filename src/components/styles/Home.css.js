@@ -4,7 +4,7 @@ import * as mq from './Media-queries';
 import styled from '@emotion/styled/macro'
 
 const pickerStyle = {
-  // Your styles for picker
+  background: colors.lightBrown,
 };
 
 const pageStyle = {

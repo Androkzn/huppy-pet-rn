@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import { App, Credentials } from "realm-web";
 import { getUserProfiles  } from "../graphql/graphqlUtils";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import * as Constants from "../helpers/Constants.helper"
 
 // Creating a Realm App Instance
  const app = new App(process.env.REACT_APP_APP_ID);
@@ -13,6 +15,8 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [profiles, setProfiles] = useState([]);
   const [currentProfile, setCurrentProfile] = useState(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
   // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
@@ -83,7 +87,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  return <UserContext.Provider value={{ user, currentProfile, profiles, setProfiles, setCurrentProfile, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
+  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, setProfiles, setCurrentProfile, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
     {children}
   </UserContext.Provider>;
 }

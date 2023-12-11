@@ -10,12 +10,12 @@ import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
 import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg'
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg'
-import * as Constants from "../helpers/Constants.helper"
+import * as styles  from '../components/styles/NavBar.css'
+import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 
 const NavBar = () => {
-  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [show, setShow] = useState(false);
-  const { user, currentProfile, profiles } = useContext(UserContext);
+  const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate } = useContext(UserContext);
 
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -24,17 +24,41 @@ const NavBar = () => {
     setShow(show => !show);
   };
 
+  const isLoggedIn = () => {
+    return user && currentProfile
+  }
+
+  const DatePicker = () => {
+    return (
+        <div style={styles.pickerContainerStyle}> 
+          <CustomDatePickerWithArrows
+            value={currentDate}
+            onChange={(date) => setCurrentDate(date) }
+            styleContainer= {styles.pickerStyle}
+            backgroundColor={colors.white}
+          />
+        </div>
+    );
+  };
+
   return (
     <>
       <AppBar position="fixed"  sx={{ backgroundColor: colors.brown }}>
         <Toolbar>
-          <div>
-            <Image imageName="logo_green_stroke.png" width="260" height="77" />
-          </div>
-          {user && currentProfile && (
-            <div style={{ alignItems: "right", justifyContent: "flex-end", display: 'flex', width: '100%',}}>
+          {/* Show date picker for mobile instead of logo */}
+          {isSmallScreen ? 
+          (
+            <DatePicker/>
+          ) : ( 
+            <div>
+              <Image imageName="logo_green_stroke.png" width="260" height="77" />
+            </div>
+          )}
+
+          {isLoggedIn() && (
+            <div style={styles.userInfoContainerStyle(isSmallScreen)}>
                {!isSmallScreen && (
-                <h2  component={Link} onClick={toggleDrawer} style={{ textDecoration: "none", cursor: 'pointer', margin: "auto 0 auto 0", color: colors.green, fontWeight: "bold", alignItems: 'center', textAlign: 'center' }}>
+                <h2  component={Link} onClick={toggleDrawer} style={ styles.profileNameStyle}>
                   {currentProfile.name}
                 </h2>
                )}

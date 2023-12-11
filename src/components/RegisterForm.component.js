@@ -359,7 +359,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
             {"Food Ratio"}
           </h3>
           <Image
-            imageName={isFoodRatioExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+            imageName={isFoodRatioExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
@@ -489,7 +489,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
                     {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
                   </h3>
                   <Image
-                    imageName={isFoodCategoryExpanded ? "arrow_down.svg" : "arrow_right.svg"}
+                    imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
                     width="20"
                     height="20"
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}

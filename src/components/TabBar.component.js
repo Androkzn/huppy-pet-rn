@@ -13,9 +13,8 @@ import * as Constants from "../helpers/Constants.helper"
 import {Image} from '../components/Image.components'
 
 const TabBar = () => {
-  const {user, currentProfile} = useContext(UserContext);
+  const {user, currentProfile, isSmallScreen} = useContext(UserContext);
   const navigate = useNavigate();
-  const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px'
   const imageSize = isSmallScreen ? '25px' : '50px'

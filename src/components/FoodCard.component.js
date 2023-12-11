@@ -66,7 +66,7 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
           </style.responsiveMainContainer>
           <ButtonImage
               variant="iconButton"
-              imageName="arrow_right.svg"
+              imageName="arrow_right_green.svg"
               imageSize={20}
               onClick={() => openAddFoodPage (food)}
             />

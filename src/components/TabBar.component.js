@@ -32,6 +32,15 @@ const TabBar = () => {
   }
   };
 
+  const isLoggedIn = () => {
+    return user && currentProfile
+  }
+
+  if (!isLoggedIn()) {
+    // If the user is not logged in, don't render the TabBar
+    return null;
+  }
+
   return (
     <div style={{ 
       position: 'fixed', 
@@ -42,12 +51,10 @@ const TabBar = () => {
       display: 'flex', 
       justifyContent: 'space-around', 
       padding: '5px',
-      boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)',  
+      //boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)',  
       
       }}>
-
-      {/* Do not show tabs if a user is not authorized */}
-      { user && currentProfile && <Tabs
+      <Tabs
         value={value}
         onChange={handleChange}
         aria-label="icon label tabs example"
@@ -146,7 +153,6 @@ const TabBar = () => {
           }}
         />
       </Tabs>
-      }
     </div>
   );
 };

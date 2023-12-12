@@ -24,23 +24,20 @@ const headerStyle = {
   borderTopLeftRadius: '20px',
   borderTopRightRadius: '20px',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'start',
   textAlign: 'center',
   width: '100%',
   backgroundColor: colors.brown,
+  height: "40px",
 };
 
 const headerArrowStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'end',
-  textAlign: 'center',
-  width: '100%',
+  margin: "3px 20px 0px 30px"
 };
 
 const headerTiteStyle = {
   display: 'flex',
-  justifyContent: 'center',
+  justifyContent: 'start',
   alignItems: 'center',
   textAlign: 'center',
   width: '100%',
@@ -48,6 +45,9 @@ const headerTiteStyle = {
 
 const headingStyle = {
   color: colors.green,
+  fontWeight: "bold",
+  fontSize: "16px",
+  marginRight: '30px',
 };
 
 const headerImageStyle = {

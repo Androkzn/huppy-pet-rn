@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const buttonVariants = {
   addButton: {
-    background: colors.lightGreen,
+    background: colors.gray,
     border: 'none',
     borderRadius: '10px',
     cursor: 'pointer',
@@ -26,7 +26,30 @@ const buttonVariants = {
     '&:hover': {
       background: colors.orange,  
     },
-    fill: colors.green
+    fill: colors.gray
+  },
+
+  deleteButton: {
+    background: colors.gray,
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    width: '130px',
+    height: '35px',
+    lineHeight: '20px',
+    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    color: colors.white,
+    paddingRight: "10px",
+    paddingLeft: "10px",
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s',  
+    '&:hover': {
+      background: colors.orange,  
+    },
+    fill: colors.gray
   },
 
   iconButton: {
@@ -60,6 +83,20 @@ const buttonVariants = {
     '&:hover': {  
       background: colors.orange,
     },
+  },
+
+  circleTextTransparentButton: {
+    background: `none`,
+    width: "20px",
+    height: "20px",
+    fontSize: '18px', 
+    borderRadius: '50%',
+    border: `2px solid ${colors.lightGreen}`,  
+    textAlign: 'center',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+    color: colors.lightGreen,
   },
 
   circleTextButtonSmall: {

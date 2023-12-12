@@ -18,6 +18,7 @@ export const darkOrange = '#562A0D'
 export const lightOrange = '#D8A67F'
 export const coffe ="#E8D8C9"
 export const red = '#9C4105'
+export const grayDark =  '#979797'
 
 // Food categories colors
 export const meat = '#D3752B'

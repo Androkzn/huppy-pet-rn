@@ -20,6 +20,7 @@ import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
+import {ButtonText} from "../components/Buttons.components"
 
 const Home = () => {
     // Function to load state from localStorage
@@ -34,7 +35,6 @@ const Home = () => {
     };
 
   const {user, currentProfile, currentDate, setCurrentDate} = useContext(UserContext);
-  //const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [meals, setMeals] = useState([]);
   const [food, setFood] = useState([]);
   const [activities, setActivities] = useState([]);
@@ -44,7 +44,6 @@ const Home = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [isStatisticToday, setStatisticToday] = useState(true);
   const [isStatisticExpanded, setStatisticExpanded] = useState(false);
-  const [isMealsExpanded, setMealsExpanded] = useState(true);
   const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
@@ -90,8 +89,13 @@ const Home = () => {
   // Updates the Meals  from the response. 
   const loadMealsForDate = async () => {
     if (currentProfile) {
-      const meals = await loadMeals(user, currentProfile, currentDate); 
-      setMeals(meals);
+      const mealsNew = await loadMeals(user, currentProfile, currentDate); 
+      setMeals(mealsNew);
+      // Adds empty meal for date 
+      if (mealsNew == null || mealsNew.length === 0) {
+        addMealForDate()
+      }
+        
     }
   };
 
@@ -166,7 +170,7 @@ const Home = () => {
       saveState('currentDate', currentDate);
     }
   }, [currentDate, currentProfile]);
- 
+
   // Helper function to be performed after an meals/traing/activity/food has been changed.
   const updateAll = () => {
     updateMeals()
@@ -179,8 +183,8 @@ const Home = () => {
     loadFoodCategories();
   }
 
-  const updateMeals = () => {
-    loadMealsForDate();
+  const updateMeals = async  () => {
+    await loadMealsForDate();
   }
 
   const updateFood = () => {
@@ -194,7 +198,6 @@ const Home = () => {
   function getTotalCategoryWeight (category) {
     return Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
   }
-
 
   const DatePicker = () => {
     return (
@@ -214,23 +217,21 @@ const Home = () => {
       <div style={styles.childConteinerStyle}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
         <div style={styles.headerTiteStyle}>
-          {isStatisticExpanded && (
-              <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down_green.svg" width="20" height="20" />
-              </div>
-          )}
-          <h3 style={styles.headingStyle}>STATISTIC</h3>
-           
-          <div style={styles.headerImageStyle} >
-              <Image imageName="dashboard_tab_icon_unselected.png" width="40" height="30" />
+          
+          <div style={styles.headerArrowStyle} >
+            <Image 
+              imageName= {isStatisticExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+              width="20" 
+              height="20" 
+            />
           </div>
-            
+          <div style={styles.headerTextStyle}>
+            <div style={styles.headingStyle}>STATS</div>
+            <div style={styles.headingStyle}>
+            {isStatisticToday ? 'Today / Goal' : 'This week / Goal'}
+            </div>
+          </div>
         </div>
-        {!isStatisticExpanded && (
-              <div style={{marginRight: 40}} >
-                <Image imageName="arrow_right_green.svg" width="20" height="20" />
-              </div>
-          )}
       </div>
         <div style={styles.statisticContainerStyle}>
           <CaloriesStatisticSection
@@ -298,56 +299,13 @@ const Home = () => {
 
   const Meals = ({ mealsData }) => {
     return (
-      <div style={styles.childConteinerStyle}> {/* Meals container*/}
-        <div style={styles.headerStyle} >{/* Header container*/}
-          <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setMealsExpanded(!isMealsExpanded) : setMealsExpanded(isMealsExpanded)}}>
-            {isMealsExpanded && (
-              <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down_green.svg" width="20" height="20" />
-              </div>
-            ) }
-            <h3 style={styles.headingStyle}>MEALS</h3>
-            <div style={styles.headerImageStyle} >
-              <DiaryIcon fill={colors.green}/>
-            </div>
-          </div>
-          <button
-            style={styles.headerAddButtonStyle}
-          
-            onClick={() => {
-              if (isMealsExpanded) { 
-                addMealForDate();
-              } else {
-                setMealsExpanded(!isMealsExpanded)
-              }
-            }}
-          >
-             { isMealsExpanded ? (
-              <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-             ) : (
-              <Image imageName="arrow_right_green.svg" width="20" height="20" />
-             )
-            }
-          </button>
-        </div> {/* Header container*/}
-        
-        <div  style={styles.columnStyle}>  {/* Meal container*/}
-          {/* Show meals cards if data avaliable, if not -> show placeholder*/}
-          {isMealsExpanded && mealsData && mealsData.length > 0 ? (
-            mealsData.map((meal) => 
-            <div key={meal._id}>
-              <MealCard meal={meal} updateMeals={updateMeals} updateFoods={updateFood}/>
-            </div>)
-          ) : (
-            <div style={styles.placeholderStyle}>
-              <Image 
-                imageName= {isMealsExpanded ? "no_meals_placeholder.png"  :  "more_green.svg"}
-                width={isMealsExpanded ? "200"  :  "30"}
-                height={isMealsExpanded ? "170"  :  "10"}
-              />
-            </div>
-          )}
-        </div> {/* Meals container*/}
+      <div >  {/* Meal container*/}
+        {  
+          mealsData.map((meal, index) => 
+          <div key={meal._id}>
+            <MealCard meal={meal} index={index + 1} updateMeals={updateMeals} updateFoods={updateFood}/>
+          </div>)
+        }
       </div>  
     );
   };
@@ -357,15 +315,14 @@ const Home = () => {
       <div style={styles.childConteinerStyle}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
           <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setActivitiesExpanded(!isActivitiesExpanded) : setActivitiesExpanded(isActivitiesExpanded)}}> 
-          {isActivitiesExpanded && (
-              <div style={{marginRight: 40}} >
-                <Image imageName="arrow_down_green.svg" width="20" height="20" />
-              </div>
-            ) }
-            <h3 style={styles.headingStyle} >ACTIVITIES</h3>
-            <div style={styles.headerImageStyle}>
-              <ActivityIcon fill={colors.green}/>
-            </div>
+          <div style={styles.headerArrowStyle} >
+            <Image 
+              imageName= {isStatisticExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+              width="20" 
+              height="20" 
+            />
+          </div>
+            <div style={styles.headingStyle}>ACTIVITIES</div>
           </div>
           <button
             style={styles.headerAddButtonStyle}
@@ -376,13 +333,9 @@ const Home = () => {
                 setActivitiesExpanded(!isActivitiesExpanded)
               }
             }}
-          >  { isActivitiesExpanded ? (
-              <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
-              ) : (
-                <Image imageName="arrow_right_green.svg" width="20" height="20" />
-              )
-            }
-            </button>
+          >  
+           <Image imageName="plus_round_fill_button.svg" width="30" height="30" />
+          </button>
         </div>{/* Header container*/}
         <div  style={styles.columnStyle}>{/* Activity container*/}
           {/* Show activity cards if data avaliable, if not -> show placeholder*/}

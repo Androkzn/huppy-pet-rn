@@ -170,7 +170,7 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
   };
 
   const imageStyle = {
-    
+    marginRight: '15px',
   };
 
   const nameStyle = {
@@ -178,6 +178,7 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: 'bold',
     color: colors.green,
+    fontSize: '13px'
   };
 
   const valuesStyle = {
@@ -185,13 +186,13 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
      fontWeight: 'bold',
      color: progressBarColor(percentage),
-
+     fontSize: '13px'
   };
 
   return (
     <div style={statisticCaloriesSectionStyle}>
         <div style={imageStyle}> <Image imageName={`calories.png`} width="40" height="40" /></div>
-        <div style={nameStyle}>{"Calories"}</div>
+        {/* <div style={nameStyle}>{"Calories"}</div> */}
         <ProgressBar
           percentage={percentage}
         />
@@ -216,7 +217,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
-    height: '45px'
+    height: '35px'
   };
 
   const imageStyle = {
@@ -224,10 +225,13 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   };
 
   const nameStyle = {
-    minWidth: '70px',
+    textAlign: 'left',
+    minWidth: '50px',
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: 'bold',
     color: colors.green,
+    fontSize: '13px',
+    paddingLeft: '5px',
   };
 
   const valuesStyle = {
@@ -235,12 +239,13 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
      fontWeight: 'bold',
      color: progressBarColor(percentage),
+     fontSize: '13px'
 
   };
 
   return (
     <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> <Image imageName={`${category.type}.png`} width="40" height="40" /></div>
+      <div style={imageStyle}> <Image imageName={`${category.type}.png`} width="30" height="30" /></div>
         <div style={nameStyle}>{category.name}</div>
         <ProgressBar
           percentage={percentage}
@@ -355,7 +360,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const { percentage } = props;
     const containerStyles = {
-      height: 25,
+      height: 20,
       backgroundColor: "#e0e0de",
       borderRadius: '10px',
       borderBottomLeftRadius: '10px',
@@ -380,9 +385,10 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     const labelStyles = {
       padding: 5,
       fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
-      color: percentage <= 15 ? 'black' : 'white',
+      color: percentage <= 20 ? 'black' : 'white',
       fontWeight: 'bold',
-      marginLeft: percentage <= 15? `${percentage + 10 }px` : '0px',
+      fontSize: '14px',
+      marginLeft: percentage <= 20? `${percentage + 10 }px` : '0px',
     }
   
     return (

@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useState } from "react";
-import { useSwipeable } from "react-swipeable";
 import { UserContext } from "../contexts/user.context";
 import { Image } from "./Image.components";
 import { deleteTraining, updateTraining } from "../graphql/graphqlUtils";
@@ -11,43 +10,16 @@ import * as Enums from "../helpers/Enums.helper";
 import CustomCheckbox from "./Checkbox.component";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as Constants from "../helpers/Constants.helper";
+//import SwipeToDelete from 'react-swipe-to-delete-ios';
+import '../components/styles/styles.css';
+import * as colors from '../components/styles/Colors';
+import SwipeToDelete  from '../components/SwipeToDelete.tsx';
+import { changeSectionValueFormat } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
 function TrainingCard({ training, updateTrainings }) {
   const { user } = useContext(UserContext);
-  const [swipeDirection, setSwipeDirection] = useState(null);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-
-  // Calculate dynamic icon width based on the swipe position
-  const calculateIconWidth = () => {
-    const maxIconWidth = 80; // Maximum width for the icons
-    const swipeProgress = Math.abs(swipeDirection === "left" ? 100 : swipeDirection === "right" ? -100 : 0);
-    const iconWidth = Math.min(maxIconWidth, swipeProgress);
-    return `${iconWidth}px`;
-  };
-
-  // Swipe handlers
-  const handlers = useSwipeable({
-    onSwiping: (event) => {
-      // Determine swipe direction
-      if (event.deltaX > 0) {
-        setSwipeDirection("right");
-      } else if (event.deltaX < 0) {
-        setSwipeDirection("left");
-      }
-    },
-    onSwiped: () => {
-      setSwipeDirection(null);
-      // Handle swiped actions here
-      if (swipeDirection === "right") {
-        handleCheckboxValueChange();
-      } else if (swipeDirection === "left") {
-        deleteCurrentTraining();
-      }
-    },
-    trackTouch: true,
-    trackMouse: true,
-  });
-
+ 
   async function handleCheckboxValueChange() {
     const updateData = {
       isCompleted: !training.isCompleted,
@@ -90,27 +62,30 @@ function TrainingCard({ training, updateTrainings }) {
     <>
       {isSmallScreen ? (
         // Render swipeable component for small screens
-        <div
-          style={{ ...styleTraining.trainingConteinerStyle, transition: "transform 1s ease" }}
-          {...handlers} // Spread the swipe handlers
+        <SwipeToDelete
+          //style={styleTraining.trainingConteinerStyle}
+          onRightSwipe={handleCheckboxValueChange}
+          onLeftSwipe={deleteCurrentTraining}
+          height={80}  
+          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+          rightSwipeComponent={  <Image imageName={training.isCompleted ?  `cancel_green.svg` : `checkmark_white.svg`} width="20" height="20" />}
+          onLeftSwipeConfirm={(onSuccess, onCancel) => {
+            if (window.confirm("Do you really want to delete this item ?")) {
+              onSuccess();
+            } else {
+              onCancel();
+            }
+          }}
+
+          className="my-swiper"
+          leftSwipeColor={colors.orange}
+          rightSwipeColor={training.isCompleted ? colors.yellow : colors.lightGreen2}
         >
           <div
             style={{
               ...styleTraining.headerTrainingStyle(training.isCompleted),
             }}
           >
-          {/* Container for checkmark icon */}
-          {swipeDirection === "right" && <div
-              style={styleTraining.checkmarkContainerStyle(training.isCompleted)}
-            >
-              <Image 
-              imageName={training.isCompleted ? `cancel_green.svg` : `checkmark_orange.svg`} 
-              width= {training.isCompleted ? "20" : "25" }
-              height= {training.isCompleted ? "20" :"25" }
-              />
-            </div>
-           }
-
             <div style={styleTraining.rowStyle}>
               <div style={styleTraining.iconContainerStyle}>
                 <Image imageName={`training_${training.category}.svg`} width="40" height="40" />
@@ -121,15 +96,8 @@ function TrainingCard({ training, updateTrainings }) {
                 <h4 style={styleTraining.textStyle}>What to train: {getTainingType()}</h4>
               </div>
             </div>
-            {/* Container for delete icon */}
-            {swipeDirection === "left" && <div
-                style={styleTraining.deleteContainerStyle}
-              >
-                <Image imageName={`delete_white.svg`} width="35" height="35" />
-            </div>
-            }
           </div>
-        </div>
+        </SwipeToDelete>
       ) : (
         // Render non-swipeable component for larger screens
         <div style={styleTraining.trainingConteinerStyle}>

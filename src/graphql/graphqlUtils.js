@@ -365,11 +365,7 @@ async function deleteTraining(user, _id) {
   `;
 
   const queryVariables = { query: { _id } };
-
-  // Confirming the user's action
-  const resp = window.confirm("Are you sure you want to delete this training?");
-  if (!resp) return;
-
+  
   try {
     await request(GRAPHQL_ENDPOINT, deleteTrainingQuery, queryVariables, headers);
     return true

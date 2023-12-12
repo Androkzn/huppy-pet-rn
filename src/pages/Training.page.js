@@ -16,6 +16,7 @@ import * as Enums from "../helpers/Enums.helper"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
 
+
 const Training = () => {
     // Function to load state from localStorage
     const loadState = (key, defaultValue) => {

@@ -58,7 +58,7 @@ import * as colors from './Colors'
   const headerTrainingStyle = (isCompleted) => ({
     display: 'flex',
     flexDirection: 'row',
-    borderRadius: '10px',
+    borderRadius: '0px',
     textAlign: 'center',
     width: '100%',
     height: '80px',

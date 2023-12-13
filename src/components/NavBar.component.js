@@ -101,7 +101,6 @@ const TemporaryDrawer = (props) => {
       Icon: () => (
         <Avatar width="50px" profile={currentProfile} />
       ),
-      link: '/profile',
       action: () => navigateTo('profile'),
     },
     {
@@ -109,7 +108,6 @@ const TemporaryDrawer = (props) => {
       Icon: () => (
         <AddProfileIcon fill={colors.green} />
       ),
-      link: '/register',
       action: () => navigateTo('register'),
     },
     {
@@ -117,7 +115,6 @@ const TemporaryDrawer = (props) => {
       Icon: () => (
         <ChangeProfileIcon fill={colors.green} />
       ),
-      link: '/profile',
       action: () => navigateTo('profile'),  
     },
     {

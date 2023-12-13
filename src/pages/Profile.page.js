@@ -4,14 +4,16 @@ import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
-import {ButtonLink} from '../components/Buttons.components'
+import {ButtonImage, ButtonLink} from '../components/Buttons.components'
 import { addFoodCategory, updateProfile, deleteFoodCategory, getAllFoodCategories, updateFoodCategory } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/Profile.css'
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
- 
+import { useNavigate } from "react-router-dom";
+
 const Profile = () => {
-  const { user, currentProfile, setCurrentProfile } = useContext(UserContext);
+  const navigate = useNavigate();
+  const { user, currentProfile, setCurrentPage, setCurrentProfile } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
  
@@ -45,6 +47,11 @@ const Profile = () => {
       
     } 
   };
+
+  const navigateBack = () => {
+    setCurrentPage("home")
+    navigate("/")
+  }
 
   //Callback func that opens avatar dialog 
   const updateAvatar = async () => {
@@ -156,14 +163,14 @@ const Profile = () => {
   return <PageContainer>
     <div style={styles.fixedTopContainer}>
     <div  style={styles.backButtonContainerStyle}>
-      <ButtonLink
+      <ButtonImage
           variant="backButton"
-          to="/"
+          onClick={navigateBack}
           imageName="arrow_left_green.svg"
           imageSize={20}
         >
          Back
-      </ButtonLink>
+      </ButtonImage>
       <div  css={styles.profileTitleStyle}>{"Profile"}</div>
       <div style={{width: '100px'}}></div>
     </div>

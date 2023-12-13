@@ -22,6 +22,8 @@ export interface Props {
   id?: string;
   rtl?: boolean;
   children?: React.ReactNode;
+  disableLeftSwipe?: boolean;
+  disableRightSwipe?: boolean;
 }
 
 const cursorPosition = (event: any) => {

@@ -84,12 +84,13 @@ const foodListRowStyle = {
   alignItems: 'center',
   textAlign: 'center',
   borderRadius: '10px',
+  backgroundColor: colors.white,
 
 };
 
 const inputFieldStyle = {
   border: `2px solid ${colors.grayDark}`,  
-  width: '40px',
+  width: '45px',
   marginLeft: '10px',
   marginRight: '10px',
   textAlign: 'center',

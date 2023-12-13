@@ -33,13 +33,13 @@ const userInfoContainerStyle = (isSmallScreen) => ({
   alignItems: "right",
   justifyContent: "flex-end",
   display: 'flex',
-  width: isSmallScreen ? '60px' : '100%',  
+  width: isSmallScreen ? '100%' : '100%',
 });
 
 const profileNameStyle = {
   textDecoration: "none", 
   cursor: 'pointer', 
-  margin: "auto 0 auto 0", 
+  margin: "auto 10px auto 0", 
   color: colors.green, 
   fontWeight: "bold", 
   alignItems: 'center', 

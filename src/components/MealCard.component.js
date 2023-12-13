@@ -7,8 +7,8 @@ import {ButtonImage, ButtonText} from '../components/Buttons.components'
 import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood, addMeal } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 import {Image} from '../components/Image.components'
-import { useSwipeable } from "react-swipeable";
-
+import SwipeToDelete  from '../components/SwipeToDelete.tsx';
+import * as colors from '../components/styles/Colors';
 
 function MealCard({ meal, index, updateMeals,  updateFoods }) {
   const { user, currentProfile, isSmallScreen, currentDate} = useContext(UserContext);
@@ -88,15 +88,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
      }
   };
 
-    // Function is responsible for deleting the Food
-    const deleteCurrentFood = async (id) => {
-      const isDeleted = await deleteFood(user, id);
-      if (isDeleted) {
-        loadFoodForMeal()
-        updateFoods()
-     }
-   };
- 
+
   // Function to calculate the total weight of food
   function calculateTotalWeight(foodItems) {
     const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.weight), 0);
@@ -104,37 +96,37 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
   }
 
   const FoodItem = ({foodItem}) => {
-    const [swipeDirection, setSwipeDirection] = useState(null);
-
-     // Swipe handlers
-   const handlers = useSwipeable({
-    onSwiping: (event) => {
-      // Determine swipe direction
-      if (event.deltaX > 0) {
-        setSwipeDirection("right");
-      } else if (event.deltaX < 0) {
-        setSwipeDirection("left");
-      }
-    },
-    onSwiped: () => {
-      setSwipeDirection(null);
-      // Handle swiped actions here
-      if (swipeDirection === "left") {
-       deleteCurrentFood(foodItem._id)
-      }  
-    },
-    trackTouch: true,
-    trackMouse: true,
-  });
-
+  
+    // Function is responsible for deleting the Food
+    const deleteCurrentFood = async () => {
+      const isDeleted = await deleteFood(user, foodItem._id);
+      if (isDeleted) {
+        loadFoodForMeal()
+        updateFoods()
+     }
+   };
 
     return (
-    <div
-      {...handlers} // Spread the swipe handlers
-     >
+      <SwipeToDelete
+      //style={styleTraining.trainingConteinerStyle}
+      onLeftSwipe={deleteCurrentFood}
+      height={40}  
+      leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+      onLeftSwipeConfirm={(onSuccess, onCancel) => {
+        if (window.confirm("Do you really want to delete this item ?")) {
+          onSuccess();
+        } else {
+          onCancel();
+        }
+      }}
+      rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
+      className="my-swiper"
+      leftSwipeColor={colors.orange}
+      rightSwipeColor={colors.lightGreen2}
+    >
        <li css={styles.foodListRowStyle} key={foodItem._id}>
-          <div css={styles.headerFoodStyle(swipeDirection === "left")}>
-            <div css={styles.headerTextStyle(swipeDirection === "left")}>
+          <div css={styles.headerFoodStyle()}>
+            <div css={styles.headerTextStyle()}>
               <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
               <input
                 type="number"
@@ -143,16 +135,10 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
                 onChange={(e) => 
                   handleWeightChange(e, foodItem)}
               />
-            {swipeDirection === "left" && <div
-                style={styles.deleteContainerStyle}
-              >
-                <Image imageName={`delete_white.svg`} width="35" height="35" />
-            </div>
-            }
             </div> 
           </div>
         </li>
-      </div>
+      </SwipeToDelete>
     )
   }
 
@@ -160,7 +146,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
     return(
       <ul  css={styles.foodListStyle}>
       {food.map((foodItem) => (
-        <FoodItem foodItem={foodItem} />
+        <FoodItem foodItem={foodItem}  key={foodItem._id}/>
       ))}
     </ul>
     )

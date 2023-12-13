@@ -11,11 +11,12 @@ import Spiner from '../components/Spinner.components'
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, fetchUser, emailPasswordLogin } = useContext(UserContext);
+  const { user, fetchUser, emailPasswordLogin, setCurrentPage } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
+    setCurrentPage("home")
     navigate(redirectTo ? redirectTo : "/");
   }
 
@@ -40,6 +41,7 @@ const Login = () => {
   // Hence this is helping us in verifying whether the user is already logged in
   // or not.
   useEffect(() => {
+    setCurrentPage("login")
     loadUser(); // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

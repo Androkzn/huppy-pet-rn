@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles from '../components/styles/Login.css';
@@ -9,6 +9,7 @@ import { Image } from '../components/Image.components';
 import {ButtonText} from '../components/Buttons.components'
 
 function ForgotPasswordForm({ onSubmit}) {
+  const { setCurrentPage } = useContext(UserContext);  
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -27,6 +28,10 @@ function ForgotPasswordForm({ onSubmit}) {
   function handleSubmit() {
     onSubmit(form);
   }
+
+  useEffect(() => {
+    setCurrentPage("signUp")
+  }, []);
 
   return (
     <form css={styles.formStyle}>

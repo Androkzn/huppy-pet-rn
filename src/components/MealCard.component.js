@@ -107,10 +107,14 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
      }
    };
 
+   const editCurrentFood = async () => {
+      return
+   }
+
     return (
       <SwipeToDelete
-        onLeftSwipe={deleteCurrentFood}
         height={50}  
+        onLeftSwipe={deleteCurrentFood} 
         leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
           if (window.confirm("Do you really want to delete this item ?")) {
@@ -119,6 +123,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
             onCancel();
           }
         }}
+        onRightSwipe={editCurrentFood}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
         className="my-swiper"
         leftSwipeColor={colors.orange}

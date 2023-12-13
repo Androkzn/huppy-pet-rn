@@ -15,7 +15,7 @@ import AddAvatarDialog from "../components/AddAvatarDialog.component";
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, setProfiles, setCurrentProfile } = useContext(UserContext);
+  const { user, setProfiles, setCurrentProfile, setCurrentPage } = useContext(UserContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -167,10 +167,9 @@ const updateCategory= async (type, value) => {
   
 };
 
-// Save the profile to local storage whenever it changes
 useEffect(() => {
-  console.log("useEffect ", profile)
-}, [profile]);
+  setCurrentPage("register")
+}, []);
 
 
   return <PageContainer>

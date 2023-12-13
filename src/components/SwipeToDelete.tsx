@@ -110,13 +110,16 @@ const SwipeToDelete = ({
 
   const onMove = useCallback(
     function (event: TouchEvent | MouseEvent) {
- 
       if (!touching) return;
       const currentPosition = cursorPosition(event);
       const moveDistance = currentPosition - startTouchPosition.current;
       setSwipeDirection(moveDistance >=0 ? "right" : "left")
-      // console.log("moveDistance",moveDistance)
-      // console.log("swipe direction", swipeDirection)
+
+      console.log("swipe direction", swipeDirection)
+      console.log("disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth", disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth)
+      console.log("disableRightSwipe && moveDistance < 0", disableLeftSwipe && moveDistance < 0)
+      console.log("translate",translate)
+    
       // console.log("startTouchPosition.current - initTranslate.current", startTouchPosition.current - initTranslate.current)
       // // Handle left swipe
       // if (!rtl && moveDistance > startTouchPosition.current - initTranslate.current) {
@@ -132,7 +135,7 @@ const SwipeToDelete = ({
       //   setTranslate(moveDistance);
       // }
 
-
+      console.log("moveDistance",moveDistance)
       setTranslate(moveDistance);
     },
     [rtl, touching]
@@ -174,13 +177,14 @@ const SwipeToDelete = ({
   }, [onLeftSwipe, onRightSwipe, transitionDuration]);
 
   const onLeftSwipeClick = useCallback(() => {
+    if (disableLeftSwipe) return;
     console.log("onLeftSwipeAction")
     if (onLeftSwipeConfirm) {
       onLeftSwipeConfirm(onLeftSwipeConfirmed, onSwipeCancel);
     } else {
       onLeftSwipeConfirmed();
     }
-  }, [onLeftSwipeConfirm, onLeftSwipeConfirmed, onSwipeCancel]);
+  }, [onLeftSwipeConfirm, onLeftSwipeConfirmed, onSwipeCancel, disableLeftSwipe]);
 
   
   // const onRightSwipeClick = useCallback(() => {
@@ -194,6 +198,7 @@ const SwipeToDelete = ({
 
   const onRightSwipeClick = useCallback(() => {
     console.log("onRightSwipeClick")
+    if (disableRightSwipe || disabled) return; 
     setTransitioning(true); // Set transitioning to true before the action
     if (onRightSwipeConfirm) {
       onRightSwipeConfirm(() => {
@@ -204,7 +209,7 @@ const SwipeToDelete = ({
       setTransitioning(false); // Set transitioning to false after the action is done
       onRightSwipe();
     }
-  }, [onRightSwipeConfirm, onRightSwipe, onSwipeCancel]);
+  }, [onRightSwipeConfirm, onRightSwipe, onSwipeCancel,disableRightSwipe, disabled]);
 
   useEffect(() => {
     const handleTransitionEnd = () => {
@@ -276,14 +281,18 @@ const SwipeToDelete = ({
 
   return (
     <div id={id} className={`rstdi${leftSwiping ? " deleting" : ""} ${className}`} ref={container}>
-  
+        {/* Do not add left button if left swipe is disabled */}
+        {!disableLeftSwipe && 
         <div className={`delete${leftSwiping ? " deleting" : ""}`}>
           <button onClick={onLeftSwipeClick}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
         </div>
- 
+        }
+         {/* Do not add right button if right swipe is disabled */}
+        { !disableRightSwipe && 
         <div className={`archive${rightSwiping ? " archiving" : ""}`}>
           <button onClick={onRightSwipeClick}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
         </div>
+        }   
 
        { swipeDirection === "left" ? (
       <div

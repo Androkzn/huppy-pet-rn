@@ -61,7 +61,7 @@ import * as colors from './Colors'
     borderRadius: '0px',
     textAlign: 'center',
     width: '100%',
-    height: '80px',
+    height: '60px',
     backgroundColor: isCompleted ? colors.lightGreen2 : colors.lightBrown2,
   });
 

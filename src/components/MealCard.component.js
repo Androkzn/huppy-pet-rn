@@ -108,22 +108,21 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
 
     return (
       <SwipeToDelete
-      //style={styleTraining.trainingConteinerStyle}
-      onLeftSwipe={deleteCurrentFood}
-      height={40}  
-      leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
-      onLeftSwipeConfirm={(onSuccess, onCancel) => {
-        if (window.confirm("Do you really want to delete this item ?")) {
-          onSuccess();
-        } else {
-          onCancel();
-        }
-      }}
-      rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-      className="my-swiper"
-      leftSwipeColor={colors.orange}
-      rightSwipeColor={colors.lightGreen2}
-    >
+        onLeftSwipe={deleteCurrentFood}
+        height={40}  
+        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+        onLeftSwipeConfirm={(onSuccess, onCancel) => {
+          if (window.confirm("Do you really want to delete this item ?")) {
+            onSuccess();
+          } else {
+            onCancel();
+          }
+        }}
+        rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
+        className="my-swiper"
+        leftSwipeColor={colors.orange}
+        rightSwipeColor={colors.lightGreen2}
+      >
        <li css={styles.foodListRowStyle} key={foodItem._id}>
           <div css={styles.headerFoodStyle()}>
             <div css={styles.headerTextStyle()}>

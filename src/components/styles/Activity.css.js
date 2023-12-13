@@ -9,7 +9,7 @@ import * as colors from './Colors'
     flexDirection: 'column',
     alignItems: 'center',
     margin: '10px',
-    padding: '10px',
+    padding: '5px',
     borderRadius: '10px',
     backgroundColor: colors.lightBrown,
     minWidth:'300px'
@@ -27,7 +27,6 @@ import * as colors from './Colors'
     ...rowStyle,
     justifyContent: 'space-between',
     marginBottom: '10px',
-    marginRight: '10px'
   };
 
   const bottomRowStyle = {
@@ -40,8 +39,7 @@ import * as colors from './Colors'
   const bodyRowStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    marginRight: '10px',
-    marginLeft: '10px'
+    marginLeft: '10px',
   };
   
   const columnStyle = {
@@ -50,7 +48,8 @@ import * as colors from './Colors'
     alignItems: 'center',
     flexDirection: 'column',
     width: '100%',
-    marginRight: '10px',
+  
+    marginLeft: '10px',
   };
 
   const iconContainerStyle = {
@@ -59,8 +58,8 @@ import * as colors from './Colors'
 
   const headerActivityStyle = {
     display: 'flex',
-    irection: 'row',
-    borderRadius: '10px',
+    direction: 'row',
+   
     textAlign: 'center',
     width: '100%',
     height: '80px',
@@ -69,16 +68,14 @@ import * as colors from './Colors'
 
   const bodyActivityStyle = {
     display: 'flex',
-    borderRadius: '10px',
     textAlign: 'center',
     width: '100%',
     height: '60px',
     backgroundColor: colors.lightBrown2,
-    marginTop: '10px',
   };
   
   const inputFieldStyle = {
-    border: `2px solid ${colors.green}`,  
+    border: `2px solid ${colors.grayDark}`,  
     width: '40px',
     textAlign: 'center',
     marginRight: '15px',
@@ -94,7 +91,7 @@ import * as colors from './Colors'
     height: '35px',
     paddingRight: '15px',
     paddingLeft: '15px',
-    backgroundColor: colors.oliveLight,
+    backgroundColor: colors.white,
   };
 
   const dropdownItemStyle = {

@@ -29,12 +29,11 @@ const Training = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-  const {user, currentProfile } = useContext(UserContext);
-  const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen } = useContext(UserContext);
+  // const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
   const [trainingData, setTrainingData] = useState([]);
-  const isSmallScreen = useMediaQuery(Constants.smallScreen);
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
@@ -164,7 +163,7 @@ const Training = () => {
 
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
-        <DatePicker/>
+      {!isSmallScreen && <DatePicker/>}
         <Trainings trainingData={trainingData}/>
       </div>  
    

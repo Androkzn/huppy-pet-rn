@@ -7,6 +7,8 @@ import { deleteActivity, updateActivity } from "../graphql/graphqlUtils";
 import * as stylesActivity from '../components/styles/Activity.css'
 import {ButtonImage, ButtonText } from '../components/Buttons.components'
 import * as enums from "../helpers/Enums.helper"
+import Swipe  from '../components/SwipeToDelete.tsx';
+import * as colors from '../components/styles/Colors';
 
 function ActivityCard({ activity, updateActivities}) {
   const { user, currentProfile } = useContext(UserContext);
@@ -107,8 +109,25 @@ function ActivityCard({ activity, updateActivities}) {
   
 
   return (
-      <div style={stylesActivity.activityConteinerStyle} > 
+    
+      //<div style={stylesActivity.activityConteinerStyle} > 
 
+      <Swipe
+        onLeftSwipe={deleteCurrentActivity}
+        height={140}  
+        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+        onLeftSwipeConfirm={(onSuccess, onCancel) => {
+          if (window.confirm("Do you really want to delete this item ?")) {
+            onSuccess();
+          } else {
+            onCancel();
+          }
+        }}
+        rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
+        className="my-swiper"
+        leftSwipeColor={colors.orange}
+        rightSwipeColor={colors.lightGreen2}
+      >
         <div style={stylesActivity.headerActivityStyle}>
           <div style={stylesActivity.rowStyle}>
             <div style={stylesActivity.iconContainerStyle}>
@@ -128,14 +147,6 @@ function ActivityCard({ activity, updateActivities}) {
                       </option>
                     ))}
                   </select>
-               
-                  <ButtonImage
-                    variant="iconButton"
-            
-                    imageName="delete_orange.svg"
-                    imageSize={25}
-                    onClick={deleteCurrentActivity}
-                  />
               </div>
               <div style={stylesActivity.bottomRowStyle}>Burned calories: {getCaloriesBurnedFor(getActivityValue())} kcal</div>
             </div>
@@ -178,7 +189,8 @@ function ActivityCard({ activity, updateActivities}) {
             </div>
           </div> 
         </div>
-      </div>
+        </Swipe>
+      //</div>
    );
 }
 

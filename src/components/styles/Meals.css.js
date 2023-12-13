@@ -83,7 +83,6 @@ const foodListRowStyle = {
   listStyleType: 'none',
   alignItems: 'center',
   textAlign: 'center',
-  borderRadius: '10px',
   backgroundColor: colors.white,
 
 };

@@ -102,14 +102,14 @@ const nutritionContainerStyle = {
 const backButtonContainerStyle = {
   ...rowStyle,
   justifyContent: 'space-between',
-  margin: '10px 0 10px 0',
+  margin: '20px 0 10px 0',
   textAlign: 'left',
   fontSize: '15px',
 };
 
 const fixedTopContainer = {
   position: 'sticky',
-  top: 80,
+  top: 60,
   zIndex: 1000,   
   backgroundColor: 'white',  
   width: '100%',

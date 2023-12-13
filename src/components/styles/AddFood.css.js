@@ -68,7 +68,7 @@ const topButtonsContainerStyle = {
 
 const fixedTopContainer = {
   position: 'sticky',
-  top: 80,
+  top: 60,
   zIndex: 1000,   
   backgroundColor: 'white',  
   width: '100%',

@@ -34,7 +34,7 @@ const saveState = (key, value) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, setCurrentPage } = useContext(UserContext);
 
   // State for meal ID
   const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
@@ -51,10 +51,12 @@ const saveState = (key, value) => {
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
+    setCurrentPage("addFood")
     navigate("/addFood", { state: { mealId, foodItem, selectedDate } });
   };
 
   const openCeateNewFoodPage = () => {
+    setCurrentPage("createNewFood")
    navigate("/createNewFood", { state: { mealId, selectedDate } });
   };
 

@@ -63,7 +63,7 @@ const headerTextStyle = (isSwiped) => ({
   justifyContent: 'space-between',
   width: '90%',
   alignItems: 'center',
-  height: '40px',
+  height: '50px',
   paddingLeft:  isSwiped ? "10px" : "0px",
   transition: "transform 1s ease",
   border: isSwiped ? `1px solid ${colors.orange}` : 'none',
@@ -75,7 +75,7 @@ const foodListStyle = {
   width: '100%',
   flexDirection: 'column',
   listStyleType: 'none',
-  padding: '0',
+  padding: '0px',
 };
 
 const foodListRowStyle = {
@@ -90,7 +90,7 @@ const foodListRowStyle = {
 
 const inputFieldStyle = {
   border: `2px solid ${colors.grayDark}`,  
-  width: '45px',
+  width: '50px',
   marginLeft: '10px',
   marginRight: '10px',
   textAlign: 'center',
@@ -104,7 +104,7 @@ const childConteinerStyle = {
   flex: '1',
   flexDirection: 'column',
   alignItems: 'center',
-  margin: '10px 0px 10px 0px',
+  margin: '5px 0px 5px 0px',
   borderRadius: '10px',
   minWidth:'300px'
 };
@@ -195,12 +195,12 @@ const totalWeightContainerStyle = {
 
 
 const weightLabellStyle = {
-  margin: "0px 0px 0px 25px",
+  margin: "0px 0px 0px 20px",
   fontWeight: 'bold'
 };
 
 const weightValueStyle = {
-  margin: "0px 50px 0px 0px",
+  margin: "0px 45px 0px 0px",
   fontWeight: 'bold'
 };
 

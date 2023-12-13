@@ -13,7 +13,7 @@ import * as Constants from "../helpers/Constants.helper"
 import {Image} from '../components/Image.components'
 
 const TabBar = () => {
-  const {user, currentProfile, isSmallScreen, setCurrentTab} = useContext(UserContext);
+  const {user, currentProfile, isSmallScreen, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px'
@@ -24,18 +24,18 @@ const TabBar = () => {
     setValue(newValue);
     switch (newValue) {
       case 0: 
-      setCurrentTab("home")
+      setCurrentPage("home")
       return navigate("/");;
       case 1: 
-      setCurrentTab("dashboard")
+      setCurrentPage("dashboard")
       return navigate("/dashboard");
       case 2: 
-      setCurrentTab("training")
+      setCurrentPage("training")
       return navigate("/training");
       //case 3: return navigate("/");
 
       case 4: 
-      setCurrentTab("more")
+      setCurrentPage("more")
       return navigate("/more");
   }
   };

@@ -10,7 +10,7 @@ import { deleteFoodTemplate } from "../graphql/graphqlUtils";
 
 // Function is responsible for updating the training 
 function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
-  const { user } = useContext(UserContext);
+  const { user, setCurrentPage } = useContext(UserContext);
   const navigate = useNavigate();
   
   const deleteFoodTemplateHandler = async () => {
@@ -22,6 +22,7 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
   }; 
   
   const editFoodHandler = async () => {
+    setCurrentPage("editFood")
     navigate("/editFood", { state: { food } });
   };
   
@@ -40,6 +41,10 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
           <div style={style.customButtonContainerStyle}>
           { food.isCustom && (
               <div style={style.customButtonContainerStyle}> 
+                <div style={style.customContainerStyle}>
+                  <h6>CUSTOM</h6>
+                  <Image imageName="paw_white.png" width="20" height="20" />
+                </div>
                 <div css={style.deleteButonStyle}>
                   <ButtonImage
                       variant="iconButton"
@@ -56,10 +61,6 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
                         onClick={() => editFoodHandler()}
                   />
                 </div>    
-                <div style={style.customContainerStyle}>
-                  <h6>CUSTOM</h6>
-                  <Image imageName="paw_white.png" width="20" height="20" />
-                </div>
               </div>
             )}
           </div>

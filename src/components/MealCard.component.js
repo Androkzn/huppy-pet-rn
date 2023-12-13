@@ -11,7 +11,7 @@ import SwipeToDelete  from '../components/SwipeToDelete.tsx';
 import * as colors from '../components/styles/Colors';
 
 function MealCard({ meal, index, updateMeals,  updateFoods }) {
-  const { user, currentProfile, isSmallScreen, currentDate} = useContext(UserContext);
+  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
   const mealId = meal._id;
   const selectedDate = meal.date
@@ -35,6 +35,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
 
   const openAddFoodPage = () => {
     console.log("Navigate to searchFood mealId", mealId)
+    setCurrentPage("searchFood")
     navigate("/searchFood", { state: { mealId, selectedDate } });
   }
 
@@ -109,7 +110,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
     return (
       <SwipeToDelete
         onLeftSwipe={deleteCurrentFood}
-        height={40}  
+        height={50}  
         leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
           if (window.confirm("Do you really want to delete this item ?")) {

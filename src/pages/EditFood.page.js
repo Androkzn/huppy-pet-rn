@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import ChangeImageDialog from "../components/ChangeImageDialog.component";
 
 const EditFood = () => {
-  const { user } = useContext(UserContext);
+  const { user, setCurrentPage } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { food } = location.state || {};
@@ -87,6 +87,7 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
     console.log("updateFoodTemplate isSuccess", isUpdated )
    
     if (isUpdated) {
+      setCurrentPage("searchFood")
         navigate("/searchFood");
       } else {
         

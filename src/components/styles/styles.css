@@ -5,7 +5,7 @@
 
 .my-swiper{
   border-radius: 10px;
-  margin: 5px 10px 5px 10px;
+  margin: 0px 10px 5px 10px;
   border: 1px solid #dddddd;  
 }
 
@@ -73,6 +73,7 @@
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
+  visibility: var(--visibilityLeft);
 }
 
 .rstdi .archive {
@@ -86,6 +87,7 @@
   display: inline-flex;
   justify-content: flex-start;
   align-items: center;
+  visibility: var(--visibilityRight);
 }
 
 .rstdi .delete button,

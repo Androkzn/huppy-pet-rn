@@ -29,6 +29,7 @@ import styled from '@emotion/styled/macro'
     justifyContent: 'start',
     alignItems: 'center',
     marginBottom: '2px',
+    marginLeft: '10px',
   };
   
 
@@ -82,7 +83,7 @@ import styled from '@emotion/styled/macro'
   const customContainerStyle = {
     ...rowStyle,
     justifyContent: 'center',
-    width: '100px',
+    width: '90px',
     height: '25px',
     borderRadius: '10px',
     backgroundColor: colors.lightGreen2,

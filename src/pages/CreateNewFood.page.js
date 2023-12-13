@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from "../components/AddImageDialog.component";
 
 const CreateNewFood = () => {
-  const { user } = useContext(UserContext);
+  const { user, setCurrentPage } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);
@@ -94,8 +94,10 @@ const CreateNewFood = () => {
         foodItem._id = templateId
         console.log("CreateNewFood", foodItem)
         console.log("mealId", mealId)
+        setCurrentPage("addFood")
         navigate("/addFood", { state: { mealId, foodItem } });
       } else {
+        setCurrentPage("searchFood")
         navigate("/searchFood");
       }
     }

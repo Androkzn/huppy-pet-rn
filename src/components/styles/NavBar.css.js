@@ -12,8 +12,8 @@ const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
-  marginTop: '15px',
-  marginBottom: '15px',
+  marginTop: '5px',
+  marginBottom: '5px',
   marginLeft: '50px',
 };
 
@@ -30,16 +30,18 @@ const columnStyle = {
 };
 
 const userInfoContainerStyle = (isSmallScreen) => ({
-  alignItems: "right",
+  marginTop: "auto", 
   justifyContent: "flex-end",
   display: 'flex',
   width: isSmallScreen ? '100%' : '100%',
+  alignItems: 'center', 
+  textAlign: 'center'
 });
 
 const profileNameStyle = {
   textDecoration: "none", 
   cursor: 'pointer', 
-  margin: "auto 10px auto 0", 
+  margin: "auto 10px auto auto", 
   color: colors.green, 
   fontWeight: "bold", 
   alignItems: 'center', 

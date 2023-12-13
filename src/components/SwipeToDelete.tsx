@@ -53,6 +53,8 @@ const SwipeToDelete = ({
   className = "",
   id = "",
   rtl = false,
+  disableLeftSwipe = false,
+  disableRightSwipe = false,
   children,
 }: Props) => {
   const [touching, setTouching] = useState(false);
@@ -88,6 +90,13 @@ const SwipeToDelete = ({
     root?.style.setProperty("--rstdiArchiveColor", rightSwipeColor);   
     root?.style.setProperty("--rstdiSwipeWidth", swipeWidth + "px"); 
   }, [leftSwipeColor, rightSwipeColor, swipeWidth, height, rtl, transitionDuration]);
+
+  useEffect(() => {
+    const root = container.current;
+    root?.style.setProperty("--visibilityLeft", swipeDirection === "left" ? "visible" : "hidden"); 
+    root?.style.setProperty("--visibilityRight", swipeDirection === "right" ? "visible" : "hidden"); 
+  }, [swipeDirection]);
+
 
   useEffect(() => {
     const root = container.current;
@@ -267,15 +276,15 @@ const SwipeToDelete = ({
 
   return (
     <div id={id} className={`rstdi${leftSwiping ? " deleting" : ""} ${className}`} ref={container}>
-      { swipeDirection === "left" ? (
+  
         <div className={`delete${leftSwiping ? " deleting" : ""}`}>
           <button onClick={onLeftSwipeClick}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
         </div>
-      ) : (
+ 
         <div className={`archive${rightSwiping ? " archiving" : ""}`}>
           <button onClick={onRightSwipeClick}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
         </div>
-      )}
+
        { swipeDirection === "left" ? (
       <div
         className={`content${leftSwiping ? " deleting" : ""}${!touching ? " transition" : ""}`}

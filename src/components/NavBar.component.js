@@ -15,7 +15,7 @@ import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
-  const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate, currentTab } = useContext(UserContext);
+  const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate, currentPage } = useContext(UserContext);
 
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -31,7 +31,7 @@ const NavBar = () => {
   const DatePicker = () => {
     return (
         <div>
-        { (currentTab === "home" || currentTab === "training") && <div style={styles.pickerContainerStyle}> 
+        { (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
           <CustomDatePickerWithArrows
             value={currentDate}
             onChange={(date) => setCurrentDate(date) }
@@ -43,8 +43,7 @@ const NavBar = () => {
         </div>
     );
   };
-
-  console.log("currentTab", currentTab)
+ 
   return (
     <>
       <AppBar position="fixed"  sx={{ backgroundColor: colors.brown }}>

@@ -19,7 +19,7 @@ import styled from '@emotion/styled/macro'
 
   const fixedTopContainer = {
     position: 'sticky',
-    top: 80,
+    top: 55,
     zIndex: 1000,  
     backgroundColor: 'white',  
     width: '100%',  
@@ -54,7 +54,7 @@ import styled from '@emotion/styled/macro'
   const buttonsContainerStyle = {
     ...rowStyle,
     justifyContent: 'space-between',
-    margin: '10px 0 10px 0',
+    margin: '15px 0 10px 0',
     textAlign: 'center',
     fontSize: '15px',
   };

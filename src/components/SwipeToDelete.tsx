@@ -24,6 +24,8 @@ export interface Props {
   children?: React.ReactNode;
   disableLeftSwipe?: boolean;
   disableRightSwipe?: boolean;
+  distructiveLeftSwipe?: boolean;
+  distructiveRightSwipe?: boolean;
 }
 
 const cursorPosition = (event: any) => {
@@ -55,6 +57,8 @@ const SwipeToDelete = ({
   rtl = false,
   disableLeftSwipe = false,
   disableRightSwipe = false,
+  distructiveLeftSwipe = false,
+  distructiveRightSwipe = false,
   children,
 }: Props) => {
   const [touching, setTouching] = useState(false);
@@ -115,27 +119,28 @@ const SwipeToDelete = ({
       const moveDistance = currentPosition - startTouchPosition.current;
       setSwipeDirection(moveDistance >=0 ? "right" : "left")
 
-      console.log("swipe direction", swipeDirection)
-      console.log("disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth", disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth)
-      console.log("disableRightSwipe && moveDistance < 0", disableLeftSwipe && moveDistance < 0)
-      console.log("translate",translate)
-    
-      // console.log("startTouchPosition.current - initTranslate.current", startTouchPosition.current - initTranslate.current)
-      // // Handle left swipe
-      // if (!rtl && moveDistance > startTouchPosition.current - initTranslate.current) {
-      //   console.log("setTranslate FIRST",0)
-  
-      //   setTranslate(moveDistance);
+      // console.log("swipe direction", swipeDirection)
+      // console.log("disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth", disableRightSwipe && moveDistance >0 && translate >= -1 * swipeWidth)
+      // console.log("disableRightSwipe && moveDistance < 0", disableLeftSwipe && moveDistance < 0)
+      //console.log("translate",translate)
+      //console.log("startTouchPosition.current - initTranslate.current", startTouchPosition.current - initTranslate.current)
+      //console.log("moveDistance",moveDistance)
+      
+      // Handle left swipe
+      // if (moveDistance < 0 && disableLeftSwipe) {
+      //   console.log("disableLeftSwipe",disableLeftSwipe)
+      //   return 
       // }
       // // Handle right swipe
-      // else if (rtl && moveDistance < startTouchPosition.current - initTranslate.current) {
-      //   console.log("setTranslate SECOND",0)
-      //   setTranslate(0);
-      // } else {
+      // else if (moveDistance > 0 && disableRightSwipe) {
+      //   console.log("disableRightSwipe",disableRightSwipe)
+      //  return
+      // } 
+      // else {
       //   setTranslate(moveDistance);
       // }
 
-      console.log("moveDistance",moveDistance)
+      
       setTranslate(moveDistance);
     },
     [rtl, touching]
@@ -143,7 +148,7 @@ const SwipeToDelete = ({
 
   const onMouseMove = useCallback(
     function (event: MouseEvent): any {
-      console.log("onMouseMove")
+      // console.log("onMouseMove")
       onMove(event);
     },
     [onMove]
@@ -157,15 +162,18 @@ const SwipeToDelete = ({
   );
 
   const onLeftSwipeConfirmed = useCallback(() => {
-    setLeftSwiping(() => true);
+    console.log("onLeftSwipeConfirmed")
+    onSwipeCancel()
     window.setTimeout(onLeftSwipe, transitionDuration);
   }, [onLeftSwipe, transitionDuration]);
 
   const onRightSwipeConfirmed = useCallback(() => {
-    setRightSwiping(() => true);
+     console.log("onRightSwipeConfirmed")
+     onSwipeCancel()
      window.setTimeout(onRightSwipe, transitionDuration);
   }, [onRightSwipe, transitionDuration]);
 
+  
   const onSwipeCancel = useCallback(() => {
     console.log("onSwipeCancel")
     setTouching(() => false);
@@ -177,24 +185,33 @@ const SwipeToDelete = ({
   }, [onLeftSwipe, onRightSwipe, transitionDuration]);
 
   const onLeftSwipeClick = useCallback(() => {
-    if (disableLeftSwipe) return;
+    if (disableLeftSwipe || disabled) return;
     console.log("onLeftSwipeAction")
     if (onLeftSwipeConfirm) {
-      onLeftSwipeConfirm(onLeftSwipeConfirmed, onSwipeCancel);
+      console.log("onLeftSwipeClick 1")
+      onLeftSwipeConfirm(() => {
+        setTransitioning(false); // Set transitioning to false after the action is done
+        onLeftSwipeConfirmed();
+      }, onSwipeCancel);
     } else {
+      console.log("onLeftSwipeClick 2")
+      setTransitioning(false);
       onLeftSwipeConfirmed();
     }
   }, [onLeftSwipeConfirm, onLeftSwipeConfirmed, onSwipeCancel, disableLeftSwipe]);
 
   
   // const onRightSwipeClick = useCallback(() => {
+  //   if (disableRightSwipe || disabled) return; 
   //   console.log("onRightSwipeAction")
   //   if (onRightSwipeConfirm) {
+  //     console.log("onRightSwipeAction 1")
   //     onRightSwipeConfirm(onRightSwipeConfirmed, onSwipeCancel);
   //   } else {
+  //     console.log("onRightSwipeAction 2")
   //     onRightSwipeConfirmed();
   //   }
-  // }, [onRightSwipeConfirm, onRightSwipeConfirmed, onSwipeCancel]);
+  // }, [onRightSwipeConfirm, onRightSwipeConfirmed, onSwipeCancel, disableRightSwipe, disabled]);
 
   const onRightSwipeClick = useCallback(() => {
     console.log("onRightSwipeClick")
@@ -202,12 +219,14 @@ const SwipeToDelete = ({
     setTransitioning(true); // Set transitioning to true before the action
     if (onRightSwipeConfirm) {
       onRightSwipeConfirm(() => {
+        console.log("onRightSwipeAction 1")
         setTransitioning(false); // Set transitioning to false after the action is done
-        onRightSwipe();
+        onRightSwipeConfirmed()
       }, onSwipeCancel);
     } else {
+      console.log("onRightSwipeAction 2")
       setTransitioning(false); // Set transitioning to false after the action is done
-      onRightSwipe();
+      onRightSwipeConfirmed()
     }
   }, [onRightSwipeConfirm, onRightSwipe, onSwipeCancel,disableRightSwipe, disabled]);
 
@@ -237,20 +256,28 @@ const SwipeToDelete = ({
   
       const notShowSwipe = showSwipeAction ? (rtl ? -1 : 1) * translate >= acceptableMoveLeft && (rtl ? -1 : 1) * translate <= acceptableMoveRight : true;
       const swipeWithoutConfirm = (swipeDirection === "right" ? 1 : -1) * translate >= swipeWithoutConfirmThreshold;
-  
+      
+      
+      console.log("onMouseUp swipeWithoutConfirm", swipeWithoutConfirm)
+
       if (swipeWithoutConfirm) {
-        setTranslate(() => -containerWidth);
+        console.log("onMouseUp setTranslate 1", swipeDirection === "left" ? -containerWidth : -containerWidth)
+        
+        setTranslate(() => swipeDirection === "left" ? -containerWidth : containerWidth)
       } else if (notShowSwipe) {
+        console.log("onMouseUp setTranslate 2", 0)
         setTranslate(() => 0);
       } else if (showSwipeLeft && !swipeWithoutConfirm) {
+        console.log("onMouseUp setTranslate 3 ", (rtl ? 1 : -1) * swipeWidth)
         setTranslate(() => (rtl ? 1 : -1) * swipeWidth);
       } else if (showSwipeRight && !swipeWithoutConfirm) {
+        console.log("onMouseUp setTranslate 4", (rtl ? -1 : 1) * swipeWidth)
         setTranslate(() => (rtl ? -1 : 1) * swipeWidth);
       }
-  
+ 
       setTouching(() => false);
       if (swipeWithoutConfirm) {
-         console.log("swipeWithoutConfirm", swipeWithoutConfirm)
+        console.log("onMouseUp swipeDirection 6", swipeDirection)
          swipeDirection === "left" ?  onLeftSwipeClick() : onRightSwipeClick()
         
       }
@@ -278,46 +305,54 @@ const SwipeToDelete = ({
     };
   }, [onMouseMove, onMouseUp, onTouchMove, touching]);
 
+  const classNameContainer = () => {
+    if (swipeDirection === "left")  {
+      const name = `rstdi${leftSwiping && distructiveLeftSwipe ? " deleting" : ""} ${className}`
+      console.log("classNameMain", name)
+      return name
+    } else {
+      const name = `rstdi${rightSwiping && distructiveRightSwipe? " deleting" : ""} ${className}`
+      console.log("classNameMain", name)
+      return name
+    }
+  } 
+
+  const classNameContent = () => {
+    if (swipeDirection === "left")  {
+      const name = `content${leftSwiping && distructiveLeftSwipe ? " deleting" : ""}${transitioning ? " transitioning" : ""}${!touching ? " transition" : ""}`
+      // console.log("classNameMain", name)
+      return name
+    } else {
+      const name = `content${rightSwiping && distructiveRightSwipe ? " archiving" : ""}${transitioning ? " transitioning" : ""}${!touching ? " transition" : ""}`
+      // console.log("classNameMain", name)
+      return name
+    }
+  } 
 
   return (
-    <div id={id} className={`rstdi${leftSwiping ? " deleting" : ""} ${className}`} ref={container}>
-        {/* Do not add left button if left swipe is disabled */}
-        {!disableLeftSwipe && 
-        <div className={`delete${leftSwiping ? " deleting" : ""}`}>
-          <button onClick={onLeftSwipeClick}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
-        </div>
-        }
-         {/* Do not add right button if right swipe is disabled */}
-        { !disableRightSwipe && 
-        <div className={`archive${rightSwiping ? " archiving" : ""}`}>
-          <button onClick={onRightSwipeClick}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
-        </div>
-        }   
+    <div id={id} className={ classNameContainer() } ref={container}>
+      
+      {/* Do not add left button if left swipe is disabled */}
+      {!disableLeftSwipe && 
+      <div className={`delete${leftSwiping ? " deleting" : ""}`}>
+        <button onClick={onLeftSwipeClick}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
+      </div>
+      }
+      
+      {/* Do not add right button if right swipe is disabled */}
+      { !disableRightSwipe && 
+      <div className={`archive${rightSwiping ? " archiving" : ""}`}>
+        <button onClick={onRightSwipeClick}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
+      </div>
+      }
 
-       { swipeDirection === "left" ? (
       <div
-        className={`content${leftSwiping ? " deleting" : ""}${!touching ? " transition" : ""}`}
+        className={classNameContent()}
         onMouseDown={onStart}
         onTouchStart={onStart}>
         {children}
       </div>
-       ) : (
-        <div
-        className={`content${rightSwiping ? " archiving" : ""}${transitioning ? " transitioning" : ""}${!touching ? " transition" : ""}`}
-        onMouseDown={onStart}
-        onTouchStart={onStart}>
-        {children}
-      </div>
-      )}
-      {/* { swipeDirection === "left" ? (
-        <div className={`delete${leftSwiping ? " deleting" : ""}`}>
-          <button onClick={onLeftSwipeAction}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
-        </div>
-      ) : (
-        <div className={`archive${rightSwiping ? " archiving" : ""}`}>
-          <button onClick={onRightSwipeAction}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
-        </div>
-      )} */}
+       
     </div>
   );
 };

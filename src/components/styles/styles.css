@@ -5,8 +5,8 @@
 
 .my-swiper{
   border-radius: 10px;
-  margin: 0px 10px 5px 10px;
-  border: 1px solid #dddddd;  
+  margin: 5px 10px 0px 10px;
+
 }
 
 .rstdi {
@@ -37,7 +37,7 @@
 }
 
 .rstdi.deleting,
-.rstdi .archiving {
+.rstdi.archiving {
   transition: all var(--rstdiTransitionDuration) ease-out;
   max-height: 0;
 }
@@ -53,9 +53,14 @@
   transition: transform var(--rstdiTransitionDuration) ease-out;
 }
 
-.rstdi .content.deleting,
-.rstdi .content.archiving
-{
+.rstdi .content.deleting {
+  height: 100%;
+  width: auto;
+  position: relative;
+  transform: scale(0) translateX(var(--rstdiTranslate));
+}
+
+.rstdi .content.archiving {
   height: 100%;
   width: auto;
   position: relative;

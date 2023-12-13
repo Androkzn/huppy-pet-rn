@@ -108,7 +108,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
    };
 
    const editCurrentFood = async () => {
-      return
+        
    }
 
     return (
@@ -123,6 +123,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
             onCancel();
           }
         }}
+        distructiveLeftSwipe = {true}
         onRightSwipe={editCurrentFood}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
         className="my-swiper"

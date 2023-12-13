@@ -42,7 +42,7 @@ const SwipeToDelete = ({
   height = 50,
   transitionDuration = 250,
   swipeWidth = 75, 
-  swipeThreshold = 75,  
+  swipeThreshold = 50,  
   showSwipeAction = true,  
   leftSwipeColor = "rgba(252, 255, 148, 1.00)",  
   leftSwipeText = "Edit",
@@ -104,17 +104,25 @@ const SwipeToDelete = ({
       const currentPosition = cursorPosition(event);
       const moveDistance = currentPosition - startTouchPosition.current;
       setSwipeDirection(moveDistance >=0 ? "right" : "left")
-      
-      // Handle left swipe
-      if (!rtl && moveDistance > startTouchPosition.current - initTranslate.current) {
-        setTranslate(0);
-      }
-      // Handle right swipe
-      else if (rtl && moveDistance < startTouchPosition.current - initTranslate.current) {
-        setTranslate(0);
-      } else {
-        setTranslate(moveDistance);
-      }
+      // console.log("moveDistance",moveDistance)
+      // console.log("swipe direction", swipeDirection)
+      // console.log("startTouchPosition.current - initTranslate.current", startTouchPosition.current - initTranslate.current)
+      // // Handle left swipe
+      // if (!rtl && moveDistance > startTouchPosition.current - initTranslate.current) {
+      //   console.log("setTranslate FIRST",0)
+  
+      //   setTranslate(moveDistance);
+      // }
+      // // Handle right swipe
+      // else if (rtl && moveDistance < startTouchPosition.current - initTranslate.current) {
+      //   console.log("setTranslate SECOND",0)
+      //   setTranslate(0);
+      // } else {
+      //   setTranslate(moveDistance);
+      // }
+
+
+      setTranslate(moveDistance);
     },
     [rtl, touching]
   );
@@ -174,6 +182,7 @@ const SwipeToDelete = ({
   // }, [onRightSwipeConfirm, onRightSwipeConfirmed, onSwipeCancel]);
 
   const onRightSwipeClick = useCallback(() => {
+    console.log("onRightSwipeClick")
     setTransitioning(true); // Set transitioning to true before the action
     if (onRightSwipeConfirm) {
       onRightSwipeConfirm(() => {
@@ -211,7 +220,7 @@ const SwipeToDelete = ({
       const showSwipeRight = showSwipeAction ? (rtl ? -1 : 1) * translate > acceptableMoveRight : false;
   
       const notShowSwipe = showSwipeAction ? (rtl ? -1 : 1) * translate >= acceptableMoveLeft && (rtl ? -1 : 1) * translate <= acceptableMoveRight : true;
-      const swipeWithoutConfirm = (rtl ? 1 : -1) * translate >= swipeWithoutConfirmThreshold;
+      const swipeWithoutConfirm = (swipeDirection === "right" ? 1 : -1) * translate >= swipeWithoutConfirmThreshold;
   
       if (swipeWithoutConfirm) {
         setTranslate(() => -containerWidth);
@@ -225,6 +234,7 @@ const SwipeToDelete = ({
   
       setTouching(() => false);
       if (swipeWithoutConfirm) {
+         console.log("swipeWithoutConfirm", swipeWithoutConfirm)
          swipeDirection === "left" ?  onLeftSwipeClick() : onRightSwipeClick()
         
       }

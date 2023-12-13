@@ -42,10 +42,8 @@ const Home = () => {
   const [dialogType, setDialogType] = useState("addActivity");
   const [categories, setCategories] = useState([]);
   const [categoriesData, setCategoriesData] = useState([]);
-  const [isStatisticToday, setStatisticToday] = useState(true);
-  const [isStatisticExpanded, setStatisticExpanded] = useState(false);
-  const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  const [isStatisticToday, setStatisticToday] = useState(true);
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
@@ -213,6 +211,10 @@ const Home = () => {
   };
   
   const Statistic = ({ foodData }) => {
+    const [isStatisticExpanded, setStatisticExpanded] = useState(false);
+
+    
+
     return (
       <div style={styles.childConteinerStyle}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
@@ -303,7 +305,7 @@ const Home = () => {
         {  
           mealsData.map((meal, index) => 
           <div key={meal._id}>
-            <MealCard meal={meal} index={index + 1} updateMeals={updateMeals} updateFoods={updateFood}/>
+            <MealCard meal={meal} index={index + 1} updateMeals={updateMeals} updateFoods={updateFood} mealsCount = {mealsData.length}/>
           </div>)
         }
       </div>  
@@ -311,13 +313,15 @@ const Home = () => {
   };
   
   const Activities = ({activitiesData}) => {
+    const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
+
     return (
       <div style={styles.childConteinerStyle}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
           <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setActivitiesExpanded(!isActivitiesExpanded) : setActivitiesExpanded(isActivitiesExpanded)}}> 
           <div style={styles.headerArrowStyle} >
             <Image 
-              imageName= {isStatisticExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+              imageName= {isActivitiesExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
               width="20" 
               height="20" 
             />

@@ -10,7 +10,7 @@ import {Image} from '../components/Image.components'
 import SwipeToDelete  from '../components/SwipeToDelete.tsx';
 import * as colors from '../components/styles/Colors';
 
-function MealCard({ meal, index, updateMeals,  updateFoods }) {
+function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
   const mealId = meal._id;
@@ -223,16 +223,19 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
             >
               Add Food
           </ButtonImage>
-          <ButtonImage
-              variant="deleteButton"
-              width='140px'
-              height={30}
-              imageName="delete_orange.svg"
-              imageSize={20}
-              onClick={deleteCurrentMeal}
-            >
-              Delete Meal
-          </ButtonImage>
+          
+          {mealsCount > 1 && 
+            <ButtonImage
+                variant="deleteButton"
+                width='140px'
+                height={30}
+                imageName="delete_orange.svg"
+                imageSize={20}
+                onClick={deleteCurrentMeal}
+              >
+                Delete Meal
+            </ButtonImage>
+          }
           </div>}
 
         </div> {/* Meals container*/}

@@ -329,10 +329,6 @@ async function deleteActivity(user, _id) {
 
   const queryVariables = { query: { _id } };
 
-  // Confirming the user's action
-  const resp = window.confirm("Are you sure you want to delete this activity?");
-  if (!resp) return;
-
   try {
     await request(GRAPHQL_ENDPOINT, deleteActivityQuery, queryVariables, headers);
     return true
@@ -457,10 +453,6 @@ async function deleteFoodCategory(user, _id) {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
-
-   // Confirming the user's action
-   const resp = window.confirm("Are you sure you want to delete this category?");
-   if (!resp) return;
 
   // GraphQL query to delete an food template
   const deleteFoodCategoryQuery = gql`

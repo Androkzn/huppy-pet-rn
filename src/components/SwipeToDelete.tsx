@@ -164,12 +164,14 @@ const SwipeToDelete = ({
   const onLeftSwipeConfirmed = useCallback(() => {
     console.log("onLeftSwipeConfirmed")
     onSwipeCancel()
+    setLeftSwiping(() => true);
     window.setTimeout(onLeftSwipe, transitionDuration);
   }, [onLeftSwipe, transitionDuration]);
 
   const onRightSwipeConfirmed = useCallback(() => {
      console.log("onRightSwipeConfirmed")
      onSwipeCancel()
+     setRightSwiping(() => true);
      window.setTimeout(onRightSwipe, transitionDuration);
   }, [onRightSwipe, transitionDuration]);
 

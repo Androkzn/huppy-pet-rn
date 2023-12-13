@@ -60,6 +60,7 @@ function SignUpForm({onSubmit, buttonText}) {
 }
 
 const Signup = () => {
+  const { setCurrentPage } = useContext(UserContext);  
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -69,6 +70,7 @@ const Signup = () => {
   // As explained in the Login page.
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
+    setCurrentPage("register")
     navigate(redirectTo ? redirectTo : "/register");
   }
 

@@ -76,10 +76,11 @@ function ForgotPasswordForm({ onSubmit}) {
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { emailPasswordSignup } = useContext(UserContext);
+  const { emailPasswordSignup, setCurrentPage } = useContext(UserContext);
 
   const redirectToLoginPage = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
+    setCurrentPage("login")
     navigate(redirectTo ? redirectTo : "/");
   };
 

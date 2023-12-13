@@ -79,6 +79,7 @@ const Register = () => {
   
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
+    setCurrentPage("login")
     navigate(redirectTo ? redirectTo : "/");
   }
 

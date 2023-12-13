@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
@@ -81,43 +81,49 @@ const NavBar = () => {
 
 const TemporaryDrawer = (props) => {
   const { show, toggleDrawer, currentProfile, profiles } = props;
-  const { logOutUser } = useContext(UserContext);
+  const { logOutUser, setCurrentPage } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const logOut = async () => {
     await logOutUser();
     window.location.reload(true);
     return;
-  }
+  };
+
+  const navigateTo = (link) => {
+    setCurrentPage(link);
+    navigate("/" + link);
+  };
 
   const navLinks = [
     {
-      text:  "Profile",
+      text: "Profile",
       Icon: () => (
-        <Avatar
-          width="50px"
-          profile={currentProfile}
-        />
+        <Avatar width="50px" profile={currentProfile} />
       ),
       link: '/profile',
+      action: () => navigateTo('profile'),
     },
     {
-      text:  "Add dog",
+      text: "Add dog",
       Icon: () => (
-        <AddProfileIcon  fill={colors.green}/>
+        <AddProfileIcon fill={colors.green} />
       ),
       link: '/register',
+      action: () => navigateTo('register'),
     },
     {
-      text:  "Change profile",
+      text: "Change profile",
       Icon: () => (
-        <ChangeProfileIcon  fill={colors.green}/>
+        <ChangeProfileIcon fill={colors.green} />
       ),
       link: '/profile',
+      action: () => navigateTo('profile'),  
     },
     {
       text: 'Logout',
       Icon: () => (
-        <LogoutIcon  fill={colors.green}/>
+        <LogoutIcon fill={colors.green} />
       ),
       action: logOut,
     },

@@ -126,7 +126,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
        <li css={styles.foodListRowStyle} key={foodItem._id}>
           <div css={styles.headerFoodStyle()}>
             <div css={styles.headerTextStyle()}>
-              <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
+              <div css={styles.headingFoodStyle}>{foodItem.name}</div>
               <input
                 type="number"
                 css={styles.inputFieldStyle}
@@ -231,61 +231,6 @@ function MealCard({ meal, index, updateMeals,  updateFoods }) {
         </div> {/* Meals container*/}
         
       </div>  
- 
-
- 
-
-      // <div css={styles.childConteinerStyle} >
-      //   <div css={styles.headerMealStyle}>
-      //     <div css={styles.headerTextStyle}>
-      //       <h3 css={styles.headingMealStyle}>MEALS</h3>
-      //       <h4 css={styles.headingTotalStyle}>Total: {calculateTotalWeight(food)}g</h4>
-            // <div css={styles.headingDeleteButonStyle}>
-            //   <ButtonImage
-            //     variant="iconButton"
-            //     imageName="delete_orange.svg"
-            //     imageSize={25}
-            //     onClick={() => deleteCurrentMeal()}
-            //   />
-            //   </div>
-      //     </div> 
-      //   </div>
-        // <ul  css={styles.foodListStyle}>
-        //   {food.map((foodItem) => (
-        //     <li css={styles.foodListRowStyle} key={foodItem._id}>
-        //       <div css={styles.headerFoodStyle}>
-        //         <div css={styles.headerTextStyle}>
-        //           <h4 css={styles.headingFoodStyle}>{foodItem.name}, {foodItem.units}</h4>
-        //           <input
-        //             type="number"
-        //             css={styles.inputFieldStyle}
-        //             value={foodItem.weight}
-        //             onChange={(e) => 
-        //               handleWeightChange(e, foodItem)}
-        //           />
-        //           <div css={styles.headingDeleteButonStyle}>
-        //             <ButtonImage
-        //               variant="iconButton"
-        //               imageName="delete_orange.svg"
-        //               imageSize={25}
-        //               onClick={() => deleteCurrentFood(foodItem._id)}
-        //             />
-        //           </div>
-        //         </div> 
-        //       </div>
-        //     </li>
-        //   ))}
-        // </ul>
-        // <ButtonImage
-        //   variant="addButton"
-        //   width='180px'
-        //   imageName="plus_round_fill_white_button.svg"
-        //   imageSize={20}
-        //   onClick={openAddFoodPage}
-        // >
-        //   Add Food to Meal
-        // </ButtonImage>
-      // </div>
    );
 }
 

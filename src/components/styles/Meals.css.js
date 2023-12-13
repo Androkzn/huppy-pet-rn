@@ -42,6 +42,7 @@ const headingFoodStyle = {
   color: colors.green,
   width: '100%',
   textAlign: 'left',
+  fontWeight: 'bold',
 };
 
 const headingTotalStyle = {
@@ -194,12 +195,12 @@ const totalWeightContainerStyle = {
 
 
 const weightLabellStyle = {
-  margin: "0px 0px 0px 20px",
+  margin: "0px 0px 0px 25px",
   fontWeight: 'bold'
 };
 
 const weightValueStyle = {
-  margin: "0px 35px 0px 0px",
+  margin: "0px 50px 0px 0px",
   fontWeight: 'bold'
 };
 

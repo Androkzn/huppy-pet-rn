@@ -13,10 +13,18 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
     // Function to fetch image data when component mounts
     if (imageDataUrl) {
       setImage(imageDataUrl);
-      setLoading(false); // Set loading to false when imageDataUrl is available
+      setLoading(false);  
+    } else if (foodItem.image && foodItem.image !== ""){
+      setImage(foodItem.image);
+      setLoading(false);
     } else {
-      fetchImage();
+       fetchImage();
     }
+
+    console.log("FoodImage  imageDataUrl: ", imageDataUrl);
+    console.log("FoodImage  foodItem: ", foodItem);
+    console.log("FoodImage  foodItem.image: ", foodItem.image);
+    
   }, [foodItem, image, imageDataUrl]);
 
   // Function to fetch image data when component mounts
@@ -37,9 +45,7 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
     }
   };
 
-  console.log("FoodImage  imageDataUrl: ", imageDataUrl);
-  console.log("FoodImage  foodItem: ", foodItem);
-  console.log("FoodImage  foodItem.image: ", foodItem.image);
+
 
   return (
     <div onClick={onClick}>

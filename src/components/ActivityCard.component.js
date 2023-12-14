@@ -7,7 +7,7 @@ import { deleteActivity, updateActivity } from "../graphql/graphqlUtils";
 import * as stylesActivity from '../components/styles/Activity.css'
 import {ButtonImage, ButtonText } from '../components/Buttons.components'
 import * as enums from "../helpers/Enums.helper"
-import Swipe  from '../components/SwipeToDelete.tsx';
+import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 
 function ActivityCard({ activity, updateActivities}) {

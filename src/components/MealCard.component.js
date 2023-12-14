@@ -7,7 +7,7 @@ import {ButtonImage, ButtonText} from '../components/Buttons.components'
 import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood, addMeal } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 import {Image} from '../components/Image.components'
-import SwipeToDelete  from '../components/SwipeToDelete.tsx';
+import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 
 function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
@@ -112,7 +112,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
    }
 
     return (
-      <SwipeToDelete
+      <Swipe
         height={50}  
         onLeftSwipe={deleteCurrentFood} 
         leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
@@ -144,7 +144,7 @@ function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
             </div> 
           </div>
         </li>
-      </SwipeToDelete>
+      </Swipe>
     )
   }
 

@@ -6,13 +6,10 @@ import styled from '@emotion/styled/macro'
 
   // Main container 
   const mainConteinerStyle = {
-    display: 'flex',
-    flex: '1',
-    flexDirection: 'column',
     alignItems: 'center',
-    margin: '5px 0px 0 0',
-    padding: '10px',
+    margin: '5px 0 0 0',
     borderRadius: '10px',
+    width: '100%',
     backgroundColor: colors.lightBrown,
   };
 
@@ -28,8 +25,6 @@ import styled from '@emotion/styled/macro'
     ...rowStyle,
     justifyContent: 'start',
     alignItems: 'center',
-    marginBottom: '2px',
-    marginLeft: '10px',
   };
   
 
@@ -42,13 +37,10 @@ import styled from '@emotion/styled/macro'
   const nameContainerStyle = {
     ...rowStyle,
     justifyContent: 'start',
-    margin: '5px 10px 5px 10px',
-
  };
 
   const textTitleStyle = {
     padding: '5px',
-    marginLeft: '5px',
     textAlign: 'left',
     fontSize: '15px',
     color: colors.green,
@@ -57,13 +49,10 @@ import styled from '@emotion/styled/macro'
   };
 
  const textStyle = {
-    padding: '0px',
-    marginRight: '5px',
     textAlign: 'right',
     fontSize: '15px',
     color: colors.green,
-    marginRight: '5px',
-    width: '60px',
+    padding: '5px',
   };
 
   const iconContainerStyle = {
@@ -87,7 +76,13 @@ import styled from '@emotion/styled/macro'
     height: '25px',
     borderRadius: '10px',
     backgroundColor: colors.lightGreen2,
+   
  };
+
+  const foodIconContainerStyle = {
+    height: '25px',
+    margin: "0px 5px"
+  };
 
   const headerTrainingStyle ={
     display: 'flex',
@@ -95,6 +90,7 @@ import styled from '@emotion/styled/macro'
     borderRadius: '10px',
     textAlign: 'center',
     width: '100%',
+    minHeight: "50px",
     backgroundColor: colors.lightBrown2,
   };
 
@@ -107,14 +103,9 @@ import styled from '@emotion/styled/macro'
     backgroundColor: colors.oliveLight,
   };
 
-  const checkboxStyle = {
-    width: '150px',
-    borderRadius: '10px',
-    height: '35px',
-  };
- 
   const responsiveMainContainer = styled.div({
     ...rowStyle,
+    margin: '5px 10px 5px 10px',
     [mq.small]: {
       width: '100%',
       flexDirection: 'column',
@@ -130,11 +121,11 @@ import styled from '@emotion/styled/macro'
     rowStyle, 
     columnStyle,
     dropdownStyle,
-    checkboxStyle,
     textStyle,
     textTitleStyle,
     customContainerStyle,
     deleteButonStyle,
     editButonStyle,
-    customButtonContainerStyle
+    customButtonContainerStyle,
+    foodIconContainerStyle,
 };

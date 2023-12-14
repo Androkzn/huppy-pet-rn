@@ -63,7 +63,6 @@ const renderLabel = (date) => {
               setSelectedDate(newDate);
               onChange();
             }}
-            renderInput={(params) => <CustomTextField {...params.inputProps}/>}
             slots={{ textField: CustomTextField }}
             slotProps={{ textField: { size: 'small'} }}
             renderDay={(date, value, dayInCurrentMonth, dayComponent) => (

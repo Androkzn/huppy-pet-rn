@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
-import {Image} from '../components/Image.components'
 import LoginForm from '../components/LoginForm.components'
 import Spiner from '../components/Spinner.components'
 
@@ -23,36 +22,28 @@ const Login = () => {
   const loadUser = async () => {
     if (!user) {
       try {
-        setLoading(true); // Set loading to true when starting to fetch user
+        setLoading(true);  
         const fetchedUser = await fetchUser();
         if (fetchedUser) {
-          // Redirecting them once fetched.
           redirectNow();
         }
       } catch (error) {
         alert(error);
       } finally {
-        setLoading(false); // Set loading to false when fetch is complete (success or failure)
+        setLoading(false); 
       }
     }
   }
 
-  // This useEffect will run only once when the component is mounted.
-  // Hence this is helping us in verifying whether the user is already logged in
-  // or not.
   useEffect(() => {
     setCurrentPage("login")
-    loadUser(); // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadUser();  
   }, []);
 
-  // This function gets fired when the user clicks on the "Login" button.
+ 
   const onSubmit = async (formData) => {
     try {
-      setLoading(true); // Set loading to true when starting to log in
-      // Here we are passing user details to our emailPasswordLogin
-      // function that we imported from our realm/authentication.js
-      // to validate the user credentials and log in the user into our App.
-      //console.log(form)
+      setLoading(true);  
       const loggedInUser = await emailPasswordLogin(formData.username, formData.password);
       if (loggedInUser) {
         redirectNow();
@@ -60,7 +51,7 @@ const Login = () => {
     } catch (error) {
       alert(error);
     } finally {
-      setLoading(false); // Set loading to false when login is complete (success or failure)
+      setLoading(false);  
     }
   };
 

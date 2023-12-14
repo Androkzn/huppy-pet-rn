@@ -10,10 +10,9 @@ import * as Enums from "../helpers/Enums.helper";
 import CustomCheckbox from "./Checkbox.component";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as Constants from "../helpers/Constants.helper";
-//import SwipeToDelete from 'react-swipe-to-delete-ios';
 import '../components/styles/styles.css';
 import * as colors from '../components/styles/Colors';
-import SwipeToDelete  from '../components/SwipeToDelete.tsx';
+import Swipe  from '../components/Swipe.components.tsx';
 import { changeSectionValueFormat } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
 function TrainingCard({ training, updateTrainings }) {
@@ -62,7 +61,7 @@ function TrainingCard({ training, updateTrainings }) {
     <>
       {isSmallScreen ? (
         // Render swipeable component for small screens
-        <SwipeToDelete
+        <Swipe
           onRightSwipe={handleCheckboxValueChange}
           onLeftSwipe={deleteCurrentTraining}
           height={60}  
@@ -96,7 +95,7 @@ function TrainingCard({ training, updateTrainings }) {
               </div>
             </div>
           </div>
-        </SwipeToDelete>
+        </Swipe>
       ) : (
         // Render non-swipeable component for larger screens
         <div style={styleTraining.trainingConteinerStyle}>

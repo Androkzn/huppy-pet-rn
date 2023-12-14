@@ -35,7 +35,7 @@ const cursorPosition = (event: any) => {
   return event?.nativeEvent?.clientX;
 };
 
-const SwipeToDelete = ({
+const Swipe = ({
   onLeftSwipe,
   onLeftSwipeConfirm,
   leftSwipeComponent,
@@ -364,4 +364,4 @@ const SwipeToDelete = ({
   );
 };
 
-export default SwipeToDelete;
+export default Swipe;

@@ -8,81 +8,77 @@
   margin: 5px 5px 5px 5px;
 }
 
-.rstdi {
-  --rstdiHeight: 30px;
-  --rstdiTransitionDuration: 250ms;
-  --rstdiTranslate: 0px;
-  --rstdiIsRtl: 0;
-  --rstdiDeleteColor: rgba(252, 58, 48, 1);
-  --rstdiArchiveColor: rgb(46, 133, 61); /* Color for archive action */
-  --rstdiDeleteWidth: 75px;
-  --rstdiButtonMarginRight: 0;
-  --rstdiButtonMarginLeft: 0;
-
-  width: 100%;
-
+.swiper {
+  --swiperHeight: 30px;
+  --swiperTransitionDuration: 250ms;
+  --swiperTranslate: 0px;
+  --swiperLeftColor: rgba(252, 58, 48, 1);
+  --swiperRightColor: rgb(46, 133, 61); /* Color for archive action */
+  --swiperSwipeWidth: 75px;
+  --swiperButtonMarginRight: 15px;
+  --swiperButtonMarginLeft: 15px;
   width: auto;
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
-  height: var(--rstdiHeight);
-  max-height: calc(var(--rstdiHeight) + 10px);
+  height: var(--swiperHeight);
+  max-height: calc(var(--swiperHeight) + 10px);
 }
 
-.rstdi *,
-.rstdi *:before,
-.rstdi *:after {
+.swiper *,
+.swiper *:before,
+.swiper *:after {
   box-sizing: border-box;
 }
 
-.rstdi.deleting,
-.rstdi.archiving {
-  transition: all var(--rstdiTransitionDuration) ease-out;
+.swiper.leftSwiping,
+.swiper.rightSwiping {
+  transition: all var(--swiperTransitionDuration) ease-out;
   max-height: 0;
 }
 
-.rstdi .content {
+.swiper .content {
   height: 100%;
   width: auto;
   position: relative;
-  transform: translateX(var(--rstdiTranslate));
+  transform: translateX(var(--swiperTranslate));
 }
 
-.rstdi .content.transition {
-  transition: transform var(--rstdiTransitionDuration) ease-out;
+.swiper .content.transition {
+  transition: transform var(--swiperTransitionDuration) ease-out;
 }
 
-.rstdi .content.deleting {
+.swiper .content.leftSwiping {
   height: 100%;
   width: auto;
   position: relative;
-  transform: scale(0) translateX(var(--rstdiTranslate));
+  transform: scale(0) translateX(var(--swiperTranslate));
 }
 
-.rstdi .content.archiving {
+.swiper .content.rightSwiping {
   height: 100%;
   width: auto;
   position: relative;
-  transform: scale(0) translateX(var(--rstdiTranslate));
+  transform: scale(0) translateX(var(--swiperTranslate));
 }
 
-.rstdi .delete {
+.swiper .leftSwipe {
   left: 0;
-  background: var(--rstdiDeleteColor);
+  background: var(--swiperLeftColor);
   position: absolute;
   height: 100%;
   width: 100%;
   top: 0;
   font-weight: 400;
   display: inline-flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   visibility: var(--visibilityLeft);
 }
 
-.rstdi .archive {
-  left:0;
-  background: var(--rstdiArchiveColor);
+.swiper .rightSwipe {
+  right:0;
+  background: var(--swiperRightColor);
   position: absolute;
   height: 100%;
   width: 100%;
@@ -94,12 +90,11 @@
   visibility: var(--visibilityRight);
 }
 
-.rstdi .delete button,
-.rstdi .archive button {
-  width: var(--rstdiDeleteWidth);
-  transition: margin transform var(--rstdiTransitionDuration) ease-in-out;
-  margin-left: var(--rstdiButtonMarginLeft);
-  margin-right: var(--rstdiButtonMarginRight);
+.swiper .leftSwipe button,
+.swiper .rightSwipe button {
+  width: var(--swiperDeleteWidth);
+  transition: margin transform var(--swiperTransitionDuration) ease-in-out;
+  margin-right: var(--swiperButtonMarginRight);
   text-align: center;
   height: 100%;
   background: transparent;
@@ -109,9 +104,9 @@
   cursor: pointer;
 }
 
-.rstdi .archive button {
+.swiper .rightSwipe button {
   margin-right: 0;
-  margin-left:0;
+  margin-left: var(--swiperButtonMarginLeft);
 }
 
  

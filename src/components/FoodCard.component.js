@@ -42,6 +42,13 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
             onCancel();
           }
         }}
+        onRightSwipeConfirm={(onSuccess, onCancel) => {
+          if (window.confirm("Do you really want to delete this item ?")) {
+            onSuccess();
+          } else {
+            onCancel();
+          }
+        }}
         distructiveLeftSwipe = {true}
         onRightSwipe={editFoodHandler}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}

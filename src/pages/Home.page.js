@@ -214,7 +214,7 @@ const Home = () => {
     const [isStatisticExpanded, setStatisticExpanded] = useState(!isSmallScreen);
 
     return (
-      <div style={styles.childConteinerStyle}> 
+      <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '10px' : '0'}}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
         <div style={styles.headerTiteStyle}>
           

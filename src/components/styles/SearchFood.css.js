@@ -155,6 +155,12 @@ import styled from '@emotion/styled/macro'
       maxHeight: '70px',
       minHeight: '70px',
     },
+    [mq.large]: {
+      width: '100%',
+      flexDirection: 'row',
+      maxHeight: '70px',
+      minHeight: '70px',
+    },
   })
 
 

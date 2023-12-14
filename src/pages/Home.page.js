@@ -211,9 +211,7 @@ const Home = () => {
   };
   
   const Statistic = ({ foodData }) => {
-    const [isStatisticExpanded, setStatisticExpanded] = useState(false);
-
-    
+    const [isStatisticExpanded, setStatisticExpanded] = useState(!isSmallScreen);
 
     return (
       <div style={styles.childConteinerStyle}> 
@@ -274,9 +272,19 @@ const Home = () => {
     return (
       <div style={styles.childConteinerStyle}> 
         <div style={styles.headerStyle}>
+        <div style={styles.headerTiteStyle}>
+          
+          <div style={styles.headerArrowStyle} >
+            <Image 
+              imageName= {"arrow_down_green.svg" }
+              width="20" 
+              height="20" 
+            />
+          </div>
           <div style={styles.headerTextStyle}>
             <h3 style={styles.headingStyle}>DIET BALANCE</h3>
           </div>
+        </div>
         </div>
         <div style={styles.chartContainerStyle}>
           {/* Chart */}
@@ -301,7 +309,7 @@ const Home = () => {
 
   const Meals = ({ mealsData }) => {
     return (
-      <div >  {/* Meal container*/}
+      <div style = {{padding: '0px'}}>  {/* Meal container*/}
         {  
           mealsData.map((meal, index) => 
           <div key={meal._id}>

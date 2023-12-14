@@ -75,7 +75,7 @@ const childConteinerStyle = {
   alignItems: 'center',
   width: '100%',
   borderRadius: '20px',
-  marginTop: '20px',
+  
   backgroundColor: colors.grayBackground,
 };
 

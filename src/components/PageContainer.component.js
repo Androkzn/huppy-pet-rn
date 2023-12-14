@@ -17,7 +17,7 @@ const PageContainer = (props) => {
     borderRadius: '10px',
     maxWidth: '900px',
     width: '95%',
-    minHeight:'85vh',
+    //minHeight:'85vh',
     justifyContent: 'centre',
     marginBottom: '100px',
   };

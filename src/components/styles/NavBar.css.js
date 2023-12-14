@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import * as colors from './Colors';
-import * as mq from './Media-queries';
-import styled from '@emotion/styled/macro'
 
 const pickerStyle = {
   margin: '0 15px 0 15px',
@@ -30,10 +28,10 @@ const columnStyle = {
 };
 
 const userInfoContainerStyle = (isSmallScreen) => ({
-  marginTop: "auto", 
+  //margin: "auto", 
   justifyContent: "flex-end",
   display: 'flex',
-  width: isSmallScreen ? '100%' : '100%',
+  width: '100%',
   alignItems: 'center', 
   textAlign: 'center'
 });

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import '../components/styles/styles.css';
+import '../components/styles/swiper.css';
 
 export interface Props {
   onLeftSwipe: Function;

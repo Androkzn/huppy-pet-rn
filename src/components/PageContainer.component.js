@@ -1,17 +1,19 @@
 /** @jsxImportSource @emotion/react */
 
 import { useTheme } from '@mui/material';
-import React from 'react';
+import { UserContext } from "../contexts/user.context";
+import { useContext } from "react";
 
 const PageContainer = (props) => {
   const theme = useTheme();
+  const { isSmallScreen } = useContext(UserContext);
 
   const defaultPageStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    marginTop: '60px',
+    marginTop: isSmallScreen ? '60px' :'90px',
     borderRadius: '10px',
     maxWidth: '900px',
     width: '95%',

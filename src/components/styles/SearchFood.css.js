@@ -17,13 +17,13 @@ import styled from '@emotion/styled/macro'
     width: '100%',
   };
 
-  const fixedTopContainer = {
+  const fixedTopContainer= (isSmallScreen) => ({
     position: 'sticky',
-    top: 60,
+    top: isSmallScreen ? 60 : 90,
     zIndex: 1000,  
     backgroundColor: 'white',  
     width: '100%',  
-  };
+  });
 
   const rowStyle = {
     display: 'flex',
@@ -139,8 +139,8 @@ import styled from '@emotion/styled/macro'
     [mq.medium]: {
       width: '100%',
       flexDirection: 'column',
+
     },
-    //flex: '0 1 66%',
      [mq.small]: {
       width: '100%',
       flexDirection: 'column',
@@ -148,14 +148,12 @@ import styled from '@emotion/styled/macro'
   })
   
   const responsiveMainContainer = styled.div({
-    ...rowStyle,
-     [mq.medium]: {
+    ...mainConteinerStyle,
+    [mq.medium]: {
       width: '100%',
-      flexDirection: 'column',
-    },
-    [mq.small]: {
-      width: '100%',
-      flexDirection: 'column',
+      flexDirection: 'row',
+      maxHeight: '70px',
+      minHeight: '70px',
     },
   })
 

@@ -34,7 +34,7 @@ const saveState = (key, value) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setCurrentPage } = useContext(UserContext);
+  const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
 
   // State for meal ID
   const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
@@ -175,6 +175,7 @@ const saveState = (key, value) => {
         padding: '5px',
         margin: '10px 0px 10px 0px',
         fontWeight: 'bold',
+        fontFamily: "'Balsamiq Sans', sans-serif",
         '&.Mui-selected': {
           color:  colors.orange,
           backgroundColor: `rgba(43, 99, 98, 0.1)`,
@@ -292,15 +293,15 @@ const saveState = (key, value) => {
 
   return (
     <PageContainer>
-      <div style={styles.fixedTopContainer}>
+      <div style={styles.fixedTopContainer(isSmallScreen)}>
         <TopButtonContainer />
-        <div style={styles.mainConteinerStyle}>
+        <styles.responsiveMainContainer>
           <FilterContainer
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
           />
           {SearchContainer()}
-        </div>
+        </styles.responsiveMainContainer>
       </div>
       <ResultContainer
         searchResult={searchResult}

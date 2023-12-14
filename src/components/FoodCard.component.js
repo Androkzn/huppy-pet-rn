@@ -31,19 +31,19 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
   return (
       <div style={style.mainConteinerStyle} >
          <Swipe
-        height={isSmallScreen ? 60 : 50}
-        disabled={!food.isCustom} 
+        height={isSmallScreen ? 70 : 50}
+        disabled={!food.isCustom || !isSmallScreen} 
         onLeftSwipe={deleteFoodTemplateHandler} 
         leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
-          if (window.confirm("Do you really want to delete this item ?")) {
+          if (window.confirm("Do you really want to delete this food?")) {
             onSuccess();
           } else {
             onCancel();
           }
         }}
         onRightSwipeConfirm={(onSuccess, onCancel) => {
-          if (window.confirm("Do you really want to delete this item ?")) {
+          if (window.confirm("Do you want to edit this food?")) {
             onSuccess();
           } else {
             onCancel();
@@ -70,9 +70,11 @@ function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
           {/* Hides delete/edit buttons and label if food template is no custom */}
           { food.isCustom && (
               <div style={style.nameContainerStyle}> 
-               <div style={style.foodIconContainerStyle}>
-                 <Image imageName={`${food.categoryType}.png`} width="25" height="25" />
-                </div>
+                { food.categoryType && food.categoryType !== "" && 
+                  <div style={style.foodIconContainerStyle}>
+                  <Image imageName={`${food.categoryType}.png`} width="25" height="25" />
+                  </div>
+                }
                 <div style={style.customContainerStyle}>
                   <h6>CUSTOM</h6>
                   <Image imageName="paw_white.png" width="20" height="20" />

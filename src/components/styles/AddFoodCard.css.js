@@ -76,12 +76,13 @@ import styled from '@emotion/styled/macro'
     height: '25px',
     borderRadius: '10px',
     backgroundColor: colors.lightGreen2,
+    margin: "5px 5px"
    
  };
 
   const foodIconContainerStyle = {
     height: '25px',
-    margin: "0px 5px"
+    margin: "5px 5px"
   };
 
   const headerTrainingStyle ={

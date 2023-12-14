@@ -46,7 +46,7 @@ const NavBar = () => {
  
   return (
     <>
-      <AppBar position="fixed"  sx={{ backgroundColor: colors.brown, paddingTop: '5px'}}>
+      <AppBar position="fixed"  sx={{ backgroundColor: colors.brown}}>
         <Toolbar>
           {/* Show date picker for mobile instead of logo */}
           {isSmallScreen ? 

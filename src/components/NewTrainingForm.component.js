@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UserContext } from "../contexts/user.context";
 import PageContainer from "./PageContainer.component";
 import * as styles  from './styles/CreateNewTraining.css'
@@ -18,14 +18,23 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
   description: "",
 });
 
+useEffect(() => {
+  console.log("useEffect form", form); // This will log the updated form state
+}, [form]);
+
   const onTextInputChange = (event) => {
     const { name, value } = event.target;
-    setForm({ ...form, [name]: value.toLowerCase() });
+    setForm({ ...form, [name]: value });
   };
 
   const onDropdownInputChange = (name, value) => {
-    const enumValue = name === "category" ? Enums.getTrainingCategoryFor(value.toLowerCase()) : Enums.getTrainingTypeFor(value.toLowerCase())
+    const enumValue = name === "category" ? Enums.getTrainingCategoryFor(value) : Enums.getTrainingTypeFor(value)
+    console.log("name form", name); 
+    console.log("value form", value); 
+    console.log("enumValue form", enumValue); 
+    
     setForm({ ...form, [name]: enumValue });
+    console.log(form)
   };
 
   const getDropdownItems = (name) => {

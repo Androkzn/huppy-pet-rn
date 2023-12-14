@@ -106,12 +106,19 @@ function ActivityCard({ activity, updateActivities}) {
   function getChangeValueStep() {
     return  activity.metric === enums.ActivityMetric.DISTANCE ? 1 : 10;
   }
+
   
+  const optionsActivityType= Object.values(enums.ActivityType).map((type) => ({
+    rawValue: type,
+    title: enums.getTitleForActivityType(type),
+  }))
 
+  const optionsActivityMetric= Object.values(enums.ActivityMetric).map((type) => ({
+    rawValue: type,
+    title: enums.getDDTitleForActivityMetric(type),
+  }))
+  
   return (
-    
-      //<div style={stylesActivity.activityConteinerStyle} > 
-
       <Swipe
         onLeftSwipe={deleteCurrentActivity}
         height={140}  
@@ -123,6 +130,7 @@ function ActivityCard({ activity, updateActivities}) {
             onCancel();
           }
         }}
+        distructiveLeftSwipe = {true}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
         className="my-swiper"
         leftSwipeColor={colors.orange}
@@ -141,9 +149,9 @@ function ActivityCard({ activity, updateActivities}) {
                     style={stylesActivity.dropdownStyle}
                     onChange={(e) => handleTypeValueChange(e)}  
                   >
-                    {Object.values(enums.ActivityType).map((option, index) => (
-                      <option style={stylesActivity.dropdownItemStyle} key={index}  >
-                        {enums.getTitleForActivityType(option)}
+                    {optionsActivityType.map((item) => (
+                      <option key={item.rawValue} value={item.rawValue}>
+                        {item.title}
                       </option>
                     ))}
                   </select>
@@ -161,11 +169,11 @@ function ActivityCard({ activity, updateActivities}) {
               style={stylesActivity.dropdownStyle}
               onChange={(e) => handleMetricValueChange(e)}
             >
-              {Object.values(enums.ActivityMetric).map((option, index) => (
-                <option key={index}>
-                  {enums.getDDTitleForActivityMetric(option)}
-                </option>
-              ))}
+            {optionsActivityMetric.map((item) => (
+              <option key={item.rawValue} value={item.rawValue}>
+                {item.title}
+              </option>
+            ))}
             </select>
             <div style={stylesActivity.rowStyle}>
               <ButtonText 
@@ -190,7 +198,6 @@ function ActivityCard({ activity, updateActivities}) {
           </div> 
         </div>
         </Swipe>
-      //</div>
    );
 }
 

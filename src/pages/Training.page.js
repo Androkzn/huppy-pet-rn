@@ -78,7 +78,7 @@ const Training = () => {
     if (dialogType === "addTraining") { 
       return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
     } else if (dialogType === "showError") {
-      return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
+      
     } 
   };
 

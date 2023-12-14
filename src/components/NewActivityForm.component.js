@@ -23,8 +23,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     const { value } = event.target;
     const valueActivity = value === "" ? 0 : parseInt(value, 10);
     setValue(valueActivity)
-    form.metric === Enums.ActivityMetric.DISTANCE ?  setForm({ ...form, ["distance"]: valueActivity }) :  setForm({ ...form, ["duration"]: valueActivity });
-    setForm({ ...form, ["burnedCalories"]: getCaloriesBurnedFor(valueActivity) });
+    form.metric === Enums.ActivityMetric.DISTANCE ?  setForm({ ...form, ["distance"]: valueActivity, ["burnedCalories"]: getCaloriesBurnedFor(valueActivity) }) :  setForm({ ...form, ["duration"]: valueActivity, ["burnedCalories"]: getCaloriesBurnedFor(valueActivity) });
   };
 
   const onDropdownInputChange = (name, value) => {

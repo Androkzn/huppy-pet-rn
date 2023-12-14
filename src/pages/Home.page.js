@@ -5,22 +5,17 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
-import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'
-import { ReactComponent as DiaryIcon } from '../components/assets/diary_tab_icon_unselected.svg'
-import { ReactComponent as ActivityIcon } from '../components/assets/activity_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
 import { loadMeals, loadFood, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
-import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
-import {ButtonText} from "../components/Buttons.components"
 
 const Home = () => {
     // Function to load state from localStorage
@@ -60,6 +55,7 @@ const Home = () => {
   // Handles dialog submission
   const handleDialogSubmit = (form, dialogType) => {
     if (dialogType === "addActivity") {
+      console.log("addActivity form", form)
       const data = {
         "type": form.type,
         "metric": form.metric,
@@ -79,8 +75,6 @@ const Home = () => {
     console.log("getDialogContent", dialogType)
     if (dialogType === "addActivity") { 
       return <NewActivityForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
-    } else if (dialogType === "addTraining") {
-      return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
     } 
   };
 

@@ -212,8 +212,8 @@ export const FoodSection = {
 
   // Enum TrainingCategory definition
   export const TrainingCategory = {
-    SOCIAL: 'social',
     OBEDIENCE: 'obedience',
+    SOCIAL: 'social',
     POTTY: 'potty',
     SOUNDS: 'sounds',
     ITEMS: 'items',
@@ -338,6 +338,7 @@ export const TrainingType = {
 // Enum TrainingType methods
 export const getTrainingTypeFor = (rawValue) => {
   for (const type in TrainingType) {
+    console.log("getTrainingTypeFor", rawValue)
     if (TrainingType[type] === rawValue) {
       return TrainingType[type];
     }

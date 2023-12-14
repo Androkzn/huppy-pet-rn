@@ -320,6 +320,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     };
   
     const textFieldStyle = {
+      minWidth: '100px',
       border: 'none', 
       flex: 1,  
       outline: 'none',  

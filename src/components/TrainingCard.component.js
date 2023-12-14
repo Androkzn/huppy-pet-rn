@@ -74,7 +74,7 @@ function TrainingCard({ training, updateTrainings }) {
               onCancel();
             }
           }}
-
+          distructiveLeftSwipe={true}
           className="my-swiper"
           leftSwipeColor={colors.orange}
           rightSwipeColor={training.isCompleted ? colors.yellow : colors.lightGreen2}

@@ -89,13 +89,15 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
         
   // Function to fetch avatar data when component mounts
   const fetchImage = async () => {
-    console.log(`Fetch Image for`, foodItem.userId)
+    if (foodItem?.userId && foodItem?._id)
+
     try {
       const type = 'url'
       const avatarResult = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
       const url = avatarResult.data
       console.log(`image url`, url)
-      setFoodItem("image", url)
+      setFoodItem({ ...foodItem, "image": url });
+
       return 
     } catch (error) {
       console.log("Error fetching avatar:", error);
@@ -145,19 +147,27 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
       fetchImage()
    }, [foodItem.image]);
 
+  
    const convertUrlToImageFile = async () => {
-    console.log('image:', foodItem.image);
-
+    console.log('convertUrlToImageFile');
+   
     // Fetch the image from the URL and convert it to a file
-    const url = await getImageUrl();
+    let url = ""
+
+    if (foodItem.image && foodItem.image !== "") {
+      url = foodItem.image
+    } else {
+      url =   await getImageUrl();
+    }
+
+    console.log('convertUrlToImageFile url:', url);
     if (url) {
       try {
-        console.log('url:', url);
         const response = await fetch(url);
-        console.log('response:', response);
+        console.log('convertUrlToImageFile response:', response);
         const blob = await response.blob();
         const imageFile = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-        console.log('imageFile:', imageFile);
+        console.log('convertUrlToImageFile imageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
@@ -167,7 +177,8 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
 
 // Function to fetch avatar data when the component mounts
 const getImageUrl = async () => {
-  console.log(`Fetch Image for`, foodItem._id);
+  if (foodItem?.userId && foodItem?._id) return
+  console.log("getImageUrl foodItem:", foodItem);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';

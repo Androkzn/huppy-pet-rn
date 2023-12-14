@@ -5,13 +5,11 @@ import Spinner from './Spinner.components'; // Import your Spinner component
 import * as colors from './styles/Colors'
 
 const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, borderWidth, borderColor, onClick , isEditing = true }) => {
-  const [image, setImage] = useState(foodItem.image);
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(true); // Added loading state
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    console.log("FoodImage foodItem.image", foodItem.image);
-    console.log("FoodImage imageDataUrl", imageDataUrl);
     // Function to fetch image data when component mounts
     if (imageDataUrl) {
       setImage(imageDataUrl);
@@ -23,6 +21,7 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
 
   // Function to fetch image data when component mounts
   const fetchImage = async () => {
+    if (foodItem?.userId && foodItem?._id)
     try {
       const type = 'url';
       const result = await axios.get(`${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`);
@@ -30,7 +29,7 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
         setImage(result.data);
         setLoading(false); // Set loading to false when the image is fetched
       }
-      console.log("FoodImage", result.data);
+     
       return;
     } catch (error) {
       console.log("Error fetching image:", error);
@@ -38,7 +37,10 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
     }
   };
 
-  console.log("FoodImage  image", image);
+  console.log("FoodImage  imageDataUrl: ", imageDataUrl);
+  console.log("FoodImage  foodItem: ", foodItem);
+  console.log("FoodImage  foodItem.image: ", foodItem.image);
+
   return (
     <div onClick={onClick}>
       {loading ? (

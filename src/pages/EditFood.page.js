@@ -102,7 +102,7 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
 
    // Updates food
    const getFood = async () => {
-    if (food){
+    if (food) {
       setFoodItem(food)
       saveState('foodEdited', food);
       return food  

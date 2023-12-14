@@ -60,8 +60,8 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
       // Use the cropped image when saving
       saveImage(croppedImage || imageSelected);
       setImage(croppedImage || imageSelected)
-      console.log('imageSelected:', imageSelected);
-      console.log('croppedImage:', croppedImage);
+      //console.log('imageSelected:', imageSelected);
+      //console.log('croppedImage:', croppedImage);
     };
 
     const compressImage = async (file, { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }) => {
@@ -94,12 +94,12 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
         
   // Function to fetch avatar data when component mounts
   const fetchImage = async () => {
-    console.log(`Fetch Image for`, foodItem.userId)
+    //console.log(`Fetch Image for`, foodItem.userId)
     try {
       const type = 'url'
       const avatarResult = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
       const url = avatarResult.data
-      console.log(`image url`, url)
+      //console.log(`image url`, url)
       setFoodItem("image", url)
       return 
     } catch (error) {
@@ -150,18 +150,18 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
    }, [foodItem.image]);
 
    const convertUrlToImageFile = async () => {
-    console.log('image:', foodItem.image);
+   // console.log('image:', foodItem.image);
 
     // Fetch the image from the URL and convert it to a file
     const url = await getImageUrl();
     if (url) {
       try {
-        console.log('url:', url);
+       // console.log('url:', url);
         const response = await fetch(url);
-        console.log('response:', response);
+        //console.log('response:', response);
         const blob = await response.blob();
         const imageFile = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-        console.log('imageFile:', imageFile);
+       // console.log('imageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
@@ -171,7 +171,7 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
 
 // Function to fetch avatar data when the component mounts
 const getImageUrl = async () => {
-  console.log(`Fetch Image for`, foodItem._id);
+  //console.log(`Fetch Image for`, foodItem._id);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';

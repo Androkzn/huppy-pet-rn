@@ -7,7 +7,7 @@ import * as enums from "../helpers/Enums.helper"
 import FoodImage from '../components/FoodImage.components'
  
 const EditFoodForm = ({ editFood, foodItem, setFoodItem, updateImage }) => {
-  console.log("editFood foodItem",foodItem)
+  console.log("EditFoodForm foodItem",foodItem)
  
   const onTextInputChange = (event) => {
     const {name, value} = event.target
@@ -36,6 +36,7 @@ const EditFoodForm = ({ editFood, foodItem, setFoodItem, updateImage }) => {
 
   }
   
+
   return <div  css={styles.addFoodFormStyle}>
     <form >
       <div style={styles.imageContainerStyle}> 

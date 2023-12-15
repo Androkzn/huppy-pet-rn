@@ -43,21 +43,24 @@ const NavBar = () => {
         </div>
     );
   };
+
+  const HeaderLogo = () => {
+    console.log("HeaderLogo currentPage", currentPage)
+    return (
+      <div>
+         { (!isSmallScreen) ||  (currentPage === "login" || currentPage === "forgot" || currentPage === "signup" || currentPage === "register") && 
+          <Image imageName="logo_green_stroke.png" width="260" height="77" />
+         }
+    </div>
+    );
+  };
  
   return (
     <>
       <AppBar position="fixed"  sx={{ backgroundColor: colors.brown}}>
         <Toolbar>
-          {/* Show date picker for mobile instead of logo */}
-          {isSmallScreen ? 
-          (
-            <DatePicker/>
-          ) : ( 
-            <div>
-              <Image imageName="logo_green_stroke.png" width="260" height="77" />
-            </div>
-          )}
-
+          <DatePicker/>
+          <HeaderLogo/>
           {isLoggedIn() && (
             <div style={styles.userInfoContainerStyle(isSmallScreen)}>
                {!isSmallScreen && (

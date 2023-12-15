@@ -28,6 +28,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/forgot" element={<ForgotPassword />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/register" element={<Register />} />
               <Route element={<PrivateRoute />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/createNewFood" element={<CreateNewFood />} />
@@ -36,7 +37,6 @@ function App() {
                 <Route path="/addFood" element={<AddFood />} />
                 <Route path="/editFood" element={<EditFood />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/training" element={<Training />} />
                 <Route path="/more" element={<More />} />
               </Route>

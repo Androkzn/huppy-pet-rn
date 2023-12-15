@@ -10,7 +10,6 @@ import {Image} from '../components/Image.components'
 import {ButtonText} from '../components/Buttons.components'
 
 function SignUpForm({onSubmit, buttonText}) {
-  const { setCurrentPage } = useContext(UserContext);  
   const [form, setForm] = useState({
       email: "",
       password: "",
@@ -28,10 +27,6 @@ function SignUpForm({onSubmit, buttonText}) {
   function handleSubmit() {
     onSubmit(form)
   }
-
-  useEffect(() => {
-    setCurrentPage("signUp")
-  }, []);
 
   return (
     <form
@@ -74,6 +69,10 @@ const Signup = () => {
     navigate(redirectTo ? redirectTo : "/register");
   }
 
+  const navigatedTo= (link) => {
+    setCurrentPage(link)
+  } 
+
   // As explained in the Login page.
   const onSubmit = async (formData) => {
     try {
@@ -92,9 +91,11 @@ const Signup = () => {
         <div css={styles.loginHeaderStyle}>
           <div css={styles.headingLoginStyle} >CREATE ACCOUNT</div>
         </div>
-          <SignUpForm onSubmit={onSubmit} buttonText="Continue"/>
+          <SignUpForm 
+            onSubmit={onSubmit} 
+            buttonText="Continue"/>
           <div  >
-            <p>Have an account already? <Link to="/login"  css={styles.linkSignup}>Login</Link></p>
+            <p onClick={navigatedTo("login")}>Have an account already? <Link to="/login"  css={styles.linkSignup}>Login</Link></p>
           </div>
       </div>
     </div>

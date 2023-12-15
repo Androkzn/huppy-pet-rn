@@ -168,11 +168,6 @@ const updateCategory= async (type, value) => {
   
 };
 
-useEffect(() => {
-  setCurrentPage("register")
-}, []);
-
-
   return <PageContainer>
     <RegisterForm 
       profile={profile} 

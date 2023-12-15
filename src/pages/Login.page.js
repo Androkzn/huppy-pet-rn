@@ -55,6 +55,10 @@ const Login = () => {
     }
   };
 
+  const navigatedTo= (link) => {
+    setCurrentPage(link)
+  }
+
   return (
     <div css={styles.containerStyle}> 
     {loading ? (
@@ -68,8 +72,8 @@ const Login = () => {
         </div>
           <LoginForm onSubmit={onSubmit} />
           <div css={styles.elementsInRow}>
-            <p><Link to="/forgot" css={styles.linkForgot}>Forgot password?</Link></p>
-            <p><Link to="/signup" css={styles.linkSignup}>Signup</Link></p>
+            <p onClick={navigatedTo("forgot")}><Link to="/forgot" css={styles.linkForgot}>Forgot password?</Link></p>
+            <p onClick={navigatedTo("signup")}><Link to="/signup" css={styles.linkSignup}>Signup</Link></p>
           </div>
       </div>
       

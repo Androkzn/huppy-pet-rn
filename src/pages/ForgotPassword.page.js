@@ -30,7 +30,7 @@ function ForgotPasswordForm({ onSubmit}) {
   }
 
   useEffect(() => {
-    setCurrentPage("signUp")
+    setCurrentPage("signup")
   }, []);
 
   return (
@@ -96,19 +96,21 @@ const ForgotPassword = () => {
     }
   };
  
+  const navigatedTo= (link) => {
+    setCurrentPage(link)
+  } 
 
   return (
     <div css={styles.containerStyle}>
       <div css={styles.loginConteinerStyle}>
         <div css={styles.loginHeaderStyle}>
-          <h4 css={styles.headingLoginStyle}>RESET PASSWORD</h4>
-          <Image imageName="dog_sit.png" width="40" height="50" />
+          <div css={styles.headingLoginStyle}>RESET PASSWORD</div>
         </div>
         <ForgotPasswordForm
           onSubmit={onSubmit}
         />
         <div>
-          <p>
+          <p onClick={navigatedTo("login")}>
             Have an account already? <Link to="/login" css={styles.linkSignup}>Login</Link>
           </p>
         </div>

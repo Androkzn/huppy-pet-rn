@@ -417,6 +417,10 @@ async function deleteFoodTemplate(user, _id) {
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
+   // Confirming the user's action
+   const resp = window.confirm("Are you sure you want to delete this food forever?");
+   if (!resp) return;
+
   // GraphQL query to delete an food template
   const deleteFoodTemplateQuery = gql`
       mutation DeleteFoodTemplate($query: FoodTemplateQueryInput!) {

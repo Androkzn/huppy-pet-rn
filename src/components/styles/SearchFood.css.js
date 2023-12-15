@@ -150,13 +150,15 @@ import styled from '@emotion/styled/macro'
   const responsiveMainContainer = styled.div({
     ...mainConteinerStyle,
     [mq.medium]: {
-      width: '100%',
+      paddingLeft: '50px',
+      width: 'auto',
       flexDirection: 'row',
       maxHeight: '70px',
       minHeight: '70px',
     },
     [mq.large]: {
-      width: '100%',
+      paddingLeft: '50px',
+      width: 'auto',
       flexDirection: 'row',
       maxHeight: '70px',
       minHeight: '70px',

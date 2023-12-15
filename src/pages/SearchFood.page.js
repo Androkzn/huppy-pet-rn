@@ -3,12 +3,10 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
-import { getAllCustomFoodTemplates, getAllFoodTemplatesForCategory, searchForFood } from "../graphql/graphqlUtils";
 import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
 import * as styles from "../components/styles/SearchFood.css"
 import {ButtonImage, ButtonLink} from '../components/Buttons.components'
-import { Clear} from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import {Image} from '../components/Image.components'
 import TextField from '@mui/material/TextField';
@@ -19,6 +17,8 @@ import * as colors from '../components/styles/Colors';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import {useSearchForFood} from "../hooks/query.hooks"
+import Spiner from "../components/Spinner.components"
 
 const SearchFood = () => {
   // Function to load state from localStorage
@@ -34,21 +34,18 @@ const saveState = (key, value) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
+  const { user, setCurrentPage, isSmallScreen, selectedDate } = useContext(UserContext);
 
-  // State for meal ID
   const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
   // State for search query
   const [searchQuery, setSearchQuery] = useState(loadState("searchQuery", ""));
   // State for selected category filter
   const [selectedCategory, setSelectedCategory] = useState(loadState("selectedCategory", "meat"));
-   // State for searchResult 
-  const [searchResult, setResults] = useState(loadState("searchResult", []));
    // State for radio buttons 
   const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", Enums.FilterFood.ALL));
-  // State for date
-  const [selectedDate, setSelectedDate] = useState(loadState("selectedDate", new Date() ));
-
+  // Search results
+  const { data: searchResult, isLoading, isError } = useSearchForFood(searchQuery, selectedFilter, selectedCategory, user);
+  
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     setCurrentPage("addFood")
@@ -63,15 +60,15 @@ const saveState = (key, value) => {
   const updateSearchResults = () => {
     // Do not query an empty string if selected filter is "All"
     if (searchQuery.length > 0 || selectedFilter !== Enums.FilterFood.ALL) {
-      searchFood(); 
+      //searchFood(); 
     } else {
-      setResults([]);
+      //setResults([]);
     }
   };
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    setResults([]);
+    //setResults([]);
   };
 
   useEffect(() => {
@@ -99,31 +96,10 @@ const saveState = (key, value) => {
    if (location.state?.mealId) {
     setMealId(location.state?.mealId);
     saveState("mealId", location.state?.mealId);
-    setSelectedDate(location.state?.selectedDate)
     saveState("selectedDate", location.state?.selectedDate);
 
    }
   }, [location.state]);
-
-  // Func that is responsible for searching Food Templates in DB based on search string
-  async function searchFood() {
-    console.log("searchFood for:", selectedFilter);
-    if (selectedFilter === Enums.FilterFood.ALL) {
-      const results = await searchForFood(searchQuery, user);
-      setResults(results);
-    } else if  (selectedFilter === Enums.FilterFood.CATEGORY) {
-      const results = await getAllFoodTemplatesForCategory(user, selectedCategory)
-      console.log("Filter by category results:", results);
-      setResults(results);
-    } else if  (selectedFilter === Enums.FilterFood.CUSTOM) {
-      const results = await getAllCustomFoodTemplates(user)
-      console.log("My food results:", results);
-      setResults(results);
-    } else if  (selectedFilter === Enums.FilterFood.RECIPE){
-      setResults([]);
-    }
-    console.log("searchFood results:", searchResult);
-  }
 
    const TopButtonContainer = () => {
     return (
@@ -159,10 +135,9 @@ const saveState = (key, value) => {
       }
     
       const customTabStyle = {
-         
         color:colors.green,
         fontWeight: 'bold',
-        margin: '0px 0px 0px 0px',
+        margin: '5px 0px 5px 0px',
         '&.Mui-selected': {
           color: colors.orange,
           backgroundColor: colors.orange,
@@ -171,10 +146,11 @@ const saveState = (key, value) => {
 
       const customTabButtonStyle = {
         maxHeight: '20px',
-        maxWidth: '10px',
-        padding: '5px',
-        margin: '10px 0px 10px 0px',
+        minWidth: '85px',
+        padding: '0px',
+        margin: '0px 0px 0px 0px',
         fontWeight: 'bold',
+        fontSize: '14px',
         fontFamily: "'Balsamiq Sans', sans-serif",
         '&.Mui-selected': {
           color:  colors.orange,
@@ -207,6 +183,18 @@ const saveState = (key, value) => {
     
   const ResultContainer = ({ searchResult, openAddFoodPage }) => {
       // Check if searchResult is not defined or is an empty array
+    if (isLoading) {
+      return <Spiner/>
+    }
+
+    if (isError) {
+      return (
+        <div style={styles.placeholderStyle}>
+          <Image imageName="general_error.png" width="200" height="250"/>
+        </div>
+      )
+    }
+
     if (!searchResult || searchResult.length === 0) {
       return <div style={styles.placeholderStyle}>
         {selectedFilter === Enums.FilterFood.ALL &&  searchQuery.length === 0 ? (

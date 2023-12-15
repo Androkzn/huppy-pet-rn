@@ -31,7 +31,7 @@ const NavBar = () => {
   const DatePicker = () => {
     return (
         <div>
-        { (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
+        { isSmallScreen && (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
           <CustomDatePickerWithArrows
             value={currentDate}
             onChange={(date) => setCurrentDate(date) }
@@ -45,10 +45,15 @@ const NavBar = () => {
   };
 
   const HeaderLogo = () => {
+    const isDisplayed =  (!isSmallScreen) ||  ((currentPage === "login" || currentPage === "forgot" || currentPage === "signup" || currentPage === "register"))
+
     console.log("HeaderLogo currentPage", currentPage)
+    console.log("isDisplayed", isDisplayed)
+    
+    
     return (
       <div>
-         { (!isSmallScreen) ||  (currentPage === "login" || currentPage === "forgot" || currentPage === "signup" || currentPage === "register") && 
+         { isDisplayed && 
           <Image imageName="logo_green_stroke.png" width="260" height="77" />
          }
     </div>

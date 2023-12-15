@@ -59,7 +59,7 @@ const TabBar = () => {
       display: 'flex', 
       justifyContent: 'space-around', 
       padding: '5px',
-      //boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)',  
+      boxShadow: '0px -3px 10px rgba(0, 0, 0, 0.1)',  
       
       }}>
       <Tabs
@@ -67,9 +67,7 @@ const TabBar = () => {
         onChange={handleChange}
         aria-label="icon label tabs example"
         indicatorColor="none"
-        sx={{
-          
-        }}
+        sx={{}}
       >
         <Tab 
           value={0} 
@@ -78,6 +76,7 @@ const TabBar = () => {
         } 
           label="Diary" 
           sx={{
+            fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',
@@ -97,6 +96,7 @@ const TabBar = () => {
         } 
           label="Dashboard" 
           sx={{
+            fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',
@@ -114,6 +114,7 @@ const TabBar = () => {
           icon={<TrainingIcon width= {imageSize} fill={value === 2 ? colors.orange : colors.green}/>} 
           label="Training" 
           sx={{
+            fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',
@@ -131,6 +132,7 @@ const TabBar = () => {
           icon={ <HealthIcon width= {imageSize} fill={value === 3 ? colors.orange : colors.green}/>} 
           label= "Health"
           sx={{
+             fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',
@@ -148,6 +150,7 @@ const TabBar = () => {
           icon={ <MoreIcon width= {imageSize} fill={value === 4 ? colors.orange : colors.green}/>} 
           label="More" 
           sx={{
+            fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',

@@ -263,23 +263,23 @@ const Home = () => {
           </div>
           ) : 
           (
-         <div style={styles.chartContainerStyle}>
+         <div >
            {categories && categories.length > 0 ? (
-            <div>
-            <div style={styles.chartStyle}>
-                <ChartPie data={categories}/>
-            </div>
-            <div style={styles.chartLegentStyle}>
-                {categories.map((category)  => (
-                  <FoodCategoryRow
-                    key={category?.name}
-                    name={category?.name}
-                    weight={getTotalCategoryWeight(category)}
-                    color={category?.color}
-                    value={category?.percentage} 
-                  />
-                ))}
-            </div>
+            <div style={styles.chartContainerStyle}>
+              <div style={styles.chartStyle}>
+                  <ChartPie data={categories}/>
+              </div>
+              <div style={styles.chartLegentStyle}>
+                  {categories.map((category)  => (
+                    <FoodCategoryRow
+                      key={category?.name}
+                      name={category?.name}
+                      weight={getTotalCategoryWeight(category)}
+                      color={category?.color}
+                      value={category?.percentage} 
+                    />
+                  ))}
+              </div>
             </div>
             ) : 
             (

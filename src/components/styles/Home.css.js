@@ -149,13 +149,13 @@ const chartContainerStyle = {
 
 const chartStyle = {
   flex: '0 1 100%',  
-  margin: 'auto 20px auto auto',
+  margin: 'auto 20px auto 10px',
   maxWidth: '200px',
 };
 
 const chartLegentStyle = {
   flex: '1 1 100%',
-  margin: '10px auto auto 20px',
+  margin: 'auto 20px auto 10px',
   maxWidth: '230px',
 };
 

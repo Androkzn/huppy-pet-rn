@@ -850,7 +850,7 @@ try {
 }
 
 async function loadActivities(user, currentProfile, currentDate) {
-  if (!user && !currentProfile) { return []}
+  if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -901,7 +901,7 @@ async function loadActivities(user, currentProfile, currentDate) {
 }
 
 async function loadTrainings(user, currentProfile, currentDate) {
-  if (!user && !currentProfile) { return []}
+  if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -953,7 +953,7 @@ async function loadTrainings(user, currentProfile, currentDate) {
 }
 
 async function addMeal(user, currentProfile, selectedDate) {
-  if (!user && !currentProfile) { return false}
+  if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -995,7 +995,7 @@ async function addMeal(user, currentProfile, selectedDate) {
 }
 
 async function addActivity(user, currentProfile, selectedDate, data) {
-    if (!user && !currentProfile) { return false}
+    if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1037,7 +1037,7 @@ async function addActivity(user, currentProfile, selectedDate, data) {
 }
 
 async function addTraining(user, currentProfile, selectedDate, data) {
-  if (!user && !currentProfile) { return false}
+  if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1078,7 +1078,7 @@ async function addTraining(user, currentProfile, selectedDate, data) {
 }
 
 async function addFoodCategory(user, currentProfile, data) {
-  if (!user && !currentProfile) { return false}
+  if (!user || !currentProfile) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id

@@ -264,6 +264,8 @@ const Home = () => {
           ) : 
           (
          <div style={styles.chartContainerStyle}>
+           {categories && categories.length > 0 ? (
+            <div>
             <div style={styles.chartStyle}>
                 <ChartPie data={categories}/>
             </div>
@@ -278,6 +280,18 @@ const Home = () => {
                   />
                 ))}
             </div>
+            </div>
+            ) : 
+            (
+            <div style={styles.placeholderStyle}>
+              <Image 
+                imageName= {"no_data_placeholder.png"}
+                width={ "200"}
+                height={"170"}
+              />
+            </div>
+            )
+          }
           </div>
           )
           }
@@ -287,6 +301,11 @@ const Home = () => {
 
   const Meals = () => {
    const { data: meals, isLoading, isError } = useLoadMealsForDate(user, currentProfile, currentDate);
+  // Adds empty meal for date 
+  
+  if (!isLoading && !isError && (meals === null || meals.length === 0)) {
+    addMealForDate()
+  }
 
    console.log("meals",meals)
     return (

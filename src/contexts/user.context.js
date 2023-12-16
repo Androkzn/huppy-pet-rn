@@ -74,16 +74,20 @@ export const UserProvider = ({ children }) => {
 
   // Fetch profiles when user is fetched
   useEffect(() => {
-      loadUserProfiles();
+      loadUserProfiles(user);
   }, [user]);
 
-  const loadUserProfiles = async () => {
+  const loadUserProfiles = async (user) => {
     if (user) {
       const { profilesFetched, currentProfileFetched } = await getUserProfiles(user);
-  
+      console.log("loadUserProfiles currentProfileFetched", currentProfileFetched)
+      console.log("loadUserProfiles profilesFetched", profilesFetched)
       if (profilesFetched && currentProfileFetched) {
         setProfiles(profilesFetched);
         setCurrentProfile(currentProfileFetched);
+        return true
+      } else {
+        return false
       }
     }
   };

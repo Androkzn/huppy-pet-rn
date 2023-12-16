@@ -252,7 +252,6 @@ const Home = () => {
           </div>
         </div>
         </div>
-         
           {/* Chart */}
           { (isLoading) || (isError)? 
           (

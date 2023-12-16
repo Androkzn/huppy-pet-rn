@@ -10,10 +10,11 @@ import Spiner from '../components/Spinner.components'
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, fetchUser, emailPasswordLogin, setCurrentPage } = useContext(UserContext);
+  const { user, fetchUser, emailPasswordLogin, setCurrentPage, loadUserProfiles, currentProfile } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
 
   const redirectNow = () => {
+    console.log("redirectNow currentProfile", currentProfile)
     const redirectTo = location.search.replace("?redirectTo=", "");
     setCurrentPage("home")
     navigate(redirectTo ? redirectTo : "/");
@@ -23,8 +24,11 @@ const Login = () => {
     if (!user) {
       try {
         setLoading(true);  
-        const fetchedUser = await fetchUser();
-        if (fetchedUser) {
+        const userFetched = await fetchUser();
+        const isProfileFetched =  await loadUserProfiles(userFetched);
+       
+        if (userFetched && isProfileFetched) {
+          console.log("loadUser currentProfile", currentProfile)
           redirectNow();
         }
       } catch (error) {
@@ -45,7 +49,11 @@ const Login = () => {
     try {
       setLoading(true);  
       const loggedInUser = await emailPasswordLogin(formData.username, formData.password);
-      if (loggedInUser) {
+      const isProfileFetched =  await loadUserProfiles(loggedInUser);
+      console.log("onSubmit isProfileFetched", isProfileFetched)
+
+      if (loggedInUser && isProfileFetched) {
+        console.log("onSubmit currentProfile", currentProfile)
         redirectNow();
       }
     } catch (error) {

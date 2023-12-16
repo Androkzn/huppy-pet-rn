@@ -772,7 +772,12 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
         headers
       );
       const meals = resp.meals.map(meal => ({ ...meal, key: meal._id }))
-      return(meals) 
+      if (meals) {
+        console.log("meals", meals)
+        return(meals) 
+      } else {
+        return([]) 
+      }
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
@@ -845,7 +850,7 @@ try {
 }
 
 async function loadActivities(user, currentProfile, currentDate) {
-  if (!user) { return []}
+  if (!user && !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -896,7 +901,7 @@ async function loadActivities(user, currentProfile, currentDate) {
 }
 
 async function loadTrainings(user, currentProfile, currentDate) {
-  if (!user) { return []}
+  if (!user && !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -948,7 +953,7 @@ async function loadTrainings(user, currentProfile, currentDate) {
 }
 
 async function addMeal(user, currentProfile, selectedDate) {
-    if (!user) { return false}
+  if (!user && !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -990,7 +995,7 @@ async function addMeal(user, currentProfile, selectedDate) {
 }
 
 async function addActivity(user, currentProfile, selectedDate, data) {
-    if (!user) { return false}
+    if (!user && !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1032,7 +1037,7 @@ async function addActivity(user, currentProfile, selectedDate, data) {
 }
 
 async function addTraining(user, currentProfile, selectedDate, data) {
-  if (!user) { return false}
+  if (!user && !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1073,7 +1078,7 @@ async function addTraining(user, currentProfile, selectedDate, data) {
 }
 
 async function addFoodCategory(user, currentProfile, data) {
-  if (!user) { return false}
+  if (!user && !currentProfile) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id

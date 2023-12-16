@@ -34,7 +34,7 @@ const saveState = (key, value) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setCurrentPage, isSmallScreen, selectedDate } = useContext(UserContext);
+  const { user, setCurrentPage, isSmallScreen, currentDate } = useContext(UserContext);
 
   const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
   // State for search query
@@ -49,12 +49,12 @@ const saveState = (key, value) => {
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     setCurrentPage("addFood")
-    navigate("/addFood", { state: { mealId, foodItem, selectedDate } });
+    navigate("/addFood", { state: { mealId, foodItem } });
   };
 
   const openCeateNewFoodPage = () => {
     setCurrentPage("createNewFood")
-   navigate("/createNewFood", { state: { mealId, selectedDate } });
+   navigate("/createNewFood", { state: { mealId } });
   };
 
   const updateSearchResults = () => {

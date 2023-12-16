@@ -10,17 +10,17 @@ import { addFood } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/AddFood.css'
 
 const AddFood = ({ }) => {
-  const { user, setCurrentPage } = useContext(UserContext);
+  const { user, setCurrentPage, currentDate } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
   const [foodItem, setFoodItem] = useState(location.state?.foodItem);
   const [mealId, setMealId] = useState(location.state?.mealId);
-  const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
+  
 
   // addFood function is responsible for adding the Food
   const addFoodToMeal = async () => {
-    console.log("selectedDate", selectedDate)
-    const isAdded = await addFood(user, mealId, foodItem, selectedDate)  
+    console.log("selectedDate", currentDate)
+    const isAdded = await addFood(user, mealId, foodItem, currentDate)  
     if (isAdded) {
       setCurrentPage("searchFood")
       navigate("/searchFood");
@@ -32,7 +32,6 @@ const AddFood = ({ }) => {
     if (!foodItem && !mealId && location.state) {
       setFoodItem(location.state.foodItem);
       setMealId(location.state.mealId)
-      setSelectedDate(location.state.selectedDate)
     }
   }, [foodItem, location.state]);
 

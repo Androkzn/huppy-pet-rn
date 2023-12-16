@@ -206,6 +206,9 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const food = foodData
 
+  console.log("CategoriesStatisticSection category", category)
+  console.log("CategoriesStatisticSection categories", categories)
+
   const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
   const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)
   const percentage = calculatePercentage(weight, total)
@@ -245,7 +248,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
   return (
     <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> <Image imageName={`${category.type}.png`} width="30" height="30" /></div>
+      <div style={imageStyle}> <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" /></div>
         <div style={nameStyle}>{category.name}</div>
         <ProgressBar
           percentage={percentage}

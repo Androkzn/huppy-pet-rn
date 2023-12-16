@@ -12,11 +12,10 @@ import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from "../components/AddImageDialog.component";
 
 const CreateNewFood = () => {
-  const { user, setCurrentPage } = useContext(UserContext);
+  const { user, setCurrentPage, currentDate } = useContext(UserContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);
-  const [selectedDate, setSelectedDate] = useState(location.state?.selectedDate);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const [image, setImage] = useState(null);
@@ -75,7 +74,6 @@ const CreateNewFood = () => {
     // Fetch or set foodItem if it's not available
     if (!foodItem && !mealId && location.state) {
       setMealId(location.state.mealId)
-      setSelectedDate(location.state.selectedDate)
     }
   }, [location.state]);
 

@@ -46,11 +46,6 @@ const NavBar = () => {
 
   const HeaderLogo = () => {
     const isDisplayed =  (!isSmallScreen) ||  ((currentPage === "login" || currentPage === "forgot" || currentPage === "signup" || currentPage === "register"))
-
-    console.log("HeaderLogo currentPage", currentPage)
-    console.log("isDisplayed", isDisplayed)
-    
-    
     return (
       <div>
          { isDisplayed && 

@@ -29,6 +29,7 @@ const NavBar = () => {
   }
 
   const DatePicker = () => {
+    console.log("NavBar currentPage", currentPage)
     return (
         <div>
         { isSmallScreen && (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 

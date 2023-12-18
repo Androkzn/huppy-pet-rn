@@ -57,23 +57,9 @@ const saveState = (key, value) => {
    navigate("/createNewFood", { state: { mealId } });
   };
 
-  const updateSearchResults = () => {
-    // Do not query an empty string if selected filter is "All"
-    if (searchQuery.length > 0 || selectedFilter !== Enums.FilterFood.ALL) {
-      //searchFood(); 
-    } else {
-      //setResults([]);
-    }
-  };
-
   const handleClearSearch = () => {
     setSearchQuery("");
-    //setResults([]);
   };
-
-  useEffect(() => {
-    updateSearchResults()
-  }, [searchQuery, selectedFilter, selectedCategory]);
 
   // Function to save state to localStorage whenever it changes
   useEffect(() => {
@@ -110,6 +96,7 @@ const saveState = (key, value) => {
             to="/"
             imageName="arrow_left_green.svg"
             imageSize={20}
+            onClick={() =>  {setCurrentPage("home")}}
           >
           Back
         </ButtonLink>
@@ -208,7 +195,7 @@ const saveState = (key, value) => {
     return (
       <div style={styles.columnStyle}>
         {searchResult.map((foodItem, index) => (
-            <FoodCard key={foodItem._id} food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
+            <FoodCard key={foodItem._id} food={foodItem}  openAddFoodPage={() => openAddFoodPage(foodItem)}/>
         ))}
       </div>
     );

@@ -11,16 +11,13 @@ import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 
 // Function is responsible for updating the training 
-function FoodCard({ food, openAddFoodPage, updateSearchResults }) {
+function FoodCard({ food, openAddFoodPage }) {
   const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
   const navigate = useNavigate();
   
   const deleteFoodTemplateHandler = async () => {
     console.log("delet food template",food._id)
     const isDeleted = await  deleteFoodTemplate(user,food._id )  
-    if (isDeleted) {
-      updateSearchResults()
-    }
   }; 
   
   const editFoodHandler = async () => {

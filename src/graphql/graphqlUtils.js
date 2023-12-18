@@ -784,7 +784,7 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
   }
 }
 
-async function loadFood({user, currentProfile, currentDate, isToday}) {
+async function loadFood(user, currentProfile, currentDate, isToday) {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id

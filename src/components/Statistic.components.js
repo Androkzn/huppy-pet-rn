@@ -101,9 +101,8 @@ function getTotalCaloriesBurnedFor(currentProfile, activities) {
     const totalCalories = activities
       .reduce((result, activity) => {
         const value = activity.metric === 'distance' ? activity.distance : activity.duration;
-        return result + getCaloriesBurnedFor(activity.metric, value);
+        return result + getCaloriesBurnedFor(activity.metric, value, currentProfile);
       }, 0);
-
     return  Math.floor(totalCalories);
   }
 

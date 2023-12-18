@@ -40,6 +40,13 @@ function MealCard({ meal, index, mealsCount }) {
       user: user,
       _id: mealId,
     })
+    await Promise.all(food.map(async foodItem => {
+      deleteFoodMutation({
+        user: user, 
+        _id: foodItem._id,
+      });
+    }));
+    
   }
 
   async function handleWeightChange(e, foodItem) {
@@ -70,7 +77,7 @@ function MealCard({ meal, index, mealsCount }) {
 
   const FoodItem = ({foodItem}) => {
     // Function is responsible for deleting the Food
-    const deleteCurrentFood = async () => {
+  const deleteCurrentFood = async () => {
       deleteFoodMutation({
         user: user, 
         _id: foodItem._id,

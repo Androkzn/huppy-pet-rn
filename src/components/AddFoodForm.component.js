@@ -134,7 +134,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           </div>}
       </div>
       <div style={styles.rowStyle}> 
-        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={(e) => addFoodToMeal(e)}  >
+        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={addFoodToMeal}  >
           Add to Meal
         </ButtonText>
       </div>

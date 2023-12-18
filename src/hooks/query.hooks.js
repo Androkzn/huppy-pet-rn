@@ -106,6 +106,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.addActivity,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(["loadActivitiesForDate"]);
+        queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   };
@@ -161,6 +162,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.updateFood,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(["getAllFoodForMeal"]);
+        queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }
@@ -184,6 +186,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.deleteFood,
       onSuccess: (data, variables, context) => {
        queryClient.invalidateQueries(["getAllFoodForMeal"]);
+       queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }
@@ -195,6 +198,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.deleteMeal,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(["loadMealsForDate"]);
+        queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }
@@ -206,6 +210,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.deleteActivity,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(["loadActivitiesForDate"]);
+        queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }
@@ -217,6 +222,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.updateActivity,
       onSuccess: (data, variables, context) => {
         queryClient.invalidateQueries(["loadActivitiesForDate"]);
+        queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }

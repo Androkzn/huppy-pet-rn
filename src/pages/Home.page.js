@@ -68,7 +68,6 @@ const Home = () => {
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useLoadFoodCategories(user, currentProfile, currentDate);
     const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useLoadActivitiesForDate(user, currentProfile, currentDate);
  
-    console.log("Statistic component",food)
     return (
       <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '10px' : '0'}}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
@@ -141,8 +140,7 @@ const Home = () => {
 
   const Chart = () => {
     const { data: categories, isLoading, isError } = useLoadFoodCategories(user, currentProfile, currentDate);
-    
-    console.log("Chart component",categories)
+  
     return (
       <div style={styles.childConteinerStyle}> 
         <div style={styles.headerStyle}>
@@ -218,8 +216,6 @@ const Meals = () => {
       }
     }, [isLoading, isError]); 
  
-
-   console.log("Meals component",meals)
     return (
       <div>  {/* Meal container*/}
       { (isLoading) || (isError)? 
@@ -253,7 +249,6 @@ const Meals = () => {
 
     // Opens dialog 
     const openDialog = (dialogTypeNew) => {
-      console.log("openDialog", dialogTypeNew)
       setDialogType(dialogTypeNew)
       setDialogOpen(true);
     };
@@ -266,7 +261,6 @@ const Meals = () => {
     // Handles dialog submission
     const handleDialogSubmit = (form, dialogType) => {
       if (dialogType === "addActivity") {
-        console.log("addActivity form", form)
         const data = {
           "type": form.type,
           "metric": form.metric,
@@ -288,14 +282,11 @@ const Meals = () => {
   
     // Returns dialog component based on dialog type
     const getDialogContent = () => {
-      console.log("getDialogContent", dialogType)
       if (dialogType === "addActivity") { 
         return <NewActivityForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
       } 
     };
 
-
-    console.log("Activities component",activities)
     return (
       <div style={styles.childConteinerStyle}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
@@ -311,8 +302,7 @@ const Meals = () => {
           </div>
           <button
             style={styles.headerAddButtonStyle}
-            onClick={(e) => {
-              
+            onClick={() => {
               if (isActivitiesExpanded) { 
                 openDialog("addActivity");
               } else {

@@ -155,6 +155,7 @@ function ActivityCard({ activity}) {
 
         <div style={stylesActivity.bodyActivityStyle}>
           <div style={stylesActivity.bodyRowStyle}>
+            
             <select 
               name={"activityMetric"}  
               value={activity.metric}  
@@ -163,10 +164,11 @@ function ActivityCard({ activity}) {
             >
             {optionsActivityMetric.map((item) => (
               <option key={item.rawValue} value={item.rawValue}>
-                {item.title}
+                {item.title + (item.rawValue === enums.ActivityMetric.DISTANCE ? ", km" : ", min")}
               </option>
             ))}
             </select>
+         
             <div style={stylesActivity.rowStyle}>
               <ButtonText 
               variant="circleTextButton" 

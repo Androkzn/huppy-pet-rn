@@ -212,7 +212,7 @@ const ButtonText = ({ variant, name, navigateTo, width, height, children, onClic
       height={height} 
       onClick={(e) => {
         e.preventDefault() 
-        onClick()
+       onClick()
       }} 
       disabled={disabled}>
           {children}
@@ -228,20 +228,17 @@ const ButtonLink = ({ variant, as: LinkComponent = Link, to = '/', imageName, im
     to={to} 
     width={width} 
     height={height} 
-    onClick={(e) => {
-      e.preventDefault() 
-      onClick()
-    }} 
+    onClick={onClick} 
     disabled={disabled}>
-      {imageName && <ImageContainer margin={margin} padding={padding}>
-          <Image  imageName={imageName} width={imageSize} height={imageSize}/>
-          </ImageContainer>}
-      {children}
+    {imageName && <ImageContainer margin={margin} padding={padding}>
+        <Image  imageName={imageName} width={imageSize} height={imageSize}/>
+        </ImageContainer>}
+    {children}
     </Button>
   );
 };
 
-const ButtonImage = ({ variant, name, imageName, imageSize, width, height, children, onClick, disabled, margin, padding, disabled }) => {
+const ButtonImage = ({ variant, name, imageName, imageSize, width, height, children, onClick, disabled, margin, padding,  }) => {
   return (
     <Button 
     name={name} 

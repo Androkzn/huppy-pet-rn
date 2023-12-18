@@ -18,9 +18,7 @@ const AddFood = ({ }) => {
   const {mutate: addFoodMutation} = useAddFood()
 
   // addFood function is responsible for adding the Food
-  const addFoodToMeal =  (event) => {
-    event.preventDefault();
-
+  const addFoodToMeal =  () => {
     addFoodMutation({
       user: user,
       mealId: mealId,

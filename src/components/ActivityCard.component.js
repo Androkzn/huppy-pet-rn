@@ -44,8 +44,6 @@ function ActivityCard({ activity}) {
 
   async function handleTypeValueChange(e) {
     const newValue = e.target.value;
-    console.log("TypeValueChange:", newValue);
-    
     const updateData = {
       "type": newValue.toLowerCase(),
     };

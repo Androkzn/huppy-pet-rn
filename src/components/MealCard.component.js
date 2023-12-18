@@ -19,11 +19,9 @@ function MealCard({ meal, index, mealsCount }) {
   const [isMealsExpanded, setMealsExpanded] = useState(true);
 
   const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user,mealId);
-
   const {mutate: addMealMutation} = useAddMeal()
   const {mutate: deleteMealMutation} = useDeleteMeal()
   const {mutate: deleteFoodMutation} = useDeleteFood()
-  const {mutate: updateFoodMutation} = useUpdateFood()
 
   // Function is responsible for creating a new meal
   const addMealForDate = async () => {
@@ -49,19 +47,6 @@ function MealCard({ meal, index, mealsCount }) {
     
   }
 
-  async function handleWeightChange(e, foodItem) {
-    const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-    // Update the foodItem's weight with the new value
-    const data = {
-      weight: newValue
-    }
-    updateFoodMutation({
-      user: user,
-      foodId: foodItem._id,
-      updateData: data,
-    })
-  }
-
   const openAddFoodPage = () => {
     console.log("Navigate to searchFood mealId", mealId)
     setCurrentPage("searchFood")
@@ -76,17 +61,32 @@ function MealCard({ meal, index, mealsCount }) {
   }
 
   const FoodItem = ({foodItem}) => {
+    const {mutate: updateFoodMutation} = useUpdateFood()
     // Function is responsible for deleting the Food
-  const deleteCurrentFood = async () => {
-      deleteFoodMutation({
-        user: user, 
-        _id: foodItem._id,
-      });
-   };
+    const deleteCurrentFood = async () => {
+        deleteFoodMutation({
+          user: user, 
+          _id: foodItem._id,
+        });
+    };
 
-   const editCurrentFood = async () => {
-        
-   }
+    async function handleWeightChange(e, foodItem) {
+      const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+      // Update the foodItem's weight with the new value
+      const data = {
+        weight: newValue
+      }
+      updateFoodMutation({
+        user: user,
+        foodId: foodItem._id,
+        updateData: data,
+      })
+    }
+  
+
+    const editCurrentFood = async () => {
+          
+    }
 
     return (
       <Swipe

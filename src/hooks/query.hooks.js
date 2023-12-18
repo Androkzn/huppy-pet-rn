@@ -161,8 +161,8 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     return useMutation({
       mutationFn: graphql.updateFood,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(["getAllFoodForMeal"]);
-        queryClient.invalidateQueries(["loadFoodForDate"]);
+       queryClient.invalidateQueries(["getAllFoodForMeal"]);
+       queryClient.invalidateQueries(["loadFoodForDate"]);
       }
     });
   }

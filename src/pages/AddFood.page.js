@@ -6,8 +6,8 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import AddFoodForm from "../components/AddFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
-import { addFood } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/AddFood.css'
+import {useAddFood} from "../hooks/query.hooks"
 
 const AddFood = ({ }) => {
   const { user, setCurrentPage, currentDate } = useContext(UserContext);
@@ -15,16 +15,22 @@ const AddFood = ({ }) => {
   const navigate = useNavigate();
   const [foodItem, setFoodItem] = useState(location.state?.foodItem);
   const [mealId, setMealId] = useState(location.state?.mealId);
-  
+  const {mutate: addFoodMutation} = useAddFood()
 
   // addFood function is responsible for adding the Food
-  const addFoodToMeal = async () => {
-    console.log("selectedDate", currentDate)
-    const isAdded = await addFood(user, mealId, foodItem, currentDate)  
-    if (isAdded) {
-      setCurrentPage("searchFood")
-      navigate("/searchFood");
-    }
+  const addFoodToMeal =  (event) => {
+    event.preventDefault();
+
+    addFoodMutation({
+      user: user,
+      mealId: mealId,
+      foodItem: foodItem,
+      selectedDate: currentDate,
+    }) 
+     
+    setCurrentPage("searchFood");
+    navigate("/searchFood");
+  
   };
 
   useEffect(() => {

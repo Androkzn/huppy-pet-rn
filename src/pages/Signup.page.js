@@ -6,7 +6,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import {LoginTextInput, FormGroup} from '../components/Form.components'
-import {Image} from '../components/Image.components'
 import {ButtonText} from '../components/Buttons.components'
 
 function SignUpForm({onSubmit, buttonText}) {

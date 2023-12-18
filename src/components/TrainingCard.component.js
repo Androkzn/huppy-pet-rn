@@ -3,7 +3,7 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import { Image } from "./Image.components";
-import { deleteTraining, updateTraining } from "../graphql/graphqlUtils";
+import {useDeleteTraining, useUpdateTraining} from "../hooks/query.hooks"
 import * as styleTraining from "./styles/Training.css";
 import { ButtonImage } from "./Buttons.components";
 import * as Enums from "../helpers/Enums.helper";
@@ -13,30 +13,29 @@ import * as Constants from "../helpers/Constants.helper";
 import '../components/styles/styles.css';
 import * as colors from '../components/styles/Colors';
 import Swipe  from '../components/Swipe.components.tsx';
-import { changeSectionValueFormat } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 
-function TrainingCard({ training, updateTrainings }) {
+function TrainingCard({ training }) {
   const { user } = useContext(UserContext);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
- 
+  const {mutate: deleteTrainingMutation} = useDeleteTraining()
+  const {mutate: updateTrainingMutation} = useUpdateTraining()
+
   async function handleCheckboxValueChange() {
     const updateData = {
       isCompleted: !training.isCompleted,
     };
-    const isUpdated = await updateTraining(user, training._id, updateData);
-
-    if (isUpdated) {
-      updateTrainings();
-    } else {
-      console.log("Failed to update training.");
-    }
+    updateTrainingMutation({
+      user: user,
+      trainingId: training._id, 
+      updateData: updateData,
+    })
   }
 
   const deleteCurrentTraining = async () => {
-    const isDeleted = await deleteTraining(user, training._id);
-    if (isDeleted) {
-      updateTrainings();
-    }
+    deleteTrainingMutation({
+      user: user,
+      _id: training._id
+    })
   };
 
   const getTainingCategory = () => {

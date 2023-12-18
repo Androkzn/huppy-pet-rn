@@ -50,7 +50,6 @@ export const UserProvider = ({ children }) => {
       // Now if we have a user we are setting it to our user context
       // so that we can use it in our app across different components.
       if (app.currentUser) {
-        console.log("Set Cached User", app.currentUser)
         setUser(app.currentUser);
       }  
       return app.currentUser;
@@ -80,8 +79,6 @@ export const UserProvider = ({ children }) => {
   const loadUserProfiles = async (user) => {
     if (user) {
       const { profilesFetched, currentProfileFetched } = await getUserProfiles(user);
-      console.log("loadUserProfiles currentProfileFetched", currentProfileFetched)
-      console.log("loadUserProfiles profilesFetched", profilesFetched)
       if (profilesFetched && currentProfileFetched) {
         setProfiles(profilesFetched);
         setCurrentProfile(currentProfileFetched);

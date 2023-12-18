@@ -7,7 +7,6 @@ import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { loadMeals, loadFood, loadActivities, loadTrainings, addMeal, addActivity, addTraining, getAllFoodCategories} from "../graphql/graphqlUtils";
 import ActivityCard from '../components/ActivityCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
@@ -16,7 +15,7 @@ import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
-import {useLoadMealsForDate, useLoadFoodCategories,  useLoadFoodForDate, useLoadActivitiesForDate} from "../hooks/query.hooks"
+import {useLoadMealsForDate, useLoadFoodCategories,  useLoadFoodForDate, useLoadActivitiesForDate, useAddMeal, useAddActivity} from "../hooks/query.hooks"
 import Spiner from "../components/Spinner.components"
 
 const Home = () => {
@@ -32,64 +31,8 @@ const Home = () => {
     };
 
   const {user, currentProfile, currentDate, setCurrentDate} = useContext(UserContext);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("addActivity");
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-
-  // Opens dialog 
-  const openDialog = (dialogTypeNew) => {
-    console.log("openDialog", dialogTypeNew)
-    setDialogType(dialogTypeNew)
-    setDialogOpen(true);
-  };
   
-  // Closes dialog
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
-
-  // Handles dialog submission
-  const handleDialogSubmit = (form, dialogType) => {
-    if (dialogType === "addActivity") {
-      console.log("addActivity form", form)
-      const data = {
-        "type": form.type,
-        "metric": form.metric,
-        "distance": form.distance,
-        "duration": form.duration,
-        "burnedCalories": form.burnedCalories,
-      }
-
-      addActivityForDate(data)
-    } 
-      
-    closeDialog();
-  };
- 
-  // Returns dialog component based on dialog type
-  const getDialogContent = () => {
-    console.log("getDialogContent", dialogType)
-    if (dialogType === "addActivity") { 
-      return <NewActivityForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
-    } 
-  };
-
-  // Function is responsible for creating a new meal
-  const addMealForDate = async () => {
-    const isAdded = await addMeal(user, currentProfile, currentDate)  
-    if (isAdded) {
-      // updateMeals();
-    }
-  };
-
-  // Function is responsible for creating a new activity
-  const addActivityForDate = async (data) => {
-    const isAdded = await addActivity(user, currentProfile, currentDate, data)  
-    if (isAdded) {
-      // updateActivities();
-    }
-  };
-
   // Responsible for fetching data for  meals/traings/activities/food when data is changed
   useEffect(() => {
     if (currentDate === null || currentDate === undefined) {
@@ -100,21 +43,6 @@ const Home = () => {
     }
   }, [currentDate, currentProfile]);
 
-  const updateCategories= () => {
-    // loadFoodCategories();
-  }
-
-  const updateMeals = async  () => {
-    // await loadMealsForDate();
-  }
-
-  const updateFood = () => {
-    // loadFoodForDate();
-  }
-
-  const updateActivities = () => {
-    // loadActivitiesForDate();
-  }
 
   function getTotalCategoryWeight (category) {
     return Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
@@ -134,14 +62,13 @@ const Home = () => {
   };
   
   const Statistic = () => {
-    // if ((currentProfile) && (user)) return
-
     const [isStatisticExpanded, setStatisticExpanded] = useState(!isSmallScreen);
     const [isStatisticToday, setStatisticToday] = useState(true);
     const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useLoadFoodForDate(user, currentProfile, currentDate, isStatisticToday);
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useLoadFoodCategories(user, currentProfile, currentDate);
     const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useLoadActivitiesForDate(user, currentProfile, currentDate);
  
+    console.log("Statistic component",food)
     return (
       <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '10px' : '0'}}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
@@ -212,29 +139,10 @@ const Home = () => {
     );
   };
 
- const LoadingAndError = (isLoading, isError) => {
-  if (isLoading) {
-    return (
-      <div style={styles.placeholderStyle}>
-        <Spiner/>
-      </div>
-    )
-  }
-
-  if (isError) {
-    return (
-      <div style={styles.placeholderStyle}>
-        <Image imageName="general_error.png" width="200" height="250"/>
-      </div>
-    )
-  }
- }
-
-
-
-
   const Chart = () => {
     const { data: categories, isLoading, isError } = useLoadFoodCategories(user, currentProfile, currentDate);
+    
+    console.log("Chart component",categories)
     return (
       <div style={styles.childConteinerStyle}> 
         <div style={styles.headerStyle}>
@@ -298,15 +206,20 @@ const Home = () => {
     );
   };
 
-  const Meals = () => {
-   const { data: meals, isLoading, isError } = useLoadMealsForDate(user, currentProfile, currentDate);
+const Meals = () => {
+  const { data: meals, isLoading, isError } = useLoadMealsForDate(user, currentProfile, currentDate);
   // Adds empty meal for date 
   
-  if (!isLoading && !isError && (meals === null || meals.length === 0)) {
-    addMealForDate()
-  }
+  const {mutate: addMealMutation} = useAddMeal()
+ 
+   useEffect(() => {
+      if (!isLoading && !isError && (meals === null || meals.length === 0)) {
+        addMealMutation({user, currentProfile, currentDate})
+      }
+    }, [isLoading, isError]); 
+ 
 
-   console.log("meals",meals)
+   console.log("Meals component",meals)
     return (
       <div>  {/* Meal container*/}
       { (isLoading) || (isError)? 
@@ -320,7 +233,7 @@ const Home = () => {
           {  
             meals.map((meal, index) => 
             <div key={meal._id}>
-              <MealCard meal={meal} index={index + 1} updateMeals={updateMeals} updateFoods={updateFood} mealsCount = {meals.length}/>
+              <MealCard meal={meal} index={index + 1} mealsCount = {meals.length}/>
             </div>)
           }
         </div>  
@@ -333,8 +246,56 @@ const Home = () => {
   const Activities = () => {
     const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
     const { data: activities, isLoading, isError } = useLoadActivitiesForDate(user, currentProfile, currentDate);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogType, setDialogType] = useState("addActivity");
+    const {mutate: addActivity} = useAddActivity ()
+
+
+    // Opens dialog 
+    const openDialog = (dialogTypeNew) => {
+      console.log("openDialog", dialogTypeNew)
+      setDialogType(dialogTypeNew)
+      setDialogOpen(true);
+    };
     
-    console.log("activities",activities)
+    // Closes dialog
+    const closeDialog = () => {
+      setDialogOpen(false);
+    };
+
+    // Handles dialog submission
+    const handleDialogSubmit = (form, dialogType) => {
+      if (dialogType === "addActivity") {
+        console.log("addActivity form", form)
+        const data = {
+          "type": form.type,
+          "metric": form.metric,
+          "distance": form.distance,
+          "duration": form.duration,
+          "burnedCalories": form.burnedCalories,
+        }
+
+        addActivity({
+          user: user, 
+          currentProfile: currentProfile, 
+          selectedDate: currentDate, 
+          data: data
+        })
+      } 
+        
+      closeDialog();
+    };
+  
+    // Returns dialog component based on dialog type
+    const getDialogContent = () => {
+      console.log("getDialogContent", dialogType)
+      if (dialogType === "addActivity") { 
+        return <NewActivityForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
+      } 
+    };
+
+
+    console.log("Activities component",activities)
     return (
       <div style={styles.childConteinerStyle}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
@@ -350,7 +311,8 @@ const Home = () => {
           </div>
           <button
             style={styles.headerAddButtonStyle}
-            onClick={() => {
+            onClick={(e) => {
+              
               if (isActivitiesExpanded) { 
                 openDialog("addActivity");
               } else {
@@ -375,7 +337,7 @@ const Home = () => {
           { isActivitiesExpanded && activities && activities.length > 0 ? (
             activities.map((activity) => 
             <div key={activity._id}>
-              <ActivityCard  activity={activity} updateActivities={updateActivities}/>
+              <ActivityCard  activity={activity}/>
               </div>)
           ) : (
             <div style={styles.placeholderStyle}>
@@ -389,9 +351,35 @@ const Home = () => {
         </div>  
         ) 
       }
+      {/* Dialog */}
+      {dialogOpen && (          
+        <Dialog open={dialogOpen} >
+          <DialogContent>
+            {getDialogContent()}
+            </DialogContent>
+        </Dialog>
+      )}
       </div> 
     );
   };
+
+  const LoadingAndError = (isLoading, isError) => {
+    if (isLoading) {
+      return (
+        <div style={styles.placeholderStyle}>
+          <Spiner/>
+        </div>
+      )
+    }
+  
+    if (isError) {
+      return (
+        <div style={styles.placeholderStyle}>
+          <Image imageName="general_error.png" width="200" height="250"/>
+        </div>
+      )
+    }
+   }
 
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
@@ -412,17 +400,6 @@ const Home = () => {
       
         </styles.responsiveMainContainer>
       </div>  
-   
- 
-    {/* Dialog */}
-    {dialogOpen && (          
-      <Dialog open={dialogOpen} >
-        <DialogContent>
-          {getDialogContent()}
-          </DialogContent>
-      </Dialog>
-    )}
-
   </PageContainer>
 }
 

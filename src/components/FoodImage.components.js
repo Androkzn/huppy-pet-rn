@@ -14,16 +14,16 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
     if (imageDataUrl) {
       setImage(imageDataUrl);
       setLoading(false);  
-    } else if (foodItem.image && foodItem.image !== ""){
-      setImage(foodItem.image);
+    } else if (foodItem?.image && foodItem?.image !== ""){
+      setImage(foodItem?.image);
       setLoading(false);
     } else {
        fetchImage();
     }
 
-    console.log("FoodImage  imageDataUrl: ", imageDataUrl);
-    console.log("FoodImage  foodItem: ", foodItem);
-    console.log("FoodImage  foodItem.image: ", foodItem.image);
+    // console.log("FoodImage  imageDataUrl: ", imageDataUrl);
+    // console.log("FoodImage  foodItem: ", foodItem);
+    // console.log("FoodImage  foodItem.image: ", foodItem?.image);
     
   }, [foodItem, image, imageDataUrl]);
 

@@ -4,20 +4,43 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonImage, ButtonText} from '../components/Buttons.components'
-import { getAllFoodForMeal, deleteMeal, deleteFood, updateFood, addMeal } from "../graphql/graphqlUtils";
 import { useNavigate } from 'react-router-dom';
 import {Image} from '../components/Image.components'
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
+import {useGetAllFoodForMeal, useUpdateFood, useAddMeal, useDeleteFood, useDeleteMeal} from "../hooks/query.hooks"
+import Spiner from "../components/Spinner.components"
 
-function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
+function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
   const mealId = meal._id;
   const selectedDate = meal.date
-  const _id = meal._id;
   const [isMealsExpanded, setMealsExpanded] = useState(true);
-  const [food, setFood] = useState([]);
+
+  const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user,mealId);
+
+  const {mutate: addMealMutation} = useAddMeal()
+  const {mutate: deleteMealMutation} = useDeleteMeal()
+  const {mutate: deleteFoodMutation} = useDeleteFood()
+  const {mutate: updateFoodMutation} = useUpdateFood()
+
+  // Function is responsible for creating a new meal
+  const addMealForDate = async () => {
+    addMealMutation({
+      user:user, 
+      currentProfile:currentProfile, 
+      currentDate: currentDate
+    })
+  };
+
+  // Function is responsible for deleting the Meal
+  const deleteCurrentMeal = async () => {
+    deleteMealMutation({
+      user: user,
+      _id: mealId,
+    })
+  }
 
   async function handleWeightChange(e, foodItem) {
     const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
@@ -25,69 +48,18 @@ function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
     const data = {
       weight: newValue
     }
-    const isUpdated = await updateFood(user, foodItem._id, data);
-    if (isUpdated) {
-      setFood(prevFood => prevFood.map(item => (item._id === foodItem._id ? { ...item, weight: newValue } : item)));
-      updateFoods()
-    }
+    updateFoodMutation({
+      user: user,
+      foodId: foodItem._id,
+      updateData: data,
+    })
   }
-
 
   const openAddFoodPage = () => {
     console.log("Navigate to searchFood mealId", mealId)
     setCurrentPage("searchFood")
     navigate("/searchFood", { state: { mealId, selectedDate } });
   }
-
-    // Function is responsible for creating a new meal
-    const addMealForDate = async () => {
-      const isAdded = await addMeal(user, currentProfile, currentDate)  
-      if (isAdded) {
-        updateMeals();
-      }
-    };
- 
-  useEffect(() => {
-    let isMounted = true;
-    // Load food data when the component mounts
-    const loadFoodForMeal = async () => {
-      try {
-        const results = await getAllFoodForMeal(user, mealId);
-        // Update the 'food' state with the fetched data only if the component is still mounted
-        if (isMounted) {
-          setFood(results);
-        }
-      } catch (error) {
-        // Handle errors here
-      }
-    };
-  
-    loadFoodForMeal();
-    // Cleanup function to set isMounted to false when the component is unmounted
-    return () => {
-      isMounted = false;
-    };
-  }, [meal]);
-  
-
-  async function loadFoodForMeal() {
-    const results = await getAllFoodForMeal(user, mealId);
-      // Update the 'food' state with the fetched data
-      setFood(results);
-  }
-
-  // Function is responsible for deleting the Meal
-  const deleteCurrentMeal = async () => {
-     const isDeleted = await deleteMeal(user, _id);
-     if (isDeleted) {
-      // Delete all associated food items
-      await Promise.all(food.map(async foodItem => {
-        await deleteFood(user, foodItem._id);
-      }));
-        updateMeals()
-        updateFoods()
-     }
-  };
 
 
   // Function to calculate the total weight of food
@@ -97,14 +69,12 @@ function MealCard({ meal, index, updateMeals,  updateFoods, mealsCount }) {
   }
 
   const FoodItem = ({foodItem}) => {
-  
     // Function is responsible for deleting the Food
     const deleteCurrentFood = async () => {
-      const isDeleted = await deleteFood(user, foodItem._id);
-      if (isDeleted) {
-        loadFoodForMeal()
-        updateFoods()
-     }
+      deleteFoodMutation({
+        user: user, 
+        _id: foodItem._id,
+      });
    };
 
    const editCurrentFood = async () => {

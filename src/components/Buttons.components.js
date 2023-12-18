@@ -203,7 +203,18 @@ const ImageContainer = styled.div(({ margin, padding }) => ({
 
 const ButtonText = ({ variant, name, navigateTo, width, height, children, onClick, disabled }) => {
   return (
-      <Button name={name} variant={variant} as={Link} to={navigateTo} width={width} height={height} onClick={onClick} disabled={disabled}>
+      <Button 
+      name={name} 
+      variant={variant} 
+      as={Link} 
+      to={navigateTo} 
+      width={width} 
+      height={height} 
+      onClick={(e) => {
+        e.preventDefault() 
+        onClick()
+      }} 
+      disabled={disabled}>
           {children}
       </Button>
   );
@@ -211,23 +222,42 @@ const ButtonText = ({ variant, name, navigateTo, width, height, children, onClic
 
 const ButtonLink = ({ variant, as: LinkComponent = Link, to = '/', imageName, imageSize, width, height, margin, padding, children, onClick, disabled }) => {
   return (
-    <Button variant={variant} as={LinkComponent} to={to} width={width} height={height} onClick={onClick} disabled={disabled}>
-    {imageName && <ImageContainer margin={margin} padding={padding}>
-        <Image  imageName={imageName} width={imageSize} height={imageSize}/>
-        </ImageContainer>}
-    {children}
+    <Button 
+    variant={variant} 
+    as={LinkComponent} 
+    to={to} 
+    width={width} 
+    height={height} 
+    onClick={(e) => {
+      e.preventDefault() 
+      onClick()
+    }} 
+    disabled={disabled}>
+      {imageName && <ImageContainer margin={margin} padding={padding}>
+          <Image  imageName={imageName} width={imageSize} height={imageSize}/>
+          </ImageContainer>}
+      {children}
     </Button>
   );
 };
 
-const ButtonImage = ({ variant, name, imageName, imageSize, width, height, children, onClick, disabled, margin, padding,  }) => {
+const ButtonImage = ({ variant, name, imageName, imageSize, width, height, children, onClick, disabled, margin, padding, disabled }) => {
   return (
-    <Button name={name} variant={variant} width={width} height={height} onClick={onClick} disabled={disabled}>
-           {imageName && <ImageContainer margin={margin} padding={padding}>
+    <Button 
+    name={name} 
+    variant={variant} 
+    width={width} 
+    height={height} 
+    onClick={(e) => {
+      e.preventDefault() 
+      onClick()
+    }} 
+    disabled={disabled}>
+      {imageName && <ImageContainer margin={margin} padding={padding}>
         <Image  imageName={imageName} width={imageSize} height={imageSize}/>
         </ImageContainer>}
         {children}
-      </Button>
+    </Button>
   );
 };
 

@@ -3,15 +3,18 @@
 import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
 import {Image} from './Image.components'
-import { deleteActivity, updateActivity } from "../graphql/graphqlUtils";
 import * as stylesActivity from '../components/styles/Activity.css'
 import {ButtonImage, ButtonText } from '../components/Buttons.components'
 import * as enums from "../helpers/Enums.helper"
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
+import {useDeleteActivity, useUpdateActivity} from "../hooks/query.hooks"
 
-function ActivityCard({ activity, updateActivities}) {
+function ActivityCard({ activity}) {
   const { user, currentProfile } = useContext(UserContext);
+  const {mutate: deleteActivityMutation} = useDeleteActivity()
+  const {mutate: updateActivityMutation} = useUpdateActivity()
+
 
   function handleTextFieldValueChange(e) {
     const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
@@ -31,15 +34,11 @@ function ActivityCard({ activity, updateActivities}) {
     const updateData = {
       "metric": newValue,
     };
-    const isUpdated = await updateActivity(user, activity._id, updateData);
-
-    if (isUpdated) {
-        console.log('Activity metric successfully:', updateData);
-        updateActivities()
-
-    } else {
-        console.log('Failed to metric activity.');
-    }
+    updateActivityMutation({
+      user: user, 
+      activityId: activity._id, 
+      updateData: updateData,
+    })
   }
 
 
@@ -50,15 +49,11 @@ function ActivityCard({ activity, updateActivities}) {
     const updateData = {
       "type": newValue.toLowerCase(),
     };
-    const isUpdated = await updateActivity(user, activity._id, updateData);
-
-    if (isUpdated) {
-        console.log('Activity metric successfully:', updateData);
-        updateActivities()
-
-    } else {
-        console.log('Failed to metric activity.');
-    }
+    updateActivityMutation({
+      user: user, 
+      activityId: activity._id, 
+      updateData: updateData,
+    })
   }
 
 
@@ -67,24 +62,21 @@ function ActivityCard({ activity, updateActivities}) {
       burnedCalories: getCaloriesBurnedFor(newValue),
       [activity.metric === enums.ActivityMetric.DISTANCE ? 'distance' : 'duration']: newValue,
     };
-    const isUpdated = await updateActivity(user, activity._id, updateData);
 
-    if (isUpdated) {
-        console.log('Activity updated successfully:', updateData);
-        updateActivities()
-
-    } else {
-        console.log('Failed to update activity.');
-    }
+    updateActivityMutation({
+      user: user, 
+      activityId: activity._id, 
+      updateData: updateData,
+    })
   }
   
   // Function is responsible for deleting the activity 
   const deleteCurrentActivity = async () => {
-     const isDeleted = await deleteActivity(user, activity._id);
-     console.log('isDeleted', isDeleted)
-     if (isDeleted) {
-      updateActivities()
-     }
+
+    deleteActivityMutation({
+      user: user,
+      _id: activity._id,
+    })
   };
    
   function getCaloriesBurnedFor(value) {

@@ -57,7 +57,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
       <TitleButtonsAndTextField
           title={"Select weight"}
           name={"weight"}
-          initialValue={foodItem.weight} 
+          initialValue={foodItem?.weight || 0} 
           onChange={(value) => {
             onTextInputChange(value);  
           }}
@@ -134,7 +134,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           </div>}
       </div>
       <div style={styles.rowStyle}> 
-        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={() => addFoodToMeal()}  >
+        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={(e) => addFoodToMeal(e)}  >
           Add to Meal
         </ButtonText>
       </div>

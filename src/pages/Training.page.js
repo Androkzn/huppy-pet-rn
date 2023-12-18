@@ -8,14 +8,11 @@ import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'
 import { ReactComponent as TrainingIcon } from '../components/assets/training_tab_icon_unselected.svg'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import { loadTrainings, addTraining} from "../graphql/graphqlUtils";
 import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
-import useMediaQuery from '@mui/material/useMediaQuery';
-import * as Constants from "../helpers/Constants.helper"
-
+import {useAddTraining, useLoadTrainingsForDate} from "../hooks/query.hooks"
 
 const Training = () => {
     // Function to load state from localStorage
@@ -33,7 +30,9 @@ const Training = () => {
   // const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
-  const [trainingData, setTrainingData] = useState([]);
+  const { data: trainings, isLoading: isLoadingFood, isError: isErrorFood} = useLoadTrainingsForDate(user, currentProfile, currentDate);
+  const {mutate: addTrainingMutation} = useAddTraining()
+
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
@@ -82,31 +81,21 @@ const Training = () => {
     } 
   };
 
-  // Updates the Food from the response. 
-  const loadTrainingsForDate = async () => {
-    if (currentProfile) {
-      const trainings  = await loadTrainings(user, currentProfile, currentDate); 
-      setTrainingData(trainings);
-    }
-  };
-
   // Function is responsible for creating a new training
   const addTrainingForDate = async (data) => {
-    const isAdded = await addTraining(user, currentProfile, currentDate, data)  
-    if (isAdded) {
-      updateTrainings();
-    }
+    addTrainingMutation({
+      user: user, 
+      currentProfile: currentProfile, 
+      selectedDate: currentDate, 
+      data: data,
+    })
   };
 
   // Responsible for fetching data for  traings when data is changed
   useEffect(() => {
-    updateTrainings()
     saveState('currentDate', currentDate);
   }, [currentDate, currentProfile]);
  
-  const updateTrainings = () => {
-    loadTrainingsForDate();
-  }
 
   const DatePicker = () => {
     return (
@@ -149,7 +138,7 @@ const Training = () => {
           {trainingData && trainingData.length > 0 ? (
             trainingData.map((training) => 
             <div key={training._id}>
-              <TrainingCard  training={training} updateTrainings={updateTrainings}/>
+              <TrainingCard  training={training}/>
               </div>)
           ) : (
             <div style={styles.placeholderStyle}>
@@ -164,7 +153,7 @@ const Training = () => {
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
       {!isSmallScreen && <DatePicker/>}
-        <Trainings trainingData={trainingData}/>
+        <Trainings trainingData={trainings}/>
       </div>  
    
  

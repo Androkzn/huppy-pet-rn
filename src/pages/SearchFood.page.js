@@ -208,7 +208,7 @@ const saveState = (key, value) => {
     return (
       <div style={styles.columnStyle}>
         {searchResult.map((foodItem, index) => (
-            <FoodCard key={foodItem.name} food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
+            <FoodCard key={foodItem._id} food={foodItem} updateSearchResults={updateSearchResults} openAddFoodPage={() => openAddFoodPage(foodItem)}/>
         ))}
       </div>
     );

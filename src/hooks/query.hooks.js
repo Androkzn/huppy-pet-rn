@@ -29,8 +29,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   const useLoadFoodCategories = (user, currentProfile, preset) => {
     return useQuery(['loadFoodCategories', preset], async () => {
       if (currentProfile && user) {
-        console.log("currentProfile.preset", preset)
-        console.log("currentProfile?.preset !== Enums.RatioPresets.CUSTOM", currentProfile?.preset !== Enums.RatioPresets.CUSTOM)
         if ( currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
           const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(currentProfile?.dailyPortion, currentProfile?._id,  currentProfile?.preset) 
             const data = (allCategoriesForPresset).map((category) => ({ 
@@ -40,9 +38,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
             color: category.color,
             type: category.type,
           }));
-          console.log("allCategoriesForPresset", allCategoriesForPresset)
-
-          console.log("useLoadFoodCategories data", data)
           return data
         } else {
           const categories = await  graphql.getAllFoodCategories(user, currentProfile._id); 
@@ -57,11 +52,9 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
             profileId: category.profileId,
             userId: category.userId,
           }));
-          console.log("getAllFoodCategories", data)
           return data
         }
       } else {
-        console.log("Empty Categories")
         return []
       }
     });
@@ -261,7 +254,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useUpdateProfile= () => {
-    console.log("useUpdateProfile")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateProfile,

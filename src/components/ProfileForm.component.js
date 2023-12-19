@@ -19,31 +19,31 @@ const ProfileForm = ({ updateProfile, addCategory, deleteCategory, updateCategor
   const [avatarWidth, setAvatarWidth] = useState(150);
 
   // Handle avatar size when scrolling
-   useEffect(() => {
-    const debounce = (func, delay) => {
-      let timeoutId;
-      return (...args) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => func(...args), delay);
-      };
-    };
+  //  useEffect(() => {
+  //   const debounce = (func, delay) => {
+  //     let timeoutId;
+  //     return (...args) => {
+  //       clearTimeout(timeoutId);
+  //       timeoutId = setTimeout(() => func(...args), delay);
+  //     };
+  //   };
 
-    const handleScroll = debounce(() => {
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-      const newSize = Math.max(1, 140 - scrollY * 1.5);
-      if (scrollY > 60 || scrollY <= 0) {
-        return;
-      }
+  //   const handleScroll = debounce(() => {
+  //     const scrollY = window.scrollY || document.documentElement.scrollTop;
+  //     const newSize = Math.max(1, 140 - scrollY * 1.5);
+  //     if (scrollY > 60 || scrollY <= 0) {
+  //       return;
+  //     }
 
-      setAvatarWidth(newSize);
-    }, 10);
+  //     setAvatarWidth(newSize);
+  //   }, 10);
 
-    window.addEventListener('scroll', handleScroll);
+  //   window.addEventListener('scroll', handleScroll);
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
 
 
   // Handle form changes

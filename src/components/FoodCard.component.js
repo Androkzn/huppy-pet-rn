@@ -6,18 +6,20 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'
 import {ButtonImage } from './Buttons.components'
-import { deleteFoodTemplate } from "../graphql/graphqlUtils";
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
-
+import {useDeleteFoodTemplate} from "../hooks/query.hooks"
 // Function is responsible for updating the training 
 function FoodCard({ food, openAddFoodPage }) {
   const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
   const navigate = useNavigate();
-  
+  const {mutate: deleteFoodTemplateMutation} = useDeleteFoodTemplate()
+
   const deleteFoodTemplateHandler = async () => {
-    console.log("delet food template",food._id)
-    const isDeleted = await  deleteFoodTemplate(user,food._id )  
+    deleteFoodTemplateMutation({
+      user: user,
+      _id: food.id,
+    })
   }; 
   
   const editFoodHandler = async () => {
@@ -73,7 +75,7 @@ function FoodCard({ food, openAddFoodPage }) {
                   </div>
                 }
                 <div style={style.customContainerStyle}>
-                  <h6>CUSTOM</h6>
+                  <div style={style.customTitleStyle}>CUSTOM</div>
                   <Image imageName="paw_white.png" width="20" height="20" />
                 </div>
                 {/* Hides delete buttons for small screens */}

@@ -408,14 +408,10 @@ async function deleteFood({user, _id}) {
 
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
-async function deleteFoodTemplate(user, _id) {
+async function deleteFoodTemplate({user, _id}) {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
-
-   // Confirming the user's action
-   const resp = window.confirm("Are you sure you want to delete this food forever?");
-   if (!resp) return;
 
   // GraphQL query to delete an food template
   const deleteFoodTemplateQuery = gql`

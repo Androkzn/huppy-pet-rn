@@ -72,13 +72,21 @@ import styled from '@emotion/styled/macro'
   const customContainerStyle = {
     ...rowStyle,
     justifyContent: 'center',
-    width: '90px',
+    width: '100px',
     height: '25px',
     borderRadius: '10px',
     backgroundColor: colors.lightGreen2,
-    margin: "5px 5px"
+    margin: "0px",
+    padding: "5px 5px",
    
  };
+
+ const customTitleStyle = {
+  fontSize: '13px',
+  color: colors.white,
+  fontWeight: "bold",
+  fontFamily: "'Balsamiq Sans', sans-serif",
+}
 
   const foodIconContainerStyle = {
     height: '25px',
@@ -129,4 +137,5 @@ import styled from '@emotion/styled/macro'
     editButonStyle,
     customButtonContainerStyle,
     foodIconContainerStyle,
+    customTitleStyle,
 };

@@ -197,7 +197,7 @@ const Button = styled.button(
   );
 
 const ImageContainer = styled.div(({ margin, padding }) => ({
-    margin: margin || 'auto 10px auto 10px',  
+    margin: margin || '0 10px 0 10px',  
     padding: padding || '0px',
   }));
 

@@ -194,6 +194,8 @@ function MealCard({ meal, index, mealsCount }) {
               variant="addButton"
               width='140px'
               height={30}
+              margin={0}
+              padding={0}
               imageName="plus_round_fill_white_button.svg"
               imageSize={20}
               onClick={openAddFoodPage}

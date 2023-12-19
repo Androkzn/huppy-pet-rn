@@ -215,6 +215,17 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     });
   }
 
+    const useDeleteFoodTemplate= () => {
+    console.log("useDeleteFoodTemplate")
+    const queryClient = useQueryClient()
+    return useMutation({
+      mutationFn: graphql.deleteFoodTemplate,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(["searchFood"]);
+      }
+    });
+  }
+
   const useUpdateActivity= () => {
     console.log("useUpdateActivity")
     const queryClient = useQueryClient()
@@ -280,6 +291,7 @@ export {
     useUpdateActivity,
     useDeleteFood,
     useDeleteMeal,
+    useDeleteFoodTemplate,
     useDeleteActivity,
     useDeleteTraining,
     useFoodTemplate,

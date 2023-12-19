@@ -1,11 +1,8 @@
+/** @jsxImportSource @emotion/react */
+
 import React, { useState, useEffect } from 'react';
 
 const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }) => {
-  const imageStyle = {
-    width: width,
-    height: height,
-  };
-
   const [errorLoadingImage, setErrorLoadingImage] = useState(false);
   const handleImageError = () => {
     
@@ -18,9 +15,22 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }
       setErrorLoadingImage(false);
     };
   }, [imageDataUrl]); 
- 
+
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: '100%',
+  };
+
+  const imageStyle = {
+    width: width,
+    height: height,
+  };
+
   return (
-    <div >
+    <div style={containerStyle}>
     { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
     <img
       src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory

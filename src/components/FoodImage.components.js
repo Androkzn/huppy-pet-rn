@@ -21,31 +21,32 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
        fetchImage();
     }
 
-    // console.log("FoodImage  imageDataUrl: ", imageDataUrl);
-    // console.log("FoodImage  foodItem: ", foodItem);
-    // console.log("FoodImage  foodItem.image: ", foodItem?.image);
+    console.log("FoodImage  imageDataUrl: ", imageDataUrl);
+    console.log("FoodImage  foodItem: ", foodItem);
+    console.log("FoodImage  foodItem.image: ", foodItem?.image);
     
   }, [foodItem, image, imageDataUrl]);
 
   // Function to fetch image data when component mounts
   const fetchImage = async () => {
-    if (foodItem?.userId && foodItem?._id)
-    try {
-      const type = 'url';
-      const result = await axios.get(`${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`);
-      if (result.data) {
-        setImage(result.data);
-        setLoading(false); // Set loading to false when the image is fetched
+    if (foodItem?.userId && foodItem?._id) {
+      try {
+        const type = 'url';
+        const result = await axios.get(`${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`);
+        if (result.data) {
+          setImage(result.data);
+        }
+        setLoading(false);
+        return;
+      } catch (error) {
+        console.log("Error fetching image:", error);
+        setLoading(false); 
+        return; 
       }
-     
-      return;
-    } catch (error) {
-      console.log("Error fetching image:", error);
-      setLoading(false); // Set loading to false in case of an error
+    } else {
+      setLoading(false);
     }
   };
-
-
 
   return (
     <div onClick={onClick}>

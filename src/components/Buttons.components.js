@@ -212,7 +212,7 @@ const ButtonText = ({ variant, name, navigateTo, width, height, children, onClic
       height={height} 
       onClick={(e) => {
         e.preventDefault() 
-       onClick()
+       onClick(e)
       }} 
       disabled={disabled}>
           {children}
@@ -247,7 +247,7 @@ const ButtonImage = ({ variant, name, imageName, imageSize, width, height, child
     height={height} 
     onClick={(e) => {
       e.preventDefault() 
-      onClick()
+      onClick(e)
     }} 
     disabled={disabled}>
       {imageName && <ImageContainer margin={margin} padding={padding}>

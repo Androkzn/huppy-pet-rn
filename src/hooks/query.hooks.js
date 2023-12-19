@@ -149,8 +149,9 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addFoodTemplate,
-      onSuccess: (data, variables, context) => {
-        //queryClient.invalidateQueries([" "]);
+      onSuccess: data => {
+        const { templateId } = data;
+        queryClient.invalidateQueries(["searchFood"]);
       }
     });
   };

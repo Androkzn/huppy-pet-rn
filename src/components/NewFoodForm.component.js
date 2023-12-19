@@ -9,6 +9,8 @@ import FoodImage from '../components/FoodImage.components'
 const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) => {
   
   const onInputChange = (name, value) => {
+    console.log("onInputChange name", name)
+    console.log("onInputChange value", name)
     setFoodItem({ ...foodItem, [name]: value });
   };
 
@@ -84,10 +86,22 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
 
       <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onTextInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 
-       <ButtonText as= 'button' name="createFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
+       <ButtonText 
+          as= 'button' 
+          name="createFood" 
+          width= '200px' 
+          variant="rectangleTextButton" 
+          onClick={(e) => addNewFood(e)}  
+        >
           {"Create"} Food
         </ButtonText> 
-        <ButtonText  as= 'button' name="createAndAddFood" width= '200px' variant="rectangleTextButton" onClick={(e) => addNewFood(e)}  >
+        <ButtonText  
+          as= 'button' 
+          name="createAndAddFood" 
+          width= '200px' 
+          variant="rectangleTextButton" 
+          onClick={(e) => addNewFood(e)}  
+        >
           {"Create"} and Add to Meal
         </ButtonText>
       </div>

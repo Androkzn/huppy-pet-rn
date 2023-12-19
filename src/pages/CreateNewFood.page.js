@@ -5,11 +5,11 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
-import { addFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from "../components/AddImageDialog.component";
+import {useAddFoodTemplate} from "../hooks/query.hooks"
 
 const CreateNewFood = () => {
   const { user, setCurrentPage, currentDate } = useContext(UserContext);
@@ -19,7 +19,7 @@ const CreateNewFood = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const [image, setImage] = useState(null);
-
+  const {mutate: addFoodTemplateMutation} = useAddFoodTemplate()
   console.log("image", image)
 
   // Opens dialog 
@@ -52,9 +52,10 @@ const CreateNewFood = () => {
   const [foodItem, setFoodItem] = useState({
     _id : "",
     name: "",
-    type: "",
-    units: "",
-    categoryType: "",
+    image: null,
+    type: "food",
+    units: "gram",
+    categoryType: "meat",
     protein: 0,
     fat: 0,
     fiber: 0,
@@ -64,7 +65,7 @@ const CreateNewFood = () => {
     servings: 0,
     caloriesServing: 0,
     servingWeight: 0,
-    meatRatio: 0,
+    meatRatio: 100,
     bonesRatio: 0,
     desc: "",
     weight: 0,
@@ -84,21 +85,26 @@ const CreateNewFood = () => {
     if ( foodItem.name.length === 0 || foodItem.calories  === 0   ) {
       return;
     }
-    const {success, templateId }= await addFoodTemplate(user, foodItem)  
-    
-    if (success) {
-      // Function to open the AddFoodPage when a food item is clicked
-      if (name === 'createAndAddFood') {
-        foodItem._id = templateId
-        console.log("CreateNewFood", foodItem)
-        console.log("mealId", mealId)
-        setCurrentPage("addFood")
-        navigate("/addFood", { state: { mealId, foodItem } });
-      } else {
-        setCurrentPage("searchFood")
-        navigate("/searchFood");
+
+    addFoodTemplateMutation(
+      {
+        user: user,
+        foodItem: foodItem,
+      },
+      {
+        onSuccess: (data) => {
+          const templateId = data?.templateId;
+          if (name === 'createAndAddFood') {
+            foodItem._id = templateId
+            setCurrentPage("addFood")
+            navigate("/addFood", { state: { mealId, foodItem } });
+          } else {
+            setCurrentPage("searchFood")
+            navigate("/searchFood");
+          }
+        },
       }
-    }
+    );
   };
 
   //Callback func that opens image dialog 

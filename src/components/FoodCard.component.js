@@ -18,7 +18,7 @@ function FoodCard({ food, openAddFoodPage }) {
   const deleteFoodTemplateHandler = async () => {
     deleteFoodTemplateMutation({
       user: user,
-      _id: food.id,
+      _id: food._id,
     })
   }; 
   

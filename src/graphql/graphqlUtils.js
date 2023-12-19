@@ -529,13 +529,14 @@ async function addFood({user, mealId, foodItem, selectedDate}) {
 
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
-async function addFoodTemplate(user, foodItem) {
+async function addFoodTemplate({user, foodItem}) {
   if (!user) { return { success: false, templateId: "" }}
   const accessToken = user._accessToken;
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
   // All the data that needs to be sent to the GraphQL endpoint
   // to create food will be passed through queryVariablesCreateFood.
+
   const queryVariablesCreateFood = {
       data: {
         bonesRatio:  foodItem.bonesRatio,

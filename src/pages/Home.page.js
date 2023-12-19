@@ -10,11 +10,8 @@ import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows
 import ActivityCard from '../components/ActivityCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
-import * as Enums from "../helpers/Enums.helper"
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
-import useMediaQuery from '@mui/material/useMediaQuery';
-import * as Constants from "../helpers/Constants.helper"
 import {useLoadMealsForDate, useLoadFoodCategories,  useLoadFoodForDate, useLoadActivitiesForDate, useAddMeal, useAddActivity} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
 
@@ -30,9 +27,8 @@ const Home = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-  const {user, currentProfile, currentDate, setCurrentDate} = useContext(UserContext);
-  const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
+
   // Responsible for fetching data for  meals/traings/activities/food when data is changed
   useEffect(() => {
     if (currentDate === null || currentDate === undefined) {
@@ -69,7 +65,7 @@ const Home = () => {
     const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useLoadActivitiesForDate(user, currentProfile, currentDate);
  
     return (
-      <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '10px' : '0'}}> 
+      <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '15px' : '0', marginBottom: isSmallScreen? '10px' : '0'}}> 
       <div style={styles.headerStyle}  onClick={() => {isSmallScreen ? setStatisticExpanded(!isStatisticExpanded) : setStatisticExpanded(isStatisticExpanded)}}>
         <div style={styles.headerTiteStyle}>
           
@@ -142,7 +138,7 @@ const Home = () => {
     const { data: categories, isLoading, isError } = useLoadFoodCategories(user, currentProfile, currentDate);
   
     return (
-      <div style={styles.childConteinerStyle}> 
+      <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '0px' : '10px'}}> 
         <div style={styles.headerStyle}>
         <div style={styles.headerTiteStyle}>
           
@@ -217,7 +213,7 @@ const Meals = () => {
     }, [isLoading, isError]); 
  
     return (
-      <div>  {/* Meal container*/}
+      <div >  {/* Meal container*/}
       { (isLoading) || (isError)? 
         (
         <div style={styles.placeholderStyle}>
@@ -225,10 +221,10 @@ const Meals = () => {
         </div>
         ) : 
         (
-        <div style = {{padding: '0px'}}>  {/* Meal container*/}
+        <div>  {/* Meal container*/}
           {  
             meals.map((meal, index) => 
-            <div key={meal._id}>
+            <div key={meal._id} style = {{marginBottom: '10px'}}>
               <MealCard meal={meal} index={index + 1} mealsCount = {meals.length}/>
             </div>)
           }
@@ -288,7 +284,7 @@ const Meals = () => {
     };
 
     return (
-      <div style={styles.childConteinerStyle}> {/* Activities container*/}        
+      <div style={{...styles.childConteinerStyle,  marginTop: isMediumlScreen? '10px' : '0px'}}> {/* Activities container*/}        
         <div style={styles.headerStyle}>{/* Header container*/}
           <div style={styles.headerTiteStyle} onClick={() => {isSmallScreen ? setActivitiesExpanded(!isActivitiesExpanded) : setActivitiesExpanded(isActivitiesExpanded)}}> 
           <div style={styles.headerArrowStyle} >

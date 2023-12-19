@@ -3,14 +3,10 @@ import { UserContext } from '../contexts/user.context';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as colors from './styles/Colors';
-import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as DiaryIcon } from './assets/diary_tab_icon_unselected.svg'
 import { ReactComponent as DashboardIcon } from './assets/dashboard_tab_icon_unselected.svg'
 import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unselected.svg'
-import { ReactComponent as HealthIcon } from './assets/health_tab_icon_unselected.svg'
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
-import * as Constants from "../helpers/Constants.helper"
-import {Image} from '../components/Image.components'
 
 const TabBar = () => {
   const {user, currentProfile, isSmallScreen, setCurrentPage} = useContext(UserContext);

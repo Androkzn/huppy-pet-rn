@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import * as colors from './styles/Colors'
 import { useState } from 'react';
 import Switch from '@mui/material/Switch';
-import { ButtonText, ButtonImage } from "./Buttons.components"
+import { ButtonText } from "./Buttons.components"
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import CustomDatePicker from "../components/CustomDatePicker.component";

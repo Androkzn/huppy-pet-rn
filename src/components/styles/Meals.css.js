@@ -104,7 +104,7 @@ const childConteinerStyle = {
   flex: '1',
   flexDirection: 'column',
   alignItems: 'center',
-  margin: '5px 0px 5px 0px',
+  margin: '0px',
   borderRadius: '10px',
   minWidth:'300px'
 };

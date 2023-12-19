@@ -18,6 +18,8 @@ export const UserProvider = ({ children }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState("home");
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  const isMediumlScreen = useMediaQuery(Constants.mediumlScreen);
+  const isLargeScreen = useMediaQuery(Constants.largeScreen);
 
   // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
@@ -89,7 +91,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, currentPage, setCurrentPage, setProfiles, setCurrentProfile, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
+  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setProfiles, setCurrentProfile, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
     {children}
   </UserContext.Provider>;
 }

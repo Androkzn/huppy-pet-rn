@@ -2,6 +2,8 @@
 
 // Media query
 export const smallScreen = '(max-width:849px)';
+export const mediumlScreen = '(min-width: 850px) and (max-width: 1249px)';
+export const largeScreen = '(min-width: 1250px)';
 
 // Fonts
 export const smallFontSize = '16px';

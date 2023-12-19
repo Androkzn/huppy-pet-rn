@@ -352,18 +352,18 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
       {/* Food ratio section */}  
       <div style={styles.foodRatioContainerStyle}>
         <div  style={styles.rowStyle}>
-          <h3
+          <div
             style={styles.sectionTitleStyle}
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
           >
             {"Food Ratio"}
-          </h3>
+          </div>
           <Image
             imageName={isFoodRatioExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
-            style={{ cursor: "pointer" }}
+            styles={styles.sectionImageContainerStyle}
           />
         </div>
          {/* Show if Food ratio expanded */}  
@@ -482,18 +482,18 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
               <div style={styles.foodRatioContainerStyle}>
                 <div  style={styles.columnStyle}>
                 <div  style={styles.rowStyle}>
-                  <h3
+                  <div
                     style={styles.sectionTitleStyle}
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
                   >
                     {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
-                  </h3>
+                  </div>
                   <Image
                     imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
                     width="20"
                     height="20"
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
-                    style={{ cursor: "pointer" }}
+                    styles={styles.sectionImageContainerStyle}
                   />
                   </div>
 

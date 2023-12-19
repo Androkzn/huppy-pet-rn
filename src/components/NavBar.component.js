@@ -1,12 +1,10 @@
 import { useContext, useState } from 'react';
-import { AppBar, Box, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { AppBar, Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
-import {ImageCircle} from './ImageCircle.components'
 import Avatar from './Avatar.components'
-import { useMediaQuery } from '@mui/material/';
 import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
 import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg'
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg'

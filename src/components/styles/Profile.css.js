@@ -164,7 +164,7 @@ const sectionTitleStyle = {
 
 const sectionImageContainerStyle = {
   cursor: "pointer", 
-  justifyContent: 'end', 
+  justifyContent: 'center', 
   width: '10%', 
   marginRight: "15px",
 };

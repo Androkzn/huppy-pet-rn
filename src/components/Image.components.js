@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }) => {
+const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick, styles }) => {
   const [errorLoadingImage, setErrorLoadingImage] = useState(false);
   const handleImageError = () => {
-    
     setErrorLoadingImage(true);
   };
 
@@ -14,14 +13,19 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }
     return () => {
       setErrorLoadingImage(false);
     };
-  }, [imageDataUrl]); 
+  }, [imageDataUrl]);
 
-  const containerStyle = {
+  const defaultContainerStyle = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
     width: '100%',
+  };
+
+  const containerStyle = {
+    ...defaultContainerStyle,
+    ...styles, // Merge the provided style with the default style
   };
 
   const imageStyle = {
@@ -31,24 +35,24 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick }
 
   return (
     <div style={containerStyle}>
-    { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
-    <img
-      src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
-      alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
-      width={width}
-      height={height}
-      onClick={onClick}
-    />
-    ) : (
-    <img
-      src={imageDataUrl}  
-      alt={imageName.replace(/\.[^/.]+$/, '')}
-      style={imageStyle}
-      onError={handleImageError}
-    />
-    )}
+      {errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
+        <img
+          src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
+          alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
+          width={width}
+          height={height}
+          onClick={onClick}
+        />
+      ) : (
+        <img
+          src={imageDataUrl}
+          alt={imageName.replace(/\.[^/.]+$/, '')}
+          style={imageStyle}
+          onError={handleImageError}
+        />
+      )}
     </div>
   );
-}; 
+};
 
 export { Image };

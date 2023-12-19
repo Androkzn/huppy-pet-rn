@@ -5,11 +5,11 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import EditFoodForm from "../components/EditFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
-import { updateFoodTemplate } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/CreateNewFood.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeImageDialog from "../components/ChangeImageDialog.component";
+import {useUpdateFoodTemplate} from "../hooks/query.hooks"
 
 const EditFood = () => {
   const { user, setCurrentPage } = useContext(UserContext);
@@ -18,7 +18,7 @@ const EditFood = () => {
   const { food } = location.state || {};
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
-
+  const {mutate: updateFoodTemplateMutation} = useUpdateFoodTemplate()
    
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -83,15 +83,19 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
     if ( foodItem.name.length === 0 || foodItem.calories  === 0   ) {
       return;
     }
-    const isUpdated = await updateFoodTemplate(user, foodItem)  
-    console.log("updateFoodTemplate isSuccess", isUpdated )
-   
-    if (isUpdated) {
-      setCurrentPage("searchFood")
-        navigate("/searchFood");
-      } else {
-        
-      }     
+
+    updateFoodTemplateMutation(
+      {
+        user: user,
+        foodItem: foodItem,
+      },
+      {
+        onSuccess: () => {
+          setCurrentPage("searchFood")
+          navigate("/searchFood");
+        },
+      }
+    );   
   };
 
   //Callback func that opens image dialog 

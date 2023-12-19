@@ -5,18 +5,25 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
 import {ButtonImage, ButtonLink} from '../components/Buttons.components'
-import { addFoodCategory, updateProfile, deleteFoodCategory, getAllFoodCategories, updateFoodCategory } from "../graphql/graphqlUtils";
+import {useLoadFoodCategories, useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"
 import * as styles  from '../components/styles/Profile.css'
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
 import { useNavigate } from "react-router-dom";
+import LoadingAndError from "../components/LoadingAndError.components"
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, currentProfile, setCurrentPage, setCurrentProfile } = useContext(UserContext);
+  const { user, currentProfile, setCurrentPage, setCurrentProfile, currentDate } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
- 
+
+  const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories} = useLoadFoodCategories(user, currentProfile, currentDate);
+  const {mutate: addFoodCategoryMutation} = useAddFoodCategory()
+  const {mutate: deleteFoodCategoryMutation} = useDeleteFoodCategory()
+  const {mutate: updateFoodCategoryMutation} = useUpdateFoodCategory()
+  const {mutate: updateProfileMutation} = useUpdateProfile()
+
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
     const storedValue = localStorage.getItem(key);
@@ -79,8 +86,7 @@ const Profile = () => {
 
   // Some prefilled form state
   const [profile, setProfile] = useState(currentProfile || cachedProfile);
-  const [customFoodCategories, setCustomFoodCategories] = useState([]);
-
+ 
   // Updates profile 
   const getProfile = async () => {
       if (currentProfile){
@@ -93,31 +99,24 @@ const Profile = () => {
     }
   }
 
-  // Fetch all categories for currentProfile
-  const loadFoodCategories = async () => {
-    if (profile) {
-      const categories = await getAllFoodCategories(user, profile._id); 
-      setCustomFoodCategories(categories);
-    }
-  };
-
   // Adds new Food Category
   const addCategory= async (category) => {
-    const isAdded = await addFoodCategory(user, currentProfile, category)  
-    if (isAdded) {
-      loadFoodCategories()
-    }
+    addFoodCategoryMutation({
+      user:user, 
+      currentProfile:currentProfile, 
+      category: category
+    })
   };
 
   // Deletes Food Category
   const deleteCategory= async (categoryToDelete) => {
-    const isDeleted = await deleteFoodCategory(user, categoryToDelete._id);
-    if (isDeleted) {
-      loadFoodCategories()
-    }
+    deleteFoodCategoryMutation({
+      user: user,
+      _id: categoryToDelete._id,
+    })
   };
 
-  // Deletes Food Category
+  // Updates Food Category
   const updateCategory= async (id, value) => {
     const newWeight = Math.floor(profile?.dailyPortion * value / 100)
     const data = {
@@ -125,10 +124,11 @@ const Profile = () => {
       weight: newWeight
     }
       
-    const isUpdated = await updateFoodCategory(user, id, data);
-    if (isUpdated) {
-      loadFoodCategories()
-    }
+    updateFoodCategoryMutation({
+      user: user,
+      categoryId: id, 
+      updateData: data,
+    })
   };
 
   // Updates specific prooperty for profile
@@ -140,25 +140,29 @@ const Profile = () => {
     if (dataUpdated) { 
       data = dataUpdated
     }
-    console.log("updateCurrentProfile: ", data)
-    const updatedProfile = await updateProfile(user, profile._id, data)  
-    if (updatedProfile) {
-      console.log("SUCCESS to updateProfile: ", updatedProfile)
-      setProfile(updatedProfile);
-      setCurrentProfile(updatedProfile);
-      saveState('currentProfile', updatedProfile);
-    }
+
+    updateProfileMutation(
+      {
+        user: user,
+        profileId: profile._id, 
+        updateData:data,
+      },
+      {
+        onSuccess: (data) => {
+          const updatedProfile = data
+          console.log("SUCCESS to updateProfile: ", updatedProfile)
+          setProfile(updatedProfile);
+          setCurrentProfile(updatedProfile);
+          saveState('currentProfile', updatedProfile);
+        },
+      }
+    );   
   };
 
   // Save the profile to local storage whenever it changes
   useEffect(() => {
     getProfile()
   }, [currentProfile]);
-
-  // Loads Food Categories for profile
-  useEffect(() => {
-    loadFoodCategories()
-  }, []);
 
   return <PageContainer>
     <div style={styles.fixedTopContainer}>
@@ -175,15 +179,21 @@ const Profile = () => {
       <div style={{width: '100px'}}></div>
     </div>
     </div>
-    <ProfileForm 
-      profile={profile} 
-      customFoodCategories={customFoodCategories} 
-      updateProfile={updateCurrentProfile} 
-      addCategory={addCategory} 
-      deleteCategory={deleteCategory} 
-      updateCategory={updateCategory}
-      updateAvatar={updateAvatar}
-    />
+
+    {(isLoadingCategories) || (isErrorCategories) ?
+      (
+        <LoadingAndError isLoading = {isLoadingCategories} isError = {isErrorCategories}/>
+      ) : (
+        <ProfileForm 
+          profile={profile} 
+          customFoodCategories={categories} 
+          updateProfile={updateCurrentProfile} 
+          addCategory={addCategory} 
+          deleteCategory={deleteCategory} 
+          updateCategory={updateCategory}
+          updateAvatar={updateAvatar}
+        />
+      )}
 
      {/* Dialog */}
      {dialogOpen && (          

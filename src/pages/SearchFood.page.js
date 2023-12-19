@@ -18,7 +18,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import {useSearchForFood} from "../hooks/query.hooks"
-import Spiner from "../components/Spinner.components"
+import LoadingAndError from "../components/LoadingAndError.components"
 
 const SearchFood = () => {
   // Function to load state from localStorage
@@ -44,7 +44,7 @@ const saveState = (key, value) => {
    // State for radio buttons 
   const [selectedFilter, setSelectedFilter] = useState(loadState("selectedFilter", Enums.FilterFood.ALL));
   // Search results
-  const { data: searchResult, isLoading, isError } = useSearchForFood(searchQuery, selectedFilter, selectedCategory, user);
+  const { data: searchResult, isLoadingSearch, isErrorSearch } = useSearchForFood(searchQuery, selectedFilter, selectedCategory, user);
   
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
@@ -114,7 +114,7 @@ const saveState = (key, value) => {
     )
    }
  
-    const FilterContainer = ({ selectedCategory, setSelectedCategory }) => {
+    const FilterContainer = () => {
  
       async function handleFilterChange(filter) {
         console.log("handleFilterChange:", filter);
@@ -170,17 +170,7 @@ const saveState = (key, value) => {
     
   const ResultContainer = ({ searchResult, openAddFoodPage }) => {
       // Check if searchResult is not defined or is an empty array
-    if (isLoading) {
-      return <Spiner/>
-    }
-
-    if (isError) {
-      return (
-        <div style={styles.placeholderStyle}>
-          <Image imageName="general_error.png" width="200" height="250"/>
-        </div>
-      )
-    }
+ 
 
     if (!searchResult || searchResult.length === 0) {
       return <div style={styles.placeholderStyle}>
@@ -194,9 +184,16 @@ const saveState = (key, value) => {
 
     return (
       <div style={styles.columnStyle}>
-        {searchResult.map((foodItem, index) => (
-            <FoodCard key={foodItem._id} food={foodItem}  openAddFoodPage={() => openAddFoodPage(foodItem)}/>
-        ))}
+         {(isLoadingSearch) || (isErrorSearch) ?
+          (
+            <LoadingAndError isLoading = {isLoadingSearch} isError = {isErrorSearch}/>
+          ) : (
+          <div style={styles.columnStyle}>
+            {searchResult.map((foodItem, index) => (
+                <FoodCard key={foodItem._id} food={foodItem}  openAddFoodPage={() => openAddFoodPage(foodItem)}/>
+            ))}
+          </div>
+        )}
       </div>
     );
   };

@@ -13,6 +13,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import {useAddTraining, useLoadTrainingsForDate} from "../hooks/query.hooks"
+import LoadingAndError from "../components/LoadingAndError.components"
 
 const Training = () => {
     // Function to load state from localStorage
@@ -30,7 +31,7 @@ const Training = () => {
   // const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
-  const { data: trainings, isLoading: isLoadingFood, isError: isErrorFood} = useLoadTrainingsForDate(user, currentProfile, currentDate);
+  const { data: trainings, isLoading: isLoadingTrainings, isError: isErrorTrainings} = useLoadTrainingsForDate(user, currentProfile, currentDate);
   const {mutate: addTrainingMutation} = useAddTraining()
 
 
@@ -153,7 +154,13 @@ const Training = () => {
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>
       {!isSmallScreen && <DatePicker/>}
-        <Trainings trainingData={trainings}/>
+      
+      {(isLoadingTrainings) || (isErrorTrainings) ?
+        (
+          <LoadingAndError isLoading = {isLoadingTrainings} isError = {isErrorTrainings}/>
+        ) : (
+          <Trainings trainingData={trainings}/>
+        )}
       </div>  
    
  

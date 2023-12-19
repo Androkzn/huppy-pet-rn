@@ -353,7 +353,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
       <div style={styles.foodRatioContainerStyle}>
         <div  style={styles.rowStyle}>
           <h3
-            style={styles.nutritionFactsTitleStyle}
+            style={styles.sectionTitleStyle}
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
           >
             {"Food Ratio"}
@@ -483,7 +483,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
                 <div  style={styles.columnStyle}>
                 <div  style={styles.rowStyle}>
                   <h3
-                    style={styles.nutritionFactsTitleStyle}
+                    style={styles.sectionTitleStyle}
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
                   >
                     {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}

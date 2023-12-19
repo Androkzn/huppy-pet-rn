@@ -16,7 +16,7 @@ import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, Categ
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
 import {useLoadMealsForDate, useLoadFoodCategories,  useLoadFoodForDate, useLoadActivitiesForDate, useAddMeal, useAddActivity} from "../hooks/query.hooks"
-import Spiner from "../components/Spinner.components"
+import LoadingAndError from "../components/LoadingAndError.components"
 
 const Home = () => {
     // Function to load state from localStorage
@@ -353,23 +353,6 @@ const Meals = () => {
     );
   };
 
-  const LoadingAndError = (isLoading, isError) => {
-    if (isLoading) {
-      return (
-        <div style={styles.placeholderStyle}>
-          <Spiner/>
-        </div>
-      )
-    }
-  
-    if (isError) {
-      return (
-        <div style={styles.placeholderStyle}>
-          <Image imageName="general_error.png" width="200" height="250"/>
-        </div>
-      )
-    }
-   }
 
   return <PageContainer style={styles.pageStyle}>
       <div style={styles.columnStyle}>

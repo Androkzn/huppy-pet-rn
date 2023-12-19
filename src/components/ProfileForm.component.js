@@ -14,7 +14,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
-  const [avatar, setAvatar] = useState(null)
   const [avatarWidth, setAvatarWidth] = useState(150);
 
   // Returns unused categories that can be added to custom categories
@@ -25,7 +24,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
       const unusedCategories = remainingCategories.filter(
         (category) => !categories.some((existingCategory) => existingCategory.index == category.index)
       );
-
       return unusedCategories;
     } else {
       return [];
@@ -43,7 +41,7 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     
   }
 
-  let categoriesCanBeAdded = getUnusedCategories()  
+  let categoriesCanBeAdded = getUnusedCategories(categories)  
   let unusedCategoryPercentage = checkUnusedCategoryPercentage()
   let chartData = []
 
@@ -65,9 +63,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     const handleScroll = debounce(() => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
       const newSize = Math.max(1, 140 - scrollY * 1.5);
-      console.log("newSize", newSize)
-      console.log("scrollY", scrollY)
-      
       if (scrollY > 60 || scrollY <= 0) {
         return;
       }
@@ -179,7 +174,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   
   // Calculates estimated daily calories  weight based on Daily ratio %  and pet's weight
   function getEstCalories() {
-    console.log(Math.floor(Constants.estCalories * profile.weight * profile.dailyRatio))
     return Math.floor(Constants.estCalories * profile.weight * profile.dailyRatio);
   }
 
@@ -298,6 +292,9 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     return isaAvailable
   };
 
+  
+
+
   return <div style={{...styles.profileFormStyle}}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       {/* Avatar section */}
@@ -379,18 +376,18 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
       {/* Food ratio section */}  
       <div style={styles.foodRatioContainerStyle}>
         <div  style={styles.rowStyle}>
-          <h3
-            style={styles.nutritionFactsTitleStyle}
+          <div
+            style={styles.sectionTitleStyle}
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
           >
             {"Food Ratio"}
-          </h3>
+          </div>
           <Image
             imageName={isFoodRatioExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
             width="20"
             height="20"
             onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
-            style={{ cursor: "pointer" }}
+            styles={styles.sectionImageContainerStyle}
           />
         </div>
          {/* Show if Food ratio expanded */}  
@@ -487,9 +484,15 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
                           weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
                           color={category?.color}
                           value={category?.percentage} 
-                          onChange={(value) => { onTextInputCategoryChange(value, category?._id) }}
-                          onDelete={() => { deleteCategory(category) }}
-                          onChangeButton={(name,value) => { onButtonInputChange(name,value, category?._id) }}
+                          onChange={(value) => { 
+                            onTextInputCategoryChange(value, category?._id) 
+                          }}
+                          onDelete={() => { 
+                            deleteCategory(category) 
+                          }}
+                          onChangeButton={(name,value) => { 
+                            onButtonInputChange(name, value, category?._id) 
+                          }}
                         />
                       ) : (
                         <SelectedFoodCategoryRow
@@ -509,18 +512,18 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
               <div style={styles.foodRatioContainerStyle}>
                 <div  style={styles.columnStyle}>
                 <div  style={styles.rowStyle}>
-                  <h3
-                    style={styles.nutritionFactsTitleStyle}
+                  <div
+                    style={styles.sectionTitleStyle}
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
                   >
                     {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
-                  </h3>
+                  </div>
                   <Image
                     imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
                     width="20"
                     height="20"
                     onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
-                    style={{ cursor: "pointer" }}
+                    styles={styles.sectionImageContainerStyle}
                   />
                   </div>
 

@@ -24,8 +24,8 @@ const foodRatioContainerStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   textAlign: 'center',
-  width: '100%',
-  marginTop: '10px',
+  width: 'auto',
+  margin: '10px 3px 0px 3px',
   backgroundColor: colors.lightBrown,
 };
 
@@ -151,11 +151,22 @@ const ageStyle = {
   marginBottom: '10px',
 };
 
-const nutritionFactsTitleStyle = {
+const sectionTitleStyle = {
+  margin: "15px",
+  width: '100%',
   textAlign: 'center',
   color: colors.lightGreen,
   marginRight: '10px',
   cursor: "pointer",
+  fontWeight: "bold",
+  fontSize: "18px",
+};
+
+const sectionImageContainerStyle = {
+  cursor: "pointer", 
+  justifyContent: 'end', 
+  width: '10%', 
+  marginRight: "15px",
 };
 
 const addFoodButtonContainerStyle = {
@@ -218,7 +229,8 @@ export {
   nameStyle,
   ageStyle,
   profileTitleStyle,
-  nutritionFactsTitleStyle,
+  sectionTitleStyle,
+  sectionImageContainerStyle,
   backButtonContainerStyle,
   saveButtonContainerStyle,
   imageContainerStyle,
@@ -231,7 +243,7 @@ export {
   closeDialogButtonContainer,
   dialogTitleStyle,
   dialogButtonContainerStyle,
- avatarContainerStyle,
- leftDialogButtonStyle,
- fixedTopContainer,
+  avatarContainerStyle,
+  leftDialogButtonStyle,
+  fixedTopContainer,
 };

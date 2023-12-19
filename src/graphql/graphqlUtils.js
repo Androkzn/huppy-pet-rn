@@ -441,7 +441,7 @@ async function deleteFoodTemplate({user, _id}) {
 
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
-async function deleteFoodCategory(user, _id) {
+async function deleteFoodCategory({user, _id}) {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1071,7 +1071,7 @@ async function addTraining({user, currentProfile, selectedDate, data}) {
     }
 }
 
-async function addFoodCategory(user, currentProfile, data) {
+async function addFoodCategory({user, currentProfile, data}) {
   if (!user || !currentProfile) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1193,7 +1193,7 @@ async function updateTraining({user, trainingId, updateData}) {
 }
 
 // Function to update Profile
-async function updateProfile(user, profileId, updateData) {
+async function updateProfile({user, profileId, updateData}) {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1252,9 +1252,10 @@ async function updateProfile(user, profileId, updateData) {
 }
 
 // Function to update an Food Category
-async function updateFoodCategory(user, categoryId, updateData) {
+async function updateFoodCategory({user, categoryId, updateData}) {
   if (!user) { return false}
-
+  console.log("updateFoodCategory categoryId: ", categoryId)
+  console.log("updateFoodCategory updateData: ", updateData)
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1331,7 +1332,7 @@ async function updateFood({user, foodId, updateData}) {
 }
 
 // Function to update an Foof Template
-async function updateFoodTemplate(user, foodItem) {
+async function updateFoodTemplate({user, foodItem}) {
   if (!user) { return false}
 
   const accessToken = user._accessToken;

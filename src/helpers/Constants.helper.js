@@ -57,7 +57,7 @@ export const barfTraditionalPuppy = {
   meat: 58,
   bones: 17,
   liver: 7,
-  giblets: 7,
+  giblets: 8,
   veggie: 10,
 };
 

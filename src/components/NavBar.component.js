@@ -27,7 +27,6 @@ const NavBar = () => {
   }
 
   const DatePicker = () => {
-    console.log("NavBar currentPage", currentPage)
     return (
         <div>
         { isSmallScreen && (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
@@ -129,7 +128,7 @@ const TemporaryDrawer = (props) => {
   ];
 
   // Filter out the "Change profile" item if the number of profiles is less than 2
-  const filteredNavLinks = profiles.length < 2
+  const filteredNavLinks = profiles && profiles.length < 2
     ? navLinks.filter(({ text }) => text !== "Change profile")
     : navLinks;
 

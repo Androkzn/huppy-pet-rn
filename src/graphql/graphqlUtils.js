@@ -592,7 +592,10 @@ async function addFoodTemplate({user, foodItem}) {
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
 async function getUserProfiles(user) {
-  if (!user) { return {}}
+  if (!user) { 
+    return null;
+  }
+
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
     const userId = user.id
@@ -639,9 +642,9 @@ async function getUserProfiles(user) {
   try {
     const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
     const profiles = resp.profiles.map(profile => ({ ...profile, key: profile._id })) 
-    const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
-    const currentProfile = currentProfileFetched[0];
-    return { profilesFetched: profiles, currentProfileFetched: currentProfile };
+    // const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
+    // const currentProfile = currentProfileFetched[0];
+    return profiles
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
@@ -651,8 +654,80 @@ async function getUserProfiles(user) {
     console.error(error);
     alert('Error get profiles');
     console.error('Error loading profiles:', error);
+    return null;
   }
 }
+
+// Func that is responsible for fetching  all all profiles for specific user
+// it returna arrayprofiles and current profile
+async function getCurrentProfile(user) {
+  if (!user) { 
+    return null;
+  }
+
+    const accessToken = user._accessToken;
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    const userId = user.id
+
+    // GraphQL query to fetch all the meals for specific time interval
+    const getProfiles = gql`
+    query getProfiles($userId: String!) {
+        profiles(query: { userId: $userId }) {
+            _id
+            avatar
+            breed
+            categories {
+                _id
+                color
+                index
+                name
+                profileId
+                percentage
+                type
+                userId
+                weight
+            }
+            dailyPortion
+            dailyRatio
+            dob
+            isCurrent
+            isRatioSelected
+            name
+            preset
+            size
+            userId
+            weight
+            activityType
+            deductCalories 
+            }
+        }
+    `;
+
+  // Filter only current user related data 
+  const queryVariablesProfiles = {
+    "userId": userId,
+    "isCurrent": true,
+  };
+
+  try {
+    const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
+    const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
+    const currentProfile = currentProfileFetched[0];
+    return currentProfile
+  } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user)
+      getUserProfiles(user)
+    } 
+    
+    console.error(error);
+    alert('Error get profiles');
+    console.error('Error loading profiles:', error);
+    return { profilesFetched: {}, currentProfileFetched: {} };
+  }
+}
+
+
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
 async function addProfile(user, profile) {
@@ -1422,6 +1497,7 @@ export {
     deleteFood,
     deleteFoodTemplate,
     getUserProfiles,
+    getCurrentProfile,
     loadMeals,
     loadFood,
     loadActivities,

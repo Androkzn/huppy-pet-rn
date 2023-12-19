@@ -11,10 +11,9 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, fetchUser, emailPasswordLogin, setCurrentPage, loadUserProfiles, currentProfile } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const redirectNow = () => {
-    console.log("redirectNow currentProfile", currentProfile)
     const redirectTo = location.search.replace("?redirectTo=", "");
     setCurrentPage("home")
     navigate(redirectTo ? redirectTo : "/");
@@ -24,16 +23,12 @@ const Login = () => {
     if (!user) {
       try {
         setLoading(true);  
-        const userFetched = await fetchUser();
-        const isProfileFetched =  await loadUserProfiles(userFetched);
-       
-        if (userFetched && isProfileFetched) {
-          console.log("loadUser currentProfile", currentProfile)
-          redirectNow();
+        const user = await fetchUser();
+        if (!user) {
+          setLoading(false);
         }
       } catch (error) {
         alert(error);
-      } finally {
         setLoading(false); 
       }
     }
@@ -44,34 +39,35 @@ const Login = () => {
     loadUser();  
   }, []);
 
+  useEffect(() => {
+     if (currentProfile) {
+      redirectNow();
+      setLoading(false); 
+     }
+  }, [currentProfile]);
+
  
   const onSubmit = async (formData) => {
     try {
       setLoading(true);  
-      const loggedInUser = await emailPasswordLogin(formData.username, formData.password);
-      const isProfileFetched =  await loadUserProfiles(loggedInUser);
-      console.log("onSubmit isProfileFetched", isProfileFetched)
-
-      if (loggedInUser && isProfileFetched) {
-        console.log("onSubmit currentProfile", currentProfile)
-        redirectNow();
-      }
+      await emailPasswordLogin(formData.username, formData.password);
+      await fetchUser();
     } catch (error) {
       alert(error);
-    } finally {
-      setLoading(false);  
-    }
+    } 
   };
 
   const navigatedTo= (link) => {
     setCurrentPage(link)
   }
-
+  
   return (
     <div css={styles.containerStyle}> 
-    {loading ? (
+    {(loading && !currentProfile) || currentProfile? (
       // Display loading spinner while waiting for fetchUser or login
-      <Spiner/> 
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <Spiner />
+      </div>
     ) : (
       // Display login form when not loading
       <div css={styles.loginConteinerStyle}>

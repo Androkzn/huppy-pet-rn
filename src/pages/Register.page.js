@@ -131,7 +131,6 @@ const saveProfile = async () => {
   if (isCreated && profileNew) {
     console.log("SUCCESS to create Profile: ", profileNew)
     setProfiles([profileNew])
-    setCurrentProfile(profileNew)
 
     // Upload avatar to AWS S3
     await uploadAvatar(profileNew._id)

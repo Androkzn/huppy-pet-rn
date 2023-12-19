@@ -3,7 +3,8 @@ import axios from "axios";
 import {ImageCircle} from './ImageCircle.components'
 
 const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
-  const [avatar, setAvatar] = useState(profile.avatar)
+ 
+  const [avatar, setAvatar] = useState(profile?.avatar || "")
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
 
   useEffect(() => {

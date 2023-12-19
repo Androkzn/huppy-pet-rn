@@ -4,7 +4,6 @@ import * as Enums from "../helpers/Enums.helper"
 
 
 const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) => {
-  console.log("useSearchForFood", searchQuery)
     return useQuery(['searchFood', searchQuery, selectedCategory, selectedFilter], async () => {
       if (selectedFilter === Enums.FilterFood.ALL) {
         if  (searchQuery === "") return []
@@ -22,16 +21,16 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   };
 
   const useLoadMealsForDate = (user, currentProfile, currentDate) => {
-    console.log("useLoadMealsForDate", currentDate)
     return useQuery(['loadMealsForDate', currentDate], async () => {  
       return graphql. loadMeals(user, currentProfile, currentDate);
     });
   };
 
-  const useLoadFoodCategories = (user, currentProfile, currentDate) => {
-    console.log("useLoadFoodCategories", currentDate)
-    return useQuery(['loadFoodCategories', currentDate], async () => {
+  const useLoadFoodCategories = (user, currentProfile, preset) => {
+    return useQuery(['loadFoodCategories', preset], async () => {
       if (currentProfile && user) {
+        console.log("currentProfile.preset", preset)
+        console.log("currentProfile?.preset !== Enums.RatioPresets.CUSTOM", currentProfile?.preset !== Enums.RatioPresets.CUSTOM)
         if ( currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
           const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(currentProfile?.dailyPortion, currentProfile?._id,  currentProfile?.preset) 
             const data = (allCategoriesForPresset).map((category) => ({ 
@@ -41,6 +40,9 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
             color: category.color,
             type: category.type,
           }));
+          console.log("allCategoriesForPresset", allCategoriesForPresset)
+
+          console.log("useLoadFoodCategories data", data)
           return data
         } else {
           const categories = await  graphql.getAllFoodCategories(user, currentProfile._id); 
@@ -55,60 +57,67 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
             profileId: category.profileId,
             userId: category.userId,
           }));
+          console.log("getAllFoodCategories", data)
           return data
         }
       } else {
+        console.log("Empty Categories")
         return []
       }
     });
   };
 
   const useLoadFoodForDate = (user, currentProfile, currentDate, isStatisticToday) => {
-    console.log("useLoadFoodForDate", currentDate)
     return useQuery(['loadFoodForDate', currentDate], async () => {
         return graphql.loadFood(user, currentProfile, currentDate, isStatisticToday);
     });
   };
 
   const useGetAllFoodForMeal = (user, mealId) => {
-    console.log("useGetAllFoodForMeal", mealId)
     return useQuery(['getAllFoodForMeal', mealId], async () => {
         return graphql.getAllFoodForMeal(user, mealId);
     });
   };
 
   const useLoadActivitiesForDate = (user, currentProfile, currentDate) => {
-    console.log("useLoadActivitiesForDate", currentDate)
     return useQuery(['loadActivitiesForDate', currentDate], async () => {
         return graphql.loadActivities(user, currentProfile, currentDate);
     });
   };
 
   const useLoadTrainingsForDate = (user, currentProfile, currentDate) => {
-    console.log("useLoadTrainingsForDate", currentDate)
     return useQuery(['loadTrainingsForDate', currentDate], async () => {
         return graphql.loadTrainings(user, currentProfile, currentDate);
     });
   };
 
+  const useGetProfiles = (user) => {
+    return useQuery(['getProfiles', user], async () => {
+        return graphql.getUserProfiles(user);
+    });
+  };
+
+  const useGetCurrentProfile = (user) => {
+    return useQuery(['getCurrentProfile', user], async () => {
+        return graphql.getCurrentProfile(user);
+    });
+  };
 
   const useAddMeal= () => {
-    console.log("useAddMeal")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addMeal,
-      onSuccess: (data, variables, context) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(["loadMealsForDate"]);
       }
     });
   };
 
   const useAddActivity= () => {
-    console.log("useAddActivity")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addActivity,
-      onSuccess: (data, variables, context) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(["loadActivitiesForDate"]);
         queryClient.invalidateQueries(["loadFoodForDate"]);
       }
@@ -116,18 +125,16 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   };
 
   const useAddTraining = () => {
-    console.log("useAddTraining")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addTraining,
-      onSuccess: (data, variables, context) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(["loadTrainingsForDate"]);
       }
     });
   };
 
   const useUpdateTraining= () => {
-    console.log("useUpdateTraining")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateTraining,
@@ -138,7 +145,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useAddFoodCategory = () => {
-    console.log("useAddFoodCategory")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addFoodCategory,
@@ -149,7 +155,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   };
 
   const useAddFoodTemplate = () => {
-    console.log("useAddFoodTemplate")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addFoodTemplate,
@@ -161,7 +166,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   };
 
   const useUpdateFoodTemplate= () => {
-    console.log("useUpdateFoodTemplate")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateFoodTemplate,
@@ -172,7 +176,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useUpdateFood= () => {
-    console.log("useUpdateFood")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateFood,
@@ -184,7 +187,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useUpdateFoodCategory= () => {
-    console.log("useUpdateFoodCategory")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateFoodCategory,
@@ -195,7 +197,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
   
   const useAddFood= () => {
-    console.log("useAddFood")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.addFood,
@@ -206,7 +207,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useDeleteFood= () => {
-    console.log("useDeleteFood")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteFood,
@@ -218,7 +218,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useDeleteMeal= () => {
-    console.log("useDeleteMeal")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteMeal,
@@ -230,7 +229,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useDeleteActivity= () => {
-    console.log("useDeleteActivity")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteActivity,
@@ -242,7 +240,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
     const useDeleteFoodTemplate= () => {
-    console.log("useDeleteFoodTemplate")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteFoodTemplate,
@@ -253,7 +250,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useUpdateActivity= () => {
-    console.log("useUpdateActivity")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.updateActivity,
@@ -270,13 +266,13 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     return useMutation({
       mutationFn: graphql.updateProfile,
       onSuccess: () => {
-        queryClient.invalidateQueries([""]);
+        queryClient.invalidateQueries(["getCurrentProfile"]);
+        queryClient.invalidateQueries(["loadFoodCategories"]);
       }
     });
   }
 
   const useDeleteTraining= () => {
-    console.log("useDeleteTraining")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteTraining,
@@ -287,7 +283,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
   const useDeleteFoodCategory= () => {
-    console.log("useDeleteFoodCategory")
     const queryClient = useQueryClient()
     return useMutation({
       mutationFn: graphql.deleteFoodCategory,
@@ -297,7 +292,9 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     });
   }
 
-export { 
+export {
+    useGetCurrentProfile,
+    useGetProfiles,
     useSearchForFood,
     useLoadFoodForDate,
     useLoadActivitiesForDate,

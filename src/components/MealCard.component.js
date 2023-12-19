@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonImage, ButtonText} from '../components/Buttons.components'
@@ -9,7 +9,6 @@ import {Image} from '../components/Image.components'
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 import {useGetAllFoodForMeal, useUpdateFood, useAddMeal, useDeleteFood, useDeleteMeal} from "../hooks/query.hooks"
-import Spiner from "../components/Spinner.components"
 
 function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);

@@ -3,6 +3,7 @@ import { App, Credentials } from "realm-web";
 import { getUserProfiles  } from "../graphql/graphqlUtils";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
+import { useGetProfiles, useGetCurrentProfile } from "../hooks/query.hooks";
 
 // Creating a Realm App Instance
  const app = new App(process.env.REACT_APP_APP_ID);
@@ -13,13 +14,19 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [profiles, setProfiles] = useState([]);
-  const [currentProfile, setCurrentProfile] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState("home");
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const isMediumlScreen = useMediaQuery(Constants.mediumlScreen);
   const isLargeScreen = useMediaQuery(Constants.largeScreen);
+
+ 
+  const { data: profiles, isLoading: isLoadingProfiles, isError: isErrorProfiles} = useGetProfiles(user);
+  const { data: currentProfile, isLoading: isLoadingProfile, isError: isErrorProfile} = useGetCurrentProfile(user);
+
+  if  (!isLoadingProfile && !isErrorProfile) {
+    console.log(" UserProvider currentProfile", currentProfile)
+  }
 
   // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
@@ -31,6 +38,7 @@ export const UserProvider = ({ children }) => {
     }  
     return authedUser;
   };
+
 
   // Function to signup user into our Realm using their email & password
   const emailPasswordSignup = async (email, password) => {
@@ -46,7 +54,7 @@ export const UserProvider = ({ children }) => {
 
   // Function to fetch-user(if the user is already logged in) from local storage
   const fetchUser = async () => {
-    if (!app.currentUser) return false;
+    if (!app.currentUser) return null;
     try {
       await app.currentUser.refreshCustomData();
       // Now if we have a user we are setting it to our user context
@@ -79,19 +87,10 @@ export const UserProvider = ({ children }) => {
   }, [user]);
 
   const loadUserProfiles = async (user) => {
-    if (user) {
-      const { profilesFetched, currentProfileFetched } = await getUserProfiles(user);
-      if (profilesFetched && currentProfileFetched) {
-        setProfiles(profilesFetched);
-        setCurrentProfile(currentProfileFetched);
-        return true
-      } else {
-        return false
-      }
-    }
+    return (user && currentProfile && profiles)
   };
 
-  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setProfiles, setCurrentProfile, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
+  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
     {children}
   </UserContext.Provider>;
 }

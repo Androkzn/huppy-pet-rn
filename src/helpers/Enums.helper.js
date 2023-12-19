@@ -53,7 +53,8 @@ export const FoodSection = {
   };
   // Enum FoodCategoryType methods
   export const getTitleUpercased= (rawValue) => {
-    return String(rawValue).charAt(0).toUpperCase() + String(rawValue).slice(1);
+    const title = String(rawValue).charAt(0).toUpperCase() + String(rawValue).slice(1);
+    return title
   };
 
   export const basePercentageFoodCategory = (category) => {
@@ -336,9 +337,8 @@ export const TrainingType = {
 };
 
 // Enum TrainingType methods
-export const getTrainingTypeFor = (rawValue) => {
+export const getTrainingTypeFor = function (rawValue) {
   for (const type in TrainingType) {
-    console.log("getTrainingTypeFor", rawValue)
     if (TrainingType[type] === rawValue) {
       return TrainingType[type];
     }
@@ -522,8 +522,8 @@ export const getCategoriesForRatioPreset = function (dailyPortion, profileId, ty
             { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
             { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
             { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), eight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
-            { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getTitleUpercased(FoodCategoryType.SEEDS), weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.SEEDS), profileId: profileId },
-            { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getTitleUpercased(FoodCategoryType.FRUITS),  weight: dailyPortion * 2 / 100, percentage: 2, color: getColorFoodCategory(FoodCategoryType.FRUITS), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.SEEDS), type: FoodCategoryType.SEEDS, name: getTitleUpercased(FoodCategoryType.SEEDS), weight: dailyPortion * 3 / 100, percentage: 3, color: getColorFoodCategory(FoodCategoryType.SEEDS), profileId: profileId },
+            { index: getIndexFoodCategory(FoodCategoryType.FRUITS), type: FoodCategoryType.FRUITS, name: getTitleUpercased(FoodCategoryType.FRUITS),  weight: dailyPortion * 1 / 100, percentage: 1, color: getColorFoodCategory(FoodCategoryType.FRUITS), profileId: profileId },
           ];
           case  RatioPresets.BARF_TRADITIONAL_ADULT:
             return [
@@ -539,7 +539,7 @@ export const getCategoriesForRatioPreset = function (dailyPortion, profileId, ty
               { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getTitleUpercased(FoodCategoryType.MEAT), weight: dailyPortion * 58 / 100, percentage: 58, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
               { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getTitleUpercased(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
               { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
-              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 8 / 100, percentage: 8, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
               { index: getIndexFoodCategory(FoodCategoryType.VEGGIE), type: FoodCategoryType.VEGGIE, name: getTitleUpercased(FoodCategoryType.VEGGIE), weight: dailyPortion * 10 / 100, percentage: 10, color: getColorFoodCategory(FoodCategoryType.VEGGIE), profileId: profileId },
             ];
 
@@ -571,10 +571,10 @@ export const getCategoriesForRatioPreset = function (dailyPortion, profileId, ty
 
           case RatioPresets.PMR_TRADITIONAL_PUPPY:
             return [
-              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getRatioPresetsTitle(FoodCategoryType.MEAT), weight: dailyPortion * 69 / 100, percentage:69, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
-              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getRatioPresetsTitle(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
-              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getRatioPresetsTitle(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
-              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getRatioPresetsTitle(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.MEAT), type: FoodCategoryType.MEAT, name: getTitleUpercased(FoodCategoryType.MEAT), weight: dailyPortion * 69 / 100, percentage:69, color: getColorFoodCategory(FoodCategoryType.MEAT), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.BONES), type: FoodCategoryType.BONES, name: getTitleUpercased(FoodCategoryType.BONES), weight: dailyPortion * 17 / 100, percentage: 17, color: getColorFoodCategory(FoodCategoryType.BONES), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.LIVER), type: FoodCategoryType.LIVER, name: getTitleUpercased(FoodCategoryType.LIVER), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.LIVER), profileId: profileId },
+              { index: getIndexFoodCategory(FoodCategoryType.GIBLETS), type: FoodCategoryType.GIBLETS, name: getTitleUpercased(FoodCategoryType.GIBLETS), weight: dailyPortion * 7 / 100, percentage: 7, color: getColorFoodCategory(FoodCategoryType.GIBLETS), profileId: profileId },
             ];
           }
     }

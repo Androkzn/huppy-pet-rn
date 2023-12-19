@@ -578,7 +578,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     const nameStyle = {
       width:  isSmallScreen ? '60px' : '100px',
       borderRadius: isSmallScreen ? Constants.smallBorderRadius : Constants.mainBorderRadius,
-      padding: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      padding: isSmallScreen ? Constants.smallPadding : Constants.smallPadding,
       backgroundColor: `${color}`,
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };

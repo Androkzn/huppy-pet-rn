@@ -4,21 +4,19 @@ import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
-import {ButtonImage, ButtonLink} from '../components/Buttons.components'
-import {useLoadFoodCategories, useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"
+import {ButtonImage} from '../components/Buttons.components'
+import {useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"
 import * as styles  from '../components/styles/Profile.css'
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeAvatarDialog from "../components/ChangeAvatarDialog.component";
 import { useNavigate } from "react-router-dom";
-import LoadingAndError from "../components/LoadingAndError.components"
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, currentProfile, setCurrentPage, setCurrentProfile, currentDate } = useContext(UserContext);
+  const { user, currentProfile, setCurrentPage } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
 
-  const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories} = useLoadFoodCategories(user, currentProfile, currentDate);
   const {mutate: addFoodCategoryMutation} = useAddFoodCategory()
   const {mutate: deleteFoodCategoryMutation} = useDeleteFoodCategory()
   const {mutate: updateFoodCategoryMutation} = useUpdateFoodCategory()
@@ -64,7 +62,7 @@ const Profile = () => {
   const updateAvatar = async () => {
     openDialog("avatar")
   };
-  
+
   const cachedProfile = loadState('currentProfile', {
     _id : currentProfile?._id,
     name: currentProfile?.name,
@@ -152,7 +150,6 @@ const Profile = () => {
           const updatedProfile = data
           console.log("SUCCESS to updateProfile: ", updatedProfile)
           setProfile(updatedProfile);
-          setCurrentProfile(updatedProfile);
           saveState('currentProfile', updatedProfile);
         },
       }
@@ -180,20 +177,18 @@ const Profile = () => {
     </div>
     </div>
 
-    {(isLoadingCategories) || (isErrorCategories) ?
+    {/* {(isLoadingCategories) || (isErrorCategories) ?
       (
         <LoadingAndError isLoading = {isLoadingCategories} isError = {isErrorCategories}/>
-      ) : (
+      ) : ( */}
         <ProfileForm 
-          profile={profile} 
-          customFoodCategories={categories} 
           updateProfile={updateCurrentProfile} 
           addCategory={addCategory} 
           deleteCategory={deleteCategory} 
           updateCategory={updateCategory}
           updateAvatar={updateAvatar}
         />
-      )}
+      {/* )} */}
 
      {/* Dialog */}
      {dialogOpen && (          

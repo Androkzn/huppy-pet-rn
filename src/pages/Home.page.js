@@ -61,7 +61,7 @@ const Home = () => {
     const [isStatisticExpanded, setStatisticExpanded] = useState(!isSmallScreen);
     const [isStatisticToday, setStatisticToday] = useState(true);
     const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useLoadFoodForDate(user, currentProfile, currentDate, isStatisticToday);
-    const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useLoadFoodCategories(user, currentProfile, currentDate);
+    const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
     const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useLoadActivitiesForDate(user, currentProfile, currentDate);
  
     return (
@@ -135,7 +135,7 @@ const Home = () => {
   };
 
   const Chart = () => {
-    const { data: categories, isLoading, isError } = useLoadFoodCategories(user, currentProfile, currentDate);
+    const { data: categories, isLoading, isError } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
   
     return (
       <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '0px' : '10px'}}> 

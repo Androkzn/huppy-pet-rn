@@ -1,54 +1,22 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState, useEffect  } from "react";
+import { useState, useEffect, useContext  } from "react";
 import * as styles  from './styles/Profile.css'
 import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, SelectedCustomFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"
 import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
-import {ImageCircle} from './ImageCircle.components'
 import Avatar from './Avatar.components'
+import {useLoadFoodCategories} from "../hooks/query.hooks"
+import { UserContext } from "../contexts/user.context";
+import LoadingAndError from "../components/LoadingAndError.components"
 
-const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {
+const ProfileForm = ({ updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {
+  const { user, currentProfile: profile } = useContext(UserContext);
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
-  const [categories, setCategories] = useState(customFoodCategories);
   const [avatarWidth, setAvatarWidth] = useState(150);
-
-  // Returns unused categories that can be added to custom categories
-  const getUnusedCategories = () => {
-    if (profile?.preset === Enums.RatioPresets.CUSTOM) {
-      const remainingCategories =  Enums.getAllFoodCategories(profile._id);
-      // Filter out categories that already exist
-      const unusedCategories = remainingCategories.filter(
-        (category) => !categories.some((existingCategory) => existingCategory.index == category.index)
-      );
-      return unusedCategories;
-    } else {
-      return [];
-    }
-  };
-  
-  // Provides default presset categories or returns custom categories depends on preset value
-  const getCategoriesForPresset = () => {
-    if ( profile?.preset !== Enums.RatioPresets.CUSTOM) {
-      const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(  profile?.dailyPortion, profile?._id,  profile?.preset) 
-      return allCategoriesForPresset;
-    } else {
-      return customFoodCategories;
-    }
-    
-  }
-
-  let categoriesCanBeAdded = getUnusedCategories(categories)  
-  let unusedCategoryPercentage = checkUnusedCategoryPercentage()
-  let chartData = []
-
-  //Set Food categories whenever preset changes
-  useEffect(() => {
-    setCategories(getCategoriesForPresset())  
-  }, [profile.preset, customFoodCategories]);
 
   // Handle avatar size when scrolling
    useEffect(() => {
@@ -151,19 +119,6 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     }
   }
 
-  function getChartData() {
-      const categoriesNew = getCategoriesForPresset()
-      const data = (categoriesNew).map((category) => ({
-        name: category.name,
-        weight: category.weight,
-        percentage: category.percentage,
-        color: category.color,
-      }));
-      chartData  = data
-
-    return chartData
- }
-
   // Calculates portion weight based on Daily ratio % 
   function getPortionWeight(dailyRatio, weight) {
       const percentage = parseFloat( dailyRatio);
@@ -178,12 +133,16 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
   }
 
   // Calculates  unused %  for custom food categories
-  function checkUnusedCategoryPercentage() {
+  function checkUnusedCategoryPercentage(categories) {
+    if (categories && categories.length > 0) {
     const usedPercentage = categories.reduce((total, category) => {
       return total + category.percentage;
     }, 0);
     const result = 100 - usedPercentage;
     return result;
+    } else {
+      return 0
+    }
   }
 
   // Generates string based on DOB
@@ -287,14 +246,169 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
     return ageComponents;
   }
 
-  const isChartDataAvailable = () => {
-    const isaAvailable  = getChartData().some((category) => category.percentage > 0);
-    return isaAvailable
+
+
+  const CategoriesPressetSection = () => {
+  const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories} = useLoadFoodCategories(user, profile, profile.preset);
+
+  // Returns unused categories that can be added to custom categories
+  const getUnusedCategories = (categories) => {
+
+    if (categories && categories.length > 0 && profile?.preset === Enums.RatioPresets.CUSTOM) {
+      const remainingCategories =  Enums.getAllFoodCategories(profile._id);
+      // Filter out categories that already exist
+      const unusedCategories = remainingCategories.filter(
+        (category) => !categories.some((existingCategory) => existingCategory.index == category.index)
+      );
+      return unusedCategories;
+    } else {
+      return [];
+    }
+  };
+  
+  // Provides default presset categories or returns custom categories depends on preset value
+  const getCategoriesForPresset = () => {
+    if (categories && categories.length > 0 && profile?.preset !== Enums.RatioPresets.CUSTOM) {
+      const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(  profile?.dailyPortion, profile?._id,  profile?.preset) 
+      return allCategoriesForPresset;
+    } else {
+      return (categories || []);
+    }
+  }
+
+  let categoriesCanBeAdded = getUnusedCategories(categories)  
+  let unusedCategoryPercentage = checkUnusedCategoryPercentage(categories)
+  let chartData = []
+    function getChartData() {
+      const categoriesNew = getCategoriesForPresset()
+      const data = (categoriesNew).map((category) => ({
+        name: category.name,
+        weight: category.weight,
+        percentage: category.percentage,
+        color: category.color,
+      }));
+      chartData  = data
+
+    return chartData
+ }
+
+    const isChartDataAvailable = () => {
+      const isaAvailable  = getChartData().some((category) => category.percentage > 0);
+      return isaAvailable
+    };
+
+    return (
+      <div>
+        {(isLoadingCategories) || (isErrorCategories) ?
+          (
+            <LoadingAndError isLoading = {isLoadingCategories} isError = {isErrorCategories}/>
+          ) : (
+          <div>
+              {/* Chart */}
+              <div  style={styles.chartContainerStyle}>
+                {/* Show placeholder if no data */}
+                { isChartDataAvailable()  ? (
+                  <div>
+                    <ChartPie data={getChartData()}/>
+                    
+                    {/* Unused calories reminder */}
+                    {unusedCategoryPercentage > 0 && 
+                    <div style={styles.unusedCaloriesReminderStyle}> 
+                      You have {unusedCategoryPercentage}% unused! 
+                    </div>
+                    }
+                  </div>
+                  ) : (
+                  <Image
+                    imageName={ getChartData().length > 0 ? "no_percentage_placeholder.png" : "no_chart_placeholder.png"}
+                    width="190"
+                    height="200"
+                    onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
+                    style={{ cursor: "pointer" }}
+                  />
+                  )}
+              </div>
+
+              {/* Selected categories section*/}
+              <div  style={styles.selectedCategoriesContainerStyle}>
+                <div style={styles.columnStyle}>
+                  {categories.map((category)  => (
+                   <div key={category.type}>
+                     { (profile?.preset === Enums.RatioPresets.CUSTOM) ? (
+                        <SelectedCustomFoodCategoryRow
+                          name={category?.name}
+                          remainingPercentage= {unusedCategoryPercentage}
+                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
+                          color={category?.color}
+                          value={category?.percentage} 
+                          onChange={(value) => { 
+                            onTextInputCategoryChange(value, category?._id) 
+                          }}
+                          onDelete={() => { 
+                            deleteCategory(category) 
+                          }}
+                          onChangeButton={(name,value) => { 
+                            onButtonInputChange(name, value, category?._id) 
+                          }}
+                        />
+                      ) : (
+                        <SelectedFoodCategoryRow
+                          name={category?.name}
+                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
+                          color={category?.color}
+                          value={category?.percentage} 
+                        />
+                      )}
+                   </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Select custom category section */}
+              { categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
+              <div style={styles.foodRatioContainerStyle}>
+                <div  style={styles.columnStyle}>
+                <div  style={styles.rowStyle}>
+                  <div
+                    style={styles.sectionTitleStyle}
+                    onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
+                  >
+                    {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
+                  </div>
+                  <Image
+                    imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+                    width="20"
+                    height="20"
+                    onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
+                    styles={styles.sectionImageContainerStyle}
+                  />
+                  </div>
+
+                  {isFoodCategoryExpanded && <div style={styles.unselectedCategoriesContainerStyle}>{
+                    <div style={styles.unselectedFoodCategoryStyle}>
+                      {categoriesCanBeAdded.map((category)  => (
+                        <UnselectedFoodCategoryRow
+                        key={category?.name}
+                        name={category.name} 
+                        color={category.color}
+                        onAdd={() => { addCategory(category) }}
+                        />
+                      ))}
+                    </div>
+                  } 
+                </div>
+                }
+              </div>
+            </div>
+            )}
+      </div>
+        )}
+        </div>
+
+    )
   };
 
   
-
-
   return <div style={{...styles.profileFormStyle}}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
       {/* Avatar section */}
@@ -445,105 +559,9 @@ const ProfileForm = ({ profile, customFoodCategories, updateProfile, addCategory
                     onSubmit={(value) => { onTextInputChange("dailyPortion",value) }}
                     onChangeButton={ onButtonInputChange }
                   />
+               
                 )}
- 
-              {/* Chart */}
-              <div  style={styles.chartContainerStyle}>
-                {/* Show placeholder if no data */}
-                { isChartDataAvailable()  ? (
-                  <div>
-                    <ChartPie data={getChartData()}/>
-                    
-                    {/* Unused calories reminder */}
-                    {unusedCategoryPercentage > 0 && 
-                    <div style={styles.unusedCaloriesReminderStyle}> 
-                      You have {unusedCategoryPercentage}% unused! 
-                    </div>
-                    }
-                  </div>
-                  ) : (
-                  <Image
-                    imageName={ getChartData().length > 0 ? "no_percentage_placeholder.png" : "no_chart_placeholder.png"}
-                    width="190"
-                    height="200"
-                    onClick={ () => setFoodRatioExpanded(!isFoodRatioExpanded) }
-                    style={{ cursor: "pointer" }}
-                  />
-                  )}
-              </div>
-
-              {/* Selected categories section*/}
-              <div  style={styles.selectedCategoriesContainerStyle}>
-                <div style={styles.columnStyle}>
-                  {categories.map((category)  => (
-                   <div key={category.type}>
-                     { (profile?.preset === Enums.RatioPresets.CUSTOM) ? (
-                        <SelectedCustomFoodCategoryRow
-                          name={category?.name}
-                          remainingPercentage= {unusedCategoryPercentage}
-                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
-                          color={category?.color}
-                          value={category?.percentage} 
-                          onChange={(value) => { 
-                            onTextInputCategoryChange(value, category?._id) 
-                          }}
-                          onDelete={() => { 
-                            deleteCategory(category) 
-                          }}
-                          onChangeButton={(name,value) => { 
-                            onButtonInputChange(name, value, category?._id) 
-                          }}
-                        />
-                      ) : (
-                        <SelectedFoodCategoryRow
-                          name={category?.name}
-                          weight={Math.floor(profile?.dailyPortion * category?.percentage / 100)}
-                          color={category?.color}
-                          value={category?.percentage} 
-                        />
-                      )}
-                   </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Select custom category section */}
-              { categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
-              <div style={styles.foodRatioContainerStyle}>
-                <div  style={styles.columnStyle}>
-                <div  style={styles.rowStyle}>
-                  <div
-                    style={styles.sectionTitleStyle}
-                    onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
-                  >
-                    {isFoodCategoryExpanded ? "Hide categoties" : "Add more food categories"}
-                  </div>
-                  <Image
-                    imageName={isFoodCategoryExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
-                    width="20"
-                    height="20"
-                    onClick={() => setFoodCategoryExpanded(!isFoodCategoryExpanded)}
-                    styles={styles.sectionImageContainerStyle}
-                  />
-                  </div>
-
-                  {isFoodCategoryExpanded && <div style={styles.unselectedCategoriesContainerStyle}>{
-                    <div style={styles.unselectedFoodCategoryStyle}>
-                      {categoriesCanBeAdded.map((category)  => (
-                        <UnselectedFoodCategoryRow
-                        key={category?.name}
-                        name={category.name} 
-                        color={category.color}
-                        onAdd={() => { addCategory(category) }}
-                        />
-                      ))}
-                    </div>
-                  } 
-                </div>
-                }
-              </div>
-            </div>
-            )}
+                 <CategoriesPressetSection/>
            </div>
         } 
         </div>}

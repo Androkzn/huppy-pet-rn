@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 // Define an array of image sources
 const imageSources = [
-  './assets/activity_indicator1.png',
-  './assets/activity_indicator2.png',
-  './assets/activity_indicator3.png',
-  './assets/activity_indicator4.png',
-  './assets/activity_indicator5.png',
+  './assets/spinner/activity_indicator1.png',
+  './assets/spinner/activity_indicator2.png',
+  './assets/spinner/activity_indicator3.png',
+  './assets/spinner/activity_indicator4.png',
+  './assets/spinner/activity_indicator5.png',
 ];
 
 function PawActivityIndicatorView() {

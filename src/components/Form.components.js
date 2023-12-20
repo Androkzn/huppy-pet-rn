@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import styled from '@emotion/styled';
+import { styled as styledMaterial } from '@mui/material/styles';
 import * as colors from './styles/Colors'
 import { useState } from 'react';
 import Switch from '@mui/material/Switch';
@@ -9,6 +10,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import CustomDatePicker from "../components/CustomDatePicker.component";
 import { Delete } from "@mui/icons-material";
+import Slider from '@mui/material/Slider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
 
@@ -48,6 +50,113 @@ const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
     </div>
   );
 };
+
+const TitleAndSlider = ({ title, firstValueTitle, secondValueTitle, firstValue, secondValue, onChange }) => {
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
+
+  // Calculate the initial percentage based on the provided values
+  const initialPercentage = secondValue === 0 ? 0 : (100 - firstValue + secondValue) ;
+
+  const [value, setValue] = useState(initialPercentage);
+
+  const sliderChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleSliderChangeEnd = (event, newValue) => {
+    onChange(getFirstNewValue(), getSecondNewValue());
+
+  }
+
+  const getFirstNewValue = () => {
+    const updatedValue =  Math.floor(100 - value)
+    return  updatedValue
+  }
+
+  const getSecondNewValue = () => {
+    return 100 -  getFirstNewValue()
+  }
+
+  const SliderCustom = styledMaterial(Slider)({
+
+  });
+    
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    borderRadius: Constants.mainBorderRadius,
+    margin: Constants.mainFormDevider,
+    background: `${colors.lightBrown}`,
+    paddingRight: Constants.mainPadding,
+    paddingLeft: Constants.mainPadding,
+  };
+
+  const titleStyle = {
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    fontWeight: "bold",
+    margin: "5px 0px",
+  };
+  const valueTitleStyle = { 
+    fontSize:  "14px",
+    color: `${colors.black}`,
+  };
+
+  const sliderStyle = {
+    margin: "0px 15px",
+    width: "100%",
+  }
+
+  const sliderComponentStyle = {
+    color: `${colors.green}`,
+  }
+    
+  const sliderContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: "100%",
+  }
+
+  const valueContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: "100px",
+  }
+
+  return (
+    <div style={containerStyle}>
+      {/* Title */}
+      <div style={titleStyle}>{title}</div>
+      {/* Slider Container */}
+      <div style={sliderContainerStyle}>
+        <div  style={valueContainerStyle}> 
+          <div style={valueTitleStyle}>{firstValueTitle}</div>
+          <div style={valueTitleStyle}>{getFirstNewValue()}</div>
+        </div>
+        <div style={sliderStyle}>
+          <Slider
+            style={sliderComponentStyle}
+            onChange={(e, newValue) => sliderChange(e, newValue)}
+            onChangeCommitted={(event, newValue) => handleSliderChangeEnd(event, newValue)}
+            value={value}
+          />
+        </div>
+        <div  style={valueContainerStyle}> 
+          <div style={valueTitleStyle}>{secondValueTitle}</div>
+          <div style={valueTitleStyle}>{getSecondNewValue()}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TitleAndSlider;
+
 
 
 const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderColor }) => {
@@ -768,5 +877,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     SelectedFoodCategoryRow,
     SelectedCustomFoodCategoryRow,
     UnselectedFoodCategoryRow,
+    TitleAndSlider,
   };
   

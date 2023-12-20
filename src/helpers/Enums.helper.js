@@ -131,8 +131,6 @@ export const FoodSection = {
     SERVINGS: 'servings',
     CALORIES_SERVING: 'caloriesServing',
     SERVING_WEIGHT: 'servingWeight',
-    MEAT_RATIO: 'meatRatio',
-    BONES_RATIO: 'bonesRatio',
   };
 
   // Enum AddFoodRowType methods

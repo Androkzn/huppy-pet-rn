@@ -2,7 +2,7 @@
 
 import { ButtonText } from "./Buttons.components"
 import * as styles  from '../components/styles/CreateNewFood.css'
-import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
+import {TitleAndSlider, TitleAndDropdown, DescriptionTextBox, TitleAndTextInput, TitleButtonsAndTextField} from "./Form.components"
 import * as enums from "../helpers/Enums.helper"
 import FoodImage from '../components/FoodImage.components'
 
@@ -19,8 +19,11 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
     setFoodItem({ ...foodItem, [name]: value });
   };
 
+   const onSliderChange = (newMeatRatio, newBonesRatio) => {
+    setFoodItem({ ...foodItem, "meatRatio": newMeatRatio, "bonesRatio": newBonesRatio });
+   }
 
-  console.log("NewFoodForm image", image)
+  console.log("NewFoodForm foodItem", foodItem)
 
   return <div css={styles.addFoodFormStyle}>
     <form >
@@ -83,6 +86,15 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
           onChangeButton={onInputChange}
         />
       ))}
+
+      <TitleAndSlider
+        title={"Meat / Bones ratio"}
+        firstValueTitle = {"Meat"}
+        secondValueTitle = {"Bones"}
+        firstValue={foodItem?.meatRatio}
+        secondValue={foodItem?.bonesRatio}
+        onChange={(newMeatRatio, newBonesRatio) => {onSliderChange(newMeatRatio, newBonesRatio)}}
+      />
 
       <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onTextInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 

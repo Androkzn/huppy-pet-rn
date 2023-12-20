@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
-  
+  const containertyle = {
+     display: 'flex',
+     flexDirection: 'row',
+     justifyContent: "center",
+     width: "100%",
+     margin: "3px 0px", 
+  };
+
   const imageStyle = {
     maxWidth: width,  
     height: width,  
@@ -24,7 +31,7 @@ const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '
  
 
   return (
-    <div onClick={onClick}>
+    <div onClick={onClick} style={containertyle}>
     { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
     <img
       src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory

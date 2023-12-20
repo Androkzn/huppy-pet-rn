@@ -259,6 +259,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.updateProfile,
       onSuccess: () => {
         queryClient.invalidateQueries(["getCurrentProfile"]);
+        queryClient.invalidateQueries(["getProfiles"]);
         queryClient.invalidateQueries(["loadFoodCategories"]);
       }
     });

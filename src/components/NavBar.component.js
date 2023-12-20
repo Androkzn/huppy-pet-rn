@@ -10,11 +10,12 @@ import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg'
 import * as styles  from '../components/styles/NavBar.css'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
+import {useUpdateProfile} from "../hooks/query.hooks"
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
   const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate, currentPage } = useContext(UserContext);
-
+  
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -66,11 +67,13 @@ const NavBar = () => {
                   {currentProfile.name}
                 </h2>
                )}
-              <Avatar
-                width="50px"
-                profile={currentProfile}
-                onClick={toggleDrawer}
-              />
+              <div style={styles.avatarIconStyle}> 
+                <Avatar
+                  width="50px"
+                  profile={currentProfile}
+                  onClick={toggleDrawer}
+                />
+              </div>
             </div>
           )}
         </Toolbar>
@@ -82,8 +85,35 @@ const NavBar = () => {
 
 const TemporaryDrawer = (props) => {
   const { show, toggleDrawer, currentProfile, profiles } = props;
-  const { logOutUser, setCurrentPage } = useContext(UserContext);
+  const {user, logOutUser, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
+  const {mutate: updateProfileMutation} = useUpdateProfile()
+
+  const changeCurrentProfileTo = async (profileNew) => {
+    const oldProfile = currentProfile
+    updateProfileMutation(
+      {
+        user: user,
+        profileId: profileNew._id, 
+        updateData: {
+          "isCurrent": true
+        },
+      },
+      {
+        onSuccess: () => {
+          updateProfileMutation(
+            {
+              user: user,
+              profileId: oldProfile._id, 
+              updateData: {
+                "isCurrent": false
+              },
+            }
+          )
+        },
+      }
+    ); 
+  }
 
   const logOut = async () => {
     await logOutUser();
@@ -100,41 +130,6 @@ const TemporaryDrawer = (props) => {
     navigate("/" + link);
   };
 
-  const navLinks = [
-    {
-      text: "Profile",
-      Icon: () => (
-        <Avatar width="50px" profile={currentProfile} />
-      ),
-      action: () => navigateTo('profile'),
-    },
-    {
-      text: "Add dog",
-      Icon: () => (
-        <AddProfileIcon fill={colors.green} />
-      ),
-      action: () => navigateTo('register'),
-    },
-    {
-      text: "Change profile",
-      Icon: () => (
-        <ChangeProfileIcon fill={colors.green} />
-      ),
-      action: () => navigateTo('profile'),  
-    },
-    {
-      text: 'Logout',
-      Icon: () => (
-        <LogoutIcon fill={colors.green} />
-      ),
-      action: logOut,
-    },
-  ];
-
-  // Filter out the "Change profile" item if the number of profiles is less than 2
-  const filteredNavLinks = profiles && profiles.length < 2
-    ? navLinks.filter(({ text }) => text !== "Change profile")
-    : navLinks;
 
   const DrawerList = () => (
     <Box
@@ -143,28 +138,69 @@ const TemporaryDrawer = (props) => {
       onClick={toggleDrawer}
       onKeyDown={toggleDrawer}
     >
-      <List>
-        {
-          filteredNavLinks.map(({ text, Icon, link, action }) => {
-            return link ?
-              <Link to={link} style={{ textDecoration: "none", color: "inherit" }} key={text}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Icon />
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              </Link>
-              :
-              <ListItem button onClick={action} key={text}>
-                <ListItemIcon>
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-          })
-        }
-      </List>
+      {/* // Profile link */}
+      <div style={styles.linkContainerStyle} onClick={() => navigateTo('profile')}>    
+        <div style={styles.linkIconStyle}>
+          <Avatar
+            width="50px"
+            profile={currentProfile}
+             
+          />
+        </div>
+        <div style={styles.linkTitleStyle}> Current Profile </div>
+      </div>
+
+      {/* // Add Profile link */}
+      <div style={styles.linkContainerStyle} onClick={() => navigateTo('register')}>
+        <div style={styles.linkIconStyle}>    
+          <AddProfileIcon fill={colors.green} />
+        </div>
+        <div style={styles.linkTitleStyle}> Add Profile </div>
+      </div>
+
+      {/* // Change Profile link */}
+      {profiles.length > 0 && (
+        <div>
+        <div style={styles.linkContainerStyle}>    
+          <div style={styles.linkIconStyle}> 
+            <ChangeProfileIcon fill={colors.green} />
+          </div>
+          <div style={styles.linkTitleStyle}> Change Profile </div>
+         </div>
+         {profiles
+          .filter((profile) => !profile.isCurrent)
+          .map((profile) => (
+            <div key={profile._id} style={styles.profileLinkContainerStyle}  onClick={() => changeCurrentProfileTo(profile)}>
+              <div>
+                <Image
+                  imageName={"arrow_right_green.svg"}
+                  width="15"
+                  height="15"
+                  style={{ cursor: "pointer" }}
+                />
+              </div>
+              <div style={styles.profileIconStyle}>
+                <Avatar
+                  width="30px"
+                  profile={profile}
+                />
+              </div>
+              <div style={styles.profileLinkTitleStyle}> 
+                {profile.name}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+
+      {/* // Logout link */}
+      <div style={styles.linkContainerStyle} onClick={() => logOut()}>    
+        <div style={styles.linkIconStyle}> 
+          <LogoutIcon fill={colors.green} />
+        </div>
+        <div style={styles.linkTitleStyle}> Logout </div>
+      </div>
     </Box>
   );
 

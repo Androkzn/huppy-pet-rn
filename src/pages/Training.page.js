@@ -12,7 +12,7 @@ import TrainingCard from '../components/TrainingCard.component';
 import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
-import {useAddTraining, useLoadTrainingsForDate} from "../hooks/query.hooks"
+import {useAddTraining, useGetTrainingsForDate} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
 
 const Training = () => {
@@ -31,7 +31,7 @@ const Training = () => {
   // const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
-  const { data: trainings, isLoading: isLoadingTrainings, isError: isErrorTrainings} = useLoadTrainingsForDate(user, currentProfile, currentDate);
+  const { data: trainings, isLoading: isLoadingTrainings, isError: isErrorTrainings} = useGetTrainingsForDate(user, currentProfile, currentDate);
   const {mutate: addTrainingMutation} = useAddTraining()
 
 

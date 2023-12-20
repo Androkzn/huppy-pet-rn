@@ -5,23 +5,25 @@ import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import RegisterForm from "../components/RegisterForm.component";
 import {ButtonImage} from '../components/Buttons.components'
-import { addProfile, addFoodCategory } from "../graphql/graphqlUtils";
 import * as styles  from '../components/styles/Profile.css'
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Dialog, DialogContent } from '@mui/material';
 import AddAvatarDialog from "../components/AddAvatarDialog.component";
+import {useAddProfile, useAddFoodCategory} from "../hooks/query.hooks"
 
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, setProfiles, setCurrentProfile, setCurrentPage } = useContext(UserContext);
+  const { user, setCurrentPage, currentProfile } = useContext(UserContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
   const [avatar, setAvatar] = useState(null);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
+  const {mutate: addProfileMutation} = useAddProfile()
+  const {mutate: addFoodCategoryMutation} = useAddFoodCategory()
 
     // Opens dialog 
     const openDialog = (dialogTypeNew) => {
@@ -33,7 +35,7 @@ const Register = () => {
     const closeDialog = () => {
       setDialogOpen(false);
     };
-  
+
     // Returns dialog component based on dialog type
     const getDialogContent = () => {
       if (dialogType === "avatar") { 
@@ -79,7 +81,7 @@ const Register = () => {
   
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
-    setCurrentPage("login")
+    setCurrentPage("home")
     navigate(redirectTo ? redirectTo : "/");
   }
 
@@ -98,7 +100,7 @@ const Register = () => {
     isCurrent: true,
     preset: "barfAdult",
     size: "small",
-    userId: user.id,
+    userId: user?.id || "",
     isRatioSelected: false,
   }
 
@@ -125,28 +127,34 @@ const deleteCategory= async (categoryToDelete) => {
 };
 
 const saveProfile = async () => {
-  // Save new profile to DB
-  const {profileNew, isCreated } = await addProfile(user, profile)  
-
-  if (isCreated && profileNew) {
-    console.log("SUCCESS to create Profile: ", profileNew)
-    setProfiles([profileNew])
-
-    // Upload avatar to AWS S3
-    await uploadAvatar(profileNew._id)
-
-    // Add food categories from customFoodCategories array if preset is custom
-    if (profileNew.preset === 'custom') {
-      for (const category of customFoodCategories) {
-        await addFoodCategory(user, profileNew, category)  
+  addProfileMutation({
+    user: user,
+    profile: profile,
+  },
+  {
+    onSuccess: (data) => {
+      console.log("SUCCESS to create Profile: ", data)
+      const profileNew = data
+      
+      // Upload avatar to AWS S3
+      uploadAvatar(profileNew?._id)
+  
+      // Add food categories from customFoodCategories array if preset is custom
+      if (profileNew?.preset === 'custom') {
+        for (const category of customFoodCategories) {
+          addFoodCategoryMutation({
+            user: user, 
+            currentProfile: profileNew, 
+            data: category,
+          })
+        }
       }
-    }
-
-    redirectNow();
-  } else { 
-    alert("Profile cannot be created")
+  
+      redirectNow();
+    },
   }
-
+  
+  ) 
 };
 
 // Deletes Food Category
@@ -167,7 +175,28 @@ const updateCategory= async (type, value) => {
   
 };
 
+console.log("currentProfile", currentProfile)
+
   return <PageContainer>
+      <div style={styles.fixedTopContainer}>
+        <div  style={styles.backButtonContainerStyle}>
+           {/* Show back button if profile created for existing user */}
+            { currentProfile && 
+              <ButtonImage
+                variant="backButton"
+                onClick={redirectNow}
+                imageName="arrow_left_green.svg"
+                imageSize={20}
+              >
+                Back
+              </ButtonImage>
+            }
+          <div  css={styles.profileTitleStyle}>{"Create Profile"}</div>
+          <div style={{width: '100px'}}></div>
+        </div>
+      </div>
+  
+
     <RegisterForm 
       profile={profile} 
       avatar={avatar}

@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import NewActivityForm from "../components/NewActivityForm.component";
 import ChartPie from '../components/ChartPie.components'
 import {FoodCategoryRow, ToggleStatisticSection, CaloriesStatisticSection, CategoriesStatisticSection } from "../components/Statistic.components"
-import {useLoadMealsForDate, useLoadFoodCategories,  useLoadFoodForDate, useLoadActivitiesForDate, useAddMeal, useAddActivity} from "../hooks/query.hooks"
+import {useGetMealsForDate, useLoadFoodCategories,  useGetFoodForDate, useGetActivitiesForDate, useAddMeal, useAddActivity} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
 
 const Home = () => {
@@ -60,9 +60,9 @@ const Home = () => {
   const Statistic = () => {
     const [isStatisticExpanded, setStatisticExpanded] = useState(!isSmallScreen);
     const [isStatisticToday, setStatisticToday] = useState(true);
-    const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useLoadFoodForDate(user, currentProfile, currentDate, isStatisticToday);
+    const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetFoodForDate(user, currentProfile, currentDate, isStatisticToday);
     const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
-    const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useLoadActivitiesForDate(user, currentProfile, currentDate);
+    const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useGetActivitiesForDate(user, currentProfile, currentDate);
  
     return (
       <div style={{...styles.childConteinerStyle,  marginTop: isSmallScreen? '15px' : '0', marginBottom: isSmallScreen? '10px' : '0'}}> 
@@ -201,7 +201,7 @@ const Home = () => {
   };
 
 const Meals = () => {
-  const { data: meals, isLoading, isError } = useLoadMealsForDate(user, currentProfile, currentDate);
+  const { data: meals, isLoading, isError } = useGetMealsForDate(user, currentProfile, currentDate);
   // Adds empty meal for date 
   
   const {mutate: addMealMutation} = useAddMeal()
@@ -237,7 +237,7 @@ const Meals = () => {
   
   const Activities = () => {
     const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
-    const { data: activities, isLoading, isError } = useLoadActivitiesForDate(user, currentProfile, currentDate);
+    const { data: activities, isLoading, isError } = useGetActivitiesForDate(user, currentProfile, currentDate);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogType, setDialogType] = useState("addActivity");
     const {mutate: addActivity} = useAddActivity ()

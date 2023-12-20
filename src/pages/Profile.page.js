@@ -53,6 +53,7 @@ const Profile = () => {
     } 
   };
 
+  // Navigate to Home page  
   const navigateBack = () => {
     setCurrentPage("home")
     navigate("/")
@@ -177,18 +178,13 @@ const Profile = () => {
     </div>
     </div>
 
-    {/* {(isLoadingCategories) || (isErrorCategories) ?
-      (
-        <LoadingAndError isLoading = {isLoadingCategories} isError = {isErrorCategories}/>
-      ) : ( */}
-        <ProfileForm 
-          updateProfile={updateCurrentProfile} 
-          addCategory={addCategory} 
-          deleteCategory={deleteCategory} 
-          updateCategory={updateCategory}
-          updateAvatar={updateAvatar}
-        />
-      {/* )} */}
+    <ProfileForm 
+      updateProfile={updateCurrentProfile} 
+      addCategory={addCategory} 
+      deleteCategory={deleteCategory} 
+      updateCategory={updateCategory}
+      updateAvatar={updateAvatar}
+    />
 
      {/* Dialog */}
      {dialogOpen && (          

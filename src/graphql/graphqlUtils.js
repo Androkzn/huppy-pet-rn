@@ -730,11 +730,10 @@ async function getCurrentProfile(user) {
 
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
-async function addProfile(user, profile) {
-  if (!user) { return {}}
+async function addProfile({user, profile}) {
+  if (!user) { return null}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
-  const userId = user.id
 
   // GraphQL query to fetch all the meals for specific time interval
   const createProfileQuery = gql`
@@ -770,22 +769,22 @@ async function addProfile(user, profile) {
   }
   `;
   const queryVariablesCreateProfile = {
-  data: {
-    name: profile.name,
-    activityType: profile.activityType, 
-    avatar: profile.avatar,
-    breed: profile.breed,
-    dailyPortion: profile.dailyPortion,
-    dailyRatio: profile.dailyRatio,
-    weight: profile.weight,
-    deductCalories: profile.deductCalories,
-    dob: profile.dob,
-    isCurrent: profile.isCurrent,
-    preset: profile.preset,
-    size: profile.size,
-    userId: user.id,
-    isRatioSelected: profile.isRatioSelected,
-  }
+    data: {
+      name: profile.name,
+      activityType: profile.activityType, 
+      avatar: profile.avatar,
+      breed: profile.breed,
+      dailyPortion: profile.dailyPortion,
+      dailyRatio: profile.dailyRatio,
+      weight: profile.weight,
+      deductCalories: profile.deductCalories,
+      dob: profile.dob,
+      isCurrent: profile.isCurrent,
+      preset: profile.preset,
+      size: profile.size,
+      userId: user.id,
+      isRatioSelected: profile.isRatioSelected,
+    }
   };
 
   try {
@@ -793,7 +792,7 @@ async function addProfile(user, profile) {
     const profileNew = resp.insertOneProfile 
     console.log("resp: ", resp)
     console.log("profileNew: ", profileNew)
-    return { profileNew: profileNew, isCreated: true };
+    return profileNew;
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
@@ -802,6 +801,7 @@ async function addProfile(user, profile) {
     
     alert('Error get profiles');
     console.error('Error creating profile:', error);
+    return null
   }
 };
 

@@ -47,7 +47,7 @@ const NavBar = () => {
     return (
       <div>
          { isDisplayed && 
-          <Image imageName="logo_green_stroke.png" width="260" height="77" />
+          <Image imageName="logo_green_stroke.png" width="220" height="60" />
          }
     </div>
     );
@@ -92,7 +92,11 @@ const TemporaryDrawer = (props) => {
   };
 
   const navigateTo = (link) => {
-    setCurrentPage(link);
+    if (link === 'register' && currentProfile) {
+      setCurrentPage("addProfile");
+    } else {
+      setCurrentPage(link);
+    }
     navigate("/" + link);
   };
 

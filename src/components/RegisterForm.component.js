@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState, useEffect  } from "react";
+import { useState, useEffect} from "react";
 import * as styles  from './styles/Profile.css'
 import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, SelectedCustomFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"
@@ -8,11 +8,12 @@ import * as Constants from "../helpers/Constants.helper"
 import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import {ImageCircle} from './ImageCircle.components'
-
+ 
 const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCategory, deleteCategory, updateCategory, setIsFormCompleated, updateAvatar}) => {
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [categories, setCategories] = useState(customFoodCategories);
+ 
 
   // Returns unused categories that can be added to custom categories
   const getUnusedCategories = () => {
@@ -271,7 +272,6 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
 
   return <div style={styles.profileFormStyle}>
     <form onSubmit={(e) => {e.preventDefault(); }}>
-      <h2  style={styles.profileTitleStyle}>{"Create profile"}</h2>
       {/* Avatar section */}
       <div style={styles.imageContainerStyle}>
         <ImageCircle
@@ -452,7 +452,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
               <div  style={styles.selectedCategoriesContainerStyle}>
                 <div style={styles.columnStyle}>
                   {categories.map((category)  => (
-                   <div>
+                   <div key={category?.name}>
                      { (profile?.preset === Enums.RatioPresets.CUSTOM) ? (
                         <SelectedCustomFoodCategoryRow
                           name={category?.name}

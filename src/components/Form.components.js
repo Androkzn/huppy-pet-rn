@@ -63,9 +63,8 @@ const TitleAndSlider = ({ title, firstValueTitle, secondValueTitle, firstValue, 
     setValue(newValue);
   };
 
-  const handleSliderChangeEnd = (event, newValue) => {
+  const handleSliderChangeEnd = () => {
     onChange(getFirstNewValue(), getSecondNewValue());
-
   }
 
   const getFirstNewValue = () => {
@@ -142,7 +141,7 @@ const TitleAndSlider = ({ title, firstValueTitle, secondValueTitle, firstValue, 
           <Slider
             style={sliderComponentStyle}
             onChange={(e, newValue) => sliderChange(e, newValue)}
-            onChangeCommitted={(event, newValue) => handleSliderChangeEnd(event, newValue)}
+            onChangeCommitted={() => handleSliderChangeEnd()}
             value={value}
           />
         </div>
@@ -171,21 +170,24 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       marginTop: Constants.mainMargin, 
       marginRight: Constants.mainFormDevider,
       marginLeft: Constants.mainFormDevider,
-      marginBottom: Constants.mainMargin,  
+      marginBottom: Constants.mainMargin,
+      
     };
   
   const titleStyle = {
-    margin: '5px',
+    margin: '10px 0 0 0',
     fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
   
   const textBoxStyle = {
     outline: 'none', 
-    width: '95%',
-    margin: '15px',
+    width: '85%',
+    margin: '10px 0px',
+    padding: "10px 10px",
     borderRadius: '10px', 
     border: `1px solid ${colors.gray}`,
-    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,   
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize, 
+    fontFamily: "'Balsamiq Sans', sans-serif",
   };
     
     

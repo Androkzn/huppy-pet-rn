@@ -101,7 +101,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
        <ButtonText 
           as= 'button' 
           name="createFood" 
-          width= '200px' 
+          width= '130px' 
           variant="rectangleTextButton" 
           onClick={(e) => addNewFood(e)}  
         >

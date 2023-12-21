@@ -20,7 +20,7 @@ const TabBar = () => {
     setValue(newValue);
     switch (newValue) {
       case 0: 
-      setCurrentPage("home")
+      setCurrentPage("")
       return navigate("/");;
       case 1: 
       setCurrentPage("dashboard")

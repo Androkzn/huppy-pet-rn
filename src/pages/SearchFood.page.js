@@ -96,7 +96,7 @@ const saveState = (key, value) => {
             to="/"
             imageName="arrow_left_green.svg"
             imageSize={20}
-            onClick={() =>  {setCurrentPage("home")}}
+            onClick={() =>  {setCurrentPage("")}}
           >
           Back
         </ButtonLink>

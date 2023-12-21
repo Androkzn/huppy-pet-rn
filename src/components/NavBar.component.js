@@ -192,15 +192,6 @@ const TemporaryDrawer = (props) => {
           ))}
         </div>
       )}
-
-
-      {/* // Logout link */}
-      <div style={styles.linkContainerStyle} onClick={() => logOut()}>    
-        <div style={styles.linkIconStyle}> 
-          <LogoutIcon fill={colors.green} />
-        </div>
-        <div style={styles.linkTitleStyle}> Logout </div>
-      </div>
     </Box>
   );
 

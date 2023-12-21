@@ -60,7 +60,7 @@ const profileLinkContainerStyle = {
   display: 'flex',
   width: '80%',
   alignItems: 'center', 
-  margin: "0px 0px 0px 40px",
+  margin: "0px 0px 0px 30px",
 }
 
 const linkIconStyle = {

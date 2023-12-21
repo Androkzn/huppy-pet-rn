@@ -137,8 +137,8 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
 
   // GraphQL query to fetch all food for a specific time period and profileId
   const getFoodForPeriod = gql`
-    query getFoodForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      foods(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+    query getFoodForPeriod($userId: String!, $profileId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      foods(query: { userId: $userId, profileId: $profileId, date_gte: $startDate, date_lte: $endDate  }) {
         _id
         bonesRatio
         calories
@@ -187,6 +187,7 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
 
     alert('Error fetching food for the time period and profileId');
     console.error('Error fetching food for the time period and profileId', error);
+    return [];
   }
 }
 
@@ -203,8 +204,8 @@ async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) 
  
   // GraphQL query to fetch all activities for a specific time period and profileId
   const getActivitiesForPeriod = gql`
-    query getActivitiesForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      activities(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+    query getActivitiesForPeriod($userId: String!, $profileId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      activities(query: { userId: $userId, profileId: $profileId, date_gte: $startDate, date_lte: $endDate  }) {
         _id
        date
        burnedCalories
@@ -244,6 +245,7 @@ async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) 
 
     alert('Error fetching food for the time period and profileId');
     console.error('Error fetching food for the time period and profileId', error);
+    return [];
   }
 }
 
@@ -260,8 +262,8 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
   
   // GraphQL query to fetch all trainings for a specific time period and profileId
   const getTrainingsForPeriod = gql`
-    query getTrainingsForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      trainings(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+    query getTrainingsForPeriod($userId: String!, $profileId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      trainings(query: { userId: $userId,  profileId: $profileId, date_gte: $startDate, date_lte: $endDate  }) {
         _id
         date
         category
@@ -288,8 +290,7 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
     "userId": userId,
     "profileId": profileId,
     "startDate": startISOString,
-    "endDate": endISOString,
-    "isCompleted": true,
+    "endDate": endISOString
   };
  
   try {
@@ -304,6 +305,7 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
 
     alert('Error fetching food for the time period and profileId');
     console.error('Error fetching food for the time period and profileId', error);
+    return [];
   }
 }
 
@@ -657,10 +659,11 @@ async function deleteFoodCategory({user, _id}) {
 
 // Func that is responsible for adding Food to DB   
 // it return bool value
-async function addFood({user, mealId, foodItem, selectedDate}) {
+async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
     if (!user) { return false}
     const accessToken = user._accessToken;
     const userId = user.id
+    const profileId = currentProfile._id
     const headers = { Authorization: `Bearer ${accessToken}` };
     // All the data that needs to be sent to the GraphQL endpoint
     // to create food will be passed through queryVariablesCreateFood.
@@ -682,6 +685,7 @@ async function addFood({user, mealId, foodItem, selectedDate}) {
           units: foodItem.units, 
           weight: foodItem.weight,
           userId: userId,
+          profileId: profileId,
           date: selectedDate,
         }
       };
@@ -1161,8 +1165,8 @@ async function loadTrainings(user, currentProfile, currentDate) {
 
   // GraphQL query to fetch all the trainings for specific time interval
   const getAllTrainings = gql`
-    query getAllTrainings($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-      trainings(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+    query getAllTrainings($userId: String!, $profileId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      trainings(query: { userId: $userId, profileId: $profileId, date_gte: $startDate, date_lte: $endDate }) {
         _id
         date
         category

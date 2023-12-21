@@ -163,7 +163,7 @@ const Analytics = () => {
             indicatorColor="none"
           >
             {Object.values(Enums.FilterStatistic).map((filter) => (
-              <Tab sx={customTabButtonStyle} value={filter} label={filter} />
+              <Tab key={filter.rawValue} sx={customTabButtonStyle} value={filter} label={filter} />
             ))}
           </Tabs>
         </Box>

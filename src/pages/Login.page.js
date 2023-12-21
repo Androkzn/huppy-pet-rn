@@ -15,7 +15,7 @@ const Login = () => {
 
   const redirectNow = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");
-    setCurrentPage("home")
+    setCurrentPage("")
     navigate(redirectTo ? redirectTo : "/");
   }
 

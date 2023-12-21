@@ -55,7 +55,7 @@ const Profile = () => {
 
   // Navigate to Home page  
   const navigateBack = () => {
-    setCurrentPage("home")
+    setCurrentPage("")
     navigate("/")
   }
 

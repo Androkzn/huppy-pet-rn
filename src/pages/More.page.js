@@ -9,20 +9,15 @@ import NewTrainingForm from "../components/NewTrainingForm.component";
 import * as Enums from "../helpers/Enums.helper"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
+import { ReactComponent as LogoutIcon } from '../components/assets/logout_tab_icon_unselected.svg'
+import { ReactComponent as HealthIcon } from '../components/assets/health_tab_icon_unselected.svg'
+import * as colors from '../components/styles/Colors'
+import {Image} from '../components/Image.components'
+import { useNavigate } from "react-router-dom";
 
 const More = () => {
-    // Function to load state from localStorage
-    const loadState = (key, defaultValue) => {
-      const storedValue = localStorage.getItem(key);
-      return storedValue ? JSON.parse(storedValue) : defaultValue;
-    };
-  
-    // Function to save state to localStorage
-    const saveState = (key, value) => {
-      localStorage.setItem(key, JSON.stringify(value));
-    };
-
-  const {user, currentProfile } = useContext(UserContext);
+  const navigate = useNavigate();
+  const {user, currentProfile, logOutUser, setCurrentPage } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
@@ -56,11 +51,59 @@ const More = () => {
     }  
   };
 
+  const logOut = async () => {
+    await logOutUser();
+    window.location.reload(true);
+    return;
+  };
 
-  return <PageContainer style={styles.pageStyle}>
+  const navigateTo = (link) => {
+    setCurrentPage(link);
+    navigate("/" + link);
+  };
+
+
+  const LinkComponent = ({ title, icon, onClick }) => {
+    return (
+      <div style={styles.linkContainerStyle} onClick={onClick}>    
+        <div style={styles.linkNameContainerStyle}>
+          <div style={styles.linkIconStyle}> 
+            {icon}
+          </div>
+          <div style={styles.linkTitleStyle}> 
+            {title} 
+          </div>
+        </div>
+
+        <div style={styles.linkArrowStyle}>
+          <Image
+            imageName={"arrow_right_green.svg"}
+            width="15"
+            height="15"
+            style={{ cursor: "pointer" }}
+          />
+        </div>
+      </div>
+    )
+
+  }
+
+
+
+  return <PageContainer>
       <div style={styles.columnStyle}>
-        More option
-        
+        {/* // Health & Wellness */}
+        <LinkComponent
+          title={"Health & Wellness"}
+          icon={<HealthIcon fill={colors.green} width={30} />}
+          onClick={() => navigateTo("")}
+        />
+         {/* // Logout link */}
+         <LinkComponent
+          title={"Logout"}
+          icon={<LogoutIcon fill={colors.green} width={30} />}
+          onClick={logOut}
+        />
       </div>  
    
  

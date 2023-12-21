@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import * as Constants from "../helpers/Constants.helper"
 import { UserContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
 import CustomDatePicker from "../components/CustomDatePicker.component";
-import CategoryChart from "../components/CategoryChart.component";
-import {ButtonText } from '../components/Buttons.components'
+import CategoryChart from "../components/StatisticBarChart.component";
 import * as styles  from '../components/styles/Dashboard.css'
 import LoadingAndError from "../components/LoadingAndError.components"
 import {useGetFoodForPeriod, useGetActivitiesForPeriod, useGetTrainingsForPeriod} from "../hooks/query.hooks"
@@ -16,21 +15,43 @@ import Box from '@mui/material/Box';
 import * as Enums from "../helpers/Enums.helper"
 
 const Analytics = () => {
-  const [fromDate, setFromDate] = useState(Date());
-  const [toDate, setToDate] = useState(Date());
-  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
-  const [analyticsData, setAnalyticsData] = useState([]);
+   // Function to load state from localStorage
+ const loadState = (key, defaultValue) => {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : defaultValue;
+  };
 
-  const [selectedFilter, setSelectedFilter] = useState( Enums.FilterStatistic.CALORIES);
+  // Function to save state to localStorage
+  const saveState = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  };
+
+  const [fromDate, setFromDate] = useState( loadState("fromDate", Date()));
+  const [toDate, setToDate] = useState( loadState("toDate", Date()));
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
+  const [selectedFilter, setSelectedFilter] = useState( loadState("selectedFilterStatistic", Enums.FilterStatistic.CALORIES));
+  
   const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetFoodForPeriod(user, currentProfile, fromDate, toDate);
   const { data: activities, isLoading: isLoadingActivities, isError: isErrorActivities } = useGetActivitiesForPeriod(user, currentProfile, fromDate, toDate);
   const { data: trainings, isLoading: isLoadingTrainings, isError: isErrorTrainings } = useGetTrainingsForPeriod(user, currentProfile, fromDate, toDate);
 
+  useEffect(() => {
+    saveState("fromDate", fromDate);
+  }, [fromDate]);
+
+  useEffect(() => {
+    saveState("toDate", toDate);
+  }, [toDate]);
+
+  useEffect(() => {
+    saveState("selectedFilterStatistic", selectedFilter);
+  }, [selectedFilter]);
+
   const getDataSource = (selectedFilterNew) => {
-    console.log("selectedFilter", selectedFilter)
-    console.log("food", food)
-    console.log("activities", activities)
-    console.log("trainings", trainings)
+    // console.log("selectedFilter", selectedFilter)
+    // console.log("food", food)
+    // console.log("activities", activities)
+    // console.log("trainings", trainings)
     if (!selectedFilter) return []
     switch (selectedFilter) {
       case Enums.FilterStatistic.CALORIES: return food;
@@ -46,62 +67,65 @@ const Analytics = () => {
 
 
   const getChartData = () => {
-    const source = getDataSource()
-    if (!source || source.length === 0) return []
-    
-    // Step 1: Group data by date and calculate total calories
+    const source = getDataSource();
+    if (!source || source.length === 0) return [];
+  
+    // Step 1: Group data by date and calculate total calories and count
     const groupedData = source.reduce((result, currentItem) => {
-      console.log("currentItem", currentItem)
       const date = new Date(currentItem.date).toLocaleDateString();
       const formattedDate = new Date(currentItem.date).toLocaleDateString('en-US', {
-        month: 'short', // abbreviated month name
-        day: 'numeric', // day of the month
+        month: 'short',
+        day: 'numeric',
       });
-
-      console.log("formattedDate", formattedDate)
-      console.log("date", date)
-      const existingItem = result.find(item => item.name === formattedDate);
-      console.log("existingItem", existingItem)
-      console.log("existingItem", existingItem)
-      if (existingItem) {
+  
+      const existingItemIndex = result.findIndex(item => item.name === formattedDate);
+  
+      if (existingItemIndex !== -1) {
         if (selectedFilter === Enums.FilterStatistic.CALORIES) {
-          existingItem.amount += currentItem.calories;
+          result[existingItemIndex].amount += currentItem.calories;
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
-          existingItem.amount += currentItem.duration;
+          result[existingItemIndex].amount += currentItem.duration;
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
-          existingItem.amount += 1;
+          result[existingItemIndex].amount += 1;
         }
+        result[existingItemIndex].count += 1; // Increment count
       } else {
+        let newItem = {
+          name: formattedDate,
+          amount: 0,
+        };
+  
         if (selectedFilter === Enums.FilterStatistic.CALORIES) {
-          result.push({
-            name: formattedDate,
-            amount: currentItem.calories,
-          });
-          
+          newItem.amount = currentItem.calories;
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
-          result.push({
-            name: formattedDate,
-            amount: currentItem.burnedCalories,
-          });
-          
+          newItem.amount = currentItem.burnedCalories;
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
-          result.push({
-            name: formattedDate,
-            amount: 1,
-          });
+          newItem.amount = 1;
         }
+  
+        result.push(newItem);
       }
-      console.log("result", result)
+  
       return result;
     }, []);
+    
+    // Step 2: Calculate overall average for the entire dataset
+    const total = groupedData.reduce((sum, item) => sum + item.amount, 0);
+    const overallAverage = groupedData.length !== 0 ? total / groupedData.length : 0;
 
-    // Step 2: Sort the grouped data by date
-    const sortedGroupedData = groupedData.sort((a, b) => new Date(a.category) - new Date(b.category));
+    // Step 3: Assign overall average to each item in the grouped data
+    const finalData = groupedData.map(item => ({
+      ...item,
+      average: overallAverage,
+    }));
   
-    console.log("sortedGroupedData", sortedGroupedData)
-
-    return sortedGroupedData
-  }
+    // Step 4: Sort the grouped data by date
+    const sortedGroupedData = finalData.sort((a, b) => new Date(a.name) - new Date(b.name));
+  
+    return sortedGroupedData;
+  };
+  
+  
 
   const getChartTitle = () => {
     const source = getDataSource()
@@ -113,7 +137,23 @@ const Analytics = () => {
     } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
       return "Compleated trainings per day"
     }
+  }
 
+  const getGoal = () => {
+    const source = getDataSource()
+    if (!source || source.length === 0) return ""
+    if (selectedFilter === Enums.FilterStatistic.CALORIES) {
+      return getEstCalories()
+    } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
+      return 0
+    } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
+      return 0
+    }
+  }
+
+  // Calculates estimated daily calories  weight based on Daily ratio %  and pet's weight
+  function getEstCalories() {
+    return Math.floor(Constants.estCalories * currentProfile.weight * currentProfile.dailyRatio);
   }
  
   console.log("getChartData", getChartData())
@@ -128,6 +168,7 @@ const Analytics = () => {
     const customTabStyle = {
       color:colors.green,
       fontWeight: 'bold',
+      width: '100%',
       margin: '5px 0px 5px 0px',
       '&.Mui-selected': {
         color: colors.orange,
@@ -137,9 +178,7 @@ const Analytics = () => {
 
     const customTabButtonStyle = {
       maxHeight: '20px',
-      minWidth: '85px',
-      padding: '0px',
-      margin: '0px 0px 0px 0px',
+      width: '100%',
       fontWeight: 'bold',
       fontSize: '14px',
       fontFamily: "'Balsamiq Sans', sans-serif",
@@ -163,7 +202,7 @@ const Analytics = () => {
             indicatorColor="none"
           >
             {Object.values(Enums.FilterStatistic).map((filter) => (
-              <Tab key={filter.rawValue} sx={customTabButtonStyle} value={filter} label={filter} />
+              <Tab key={filter} sx={customTabButtonStyle} value={filter} label={filter} />
             ))}
           </Tabs>
         </Box>
@@ -175,21 +214,21 @@ const Analytics = () => {
   return (
     <PageContainer>
       <styles.SelectDateContainer>
-        <div style={styles.rowStyle}> 
+        <div style={styles.datePickerContainerStyle}> 
           <div style={styles.datePickerStyle}> 
-          <CustomDatePicker 
-            label="From" 
-            value={fromDate} 
-            onChange={setFromDate} 
-          />
+            <CustomDatePicker 
+              label="From" 
+              value={fromDate} 
+              onChange={setFromDate} 
+            />
           </div>
           <div style={styles.datePickerStyle}> 
-          <CustomDatePicker 
-            label="To" 
-            value={toDate} 
-            onChange={setToDate} 
-          />
-        </div>
+            <CustomDatePicker 
+              label="To" 
+              value={toDate} 
+              onChange={setToDate} 
+            />
+          </div>
         </div>
         <div style={styles.rowStyle}> 
            <FilterContainer/>
@@ -199,32 +238,36 @@ const Analytics = () => {
          {(isLoadingFood) || (isErrorFood)? 
           (
           <div>
-            <div>
+            <div style={styles.placeholderContainerStyle}>
               <LoadingAndError isLoading = {isLoadingFood} isError = {isErrorFood}/>
             </div>
           </div>
           ) : 
           (
             <div style={styles.columnStyle}>
-            { (getChartData().length === 0)   ? 
-              (
-              <div>
+              { (getChartData().length === 0)   ? 
+                (
                 <div>
-                  <Image 
-                    imageName= {"no_data_placeholder.png"}
-                    width={ "200"}
-                    height={"170"}
-                  />
+                  <div style={styles.placeholderContainerStyle}>
+                    <Image 
+                      imageName= {"no_data_placeholder.png"}
+                      width={ "200"}
+                      height={"170"}
+                    />
+                  </div>
                 </div>
-              </div>
-              ) : 
-              (
-                <CategoryChart
-                  data={getChartData(selectedFilter)}
-                  title = {getChartTitle()}
-                />
-              )}
-              </div>
+                ) : 
+                (
+                  <div style={styles.chartContainerStyle}>
+                    <CategoryChart
+                      data={getChartData(selectedFilter)}
+                      title = {getChartTitle()}
+                      goal={getGoal()}
+                    />
+                  </div>
+                )
+              }
+            </div>
           )}
       
       

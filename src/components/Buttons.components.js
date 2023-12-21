@@ -138,6 +138,27 @@ const buttonVariants = {
     },
   },
 
+  chartTextButton: {
+    background: colors.olive,
+    textAlign: 'center',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    width: '100px',
+    height: '20px',
+    lineHeight: '20px',
+    marginTop: '5px',
+    marginBottom: '5px',
+    fontWeight: 'bold',
+    color: colors.white,
+    transition: 'background-color 0.3s',
+    fontSize: "13px",
+    textDecoration: 'none',
+    '&:hover': {
+      background: colors.orange,
+    },
+  },
+
   login: {
     background: colors.olive,
     textAlign: 'center',

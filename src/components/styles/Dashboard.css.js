@@ -48,11 +48,30 @@ const rowStyle = {
     },
   })
 
-  const datePickerStyle = {
-    marginRight: '10px',
+  const datePickerContainerStyle = {
+    ...rowStyle,
+    width: '95%',
+    justifyContent: 'center',
   };
 
+  const datePickerStyle = {
+    margin: '10px 10px',
+  };
+
+  const placeholderContainerStyle = {
+    margin: '100px 0px',
+  };
+
+  const chartContainerStyle = {
+    width: '90%',
+    alignItems: 'center',
+    textAlign: 'center',
+  };
+  
   export {
+    chartContainerStyle,
+    placeholderContainerStyle,
+    datePickerContainerStyle,
     SelectDateContainer,
     rowStyle,
     columnStyle,

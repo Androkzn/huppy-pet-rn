@@ -459,7 +459,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleAndToggle = ({ id, name, title, onChange, initialValue }) => {
+  const TitleAndToggle = ({ id, name, title, onChange, initialValue, containerStyle, titleStyle}) => {
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const [checked, setChecked] =  useState(initialValue);
 
@@ -467,26 +467,37 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       setChecked(event.target.checked);
       onChange()
     };
-    const containerStyle = {
+
+    const padding = isSmallScreen ? Constants.smallPadding : Constants.mainPadding
+
+    const containerDefaultStyle = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       textAlign: 'left',
       borderRadius: Constants.mainBorderRadius,
-      background: `${colors.lightBrown}`, 
-      paddingRight:  isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
-      paddingLeft: Constants.mainPadding, 
+      background: `${colors.lightBrown}`,
+      padding: `${padding} ${Constants.mainPadding} ${padding} ${Constants.mainPadding}`,
+      
+      // paddingRight:  isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      // paddingLeft: Constants.mainPadding, 
+      // paddingTop: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
+      // paddingBottom: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
       margin: Constants.mainFormDevider,
     };
+
+    const mergedContainerStyles = { ...containerDefaultStyle, ...containerStyle };
   
-    const titleStyle = {
-      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+    const titleDefaultStyle = {
+      margin: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     };
+   
+    const mergedTitleStyles = { ...titleDefaultStyle, ...titleStyle };
   
     return (
-      <div style={containerStyle}>
-         <h3 style={titleStyle}>{title}</h3>
+      <div style={mergedContainerStyles}>
+         <h3 style={mergedTitleStyles}>{title}</h3>
          <Switch
           id={id}  
           name={name}  

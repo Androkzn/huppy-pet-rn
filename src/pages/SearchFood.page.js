@@ -159,7 +159,7 @@ const saveState = (key, value) => {
               indicatorColor="none"
             >
               {Object.values(Enums.FilterFood).map((filter) => (
-                <Tab sx={customTabButtonStyle} value={filter} label={filter} />
+                <Tab key={filter} sx={customTabButtonStyle} value={filter} label={filter} />
               ))}
             </Tabs>
           </Box>

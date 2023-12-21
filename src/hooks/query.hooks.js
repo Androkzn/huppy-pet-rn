@@ -109,6 +109,14 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
     });
   };
 
+  
+  // GET FOOD FOR TIME PERIOD
+  const useGetFoodForPeriod = (user, currentProfile, startTime, endTime) => {
+    return useQuery(['getCaloriesForPeriod', startTime, endTime], async () => {
+      return graphql.getFoodForPeriod(user, currentProfile, startTime, endTime);
+  });
+  }
+
   //////////////////////////////
   //     CREATE / ADD        //
   ////////////////////////////
@@ -347,6 +355,7 @@ export {
     useGetTrainingsForDate,
     useLoadFoodCategories,
     useGetMealsForDate,
+    useGetFoodForPeriod,
     useAddMeal,
     useAddFood,
     useAddFoodTemplate,

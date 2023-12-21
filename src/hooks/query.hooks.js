@@ -117,6 +117,20 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   });
   }
 
+  // GET ACTIVITIES FOR TIME PERIOD
+  const  useGetActivitiesForPeriod = (user, currentProfile, startTime, endTime) => {
+    return useQuery(['getActivitiesForPeriod', startTime, endTime], async () => {
+      return graphql.getActivitiesForPeriod(user, currentProfile, startTime, endTime);
+  });
+  }
+
+  // GET TRAININGS FOR TIME PERIOD
+  const  useGetTrainingsForPeriod = (user, currentProfile, startTime, endTime) => {
+    return useQuery(['geTrainingsForPeriod', startTime, endTime], async () => {
+      return graphql.getTrainingsForPeriod(user, currentProfile, startTime, endTime);
+  });
+  }
+
   //////////////////////////////
   //     CREATE / ADD        //
   ////////////////////////////
@@ -354,6 +368,8 @@ export {
     useGetActivitiesForDate,
     useGetTrainingsForDate,
     useLoadFoodCategories,
+    useGetTrainingsForPeriod,
+    useGetActivitiesForPeriod,
     useGetMealsForDate,
     useGetFoodForPeriod,
     useAddMeal,

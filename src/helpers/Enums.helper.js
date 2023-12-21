@@ -7,9 +7,14 @@ import * as colors from '../components/styles/Colors'
     CATEGORY: 'Category',
     CUSTOM: 'My food',
     RECIPE: 'Recipe',
-
   };
 
+    // Enum FilterFood definition 
+    export const FilterStatistic = {
+      CALORIES: 'Calories',
+      ACTIVITIES: 'Activities',
+      TRAININGS: 'Trainings',
+    };
 // Enum FoodSection definition
 export const FoodSection = {
     TREAT: 'treat',

@@ -130,12 +130,11 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
     return [];
   }
 
-
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
-  console.log('getFoodForPeriod user : ', user);
+
   // GraphQL query to fetch all food for a specific time period and profileId
   const getFoodForPeriod = gql`
     query getFoodForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
@@ -180,6 +179,123 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
     const resp = await request(GRAPHQL_ENDPOINT, getFoodForPeriod, queryVariables, headers);
     // Update the 'food' state with the fetched data
     return resp.foods;
+  } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user);
+      getFoodForPeriod(user, startTime, endTime, profileId);
+    }
+
+    alert('Error fetching food for the time period and profileId');
+    console.error('Error fetching food for the time period and profileId', error);
+  }
+}
+
+// Func that is responsible for fetching  all food for specific time period
+async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) {
+  if (!user) {
+    return [];
+  }
+
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+ 
+  // GraphQL query to fetch all activities for a specific time period and profileId
+  const getActivitiesForPeriod = gql`
+    query getActivitiesForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      activities(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+        _id
+       date
+       burnedCalories
+       distance
+       duration
+       metric
+       type
+       profileId
+       userId
+      }
+    }
+  `;
+  const startToday = new Date(startTime);
+  const startISOString = startToday.toISOString();
+  
+  // Set the time to the end of the current date (right before midnight)
+  const endToday = new Date(endTime);
+  const endISOString = endToday.toISOString();
+
+
+  // Filter only current user with current profile  
+  const queryVariables = {
+    "userId": userId,
+    "profileId": profileId,
+    "startDate": startISOString,
+    "endDate": endISOString,
+  };
+ 
+  try {
+    const resp = await request(GRAPHQL_ENDPOINT, getActivitiesForPeriod, queryVariables, headers);
+    return resp.activities;
+  } catch (error) {
+    if (error.response.error_code === "InvalidSession") {
+      await refreshAccessToken(user);
+      getActivitiesForPeriod(user, startTime, endTime, profileId);
+    }
+
+    alert('Error fetching food for the time period and profileId');
+    console.error('Error fetching food for the time period and profileId', error);
+  }
+}
+
+// Func that is responsible for fetching  all food for specific time period
+async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
+  if (!user) {
+    return [];
+  }
+
+  const accessToken = user._accessToken;
+  const profileId = currentProfile._id
+  const userId = user.id
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  
+  // GraphQL query to fetch all trainings for a specific time period and profileId
+  const getTrainingsForPeriod = gql`
+    query getTrainingsForPeriod($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
+      trainings(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+        _id
+        date
+        category
+        customCategory
+        customType
+        desc
+        isCompleted
+        type
+        profileId
+        userId
+      }
+    }
+  `;
+  const startToday = new Date(startTime);
+  const startISOString = startToday.toISOString();
+  
+  // Set the time to the end of the current date (right before midnight)
+  const endToday = new Date(endTime);
+  const endISOString = endToday.toISOString();
+
+
+  // Filter only current user with current profile  
+  const queryVariables = {
+    "userId": userId,
+    "profileId": profileId,
+    "startDate": startISOString,
+    "endDate": endISOString,
+    "isCompleted": true,
+  };
+ 
+  try {
+    const resp = await request(GRAPHQL_ENDPOINT, getTrainingsForPeriod, queryVariables, headers);
+ 
+    return resp.trainings;
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user);
@@ -1557,6 +1673,8 @@ export {
     getAllCustomFoodTemplates,
     getAllFoodTemplatesForCategory,
     getFoodForPeriod,
+    getActivitiesForPeriod,
+    getTrainingsForPeriod,
     getAllFoodCategories,
     deleteFoodCategory,
     deleteMeal,

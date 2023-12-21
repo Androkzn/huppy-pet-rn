@@ -3,8 +3,8 @@ import * as colors from '../components/styles/Colors';
 
 const CategoryChart = ({ data, title }) => {
   const chartData = [["", ""]];
-  data.forEach(({ category, amount }) => {
-    chartData.push([category, amount]);
+  data.forEach(({ name, amount }) => {
+    chartData.push([name, amount]);
   });
 
   const targetValue = 1000

@@ -26,7 +26,12 @@ const Analytics = () => {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  const [fromDate, setFromDate] = useState( loadState("fromDate", Date()));
+  const dateOneWeekAgo = () => {
+    const oneWeekAgo = new Date();
+    return oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  }
+
+  const [fromDate, setFromDate] = useState( loadState("fromDate", dateOneWeekAgo()));
   const [toDate, setToDate] = useState( loadState("toDate", Date()));
   const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
   const [selectedFilter, setSelectedFilter] = useState( loadState("selectedFilterStatistic", Enums.FilterStatistic.CALORIES));
@@ -48,10 +53,6 @@ const Analytics = () => {
   }, [selectedFilter]);
 
   const getDataSource = (selectedFilterNew) => {
-    // console.log("selectedFilter", selectedFilter)
-    // console.log("food", food)
-    // console.log("activities", activities)
-    // console.log("trainings", trainings)
     if (!selectedFilter) return []
     switch (selectedFilter) {
       case Enums.FilterStatistic.CALORIES: return food;
@@ -63,7 +64,6 @@ const Analytics = () => {
   useEffect(() => {
     getDataSource();  
   }, [isLoadingFood, isErrorFood, selectedFilter]);
-
 
   const getChartData = () => {
     const source = getDataSource();

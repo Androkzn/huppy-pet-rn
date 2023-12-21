@@ -1,11 +1,10 @@
 import { useContext, useState } from 'react';
-import { AppBar, Box, Toolbar, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { AppBar, Box, Toolbar, Drawer} from '@mui/material';
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 import Avatar from './Avatar.components'
-import { ReactComponent as LogoutIcon } from './assets/logout_tab_icon_unselected.svg'
 import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg'
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg'
 import * as styles  from '../components/styles/NavBar.css'
@@ -30,7 +29,7 @@ const NavBar = () => {
   const DatePicker = () => {
     return (
         <div>
-        { isSmallScreen && (currentPage === "home" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
+        { isSmallScreen && (currentPage === "" || currentPage === "training") && <div style={styles.pickerContainerStyle}> 
           <CustomDatePickerWithArrows
             value={currentDate}
             onChange={(date) => setCurrentDate(date) }

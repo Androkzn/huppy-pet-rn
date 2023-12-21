@@ -146,8 +146,7 @@ const StatisticBarChart = ({ data, title, goal }) => {
 
   const chartTitleStyle = {
     color: colors.green, 
-    fontWeight: "regular", 
-    margin: "10px 0px 0px 0px",
+    margin: "10x 0px 0px 0px",
     fontSize: "17px",
     fontFamily: "'Balsamiq Sans', sans-serif",
     fontWeight: "bold", 

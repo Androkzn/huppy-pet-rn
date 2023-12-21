@@ -63,7 +63,7 @@ const rowStyle = {
   };
 
   const chartContainerStyle = {
-    width: '90%',
+    width: '100%',
     alignItems: 'center',
     textAlign: 'center',
   };

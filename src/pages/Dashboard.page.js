@@ -60,7 +60,6 @@ const Analytics = () => {
     }
   };
 
-
   useEffect(() => {
     getDataSource();  
   }, [isLoadingFood, isErrorFood, selectedFilter]);
@@ -88,7 +87,6 @@ const Analytics = () => {
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
           result[existingItemIndex].amount += 1;
         }
-        result[existingItemIndex].count += 1; // Increment count
       } else {
         let newItem = {
           name: formattedDate,
@@ -131,9 +129,9 @@ const Analytics = () => {
     const source = getDataSource()
     if (!source || source.length === 0) return ""
     if (selectedFilter === Enums.FilterStatistic.CALORIES) {
-      return "Total calories per day"
+      return "Total calories per day, kcal"
     } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
-      return "Burned calories per day"
+      return "Burned calories per day, kcal"
     } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
       return "Compleated trainings per day"
     }
@@ -156,10 +154,9 @@ const Analytics = () => {
     return Math.floor(Constants.estCalories * currentProfile.weight * currentProfile.dailyRatio);
   }
  
-  console.log("getChartData", getChartData())
 
   const FilterContainer = () => {
- 
+
     async function handleFilterChange(filter) {
       console.log("handleFilterChange:", filter);
       setSelectedFilter(filter)

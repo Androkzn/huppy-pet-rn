@@ -3,31 +3,41 @@ import Chart from "react-google-charts";
 import * as colors from './styles/Colors';
 import { ButtonText } from "./Buttons.components"
 import {TitleAndToggle} from "./Form.components"
+import { centerCrop } from "react-image-crop";
 const StatisticBarChart = ({ data, title, goal }) => {
   const [showAverage, setShowAverage] = useState(false);
   const [showGoal, setShowGoal] = useState(false);
   const average = data[0].average
 
-  const chartData = [["", "", "", ""]];
+  const chartData = [["", "", { role: 'annotation' }, "", ""]];
   let ticks = []
   let index = 1
-  chartData.push([0, null, average, goal]);
+  chartData.push([0, null, "", average, goal]);
   
   data.forEach(({ name, amount, average}) => {
-    chartData.push([index, amount, average, goal]);
+    chartData.push([index, amount, amount, average, goal]);
     ticks.push({ v: index, f: name });
     index += 1
   });
 
-  chartData.push([index, null, average, goal]);
-
+  chartData.push([index, null, "", average, goal]);
+  console.log("chartData", chartData)
   const options = {
+    annotations: {
+      textStyle: {
+        fontSize: 11,
+        fontName: "Balsamiq Sans", 
+        bold: true, 
+        color: colors.green, 
+      },
+    },
+    titlePosition: 'none',
     title:title,
     titleTextStyle: {
       color: colors.green,
       fontName: "Balsamiq Sans",
-      fontSize: 18,
-      bold: true,       
+      fontSize: 15,
+      bold: true, 
     },
     legend: { position: "none" },
     colors: [colors.lightOrange],
@@ -53,9 +63,11 @@ const StatisticBarChart = ({ data, title, goal }) => {
       },
     },
     animation: {
-      duration: 1000,
-      easing: 'out',
+      startup: true,
+      duration: 200,
+      easing: 'in',
     },
+    chartArea: {'width': '80%', 'height': '90%'},
     series: {
       0: { type: "bars" },
       1: { 
@@ -63,10 +75,13 @@ const StatisticBarChart = ({ data, title, goal }) => {
         color: showAverage ? colors.blue : "transparent", 
       }, // Show/hide average line based on state
       2: { 
-        type: showGoal ? "line" : "none", 
-        color: showAverage ? colors.lightGreen2 : "transparent", 
+        type: showGoal && goal!== 0 ? "line" : "none", 
+        color: showGoal && goal!== 0 ? colors.lightGreen2 : "transparent", 
       },   // Show/hide goal line based on state
     },
+    width:"100%",
+    height:"100%",
+    bar: {groupWidth: "65%"}
   };
 
   const Circle = ({ color }) => (
@@ -100,6 +115,7 @@ const StatisticBarChart = ({ data, title, goal }) => {
     return null;
   };
 
+ 
   const renderGoalToggle = () => {
     if (goal !== 0) {
       return (
@@ -128,6 +144,15 @@ const StatisticBarChart = ({ data, title, goal }) => {
     width: '100%',
   };
 
+  const chartTitleStyle = {
+    color: colors.green, 
+    fontWeight: "regular", 
+    margin: "10px 0px 0px 0px",
+    fontSize: "17px",
+    fontFamily: "'Balsamiq Sans', sans-serif",
+    fontWeight: "bold", 
+  }
+
   const titleStyle = {
     color: colors.grayDark, 
     fontWeight: "regular", 
@@ -144,6 +169,9 @@ const StatisticBarChart = ({ data, title, goal }) => {
 
   return (
     <>
+      <div style={chartTitleStyle}>
+        {title}
+      </div>
       <Chart chartType="ComboChart" data={chartData} height={"350px"} options={options} />
       <div style={buttonContainerStyle}>
         {renderAverageToggle()}

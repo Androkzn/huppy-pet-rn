@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../contexts/user.context';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -9,14 +9,14 @@ import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unsel
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
 
 const TabBar = () => {
-  const {user, currentProfile, isSmallScreen, setCurrentPage} = useContext(UserContext);
+  const {user, currentProfile, isSmallScreen, currentPage, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px'
   const imageSize = isSmallScreen ? '25px' : '50px'
 
   const handleChange = (event, newValue) => {
-    console.log("newValue",newValue)
+    console.log("handleChange newValue",newValue)
     setValue(newValue);
     switch (newValue) {
       case 0: 
@@ -28,13 +28,52 @@ const TabBar = () => {
       case 2: 
       setCurrentPage("training")
       return navigate("/training");
-      //case 3: return navigate("/");
-
-      case 4: 
+      case 3: 
       setCurrentPage("more")
       return navigate("/more");
-  }
+    }
   };
+
+  const handleClick = (event) => {
+    console.log("event.target.id ", event.target.id)
+    const id = parseInt(event.target.id, 10);
+    console.log("id ", id)
+    setValue(id);
+    switch (id) {
+      case 0: 
+      setCurrentPage("")
+      return navigate("/");;
+      case 1: 
+      setCurrentPage("dashboard")
+      return navigate("/dashboard");
+      case 2: 
+      setCurrentPage("training")
+      return navigate("/training");
+      case 3: 
+      setCurrentPage("more")
+      return navigate("/more");
+    }
+  };
+
+  const handleSetCurrentPage= () => {
+    console.log("currentPage ", currentPage)
+    switch (currentPage) {
+      case "": 
+      return  setValue(0);
+      case "dashboard": 
+      return  setValue(1);
+      case "training": 
+      return  setValue(2);
+      case "more": 
+      return  setValue(3);
+    }
+  }
+
+  useEffect(() => {
+    // Function to fetch avatar data when component mounts
+    handleSetCurrentPage()  
+ }, [currentPage]);
+
 
   const isLoggedIn = () => {
     return user && currentProfile
@@ -61,11 +100,13 @@ const TabBar = () => {
       <Tabs
         value={value}
         onChange={handleChange}
+        onClick={handleClick}
         aria-label="icon label tabs example"
         indicatorColor="none"
         sx={{}}
       >
-        <Tab 
+        <Tab
+          id={0}
           value={0} 
           icon={
            <DiaryIcon width= {imageSize} fill={value === 0 ? colors.orange : colors.green}/>
@@ -86,6 +127,7 @@ const TabBar = () => {
           }}
         />
         <Tab 
+          id={1}
           value={1} 
           icon={
           <DashboardIcon width= {imageSize} fill={value === 1 ? colors.orange : colors.green}/>
@@ -106,6 +148,7 @@ const TabBar = () => {
           }}
         />
         <Tab 
+          id={2}
           value={2} 
           icon={<TrainingIcon width= {imageSize} fill={value === 2 ? colors.orange : colors.green}/>} 
           label="Training" 
@@ -123,34 +166,17 @@ const TabBar = () => {
             },
           }}
         />
-        {/* <Tab 
-          value={3} 
-          icon={ <HealthIcon width= {imageSize} fill={value === 3 ? colors.orange : colors.green}/>} 
-          label= "Health"
-          sx={{
-             fontFamily: "'Balsamiq Sans', sans-serif",
-            minWidth:'15px',
-            margin: '0px',
-            padding: '10px',
-            color: value === 3 ? colors.orange : colors.green,
-            fontSize: {fontSize},
-            '&.Mui-selected': {
-              color: colors.orange,
-              fontWeight: 'bold',
-              borderBottom: `3px solid ${colors.orange}`,
-            },
-          }}
-        /> */}
         <Tab 
-          value={4} 
-          icon={ <MoreIcon width= {imageSize} fill={value === 4 ? colors.orange : colors.green}/>} 
+          id={3}
+          value={3} 
+          icon={ <MoreIcon width= {imageSize} fill={value === 3 ? colors.orange : colors.green}/>} 
           label="More" 
           sx={{
             fontFamily: "'Balsamiq Sans', sans-serif",
             minWidth:'15px',
             margin: '0px',
             padding: '10px',
-            color: value === 4 ? colors.orange : colors.green,
+            color: value === 3 ? colors.orange : colors.green,
             fontSize: {fontSize},
             '&.Mui-selected': {
               color: colors.orange,

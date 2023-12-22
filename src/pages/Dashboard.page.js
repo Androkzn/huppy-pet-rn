@@ -28,7 +28,9 @@ const Analytics = () => {
 
   const dateOneWeekAgo = () => {
     const oneWeekAgo = new Date();
-    return oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    const date = oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    console.log("oneWeekAgo", date)
+    return date
   }
 
   const [fromDate, setFromDate] = useState( loadState("fromDate", dateOneWeekAgo()));
@@ -69,7 +71,7 @@ const Analytics = () => {
     const source = getDataSource();
     if (!source || source.length === 0) return [];
   
-    // Step 1: Group data by date and calculate total calories and count
+    //  Group data by date and calculate total calories and count
     const groupedData = source.reduce((result, currentItem) => {
       const date = new Date(currentItem.date).toLocaleDateString();
       const formattedDate = new Date(currentItem.date).toLocaleDateString('en-US', {
@@ -84,7 +86,8 @@ const Analytics = () => {
           result[existingItemIndex].amount += currentItem.calories;
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
           result[existingItemIndex].amount += currentItem.duration;
-        } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
+        } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
+          console.log("currentItem", currentItem)
           result[existingItemIndex].amount += 1;
         }
       } else {
@@ -95,35 +98,69 @@ const Analytics = () => {
   
         if (selectedFilter === Enums.FilterStatistic.CALORIES) {
           newItem.amount = currentItem.calories;
+          result.push(newItem);
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
           newItem.amount = currentItem.burnedCalories;
-        } else if (selectedFilter === Enums.FilterStatistic.TRAININGS) {
+          result.push(newItem);
+        } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
           newItem.amount = 1;
+          result.push(newItem);
         }
-  
-        result.push(newItem);
       }
   
       return result;
     }, []);
-    
-    // Step 2: Calculate overall average for the entire dataset
-    const total = groupedData.reduce((sum, item) => sum + item.amount, 0);
-    const overallAverage = groupedData.length !== 0 ? total / groupedData.length : 0;
 
-    // Step 3: Assign overall average to each item in the grouped data
-    const finalData = groupedData.map(item => ({
+     // Determine the range of dates
+    const startDate = new  Date(fromDate)  // replace with your actual start date
+    const endDate = new  Date(toDate)    // replace with your actual end date
+    const dateRange = getDatesBetween(startDate, endDate);
+    
+    // Fill in missing dates with 0 values
+    const filledData = dateRange.map(date => {
+      const formattedDate = date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      });
+
+      const existingItem = groupedData.find(item => item.name === formattedDate);
+
+      if (existingItem) {
+        return existingItem;
+      } else {
+        return {
+          name: formattedDate,
+          amount: 0,
+        };
+      }
+    });
+    
+    // Calculate overall average for the entire dataset
+    const total = filledData.reduce((sum, item) => sum + item.amount, 0);
+    const overallAverage = filledData.length !== 0 ? total / filledData.length : 0;
+
+    // Assign overall average to each item in the grouped data
+    const finalData = filledData.map(item => ({
       ...item,
       average: overallAverage,
     }));
   
-    // Step 4: Sort the grouped data by date
+    // Sort the grouped data by date
     const sortedGroupedData = finalData.sort((a, b) => new Date(a.name) - new Date(b.name));
   
     return sortedGroupedData;
   };
   
-  
+  // Helper function to get an array of dates between two dates
+  const getDatesBetween = (startDate, endDate) => {
+    const dates = [];
+    let currentDate = startDate;
+    while (currentDate <= endDate) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  };
 
   const getChartTitle = () => {
     const source = getDataSource()

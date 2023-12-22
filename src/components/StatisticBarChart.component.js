@@ -1,22 +1,37 @@
 import React, { useState } from "react";
 import Chart from "react-google-charts";
 import * as colors from './styles/Colors';
-import { ButtonText } from "./Buttons.components"
 import {TitleAndToggle} from "./Form.components"
-import { centerCrop } from "react-image-crop";
+
 const StatisticBarChart = ({ data, title, goal }) => {
   const [showAverage, setShowAverage] = useState(false);
   const [showGoal, setShowGoal] = useState(false);
   const average = data[0].average
 
+  // Helper function that provides formated Date based on value of data entries
+  const getFormatedDate= (date) => {
+    if (data.length  < 9 ) {
+      return date
+    } 
+    // Use a regular expression to capture the day part
+    const match = date.match(/(\d+)/);
+    // Check if a match is found and extract the day
+    const day = match ? match[1] : null;
+    console.log("day", day)
+    return day
+  }
+ 
   const chartData = [["", "", { role: 'annotation' }, "", ""]];
   let ticks = []
   let index = 1
   chartData.push([0, null, "", average, goal]);
   
   data.forEach(({ name, amount, average}) => {
-    chartData.push([index, amount, amount, average, goal]);
-    ticks.push({ v: index, f: name });
+    const anotation = amount === 0  || data.length > 10 ? null : amount
+    chartData.push([index, amount, anotation, average, goal]);
+    const date = getFormatedDate(name)
+    console.log("date", date)
+    ticks.push({ v: index, f: date });
     index += 1
   });
 
@@ -67,7 +82,7 @@ const StatisticBarChart = ({ data, title, goal }) => {
       duration: 200,
       easing: 'in',
     },
-    chartArea: {'width': '80%', 'height': '90%'},
+    chartArea: {'width': '75%', 'height': '80%'},
     series: {
       0: { type: "bars" },
       1: { 
@@ -134,7 +149,6 @@ const StatisticBarChart = ({ data, title, goal }) => {
     }
     return null;
   };
-
 
   const buttonContainerStyle = {
     display: 'flex',

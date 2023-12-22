@@ -9,9 +9,15 @@ import FoodImage from '../components/FoodImage.components'
 const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) => {
   
   const onInputChange = (name, value) => {
-    console.log("onInputChange name", name)
-    console.log("onInputChange value", name)
-    setFoodItem({ ...foodItem, [name]: value });
+    if (name === "type" && value !== "food") {
+      setFoodItem({
+        ...foodItem,
+        [name]: value,
+        "categoryType": enums.FoodCategoryType.OTHER, // Set to "other" if type is not "food"
+      });
+    } else {
+      setFoodItem({ ...foodItem, [name]: value });
+    }
   };
 
   const onTextInputChange = (event) => {
@@ -19,12 +25,10 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
     setFoodItem({ ...foodItem, [name]: value });
   };
 
-   const onSliderChange = (newMeatRatio, newBonesRatio) => {
-    setFoodItem({ ...foodItem, "meatRatio": newMeatRatio, "bonesRatio": newBonesRatio });
-   }
-
-  console.log("NewFoodForm foodItem", foodItem)
-
+  const onSliderChange = (newMeatRatio, newBonesRatio) => {
+  setFoodItem({ ...foodItem, "meatRatio": newMeatRatio, "bonesRatio": newBonesRatio });
+  }
+  
   return <div css={styles.addFoodFormStyle}>
     <form >
       <div style={styles.imageContainerStyle}> 
@@ -54,6 +58,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
         }))}  
         onChange={(value) => { onInputChange("type", value)}}
       />
+
       <TitleAndDropdown 
         name={"units"} title={"Units"} 
         initialValue={foodItem.units} 
@@ -63,6 +68,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
         }))}  
         onChange={(value) => { onInputChange("units", value)}}
       />
+
       <TitleAndDropdown 
         name={"categoryType"} 
         initialValue={foodItem.categoryType}  
@@ -72,6 +78,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
           title: enums.getTitleUpercased(type),
         }))} 
         onChange={(value) => { onInputChange("categoryType", value)}}
+        disabled={foodItem.type !== "food"}
       />
       
       <h3 css={styles.nutritionFactsTitleStyle}>{"Nutrition Facts"}</h3>

@@ -13,6 +13,7 @@ import { Delete } from "@mui/icons-material";
 import Slider from '@mui/material/Slider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
+import * as enums from "../helpers/Enums.helper"
 
 const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
@@ -207,7 +208,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
-  const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange }) => {
+  const TitleAndDropdown = ({ id, title, name, initialValue, dropdownOptions, onChange, disabled }) => {
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const containerStyle = {
       display: 'flex',
@@ -224,6 +225,13 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   const titleStyle = {
     marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
     fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    fontWeight: "bold",
+    margin: "15px 0px"
+  };
+
+  const titleDisabledStyle = {
+    marginRight: "30%",
+    fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
   };
   
   const dropdownStyle = {
@@ -239,8 +247,11 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     
     return (
       <div style={containerStyle}>
-      <h3 style={titleStyle}>{title}</h3>
-      <select
+      <div style={titleStyle}>{title}</div>
+      {disabled ? (
+        <div style={titleDisabledStyle}>{enums.getTitleUpercased(initialValue)}</div>
+      ) : (
+        <select
         name={name}
         style={dropdownStyle}
         value={initialValue}
@@ -253,6 +264,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
           </option>
         ))}
       </select>
+      )}
     </div>
     );
   };

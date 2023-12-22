@@ -2,10 +2,6 @@
 
 import * as colors from './Colors'
 
-  const pageStyle = {
-    maxWidth: '95%',
-  };
-
   // Main container 
   const trainingConteinerStyle = {
     display: 'flex',
@@ -172,7 +168,6 @@ import * as colors from './Colors'
 
   
   export {
-    pageStyle, 
     headerTrainingStyle,
     checkmarkContainerStyle, 
     deleteContainerStyle,

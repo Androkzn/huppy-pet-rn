@@ -9,6 +9,8 @@ import { getStartAndEndOfToday } from "../helpers/Date.helper";
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 function calculateTotalDataForCategory(dataType, foodType, foodData, categories) {
+  if (!foodData) return 0
+
   let totalData = foodData
     .filter((food) => {
       if (
@@ -81,9 +83,18 @@ function calculateTotalConsumedCalories(currentProfile, food, categories, activi
   if (currentProfile) {
 
     let totalCalories = 0;
-
+    // console.log("food", food)
+    // console.log("categories", categories)
+    
+    //Calculates calories for base food categories
     for (const category of categories) {
       totalCalories += calculateTotalDataForCategory("calories", category.type, food, categories);
+    }
+    //Calculates calories for optional food categories
+    const optionalCalories = calculateTotalDataForCategory("calories", "other", food, []);
+    console.log("optionalCalories", optionalCalories)
+    for  (const optionalCategory of categories) { 
+
     }
     
     if (currentProfile && currentProfile.deductCalories && totalCalories > 0) {
@@ -205,8 +216,8 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const food = foodData
 
-  console.log("CategoriesStatisticSection category", category)
-  console.log("CategoriesStatisticSection categories", categories)
+  // console.log("CategoriesStatisticSection category", category)
+  // console.log("CategoriesStatisticSection categories", categories)
 
   const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
   const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)

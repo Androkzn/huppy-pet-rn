@@ -9,14 +9,15 @@ import * as colors from '../components/styles/Colors'
     RECIPE: 'Recipe',
   };
 
-    // Enum FilterFood definition 
-    export const FilterStatistic = {
-      CALORIES: 'Calories',
-      ACTIVITIES: 'Activities',
-      TRAININGS: 'Trainings',
-    };
-// Enum FoodSection definition
-export const FoodSection = {
+  // Enum FilterStatistic definition 
+  export const FilterStatistic = {
+    CALORIES: 'Calories',
+    ACTIVITIES: 'Activities',
+    TRAININGS: 'Trainings',
+  };
+
+  // Enum FoodSection definition
+  export const FoodSection = {
     TREAT: 'treat',
     RECIPE: 'recipe',
     SUPPLEMENT: 'supplement',

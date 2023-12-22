@@ -75,9 +75,9 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   };
 
   // GET FOOD FOR MEAL
-  const useGetAllFoodForMeal = (user, mealId) => {
+  const useGetAllFoodForMeal = (user, currentProfile, mealId) => {
     return useQuery(['getAllFoodForMeal', mealId], async () => {
-        return graphql.getAllFoodForMeal(user, mealId);
+        return graphql.getAllFoodForMeal(user, currentProfile, mealId);
     });
   };
 

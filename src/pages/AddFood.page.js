@@ -10,7 +10,7 @@ import * as styles  from '../components/styles/AddFood.css'
 import {useAddFood} from "../hooks/query.hooks"
 
 const AddFood = ({ }) => {
-  const { user, setCurrentPage, currentDate } = useContext(UserContext);
+  const { user, currentProfile, setCurrentPage, currentDate } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
   const [foodItem, setFoodItem] = useState(location.state?.foodItem);
@@ -22,6 +22,7 @@ const AddFood = ({ }) => {
     addFoodMutation({
       user: user,
       mealId: mealId,
+      currentProfile: currentProfile,
       foodItem: foodItem,
       selectedDate: currentDate,
     }) 

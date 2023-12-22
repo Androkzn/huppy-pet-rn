@@ -76,15 +76,16 @@ async function searchForFood(searchQuery, user) {
 
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
-async function getAllFoodForMeal(user, mealId) {
+async function getAllFoodForMeal(user, currentProfile, mealId) {
   if (!user) { return []}
     const accessToken = user._accessToken;
+    const profileId = currentProfile._id
     const headers = { Authorization: `Bearer ${accessToken}` };
 
     // GraphQL query to fetch all  food for specificmeal
     const getAllFoodForMeal = gql`
-        query getAllFoodForMeal($mealId: String!) {
-            foods(query: { mealId: $mealId}) {
+      query getAllFoodForMeal($mealId: String!, $profileId: String!) {
+        foods(query: { mealId: $mealId, profileId: $profileId }) {
             _id
             bonesRatio
             calories
@@ -102,11 +103,13 @@ async function getAllFoodForMeal(user, mealId) {
             type
             userId
             date
+            profileId
             }
         }
     `;
     const queryVariables = {
         "mealId": mealId,
+        "profileId": profileId,
     };
  
     try {
@@ -121,6 +124,7 @@ async function getAllFoodForMeal(user, mealId) {
       
       alert('Error fetching food for meal with Id:', mealId);
       console.error('Error fetching food for meal', error);
+      return []
     }
 }
 
@@ -358,6 +362,7 @@ async function getAllCustomFoodTemplates(user) {
     
     alert('Error get All Custom Food Templates');
     console.error('Error get All Custom Food Templates', error);
+    return []
   }
 }
 
@@ -414,6 +419,7 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
     
     alert('Error get All Custom Food Templates for category: ', categoryType);
     console.error('Error get All Custom Food Templates for category: ', error);
+    return []
   }
 }
 
@@ -456,6 +462,7 @@ async function getAllFoodCategories(user, profileId) {
     
     alert('Error get All Food Categories');
     console.error('Error get All Food Categories', error);
+    return []
   }
 }
 
@@ -661,6 +668,7 @@ async function deleteFoodCategory({user, _id}) {
 // it return bool value
 async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
     if (!user) { return false}
+    
     const accessToken = user._accessToken;
     const userId = user.id
     const profileId = currentProfile._id
@@ -838,7 +846,6 @@ async function getUserProfiles(user) {
       getUserProfiles(user)
     } 
     
-    console.error(error);
     alert('Error get profiles');
     console.error('Error loading profiles:', error);
     return null;
@@ -910,7 +917,7 @@ async function getCurrentProfile(user) {
     console.error(error);
     alert('Error get profiles');
     console.error('Error loading profiles:', error);
-    return { profilesFetched: {}, currentProfileFetched: {} };
+    return null;
   }
 }
 
@@ -1040,6 +1047,7 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
     
     alert('Error loading meals');
     console.error('Error loading meals:', error);
+    return []
   }
 }
 
@@ -1053,8 +1061,8 @@ async function loadFood(user, currentProfile, currentDate, isToday) {
 
 // GraphQL query to fetch all the meals for specific time interval
 const getAllFood = gql`
-  query getAllFood($userId: String!, $startDate: DateTime!, $endDate: DateTime!) {
-    foods(query: { userId: $userId, date_gte: $startDate, date_lte: $endDate  }) {
+  query getAllFood($userId: String!, $profileId:  String!, $startDate: DateTime!, $endDate: DateTime!) {
+    foods(query: { userId: $userId, profileId: $profileId, date_gte: $startDate, date_lte: $endDate  }) {
       _id
       bonesRatio
       calories
@@ -1072,6 +1080,7 @@ const getAllFood = gql`
       type
       userId
       date
+      profileId 
     }
   }
 `;
@@ -1101,6 +1110,7 @@ try {
   
   alert('Error loading food');
   console.error('Error loading food:', error);
+  return []
 }
 }
 
@@ -1152,6 +1162,7 @@ async function loadActivities(user, currentProfile, currentDate) {
     
     alert('Error loading activities');
     console.error('Error loading Activities:', error);
+    return []
   }
 }
 
@@ -1204,6 +1215,7 @@ async function loadTrainings(user, currentProfile, currentDate) {
     
     alert('Error loading trainings');
     console.error('Error loading trainings:', error);
+    return []
   }
 }
 

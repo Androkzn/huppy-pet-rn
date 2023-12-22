@@ -17,7 +17,7 @@ function MealCard({ meal, index, mealsCount }) {
   const selectedDate = meal.date
   const [isMealsExpanded, setMealsExpanded] = useState(true);
 
-  const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user,mealId);
+  const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user, currentProfile, mealId);
   const {mutate: addMealMutation} = useAddMeal()
   const {mutate: deleteMealMutation} = useDeleteMeal()
   const {mutate: deleteFoodMutation} = useDeleteFood()
@@ -53,10 +53,15 @@ function MealCard({ meal, index, mealsCount }) {
   }
 
 
-  // Function to calculate the total weight of food
-  function calculateTotalWeight(foodItems) {
+  // Function to calculate the total weight of food for entire meal
+  const calculateTotalWeight= (foodItems) => {
     const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.weight), 0);
-    return total;
+    return Math.floor(total);
+  }
+   // Function to calculate the total calories of food for entire meal
+  const calculateTotalCalories= (foodItems) => {
+    const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.calories/100 * foodItem.weight), 0);
+    return Math.floor(total);
   }
 
   const FoodItem = ({foodItem}) => {
@@ -87,6 +92,10 @@ function MealCard({ meal, index, mealsCount }) {
           
     }
 
+    const getcaloriesForFood = (foodItem) => {
+      return foodItem.calories / 100 * foodItem.weight
+    }
+
     return (
       <Swipe
         height={50}  
@@ -106,31 +115,34 @@ function MealCard({ meal, index, mealsCount }) {
         leftSwipeColor={colors.orange}
         rightSwipeColor={colors.lightGreen2}
       >
-       <li css={styles.foodListRowStyle} key={foodItem._id}>
-          <div css={styles.headerFoodStyle()}>
-            <div css={styles.headerTextStyle()}>
-              <div css={styles.headingFoodStyle}>{foodItem.name}</div>
-              <input
-                type="number"
-                css={styles.inputFieldStyle}
-                value={foodItem.weight}
-                onChange={(e) => 
-                  handleWeightChange(e, foodItem)}
-              />
+       <div style={styles.foodListRowStyle} key={foodItem._id}>
+          <div style={styles.headerFoodStyle()}>
+            <div style={styles.headerTextStyle()}>
+              <div style={styles.headingFoodStyle}>{foodItem.name}</div>
+              <div  style={styles.caloriesAndWeightContainerStyle}> 
+                <div style={styles.caloriesValueStyle}>{getcaloriesForFood(foodItem)}</div>
+                <input
+                  type="number"
+                  style={styles.inputFieldStyle}
+                  value={foodItem.weight}
+                  onChange={(e) => 
+                    handleWeightChange(e, foodItem)}
+                />
+              </div>
             </div> 
           </div>
-        </li>
+        </div>
       </Swipe>
     )
   }
 
   const FoodList = ({data}) => {
     return(
-      <ul  css={styles.foodListStyle}>
+      <div  css={styles.foodListStyle}>
       {food.map((foodItem) => (
         <FoodItem foodItem={foodItem}  key={foodItem._id}/>
       ))}
-    </ul>
+    </div>
     )
   }
 
@@ -170,10 +182,20 @@ function MealCard({ meal, index, mealsCount }) {
         <div  style={styles.bodyMealStyle}>  {/* Meal container*/}
           {/* Show meals cards if data avaliable, if not -> show placeholder*/}
           {isMealsExpanded && food && food.length > 0 ? (
-            <div>
+            <div style={styles.columnStyle}>
               <div css={styles.totalWeightContainerStyle}>
-                <div css={styles.weightLabellStyle}>Total weight, gram:</div>
-                <div css={styles.weightValueStyle}>{calculateTotalWeight(food)}</div>
+                <div css={styles.weightLabellStyle}></div>
+                <div  style={styles.caloriesAndWeightContainerStyle}> 
+                  <div css={styles.unitCaloriesStyle}>{"kcal"}</div>
+                  <div css={styles.unitWeightStyle}>{"g"}</div>
+                </div>
+              </div>
+              <div css={styles.totalWeightContainerStyle}>
+                <div style={styles.weightLabellStyle}>{"Total"}</div>
+                <div  style={styles.caloriesAndWeightContainerStyle}> 
+                  <div css={styles.caloriesTotalStyle}>{calculateTotalCalories(food)}</div>
+                  <div css={styles.weightTotalStyle}>{calculateTotalWeight(food)}</div>
+                </div>
               </div>
               <FoodList/>
             </div>

@@ -75,7 +75,8 @@ const foodListStyle = {
   width: '100%',
   flexDirection: 'column',
   listStyleType: 'none',
-  padding: '0px',
+  marginTop: '5px',
+  marginBottom: '10px',
 };
 
 const foodListRowStyle = {
@@ -85,18 +86,35 @@ const foodListRowStyle = {
   alignItems: 'center',
   textAlign: 'center',
   backgroundColor: colors.white,
-
 };
+
+const caloriesAndWeightContainerStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  textAlign: 'center',
+};
+
+const caloriesValueStyle = {
+  color: colors.orange,
+  textAlign: 'center',
+  alignItems: 'center',
+  fontWeight: 'bold',
+  fontSize: "15px",
+  width: '50px',
+};
+
 
 const inputFieldStyle = {
   border: `2px solid ${colors.grayDark}`,  
   width: '50px',
-  marginLeft: '10px',
-  marginRight: '10px',
+  marginLeft: '0px',
+  marginRight: '0px',
   textAlign: 'center',
   borderRadius: '10px',
   height: '30px',
-  fontSize: '16px',
+  fontSize: '15px',
+  fontFamily: "'Balsamiq Sans', sans-serif",
 };
 
 const childConteinerStyle = {
@@ -141,6 +159,13 @@ const rowStyle = {
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
+};
+
+const columnStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'column',
 };
 
 const bodyMealStyle = {
@@ -189,25 +214,53 @@ const totalWeightContainerStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  width: '100%',
-  marginTop: "10px",
+  width: '90%',
 };
 
 
 const weightLabellStyle = {
-  margin: "0px 0px 0px 20px",
-  fontWeight: 'bold'
+  margin: "0px 0px 0px 0px",
+  fontWeight: 'bold',
+  width: 'auto',
+  alignItems: 'center',
+  textAlign: 'center',
 };
 
-const weightValueStyle = {
-  margin: "0px 45px 0px 0px",
-  fontWeight: 'bold'
+const weightTotalStyle = {
+  margin: "0px 5px 0px 0px",
+  //fontWeight: 'bold',
+  width: '50px',
+  fontSize: "15px"
+};
+const caloriesTotalStyle = {
+  margin: "0px 0px 0px 0px",
+  //fontWeight: 'bold',
+  width: '50px',
+  fontSize: "15px"
 };
 
+const unitWeightStyle = {
+  margin: "0px 5px 0px 0px",
+  fontWeight: 'bold',
+  width: '50px',
+  fontSize: "12px"
+};
+
+const unitCaloriesStyle = {
+  margin: "0px 0px 0px 0px",
+  fontWeight: 'bold',
+  width: '50px',
+  fontSize: "12px"
+};
   
 export {
+  weightTotalStyle,
+  caloriesTotalStyle,
+  unitWeightStyle,
+  unitCaloriesStyle,
+  caloriesValueStyle,
+  caloriesAndWeightContainerStyle,
   weightLabellStyle,
-  weightValueStyle,
   totalWeightContainerStyle,
   addButtonStyle,
   headerMealStyle,
@@ -227,6 +280,7 @@ export {
   headingStyle,
   headerAddButtonStyle,
   rowStyle,
+  columnStyle,
   bodyMealStyle,
   placeholderStyle,
   deleteContainerStyle,

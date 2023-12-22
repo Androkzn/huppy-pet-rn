@@ -151,7 +151,7 @@ const Training = () => {
     );
   };
 
-  return <PageContainer style={styles.pageStyle}>
+  return <PageContainer>
       <div style={styles.columnStyle}>
       {!isSmallScreen && <DatePicker/>}
       

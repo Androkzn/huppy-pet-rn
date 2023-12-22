@@ -38,17 +38,28 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       if (currentProfile && user) {
         if ( currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
           const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(currentProfile?.dailyPortion, currentProfile?._id,  currentProfile?.preset) 
-            const data = (allCategoriesForPresset).map((category) => ({ 
+          let data = (allCategoriesForPresset).map((category) => ({ 
             name: category.name,
             weight: category.weight,
             percentage: category.percentage,
             color: category.color,
             type: category.type,
           }));
+          
+           // Add optionalCategory to the data array
+           let optionalCategory = Enums.getDefaultCategory(Enums.FoodCategoryType.OTHER, currentProfile._id)
+           data.push({
+             name: optionalCategory.name,
+             weight: optionalCategory.weight,
+             percentage: optionalCategory.percentage,
+             color: optionalCategory.color,
+             type: optionalCategory.type,
+           });
+           
           return data
         } else {
           const categories = await  graphql.getAllFoodCategories(user, currentProfile._id); 
-          const data = (categories).map((category) => ({
+          let data = (categories).map((category) => ({
             _id: category._id,
             name: category.name,
             weight: category.weight,
@@ -59,6 +70,16 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
             profileId: category.profileId,
             userId: category.userId,
           }));
+
+          // Add optionalCategory to the data array
+          let optionalCategory = Enums.getDefaultCategory(Enums.FoodCategoryType.OTHER, currentProfile._id)
+          data.push({
+            name: optionalCategory.name,
+            weight: optionalCategory.weight,
+            percentage: optionalCategory.percentage,
+            color: optionalCategory.color,
+            type: optionalCategory.type,
+          });
           return data
         }
       } else {

@@ -107,7 +107,7 @@ import * as colors from '../components/styles/Colors'
       case FoodCategoryType.FISH: return colors.fish;
       case FoodCategoryType.FIBER: return colors.fiber;
       case FoodCategoryType.OTHER: return colors.other;
-      default: return colors.black;
+      default: return colors.grayDark;
     }
   };
 
@@ -505,6 +505,11 @@ export const getRatioPresetsTitle = function (type ) {
       case RatioPresets.PMR_TRADITIONAL_PUPPY: return 'PMR Puppy (traditional)';
   }
 };
+
+// Function to get category for type 
+export const getDefaultCategory = function (type, profileId) {
+  return { index: getIndexFoodCategory(type), type: type, name: getTitleUpercased(type), weight: 0, percentage: 0, color: getColorFoodCategory(type), profileId: profileId }
+}
 
 // Function to calculate categories
 export const getCategoriesForRatioPreset = function (dailyPortion, profileId, type) {

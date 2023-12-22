@@ -7,6 +7,7 @@ import {Image} from '../components/Image.components'
 import * as Constants from "../helpers/Constants.helper"
 import { getStartAndEndOfToday } from "../helpers/Date.helper";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import * as Enums from "../helpers/Enums.helper"
 
 function calculateTotalDataForCategory(dataType, foodType, foodData, categories) {
   if (!foodData) return 0
@@ -81,22 +82,13 @@ function doesHaveMeatAndBones(categories) {
 
 function calculateTotalConsumedCalories(currentProfile, food, categories, activities) {
   if (currentProfile) {
-
     let totalCalories = 0;
-    // console.log("food", food)
-    // console.log("categories", categories)
-    
+
     //Calculates calories for base food categories
     for (const category of categories) {
       totalCalories += calculateTotalDataForCategory("calories", category.type, food, categories);
     }
-    //Calculates calories for optional food categories
-    const optionalCalories = calculateTotalDataForCategory("calories", "other", food, []);
-    console.log("optionalCalories", optionalCalories)
-    for  (const optionalCategory of categories) { 
-
-    }
-    
+  
     if (currentProfile && currentProfile.deductCalories && totalCalories > 0) {
       totalCalories -= getTotalCaloriesBurnedFor(currentProfile, activities);
     }
@@ -107,7 +99,7 @@ function calculateTotalConsumedCalories(currentProfile, food, categories, activi
 }
 
 function getTotalCaloriesBurnedFor(currentProfile, activities) {
- 
+
   if (currentProfile && currentProfile.deductCalories) {
     const totalCalories = activities
       .reduce((result, activity) => {
@@ -153,8 +145,6 @@ function filterFoodForToday(foodData, currentDate) {
     // Check if the food item's date is within today's range
     return foodItem.date >= todayRange.start && foodItem.date <= todayRange.end;
   }); 
-  console.log("filterFoodForToday", currentDate)
-  console.log("filterFoodForToday", foodForToday)
   return foodForToday;
 }
 
@@ -215,13 +205,10 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
 const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday}) => { 
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const food = foodData
-
-  // console.log("CategoriesStatisticSection category", category)
-  // console.log("CategoriesStatisticSection categories", categories)
-
   const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
   const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)
   const percentage = calculatePercentage(weight, total)
+  const caloriesOther = calculateTotalDataForCategory("calories", "other", foodData, categories);
 
   const statisticCategoriesSectionStyle = {
     display: 'flex',
@@ -256,14 +243,37 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
   };
 
+  console.log("category", category)
+
   return (
+    <div>
+    { (category.type === Enums.FoodCategoryType.OTHER) ?(
     <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" /></div>
-        <div style={nameStyle}>{category.name}</div>
-        <ProgressBar
-          percentage={percentage}
-        />
-        <div style={valuesStyle}>{weight} / {total} g </div>
+      <div style={imageStyle}> 
+        <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" />
+      </div>
+      <div style={nameStyle}>
+        {category.name}
+      </div>
+      <ProgressBar percentage={0}  style={{ opacity: 0 }}/>
+      <div style={valuesStyle}>
+        {weight} g / {caloriesOther} kcal
+      </div>
+    </div>
+    ) : (
+    <div style={statisticCategoriesSectionStyle}>
+      <div style={imageStyle}> 
+        <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" />
+      </div>
+      <div style={nameStyle}>
+        {category.name}
+      </div>
+      <ProgressBar percentage={percentage} />
+      <div style={valuesStyle}>
+        {weight} / {total} g 
+      </div>
+    </div>
+    )}
     </div>
   )
 }
@@ -371,7 +381,7 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
   const ProgressBar = (props) => {
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
-    const { percentage } = props;
+    const { percentage, style } = props;
     const containerStyles = {
       height: 20,
       backgroundColor: "#e0e0de",
@@ -380,7 +390,8 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
       marginRight: '5px',
       marginRiLeft: '5px',
       maxWidth:  '350px',
-      width: '100%'
+      width: '100%',
+      ...style,  
     }
   
     const fillerStyles = {

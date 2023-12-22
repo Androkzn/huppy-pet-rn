@@ -99,7 +99,6 @@ const caloriesValueStyle = {
   color: colors.orange,
   textAlign: 'center',
   alignItems: 'center',
-  fontWeight: 'bold',
   fontSize: "15px",
   width: '50px',
 };
@@ -228,29 +227,32 @@ const weightLabellStyle = {
 
 const weightTotalStyle = {
   margin: "0px 5px 0px 0px",
-  //fontWeight: 'bold',
+  fontWeight: 'bold',
   width: '50px',
   fontSize: "15px"
 };
 const caloriesTotalStyle = {
+  color: colors.orange,
   margin: "0px 0px 0px 0px",
-  //fontWeight: 'bold',
+  fontWeight: 'bold',
   width: '50px',
   fontSize: "15px"
 };
 
 const unitWeightStyle = {
-  margin: "0px 5px 0px 0px",
+  margin: "5px 5px 5px 0px",
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "12px"
+  fontSize: "12px",
+  color: colors.green,
 };
 
 const unitCaloriesStyle = {
-  margin: "0px 0px 0px 0px",
+  margin: "5px 0px 5px 0px",
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "12px"
+  fontSize: "12px",
+  color: colors.green,
 };
   
 export {

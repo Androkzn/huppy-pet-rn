@@ -93,7 +93,7 @@ function MealCard({ meal, index, mealsCount }) {
     }
 
     const getcaloriesForFood = (foodItem) => {
-      return foodItem.calories / 100 * foodItem.weight
+      return Math.floor(foodItem.calories / 100 * foodItem.weight)
     }
 
     return (

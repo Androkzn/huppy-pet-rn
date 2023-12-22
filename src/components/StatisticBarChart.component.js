@@ -70,11 +70,14 @@ const StatisticBarChart = ({ data, title, goal }) => {
       },
     },
     vAxis: {
-        textStyle: {
+      textStyle: {
         color: colors.green,
         fontSize: 12, 
         fontName: "Balsamiq Sans", 
         bold: false,      
+      },
+      gridlines: {
+        count: 0,
       },
     },
     animation: {
@@ -94,8 +97,6 @@ const StatisticBarChart = ({ data, title, goal }) => {
         color: showGoal && goal!== 0 ? colors.lightGreen2 : "transparent", 
       },   // Show/hide goal line based on state
     },
-    width:"100%",
-    height:"100%",
     bar: {groupWidth: "65%"}
   };
 
@@ -185,7 +186,7 @@ const StatisticBarChart = ({ data, title, goal }) => {
       <div style={chartTitleStyle}>
         {title}
       </div>
-      <Chart chartType="ComboChart" data={chartData} height={"350px"} options={options} />
+      <Chart chartType="ComboChart" data={chartData} height={"320px"} options={options} />
       <div style={buttonContainerStyle}>
         {renderAverageToggle()}
         {renderGoalToggle()}

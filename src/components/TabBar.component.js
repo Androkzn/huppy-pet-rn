@@ -56,7 +56,6 @@ const TabBar = () => {
   };
 
   const handleSetCurrentPage= () => {
-    console.log("currentPage ", currentPage)
     switch (currentPage) {
       case "": 
       return  setValue(0);

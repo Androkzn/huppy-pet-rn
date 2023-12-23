@@ -1,38 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import {ImageCircle} from './ImageCircle.components'
+import {useFetchImage} from "../hooks/query.hooks"
 
 const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
- 
-  const [avatar, setAvatar] = useState(profile?.avatar || "")
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
+  const type = 'url';
+  const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
 
-  useEffect(() => {
-     // Function to fetch avatar data when component mounts
-   fetchAvatar()  
-  }, [profile]);
-
-  // Function to fetch avatar data when component mounts
-  const fetchAvatar = async () => {
-    try {
-      const type = 'url'
-      const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
-      console.log("avatarResult.data:", avatarResult.data);
-      setAvatar(avatarResult.data)
-      return 
-    } catch (error) {
-      console.log("Error fetching avatar:", error);
-      setAvatar(profile.avatar)
-    }
-  };
-
+  const { data: avatar, isLoading, isError } = useFetchImage(url, profile);
+   
   return (
-    <ImageCircle
-          imageName={"avatar_placeholder.png"}
-          width= {width}
-          imageDataUrl={avatar}
-          onClick={onClick}
-    />
+    <div> 
+      {(isLoading || isError ) ? 
+        (
+        <div>
+          <ImageCircle
+            imageName={"avatar_placeholder.png"}
+            width= {width}
+            imageDataUrl={null}
+            onClick={onClick}
+          />
+        </div>
+        ) : 
+        (
+        <ImageCircle
+              imageName={"avatar_placeholder.png"}
+              width= {width}
+              imageDataUrl={avatar}
+              onClick={onClick}
+        />
+      )}
+    </div>
   );
 };
 

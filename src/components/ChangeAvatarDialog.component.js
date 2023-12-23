@@ -97,7 +97,7 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
       const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
       const url = avatarResult.data
       console.log(`avatar url`, url)
-      updateCurrentProfile("avatar", url)
+      updateCurrentProfile("avatar", new Date().toISOString())
       return 
     } catch (error) {
       console.log("Error fetching avatar:", error);
@@ -134,7 +134,8 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
       const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
-      updateCurrentProfile("avatar", "")
+      console.log(` deleteAvatar avatar url`,)
+      updateCurrentProfile("avatar", new Date().toISOString())
       onClose();
     } catch (error) {
       console.log("Error deleting avatar:", error);

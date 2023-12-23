@@ -120,6 +120,7 @@ import styled from '@emotion/styled/macro'
     borderRadius: '10px',
     color: colors.green,
     backgroundColor: colors.white,
+    fontFamily: "'Balsamiq Sans', sans-serif",
   };
 
   const dropdownStyle = {
@@ -132,6 +133,7 @@ import styled from '@emotion/styled/macro'
     backgroundColor: colors.white,
     fontSize: '18px',
     color: colors.green,
+    fontFamily: "'Balsamiq Sans', sans-serif",
   };
 
   const responsiveSubContainer = styled.div({

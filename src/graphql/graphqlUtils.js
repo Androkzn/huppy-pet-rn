@@ -668,7 +668,7 @@ async function deleteFoodCategory({user, _id}) {
 // it return bool value
 async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
     if (!user) { return false}
-    
+
     const accessToken = user._accessToken;
     const userId = user.id
     const profileId = currentProfile._id
@@ -1100,7 +1100,6 @@ try {
       headers
     );
     const food = resp.foods.map(food => ({ ...food, key: food._id }))
-    console.log("loadFood:", food)
     return(food) 
 } catch (error) {
   if (error.response.error_code === "InvalidSession") {

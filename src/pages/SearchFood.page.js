@@ -225,14 +225,14 @@ const saveState = (key, value) => {
           </select>
           ) : (
             <TextField 
-          id="searchField"  // Add an id attribute
-          placeholder="Enter food name"
-          value={searchQuery}
-          onChange={(e) => {
-            if (searchQuery !== e.target.value) {
-                setSearchQuery(e.target.value);
-            }
-        }}
+              id="searchField"  // Add an id attribute
+              placeholder="Enter food name"
+              value={searchQuery}
+              onChange={(e) => {
+                if (searchQuery !== e.target.value) {
+                    setSearchQuery(e.target.value);
+                }
+            }}
           variant="outlined"
           InputProps={{
             style: styles.textFieldStyle,

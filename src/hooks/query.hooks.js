@@ -1,7 +1,26 @@
 import * as graphql from "../graphql/graphqlUtils";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Enums from "../helpers/Enums.helper"
+import axios from "axios";
 
+  //////////////////////////////
+  //     GET IMAGE           //
+  ////////////////////////////
+
+  // GET IMAGE 
+  const useFetchImage = (url, object) => {
+    console.log("useFetchImage object", object)
+    return useQuery(['fetchImage',object], async () => {
+        try {
+          const avatarResult = await axios.get(url);
+          console.log("useFetchImage", url)
+          return avatarResult.data;
+        } catch (error) {
+          console.log('Error fetching avatar:', error);
+          return null;
+        }
+      });
+    }
 
   //////////////////////////////
   //     GET / SEARCH        //
@@ -55,7 +74,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
              color: optionalCategory.color,
              type: optionalCategory.type,
            });
-           
+
           return data
         } else {
           const categories = await  graphql.getAllFoodCategories(user, currentProfile._id); 
@@ -382,6 +401,7 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
   }
 
 export {
+    useFetchImage,
     useGetCurrentProfile,
     useGetProfiles,
     useSearchForFood,

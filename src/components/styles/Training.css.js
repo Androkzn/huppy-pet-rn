@@ -68,6 +68,7 @@ import * as colors from './Colors'
     paddingRight: '15px',
     paddingLeft: '15px',
     backgroundColor: colors.oliveLight,
+    fontFamily: "'Balsamiq Sans', sans-serif",
   };
 
   const checkboxStyle = {

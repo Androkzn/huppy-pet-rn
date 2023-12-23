@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from '../contexts/user.context';
 import * as styles  from '../components/styles/More.css'
 import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";
-import * as Enums from "../helpers/Enums.helper"
-import useMediaQuery from '@mui/material/useMediaQuery';
-import * as Constants from "../helpers/Constants.helper"
 import { ReactComponent as LogoutIcon } from '../components/assets/logout_tab_icon_unselected.svg'
 import { ReactComponent as HealthIcon } from '../components/assets/health_tab_icon_unselected.svg'
 import * as colors from '../components/styles/Colors'
@@ -17,10 +14,10 @@ import { useNavigate } from "react-router-dom";
 
 const More = () => {
   const navigate = useNavigate();
-  const {user, currentProfile, logOutUser, setCurrentPage } = useContext(UserContext);
+  const {logOutUser, setCurrentPage } = useContext(UserContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
-  const isSmallScreen = useMediaQuery(Constants.smallScreen);
+
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {

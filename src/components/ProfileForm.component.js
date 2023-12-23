@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState, useEffect, useContext  } from "react";
+import { useState, useContext  } from "react";
 import * as styles  from './styles/Profile.css'
 import {TitleAndDatePicker, TitleToggleAndButtons, TitleAndDropdown,SelectedFoodCategoryRow, SelectedCustomFoodCategoryRow, UnselectedFoodCategoryRow, TitleButtonsAndTextField, TitleAndTextInput, TitleAndToggle, TitleTooltipAndValue} from "./Form.components"
 import * as Enums from "../helpers/Enums.helper"

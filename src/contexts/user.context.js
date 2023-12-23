@@ -24,11 +24,7 @@ export const UserProvider = ({ children }) => {
   const { data: profiles, isLoading: isLoadingProfiles, isError: isErrorProfiles} = useGetProfiles(user);
   const { data: currentProfile, isLoading: isLoadingProfile, isError: isErrorProfile} = useGetCurrentProfile(user);
 
-  if  (!isLoadingProfile && !isErrorProfile) {
-    console.log(" UserProvider currentProfile", currentProfile)
-  }
-
-  // Function to login user into our Realm using their email & password
+    // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
     const credentials = Credentials.emailPassword(email, password);
     const authedUser = await app.logIn(credentials);

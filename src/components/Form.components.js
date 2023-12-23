@@ -223,10 +223,10 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
   };
   
   const titleStyle = {
-    marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+
     fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: "bold",
-    margin: "15px 0px"
+    margin: " 15px 0px 15px 0px"
   };
 
   const titleDisabledStyle = {
@@ -243,6 +243,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       paddingLeft: Constants.mainPadding,
       backgroundColor: colors.oliveLight,
       color: colors.green,
+      fontFamily: "'Balsamiq Sans', sans-serif",
   };
     
     return (
@@ -381,6 +382,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: '10px',
       height: '30px',
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+      fontFamily: "'Balsamiq Sans', sans-serif",
     };
   
     return (
@@ -453,6 +455,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: Constants.mainBorderRadius,
       height: '30px',
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize, 
+      fontFamily: "'Balsamiq Sans', sans-serif",
     };
   
     return (
@@ -588,6 +591,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: Constants.mainBorderRadius,
       height: '30px',
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+      fontFamily: "'Balsamiq Sans', sans-serif",
     };
 
 
@@ -737,6 +741,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       height: '30px',
       backgroundColor: `${colors.oliveLight}`, 
       fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+      fontFamily: "'Balsamiq Sans', sans-serif",
     };
 
     const deleteButonStyle = {

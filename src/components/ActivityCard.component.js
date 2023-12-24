@@ -162,7 +162,7 @@ function ActivityCard({ activity}) {
             >
             {optionsActivityMetric.map((item) => (
               <option key={item.rawValue} value={item.rawValue}>
-                {item.title + (item.rawValue === enums.ActivityMetric.DISTANCE ? ", km" : ", min")}
+                {item.title}
               </option>
             ))}
             </select>

@@ -210,8 +210,8 @@ import * as colors from '../components/styles/Colors'
 
   export const getDDTitleForActivityMetric= (metric) => {
     switch (metric) {
-        case ActivityMetric.DISTANCE: return 'Distance';
-        case ActivityMetric.DURATION: return 'Duration';
+        case ActivityMetric.DISTANCE: return 'Distance, km';
+        case ActivityMetric.DURATION: return 'Duration, min';
     }
   };
 

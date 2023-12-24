@@ -93,6 +93,9 @@ import * as colors from './Colors'
     paddingLeft: '15px',
     backgroundColor: colors.white,
     fontFamily: "'Balsamiq Sans', sans-serif",
+    color: colors.green,
+    fontSize: '15px',
+    maxWidth: '150px',
   };
 
   const dropdownItemStyle = {

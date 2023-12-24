@@ -44,7 +44,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
     } else {
       const dropdownItems= Object.values(Enums.ActivityMetric).map((type) => ({
         rawValue: type,
-        title: Enums.getDDTitleForActivityMetric(type),
+        title: Enums.getDDTitleForActivityMetric(type), 
       }))
       return dropdownItems;
     }

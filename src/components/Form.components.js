@@ -244,6 +244,8 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       backgroundColor: colors.oliveLight,
       color: colors.green,
       fontFamily: "'Balsamiq Sans', sans-serif",
+      fontSize: '15px',
+      maxWidth: '150px',
   };
     
     return (

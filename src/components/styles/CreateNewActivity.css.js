@@ -62,6 +62,7 @@ const textFieldStyle = {
   marginLeft: '15px',
   borderRadius: '10px',
   height: '30px',
+  fontSize: '16px',
 };
 
 const rowStyle = {

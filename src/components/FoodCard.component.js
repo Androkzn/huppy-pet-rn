@@ -53,7 +53,7 @@ function FoodCard({ food, openAddFoodPage }) {
           distructiveLeftSwipe = {true}
           onRightSwipe={editFoodHandler}
           rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-          className=""
+          className="swiper-food"
           leftSwipeColor={colors.orange}
           rightSwipeColor={colors.lightGreen2}
         >

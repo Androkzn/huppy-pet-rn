@@ -133,7 +133,6 @@ const saveProfile = async () => {
   },
   {
     onSuccess: (data) => {
-      console.log("SUCCESS to create Profile: ", data)
       const profileNew = data
       
       // Upload avatar to AWS S3
@@ -174,8 +173,6 @@ const updateCategory= async (type, value) => {
   setCustomFoodCategories(updatedCategories);
   
 };
-
-console.log("currentProfile", currentProfile)
 
   return <PageContainer>
       <div style={styles.fixedTopContainer}>

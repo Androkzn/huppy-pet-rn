@@ -47,7 +47,6 @@ function MealCard({ meal, index, mealsCount }) {
   }
 
   const openAddFoodPage = () => {
-    console.log("Navigate to searchFood mealId", mealId)
     setCurrentPage("searchFood")
     navigate("/searchFood", { state: { mealId, selectedDate } });
   }
@@ -111,7 +110,7 @@ function MealCard({ meal, index, mealsCount }) {
         distructiveLeftSwipe = {true}
         onRightSwipe={editCurrentFood}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-        className="my-swiper"
+        className="swiper"
         leftSwipeColor={colors.orange}
         rightSwipeColor={colors.lightGreen2}
       >

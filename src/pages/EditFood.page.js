@@ -100,7 +100,6 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
 
   //Callback func that opens image dialog 
   const updateImage = async () => {
-    console.log("updateImage" )
     openDialog("image")
   };
 

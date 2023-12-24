@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
 import {ImageCircle} from './ImageCircle.components'
 import {useFetchImage} from "../hooks/query.hooks"
 
@@ -8,11 +7,11 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
   const type = 'url';
   const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
 
-  const { data: avatar, isLoading, isError } = useFetchImage(url, profile);
+  const { data: avatar, isLoading: isLoadingAvatar, isError: isErrorAvatar } = useFetchImage(url, profile);
    
   return (
     <div> 
-      {(isLoading || isError ) ? 
+      {(isLoadingAvatar || isErrorAvatar ) ? 
         (
         <div>
           <ImageCircle

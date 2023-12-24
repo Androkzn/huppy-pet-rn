@@ -20,7 +20,6 @@ const CreateNewFood = () => {
   const [dialogType, setDialogType] = useState("addActivity");
   const [image, setImage] = useState(null);
   const {mutate: addFoodTemplateMutation} = useAddFoodTemplate()
-  console.log("image", image)
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {

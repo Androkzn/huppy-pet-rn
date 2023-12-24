@@ -17,7 +17,6 @@ const StatisticBarChart = ({ data, title, goal }) => {
     const match = date.match(/(\d+)/);
     // Check if a match is found and extract the day
     const day = match ? match[1] : null;
-    console.log("day", day)
     return day
   }
  
@@ -30,13 +29,11 @@ const StatisticBarChart = ({ data, title, goal }) => {
     const anotation = amount === 0  || data.length > 10 ? null : amount
     chartData.push([index, amount, anotation, average, goal]);
     const date = getFormatedDate(name)
-    console.log("date", date)
     ticks.push({ v: index, f: date });
     index += 1
   });
 
   chartData.push([index, null, "", average, goal]);
-  console.log("chartData", chartData)
   const options = {
     annotations: {
       textStyle: {

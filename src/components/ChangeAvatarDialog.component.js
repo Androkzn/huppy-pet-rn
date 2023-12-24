@@ -16,6 +16,8 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     const backendEndpoint = process.env.REACT_APP_BACKEND_URL
     const cropperRef = useRef(null);
     let croppedImage = null; 
+    const type = 'url';
+    const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
 
     // Updates the cropped image in the state
     const onChange = (cropper) => {
@@ -45,7 +47,6 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
         input.onchange = async (event) => {
           const file = event.target.files[0] 
           setImageSelected(file)
-          console.log('file:', file);
         };
         // Trigger the file input click programmatically
         input.click();
@@ -57,8 +58,6 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     const handleSave = () => {
       // Use the cropped image when saving
       saveAvatar(croppedImage || imageSelected);
-      console.log('imageSelected:', imageSelected);
-      console.log('croppedImage:', croppedImage);
     };
 
     const compressImage = async (file, { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }) => {
@@ -91,12 +90,10 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
         
   // Function to fetch avatar data when component mounts
   const fetchAvatar = async () => {
-    console.log(`Fetch Avatar for`, profile._id)
     try {
       const type = 'url'
       const avatarResult = await axios.get(`${backendEndpoint}/avatar/${profile?._id}?type=${type}`);
       const url = avatarResult.data
-      console.log(`avatar url`, url)
       updateCurrentProfile("avatar", new Date().toISOString())
       return 
     } catch (error) {
@@ -134,7 +131,6 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
       const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
-      console.log(` deleteAvatar avatar url`,)
       updateCurrentProfile("avatar", new Date().toISOString())
       onClose();
     } catch (error) {
@@ -148,18 +144,13 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
    }, [profile.avatar]);
 
    const convertUrlToImageFile = async () => {
-    console.log('avatar:', profile.avatar);
-
     // Fetch the image from the URL and convert it to a file
     const url = await getAvatarUrl();
     if (url) {
       try {
-        console.log('url:', url);
         const response = await fetch(url);
-        console.log('response:', response);
         const blob = await response.blob();
         const imageFile = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-        console.log('imageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
@@ -169,7 +160,6 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
 
 // Function to fetch avatar data when the component mounts
 const getAvatarUrl = async () => {
-  console.log(`Fetch Avatar for`, profile._id);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';

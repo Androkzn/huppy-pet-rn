@@ -243,8 +243,6 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
 
   };
 
-  console.log("category", category)
-
   return (
     <div>
     { (category.type === Enums.FoodCategoryType.OTHER) ?(

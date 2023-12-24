@@ -122,7 +122,7 @@ function ActivityCard({ activity}) {
         }}
         distructiveLeftSwipe = {true}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-        className="my-swiper"
+        className="swiper"
         leftSwipeColor={colors.orange}
         rightSwipeColor={colors.lightGreen2}
       >

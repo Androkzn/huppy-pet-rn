@@ -29,7 +29,6 @@ const Analytics = () => {
   const dateOneWeekAgo = () => {
     const oneWeekAgo = new Date();
     const date = oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    console.log("oneWeekAgo", date)
     return date
   }
 
@@ -195,7 +194,6 @@ const Analytics = () => {
   const FilterContainer = () => {
 
     async function handleFilterChange(filter) {
-      console.log("handleFilterChange:", filter);
       setSelectedFilter(filter)
     }
   
@@ -230,7 +228,6 @@ const Analytics = () => {
             variant="fullWidth"
             value={selectedFilter}
             onChange={(event, newValue) => {
-              console.log("e.target", newValue)
               handleFilterChange(newValue)
             }}
             indicatorColor="none"

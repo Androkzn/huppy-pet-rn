@@ -708,7 +708,6 @@ async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
 
     try {
         await request(GRAPHQL_ENDPOINT, createFoodQuery, queryVariablesCreateFood, headers);
-        console.log("addFood:", true)
         return true
       } catch (error) {
         if (error.response.error_code === "InvalidSession") {
@@ -984,8 +983,6 @@ async function addProfile({user, profile}) {
   try {
     const resp = await request(GRAPHQL_ENDPOINT, createProfileQuery, queryVariablesCreateProfile, headers);
     const profileNew = resp.insertOneProfile 
-    console.log("resp: ", resp)
-    console.log("profileNew: ", profileNew)
     return profileNew;
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
@@ -1261,7 +1258,6 @@ const addMeal = async ({user, currentProfile, currentDate}) => {
 
 async function addActivity({user, currentProfile, selectedDate, data}) {
 
-  console.log("addActivity selectedDate:", selectedDate);
     if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
@@ -1527,8 +1523,6 @@ async function updateProfile({user, profileId, updateData}) {
 // Function to update an Food Category
 async function updateFoodCategory({user, categoryId, updateData}) {
   if (!user) { return false}
-  console.log("updateFoodCategory categoryId: ", categoryId)
-  console.log("updateFoodCategory updateData: ", updateData)
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 

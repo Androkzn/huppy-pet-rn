@@ -19,7 +19,7 @@ const NewTrainingForm = ({ onCreated, onClose  }) => {
 });
 
 useEffect(() => {
-  console.log("useEffect form", form); // This will log the updated form state
+
 }, [form]);
 
   const onTextInputChange = (event) => {
@@ -29,12 +29,7 @@ useEffect(() => {
 
   const onDropdownInputChange = (name, value) => {
     const enumValue = name === "category" ? Enums.getTrainingCategoryFor(value) : Enums.getTrainingTypeFor(value)
-    console.log("name form", name); 
-    console.log("value form", value); 
-    console.log("enumValue form", enumValue); 
-    
     setForm({ ...form, [name]: enumValue });
-    console.log(form)
   };
 
   const getDropdownItems = (name) => {

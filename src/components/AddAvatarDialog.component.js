@@ -43,7 +43,6 @@ const AddAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => {
         input.onchange = async (event) => {
           const file = event.target.files[0] 
           setImageSelected(file)
-          console.log('file:', file);
         };
         // Trigger the file input click programmatically
         input.click();
@@ -55,8 +54,6 @@ const AddAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => {
     const handleSave = () => {
       // Use the cropped image when saving
       onSave(croppedImage || imageSelected);
-      console.log('imageSelected:', imageSelected);
-      console.log('croppedImage:', croppedImage);
     };
 
    useEffect(() => {
@@ -65,31 +62,22 @@ const AddAvatarDialog = ({onSave, onDelete, onClose, avatar, profileId }) => {
    }, [avatar]);
 
    const convertUrlToImageFile = async () => {
-    console.log('avatar:', avatar);
-
-
     // Fetch the image from the URL and convert it to a file
     const url = await getAvatarUrl();
     if (url) {
       try {
-        console.log('url:', url);
         const response = await fetch(url);
-        console.log('response:', response);
         const blob = await response.blob();
         const imageFile = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-        console.log('imageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
       }
     }
-    
-
    }
 
 // Function to fetch avatar data when the component mounts
 const getAvatarUrl = async () => {
-  console.log(`Fetch Avatar for`, profileId);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   try {
     const type = 'url';

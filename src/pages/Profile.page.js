@@ -149,7 +149,6 @@ const Profile = () => {
       {
         onSuccess: (data) => {
           const updatedProfile = data
-          console.log("SUCCESS to updateProfile: ", updatedProfile)
           setProfile(updatedProfile);
           saveState('currentProfile', updatedProfile);
         },

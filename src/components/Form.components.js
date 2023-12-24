@@ -552,7 +552,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
     const handleTextFieldChange = (event) => {
       const newValue = event.target.value === "" ? 0 : parseInt(event.target.value, 10);
-      console.log("newValue", newValue)
       setCount(newValue <= maxCountValue ? newValue : maxCountValue);
       onChangeDailyRatioValue(newValue <= maxCountValue ? newValue : maxCountValue);
     };

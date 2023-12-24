@@ -16,7 +16,6 @@ const TabBar = () => {
   const imageSize = isSmallScreen ? '25px' : '50px'
 
   const handleChange = (event, newValue) => {
-    console.log("handleChange newValue",newValue)
     setValue(newValue);
     switch (newValue) {
       case 0: 
@@ -35,9 +34,7 @@ const TabBar = () => {
   };
 
   const handleClick = (event) => {
-    console.log("event.target.id ", event.target.id)
     const id = parseInt(event.target.id, 10);
-    console.log("id ", id)
     setValue(id);
     switch (id) {
       case 0: 

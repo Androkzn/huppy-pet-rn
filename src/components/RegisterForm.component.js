@@ -88,10 +88,8 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
       // Update dailyPortion only when Daily ratio option is selected
       profile.isRatioSelected = value
       if (value) {
-        console.log("getPortionWeight", getPortionWeight(profile?.dailyRatio, profile.weight)) 
         setProfile({ ...profile, [name]: value, "dailyPortion": getPortionWeight(profile?.dailyRatio, profile.weight) });
       } else {
-        console.log("isRatioSelected", value) 
         setProfile({ ...profile, [name]: value });
       }      
     }  else {
@@ -151,7 +149,6 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
   
   // Calculates estimated daily calories  weight based on Daily ratio %  and pet's weight
   function getEstCalories() {
-    console.log(Math.floor(Constants.estCalories * profile.weight * profile.dailyRatio))
     return Math.floor(Constants.estCalories * profile.weight * profile.dailyRatio);
   }
 

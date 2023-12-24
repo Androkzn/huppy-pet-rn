@@ -2,13 +2,15 @@
 
 import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'
 import {ButtonImage } from './Buttons.components'
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 import {useDeleteFoodTemplate} from "../hooks/query.hooks"
+import '../components/styles/styles.css'
+
 // Function is responsible for updating the training 
 function FoodCard({ food, openAddFoodPage }) {
   const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
@@ -29,32 +31,32 @@ function FoodCard({ food, openAddFoodPage }) {
   
   return (
       <div style={style.mainConteinerStyle} >
-         <Swipe
-        height={isSmallScreen ? 70 : 50}
-        disabled={!food.isCustom || !isSmallScreen} 
-        onLeftSwipe={deleteFoodTemplateHandler} 
-        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
-        onLeftSwipeConfirm={(onSuccess, onCancel) => {
-          if (window.confirm("Do you really want to delete this food?")) {
-            onSuccess();
-          } else {
-            onCancel();
-          }
-        }}
-        onRightSwipeConfirm={(onSuccess, onCancel) => {
-          if (window.confirm("Do you want to edit this food?")) {
-            onSuccess();
-          } else {
-            onCancel();
-          }
-        }}
-        distructiveLeftSwipe = {true}
-        onRightSwipe={editFoodHandler}
-        rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-        className="my-swiper"
-        leftSwipeColor={colors.orange}
-        rightSwipeColor={colors.lightGreen2}
-      >
+        <Swipe
+          height={isSmallScreen ? 70 : 50}
+          disabled={!food.isCustom || !isSmallScreen} 
+          onLeftSwipe={deleteFoodTemplateHandler} 
+          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+          onLeftSwipeConfirm={(onSuccess, onCancel) => {
+            if (window.confirm("Do you really want to delete this food?")) {
+              onSuccess();
+            } else {
+              onCancel();
+            }
+          }}
+          onRightSwipeConfirm={(onSuccess, onCancel) => {
+            if (window.confirm("Do you want to edit this food?")) {
+              onSuccess();
+            } else {
+              onCancel();
+            }
+          }}
+          distructiveLeftSwipe = {true}
+          onRightSwipe={editFoodHandler}
+          rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
+          className=""
+          leftSwipeColor={colors.orange}
+          rightSwipeColor={colors.lightGreen2}
+        >
         <div style={style.headerTrainingStyle}>
         <div style={style.rowStyle}>
         < style.responsiveMainContainer>

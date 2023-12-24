@@ -37,7 +37,6 @@ const Training = () => {
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
-    console.log("openDialog", dialogTypeNew)
     setDialogType(dialogTypeNew)
     setDialogOpen(true);
   };
@@ -49,8 +48,6 @@ const Training = () => {
 
   // Handles dialog submission
   const handleDialogSubmit = (form, dialogType) => {
-    console.log("handleDialogSubmit", form)
-    
     if (dialogType === "addTraining") {
       let  customCategory = form.customCategory;
       // Check if custom type was selected  under base category
@@ -74,7 +71,6 @@ const Training = () => {
  
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
-    console.log("getDialogContent", dialogType)
     if (dialogType === "addTraining") { 
       return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
     } else if (dialogType === "showError") {

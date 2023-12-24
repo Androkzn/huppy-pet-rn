@@ -21,7 +21,6 @@ const More = () => {
 
   // Opens dialog 
   const openDialog = (dialogTypeNew) => {
-    console.log("openDialog", dialogTypeNew)
     setDialogType(dialogTypeNew)
     setDialogOpen(true);
   };
@@ -42,7 +41,6 @@ const More = () => {
  
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
-    console.log("getDialogContent", dialogType)
     if (dialogType === "showError") { 
       return <NewTrainingForm onCreated={handleDialogSubmit} onClose={closeDialog}/>
     }  

@@ -33,7 +33,6 @@ const dateLabels = [
 ];
 
 const renderLabel = (date) => {
-  console.log("renderLabel")
   const matchedLabel = dateLabels.find((item) => dayjs(item.date).isSame(date, 'day'));
 
   // Update text field value if the date matches the selected date

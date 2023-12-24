@@ -18,12 +18,9 @@ function LoginForm({onSubmit}) {
       ...prevForm,
       [id]: value,
     }));
-    console.log("Form id:", id);
-    console.log("Form value:", value);
   }
 
   function handleSubmit() {
-    console.log("handleSubmit:", form);
     onSubmit(form);
   }
   

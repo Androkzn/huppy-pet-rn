@@ -117,7 +117,6 @@ const saveState = (key, value) => {
     const FilterContainer = () => {
  
       async function handleFilterChange(filter) {
-        console.log("handleFilterChange:", filter);
         setSelectedFilter(filter)
       }
     
@@ -153,7 +152,6 @@ const saveState = (key, value) => {
               variant="fullWidth"
               value={selectedFilter}
               onChange={(event, newValue) => {
-                console.log("e.target", newValue)
                 handleFilterChange(newValue)
               }}
               indicatorColor="none"
@@ -201,7 +199,6 @@ const saveState = (key, value) => {
   const SearchContainer = () => {
     async function handleCategoryChange(e) {
       const newValue = e.target.value;
-      console.log("handleCategoryChange:", newValue);
       setSelectedCategory(newValue)
     }
 

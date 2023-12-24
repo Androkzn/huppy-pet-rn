@@ -114,12 +114,6 @@ const TemporaryDrawer = (props) => {
     ); 
   }
 
-  const logOut = async () => {
-    await logOutUser();
-    window.location.reload(true);
-    return;
-  };
-
   const navigateTo = (link) => {
     if (link === 'register' && currentProfile) {
       setCurrentPage("addProfile");
@@ -143,7 +137,6 @@ const TemporaryDrawer = (props) => {
           <Avatar
             width="50px"
             profile={currentProfile}
-             
           />
         </div>
         <div style={styles.linkTitleStyle}> Current Profile </div>
@@ -179,10 +172,10 @@ const TemporaryDrawer = (props) => {
                 />
               </div>
               <div style={styles.profileIconStyle}>
-                <Avatar
+                {/* <Avatar
                   width="30px"
                   profile={profile}
-                />
+                /> */}
               </div>
               <div style={styles.profileLinkTitleStyle}> 
                 {profile.name}

@@ -172,10 +172,10 @@ const TemporaryDrawer = (props) => {
                 />
               </div>
               <div style={styles.profileIconStyle}>
-                {/* <Avatar
+                <Avatar
                   width="30px"
                   profile={profile}
-                /> */}
+                />
               </div>
               <div style={styles.profileLinkTitleStyle}> 
                 {profile.name}

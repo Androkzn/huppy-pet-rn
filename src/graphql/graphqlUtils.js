@@ -682,7 +682,7 @@ async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
           categoryType: foodItem.categoryType,
           calories:  foodItem.calories,
           caloriesServing:  foodItem.caloriesServing,
-          image: "",
+          image: foodItem.image,
           mealId: mealId,
           meatRatio:  foodItem.meatRatio,
           name:  foodItem.name,
@@ -737,7 +737,7 @@ async function addFoodTemplate({user, foodItem}) {
         categoryType: foodItem.categoryType,
         calories:  foodItem.calories,
         caloriesServing:  foodItem.caloriesServing,
-        image: "",
+        image: foodItem.image,
         meatRatio:  foodItem.meatRatio,
         name:  foodItem.name,
         servingWeight:  foodItem.servingWeight,
@@ -1643,7 +1643,7 @@ async function updateFoodTemplate({user, foodItem}) {
         categoryType: foodItem.categoryType,
         calories:  foodItem.calories,
         caloriesServing:  foodItem.caloriesServing,
-        image: "",
+        image: foodItem.image,
         meatRatio:  foodItem.meatRatio,
         name:  foodItem.name,
         servingWeight:  foodItem.servingWeight,
@@ -1663,7 +1663,9 @@ async function updateFoodTemplate({user, foodItem}) {
   };
 
   try {
-      await request(GRAPHQL_ENDPOINT, updateFoodTemplateQuery, queryVariables, headers)
+      console.log('Update food template');
+      const result = await request(GRAPHQL_ENDPOINT, updateFoodTemplateQuery, queryVariables, headers)
+      console.log('Update food template', result);
       return true;
   } catch (error) {
       if (error.response.error_code === "InvalidSession") {

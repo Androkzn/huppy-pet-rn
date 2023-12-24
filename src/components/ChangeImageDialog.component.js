@@ -92,8 +92,6 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
       const type = 'url'
       const avatarResult = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
       const url = avatarResult.data
-      setFoodItem({ ...foodItem, "image": url });
-
       return 
     } catch (error) {
       console.log("Error fetching avatar:", error);
@@ -116,6 +114,7 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
         data.append('destination', `food/${foodItem.userId}`);
         // Use Axios to send the FormData to the server
         const result = await axios.post(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}`, data);
+        setFoodItem({ ...foodItem, "image": new Date().toISOString() });
         await fetchImage();
       } catch (error) {
         console.log('Error uploading file:', error);
@@ -141,23 +140,18 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
       // Function to fetch avatar data when component mounts
       convertUrlToImageFile()  
       fetchImage()
-   }, [foodItem.image]);
+   }, []);
 
   
    const convertUrlToImageFile = async () => {
     // Fetch the image from the URL and convert it to a file
-    let url = ""
-
-    if (foodItem.image && foodItem.image !== "") {
-      url = foodItem.image
-    } else {
-      url =   await getImageUrl();
-    }
+    const url =  await getImageUrl();
     if (url) {
       try {
         const response = await fetch(url);
         const blob = await response.blob();
         const imageFile = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+        console.log('convertUrlToImageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
@@ -167,13 +161,12 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
 
 // Function to fetch avatar data when the component mounts
 const getImageUrl = async () => {
-  if (foodItem?.userId && foodItem?._id) return
-  const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
+  if (!foodItem.userId || !foodItem._id) return
   try {
     const type = 'url';
     const result = await axios.get(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`);
     const data = result.data;
-
+    console.log('getImageUrl data:', data);
     return data;
   } catch (error) {
     console.log("Error fetching image:", error);

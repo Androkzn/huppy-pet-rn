@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useState } from 'react';
 import { UserContext } from "../contexts/user.context";
-import PageContainer from "./PageContainer.component";
 import * as styles  from './styles/CreateNewActivity.css'
 import {TitleAndDropdown} from "./Form.components"
 import { ButtonText } from "./Buttons.components"
@@ -28,7 +27,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
 
   const onDropdownInputChange = (name, value) => {
     setForm({ ...form, [name]: value });
-    let valueActivity = getActivityValue()
+    let valueActivity = getActivityValue(value)
     setValue(valueActivity)
   };
 
@@ -81,8 +80,8 @@ const NewActivityForm = ({ onCreated, onClose }) => {
   };
   
 
-  function getActivityValue() {
-    return  form.metric === Enums.ActivityMetric.DISTANCE ? form.distance : form.duration;
+  function getActivityValue(metric) {
+    return  metric === Enums.ActivityMetric.DISTANCE ? form.distance : form.duration;
   }
 
   function getCaloriesBurnedFor(value) {
@@ -107,7 +106,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
           x
         </ButtonText>
       </div>
-      <h2  style={styles.addActivityTitleStyle}>{"Add Activity"}</h2>
+      <div  style={styles.addActivityTitleStyle}>{"Add Activity"}</div>
       
       <TitleAndDropdown name={"type"} title={"Activity"} dropdownOptions={getDropdownItems("type")} onChange={(value) => { onDropdownInputChange("type", value)}}/>
       <TitleAndDropdown name={"metric"} title={"Metric"} dropdownOptions={getDropdownItems("metric")}  onChange={(value) => { onDropdownInputChange("metric", value)}}/>
@@ -152,7 +151,7 @@ const NewActivityForm = ({ onCreated, onClose }) => {
           </div> */}
       </div>
       <div style={styles.addActivityButtonContainerStyle}> 
-        <ButtonText variant="rectangleTextButton" onClick={() => onCreated(form, "addActivity")} >
+        <ButtonText variant="rectangleTextButton" onClick={() => onCreated(form, "addActivity")} disabled={value === 0}>
           Add Activity
         </ButtonText>
     </div>

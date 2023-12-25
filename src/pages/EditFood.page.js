@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Dialog, DialogContent } from '@mui/material';
 import ChangeImageDialog from "../components/ChangeImageDialog.component";
 import {useUpdateFoodTemplate} from "../hooks/query.hooks"
+import FoodImage from '../components/FoodImage.components'
 
 const EditFood = () => {
   const { user, setCurrentPage } = useContext(UserContext);
@@ -136,11 +137,15 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
         <div style={{width: '100px'}}></div>
       </div>
     </div>
+    <div style={styles.imageContainerStyle}> 
+      <FoodImage 
+        foodItem={foodItem}
+        onClick={updateImage} 
+      />
+    </div>
     <EditFoodForm 
       editFood={editFood} 
-      foodItem={foodItem} 
-      setFoodItem={setFoodItem} 
-      updateImage={updateImage}
+      food={foodItem} 
     />
     
     {/* Dialog */}

@@ -332,7 +332,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
   const TitleButtonsAndTextField = ({ id, title, initialValue, name, onChange, onChangeButton }) => {
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
-    const [count, setCount] = useState(initialValue);
+    const [count, setCount] = useState(initialValue || 0);
     const decrementCount = () => {
       if (count > 0) {
         setCount(count - 1);

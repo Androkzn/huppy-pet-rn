@@ -70,7 +70,7 @@ const buttonVariants = {
     background: `${colors.lightGreen}`,
     width: "35px",
     height: "35px",
-    lineHeight: '30px',
+    lineHeight: '35px',
     fontSize: '20px', 
     borderRadius: '20px',
     textAlign: 'center',

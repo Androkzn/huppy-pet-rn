@@ -11,6 +11,9 @@ const addActivityFormStyle = {
 const addActivityTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
+  fontSize: "20px",
+  fontWeight: "bold",
+  margin: "20px 0px"
 };
 
 const addActivityButtonContainerStyle = {

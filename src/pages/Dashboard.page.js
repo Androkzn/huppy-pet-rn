@@ -73,15 +73,14 @@ const Analytics = () => {
   const getChartData = () => {
     const source = getDataSource();
     if (!source || source.length === 0) return [];
-    console.log("source",source)
+ 
     //  Group data by date and calculate total calories and count
     const groupedData = source.reduce((result, currentItem) => {
       const formattedDate = new Date(currentItem.date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
       });
-      console.log("currentItem",currentItem)
-  
+   
       const existingItemIndex = result.findIndex(item => item.name === formattedDate);
   
       if (existingItemIndex !== -1) {
@@ -90,7 +89,6 @@ const Analytics = () => {
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
           result[existingItemIndex].amount += currentItem.duration;
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
-          console.log("currentItem", currentItem)
           result[existingItemIndex].amount += 1;
         }
       } else {
@@ -106,12 +104,10 @@ const Analytics = () => {
           newItem.amount = currentItem.burnedCalories;
           result.push(newItem);
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
-          console.log("currentItem", currentItem)
           newItem.amount = 1;
           result.push(newItem);
         }
       }
-      console.log("result",result)
       return result;
     }, []);
 

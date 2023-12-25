@@ -31,6 +31,12 @@ function MealCard({ meal, index, mealsCount }) {
     })
   };
 
+   // Function is responsible for showing options for current meal
+   const showOptions = async () => {
+    
+  };
+
+
   // Function is responsible for deleting the Meal
   const deleteCurrentMeal = async () => {
     deleteMealMutation({
@@ -223,8 +229,8 @@ function MealCard({ meal, index, mealsCount }) {
               Add Food
           </ButtonImage>
           
-          {mealsCount > 1 && 
-            <ButtonImage
+          { (mealsCount > 1 &&  food?.length === 0) ? 
+           ( <ButtonImage
                 variant="deleteButton"
                 width='140px'
                 height={30}
@@ -234,6 +240,19 @@ function MealCard({ meal, index, mealsCount }) {
               >
                 Delete Meal
             </ButtonImage>
+           ) : (
+            <ButtonImage
+              variant="addButton"
+              width='60px'
+              height={30}
+              margin={0}
+              padding={0}
+              imageName="more_white.svg"
+              imageSize={20}
+              onClick={showOptions}
+            >
+          </ButtonImage>
+           )
           }
           </div>}
 

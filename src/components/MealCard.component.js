@@ -232,18 +232,7 @@ function MealCard({ meal, index, mealsCount }) {
               Add Food
           </ButtonImage>
           
-          { (mealsCount > 1 &&  food?.length === 0) ? 
-           ( <ButtonImage
-                variant="deleteButton"
-                width='140px'
-                height={30}
-                imageName="delete_orange.svg"
-                imageSize={20}
-                onClick={deleteCurrentMeal}
-              >
-                Delete Meal
-            </ButtonImage>
-           ) : (
+       
             <PopupState variant="popover" popupId="demo-popup-menu">
               {(popupState) => (
                 <Fragment>
@@ -265,22 +254,24 @@ function MealCard({ meal, index, mealsCount }) {
                         copyMealToDate()
                       }
                     }>
-                      Copy meal
+                      Copy from date
                     </MenuItem>
-                    <MenuItem onClick={() => 
-                      {
-                        popupState.close()
-                      
-                      }
-                    }>
-                      Delete meal
-                    </MenuItem>
+                    { mealsCount > 1 &&
+                      <MenuItem onClick={() => 
+                        {
+                          popupState.close()
+                        
+                        }
+                      }>
+                        Delete meal
+                      </MenuItem>
+                    }
                   </Menu>
                 </Fragment>
               )}
             </PopupState>
-           )
-          }
+        
+     
           </div>}
 
         </div> {/* Meals container*/}

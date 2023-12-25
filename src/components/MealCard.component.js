@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState } from "react";
+import { useContext, useState, Fragment } from "react";
 import { UserContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonImage, ButtonText} from '../components/Buttons.components'
@@ -9,6 +9,9 @@ import {Image} from '../components/Image.components'
 import Swipe  from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 import {useGetAllFoodForMeal, useUpdateFood, useAddMeal, useDeleteFood, useDeleteMeal} from "../hooks/query.hooks"
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
@@ -32,7 +35,7 @@ function MealCard({ meal, index, mealsCount }) {
   };
 
    // Function is responsible for showing options for current meal
-   const showOptions = async () => {
+   const copyMealToDate = async () => {
     
   };
 
@@ -241,17 +244,41 @@ function MealCard({ meal, index, mealsCount }) {
                 Delete Meal
             </ButtonImage>
            ) : (
-            <ButtonImage
-              variant="addButton"
-              width='60px'
-              height={30}
-              margin={0}
-              padding={0}
-              imageName="more_white.svg"
-              imageSize={20}
-              onClick={showOptions}
-            >
-          </ButtonImage>
+            <PopupState variant="popover" popupId="demo-popup-menu">
+              {(popupState) => (
+                <Fragment>
+                  <ButtonImage
+                      variant="addButton"
+                      width='60px'
+                      height={30}
+                      margin={0}
+                      padding={0}
+                      imageName="more_white.svg"
+                      imageSize={20}
+                      {...bindTrigger(popupState)}
+                    >
+                  </ButtonImage>
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={() => 
+                      {
+                        popupState.close()
+                        copyMealToDate()
+                      }
+                    }>
+                      Copy meal
+                    </MenuItem>
+                    <MenuItem onClick={() => 
+                      {
+                        popupState.close()
+                      
+                      }
+                    }>
+                      Delete meal
+                    </MenuItem>
+                  </Menu>
+                </Fragment>
+              )}
+            </PopupState>
            )
           }
           </div>}

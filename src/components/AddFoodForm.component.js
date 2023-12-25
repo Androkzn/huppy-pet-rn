@@ -8,30 +8,22 @@ import {Image} from './Image.components'
 import { useState } from "react";
 import { ButtonText } from "./Buttons.components"
 
-const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) => {
+const AddFoodForm = ({ foodItem, addFoodToMeal}) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
-  const [imageWidth, setImageWidth] = useState(150);
-
+  const [units, setUnits] = useState(foodItem?.units)
+  const [weight, setWeight] = useState(0)
+ 
   const onDDInputChange = (value) => {
-    setFoodItem((prevFoodItem) => ({
-      ...prevFoodItem,
-      units: value,
-    }));
+    setUnits(value)
   };
 
   const onButtonInputChange = (name, value) => {
-    setFoodItem((prevFoodItem) => ({
-      ...prevFoodItem,
-      weight: value,
-    }));
+    setWeight(value)
   };
 
   const onTextInputChange = (value) => {
-    setFoodItem((prevFoodItem) => ({
-      ...prevFoodItem,
-      weight: value,
-    }));
+    setWeight(value)
   };
 
   return (
@@ -64,7 +56,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           onChangeButton={(name, value) => { onButtonInputChange(name, value) }}
         />
        {/* Hide empty description */}
-       {foodItem?.desc !== "" && <div style={styles.descriptionContainerStyle}>
+       {foodItem && foodItem?.desc !== "" && <div style={styles.descriptionContainerStyle}>
           <div  style={styles.rowStyle}>
             <div
               style={styles.nutritionFactsTitleStyle}
@@ -72,13 +64,15 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
             >
               Description
             </div>
-            <Image
-              imageName={isDescriptionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
-              width="20"
-              height="20"
-              onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-              style={{ cursor: "pointer" }}
-            />
+            <div> 
+              <Image
+                imageName={isDescriptionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+                width="20"
+                height="20"
+                onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
+                style={{ cursor: "pointer" }}
+              />
+            </div>
           </div>
           {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem?.desc}</div>}
         </div>
@@ -137,7 +131,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           </div>}
       </div>
       <div style={styles.rowStyle}> 
-        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={addFoodToMeal}  >
+        <ButtonText  as= 'button'  width= '200px' variant="rectangleTextButton" onClick={() => addFoodToMeal(units, weight)}  disabled={weight === 0}>
           Add to Meal
         </ButtonText>
       </div>

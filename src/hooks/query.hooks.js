@@ -9,8 +9,9 @@ import axios from "axios";
 
   // GET IMAGE 
   const useFetchImage = (url, object) => {
+ 
     //console.log("1 Atempt to useFetchImage object", object)
-    const key = 'fetchImage_' + (object._id || "") 
+    const key = 'fetchImage_' + (object?._id || "") 
     //console.log("1 Atempt to useFetchImage with key", key)
     return useQuery(['fetchImage', object], async () => {
         try {

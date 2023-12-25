@@ -13,12 +13,15 @@ const AddFood = ({ }) => {
   const { user, currentProfile, setCurrentPage, currentDate } = useContext(UserContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const [foodItem, setFoodItem] = useState(location.state?.foodItem);
-  const [mealId, setMealId] = useState(location.state?.mealId);
+  let foodItem = location.state?.foodItem;
+  let mealId = location.state?.mealId;
   const {mutate: addFoodMutation} = useAddFood()
 
   // addFood function is responsible for adding the Food
-  const addFoodToMeal =  () => {
+  const addFoodToMeal =  (units, weight) => {
+    foodItem.units = units
+    foodItem.weight = weight
+
     addFoodMutation({
       user: user,
       mealId: mealId,
@@ -35,12 +38,11 @@ const AddFood = ({ }) => {
   useEffect(() => {
     // Fetch or set foodItem if it's not available
     if (!foodItem && !mealId && location.state) {
-      setFoodItem(location.state.foodItem);
-      setMealId(location.state.mealId)
+      foodItem = location.state.foodItem;
+      mealId = location.state.mealId;
     }
-  }, [foodItem, location.state]);
+  }, [location.state]);
 
-  
   return <PageContainer>
     <div style={styles.fixedTopContainer}> 
       <div  style={styles.topButtonsContainerStyle}>
@@ -59,7 +61,6 @@ const AddFood = ({ }) => {
       <AddFoodForm 
         foodItem={foodItem} 
         addFoodToMeal={addFoodToMeal} 
-        setFoodItem={setFoodItem} 
       />
   </PageContainer>
 }

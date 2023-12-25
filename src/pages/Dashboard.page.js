@@ -69,20 +69,20 @@ const Analytics = () => {
   const getChartData = () => {
     const source = getDataSource();
     if (!source || source.length === 0) return [];
-  
+    console.log("source",source)
     //  Group data by date and calculate total calories and count
     const groupedData = source.reduce((result, currentItem) => {
-      const date = new Date(currentItem.date).toLocaleDateString();
       const formattedDate = new Date(currentItem.date).toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
       });
+      console.log("currentItem",currentItem)
   
       const existingItemIndex = result.findIndex(item => item.name === formattedDate);
   
       if (existingItemIndex !== -1) {
         if (selectedFilter === Enums.FilterStatistic.CALORIES) {
-          result[existingItemIndex].amount += currentItem.calories;
+          result[existingItemIndex].amount +=  Math.floor(currentItem.calories / 100 * currentItem.weight);
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
           result[existingItemIndex].amount += currentItem.duration;
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
@@ -96,7 +96,7 @@ const Analytics = () => {
         };
   
         if (selectedFilter === Enums.FilterStatistic.CALORIES) {
-          newItem.amount = currentItem.calories;
+          newItem.amount =  Math.floor(currentItem.calories / 100 * currentItem.weight);
           result.push(newItem);
         } else if (selectedFilter === Enums.FilterStatistic.ACTIVITIES) {
           newItem.amount = currentItem.burnedCalories;
@@ -106,7 +106,7 @@ const Analytics = () => {
           result.push(newItem);
         }
       }
-  
+      console.log("result",result)
       return result;
     }, []);
 
@@ -136,14 +136,14 @@ const Analytics = () => {
     
     // Calculate overall average for the entire dataset
     const total = filledData.reduce((sum, item) => sum + item.amount, 0);
-    const overallAverage = filledData.length !== 0 ? total / filledData.length : 0;
+    const overallAverage = Math.floor(filledData.length !== 0 ? total / filledData.length : 0);
 
     // Assign overall average to each item in the grouped data
     const finalData = filledData.map(item => ({
       ...item,
       average: overallAverage,
     }));
-  
+    console.log("overallAverage",overallAverage)
     // Sort the grouped data by date
     const sortedGroupedData = finalData.sort((a, b) => new Date(a.name) - new Date(b.name));
   

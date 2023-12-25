@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
 import { ImageCircle } from './ImageCircle.components';
-import Spinner from './Spinner.components'; // Import your Spinner component
 import * as colors from './styles/Colors'
 import {useFetchImage} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
@@ -13,40 +11,6 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
   const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem);
-
-  // useEffect(() => {
-  //   // Function to fetch image data when component mounts
-  //   if (imageDataUrl) {
-  //     setImage(imageDataUrl);
-  //     setLoading(false);  
-  //   } else if (foodItem?.image && foodItem?.image !== ""){
-  //     setImage(foodItem?.image);
-  //     setLoading(false);
-  //   } else {
-  //      fetchImage();
-  //   }
-  // }, [foodItem, image, imageDataUrl]);
-
-  // Function to fetch image data when component mounts
-  // const fetchImage = async () => {
-  //   if (foodItem?.userId && foodItem?._id) {
-  //     try {
-  //       const type = 'url';
-  //       const result = await axios.get(`${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`);
-  //       if (result.data) {
-  //         setImage(result.data);
-  //       }
-  //       setLoading(false);
-  //       return;
-  //     } catch (error) {
-  //       console.log("Error fetching image:", error);
-  //       setLoading(false); 
-  //       return; 
-  //     }
-  //   } else {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <div onClick={onClick}>

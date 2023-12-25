@@ -1,6 +1,6 @@
 
 import request, { gql } from "graphql-request";
-import { getStartAndEndOfToday, getStartAndEndOfWeek } from "../helpers/Date.helper";
+import { getStartAndEndOfToday, getStartAndEndOfWeek, getEndOfDay, getStartOfDay } from "../helpers/Date.helper";
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT
 
@@ -163,13 +163,9 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
       }
     }
   `;
-  const startToday = new Date(startTime);
-  const startISOString = startToday.toISOString();
-  
-  // Set the time to the end of the current date (right before midnight)
-  const endToday = new Date(endTime);
-  const endISOString = endToday.toISOString();
 
+  const startISOString = getStartOfDay(startTime)
+  const endISOString = getEndOfDay(endTime)
 
   // Filter only current user with current profile  
   const queryVariables = {
@@ -222,12 +218,8 @@ async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) 
       }
     }
   `;
-  const startToday = new Date(startTime);
-  const startISOString = startToday.toISOString();
-  
-  // Set the time to the end of the current date (right before midnight)
-  const endToday = new Date(endTime);
-  const endISOString = endToday.toISOString();
+  const startISOString = getStartOfDay(startTime)
+  const endISOString = getEndOfDay(endTime)
 
 
   // Filter only current user with current profile  
@@ -281,13 +273,8 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
       }
     }
   `;
-  const startToday = new Date(startTime);
-  const startISOString = startToday.toISOString();
-  
-  // Set the time to the end of the current date (right before midnight)
-  const endToday = new Date(endTime);
-  const endISOString = endToday.toISOString();
-
+  const startISOString = getStartOfDay(startTime)
+  const endISOString = getEndOfDay(endTime)
 
   // Filter only current user with current profile  
   const queryVariables = {

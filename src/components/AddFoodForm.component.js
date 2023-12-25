@@ -63,25 +63,26 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           }}
           onChangeButton={(name, value) => { onButtonInputChange(name, value) }}
         />
-
-      <div style={styles.descriptionContainerStyle}>
-        <div  style={styles.rowStyle}>
-          <div
-            style={styles.nutritionFactsTitleStyle}
-            onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-          >
-            Description
+       {/* Hide empty description */}
+       {foodItem?.desc !== "" && <div style={styles.descriptionContainerStyle}>
+          <div  style={styles.rowStyle}>
+            <div
+              style={styles.nutritionFactsTitleStyle}
+              onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
+            >
+              Description
+            </div>
+            <Image
+              imageName={isDescriptionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+              width="20"
+              height="20"
+              onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
+              style={{ cursor: "pointer" }}
+            />
           </div>
-          <Image
-            imageName={isDescriptionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
-            width="20"
-            height="20"
-            onClick={() => setDescriptionExpanded(!isDescriptionExpanded)}
-            style={{ cursor: "pointer" }}
-          />
+          {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem?.desc}</div>}
         </div>
-        {isDescriptionExpanded && <div style={styles.descriptionStyle}>{foodItem?.desc}</div>}
-      </div>
+      }
 
       <div style={styles.nutritionContainerStyle}>
         <div  style={styles.rowStyle}>
@@ -91,13 +92,15 @@ const AddFoodForm = ({ foodItem, addFoodToMeal, setFoodItem, image, setImage }) 
           >
             Nutrition Facts
           </div>
-          <Image
-            imageName={isNutritionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
-            width="20"
-            height="20"
-            onClick={() => setNutritionExpanded(!isNutritionExpanded)}
-            style={{ cursor: "pointer" }}
-          />
+          <div>
+            <Image
+              imageName={isNutritionExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
+              width="20"
+              height="20"
+              onClick={() => setNutritionExpanded(!isNutritionExpanded)}
+              style={{ cursor: "pointer" }}
+            />
+          </div>
         </div>
         {isNutritionExpanded && <div  style={styles.descriptionStyle}>
             <div style={styles.columnStyle}>

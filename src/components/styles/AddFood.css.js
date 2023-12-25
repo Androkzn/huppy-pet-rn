@@ -22,10 +22,10 @@ const descriptionContainerStyle = {
   display: 'flex',
   borderRadius: '10px',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   textAlign: 'center',
   width: '100%',
-  marginTop: '10px',
+  margin: '3px',
   backgroundColor: colors.lightBrown,
 };
 
@@ -51,10 +51,11 @@ const nutritionContainerStyle = {
   display: 'flex',
   borderRadius: '10px',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   textAlign: 'center',
-  width: '100%',
+  width: 'auto',
   marginTop: '10px',
+  margin: '3px',
   backgroundColor: colors.lightBrown,
 };
 
@@ -94,6 +95,7 @@ const nutritionFactsTitleStyle = {
   fontSize: '17px',
   fontWeight: 'bold',
   cursor: "pointer",
+  padding: "5px",
 };
 
 const addFoodButtonContainerStyle = {

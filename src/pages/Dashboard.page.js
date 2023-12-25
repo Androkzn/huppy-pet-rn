@@ -58,7 +58,11 @@ const Analytics = () => {
     switch (selectedFilter) {
       case Enums.FilterStatistic.CALORIES: return food;
       case Enums.FilterStatistic.ACTIVITIES: return activities;
-      case Enums.FilterStatistic.TRAININGS:  return trainings;
+      case Enums.FilterStatistic.TRAININGS:  
+      if (trainings) { 
+        return trainings.filter((training) => training.isCompleted);
+      } 
+      return trainings 
     }
   };
 
@@ -102,6 +106,7 @@ const Analytics = () => {
           newItem.amount = currentItem.burnedCalories;
           result.push(newItem);
         } else if (selectedFilter === Enums.FilterStatistic.TRAININGS && currentItem.isCompleted) {
+          console.log("currentItem", currentItem)
           newItem.amount = 1;
           result.push(newItem);
         }

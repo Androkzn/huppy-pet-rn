@@ -233,7 +233,9 @@ const ButtonText = ({ variant, name, navigateTo, width, height, children, onClic
       height={height} 
       onClick={(e) => {
         e.preventDefault() 
-       onClick(e)
+       if (onClick)  {
+         onClick(e)
+       }
       }} 
       disabled={disabled}>
           {children}

@@ -225,7 +225,7 @@ const mealContainerStyle = {
 
 const closeButtonContainer = {
   display: 'flex',
-  justifyContent: 'flex-end',  
+  justifyContent: 'center',  
   margin: "auto 15px",
 };
 

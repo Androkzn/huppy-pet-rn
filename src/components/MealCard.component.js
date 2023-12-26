@@ -126,9 +126,6 @@ function MealCard({ meal, index, mealsCount }) {
         prevCheckedMeals.filter((id) => id !== mealId)
       );
 
-      //console.log("prevCheckedMeals", prevCheckedMeals)
-  
-
       // Remove all food items of the unchecked meal from the list of checked foods
       const mealFoods = foodForDate.filter((food) => food.mealId === mealId);
       console.log("mealFoods", mealFoods)
@@ -211,11 +208,8 @@ function MealCard({ meal, index, mealsCount }) {
   }
 
 
-  // Function is responsible for deleting the Food
- 
-
+  // Function is responsible for saving just editedfood
   const saveEditedFood= async (newValue) => {
-    console.log("saveEditedFood", newValue)
     const data = {
       weight: newValue
     }
@@ -226,6 +220,7 @@ function MealCard({ meal, index, mealsCount }) {
     })
   }
 
+  // Food item component
   const FoodItem = ({foodItem}) => {
     // Function is responsible for deleting the Food
     const deleteCurrentFood = async () => {
@@ -235,11 +230,13 @@ function MealCard({ meal, index, mealsCount }) {
         });
     };
 
+    // Function is responsible forediting the Food
     const editCurrentFood= async () => {
       setEditingFood(foodItem)
       setEditFoodExpanded(true)
     }
-  
+ 
+    // Function is responsible calculate calories the Food
     const getcaloriesForFood = (foodItem) => {
       return Math.floor(foodItem.calories / 100 * foodItem.weight)
     }
@@ -425,17 +422,7 @@ function MealCard({ meal, index, mealsCount }) {
 
     return <BottomSheet open={isEditFoodExpanded} >
     <div style={styles.closeButtonContainer}>
-      <div style={styles.selectionStyle}>
-      <ButtonImage
-        variant="iconButton"
-        imageName="checkmark_orange.svg"
-        imageSize={25}
-        onClick={() => {
-          saveEditedFood(value)
-          setEditFoodExpanded(false)
-        }}
-        />
-      </div>
+    <div style={styles.selectionStyle}>
       <div style={styles.closeButtonContainer}>
         <ButtonImage
           variant="iconButton"
@@ -445,6 +432,18 @@ function MealCard({ meal, index, mealsCount }) {
             setEditFoodExpanded(false)
           }}
         />
+      </div>
+      <div style={styles.closeButtonContainer}>
+        <ButtonImage
+          variant="iconButton"
+          imageName="checkmark_orange.svg"
+          imageSize={25}
+          onClick={() => {
+            saveEditedFood(value)
+            setEditFoodExpanded(false)
+          }}
+          />
+        </div>
       </div>
     </div>
     <div  style={styles.editFoodTitleStyle}>  
@@ -554,16 +553,15 @@ function MealCard({ meal, index, mealsCount }) {
 
             <BottomSheet open={isCopyFromMealExpanded} >
               <div style={styles.rowStyle}>
-                <div style={styles.closeButtonContainer}>
-                <ButtonImage
-                  variant="iconButton"
-                  imageName="add_round_orange.svg"
-                  imageSize={30}
-                  onClick={() => {
-                    copyMeal()
-                    setCopyFromMealExpanded(false)
-                  }}
-                  disabled={checkedFoodsIds.length === 0}
+              <div style={styles.closeButtonContainer}>
+                  <ButtonImage
+                    variant="iconButton"
+                    imageName="close_round_green.svg"
+                    imageSize={30}
+                    onClick={() => {
+                      setCopyFromMealExpanded(false)
+                      clearSelectedFood()
+                    }}
                   />
                 </div>
                 <div style={styles.pickerContainerStyle}> 
@@ -576,16 +574,18 @@ function MealCard({ meal, index, mealsCount }) {
                   />
                 </div>
                 <div style={styles.closeButtonContainer}>
-                  <ButtonImage
-                    variant="iconButton"
-                    imageName="close_round_green.svg"
-                    imageSize={30}
-                    onClick={() => {
-                      setCopyFromMealExpanded(false)
-                      clearSelectedFood()
-                    }}
+                <ButtonImage
+                  variant="iconButton"
+                  imageName="add_round_orange.svg"
+                  imageSize={30}
+                  onClick={() => {
+                    copyMeal()
+                    setCopyFromMealExpanded(false)
+                  }}
+                  disabled={checkedFoodsIds.length === 0}
                   />
                 </div>
+                
               </div>
               <div >  {/* Meals list container*/}
               { ( isLoadingFoodForDate|| isErrorFoodForDate)? 

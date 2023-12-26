@@ -226,7 +226,7 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
 
     fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: "bold",
-    margin: " 15px 0px 15px 0px"
+    margin: " 15px 10px 15px 0px"
   };
 
   const titleDisabledStyle = {

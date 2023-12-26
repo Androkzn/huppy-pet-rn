@@ -64,7 +64,7 @@ function TrainingCard({ training }) {
           onRightSwipe={handleCheckboxValueChange}
           onLeftSwipe={deleteCurrentTraining}
           height={60}  
-          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="25" height="25" />}
           rightSwipeComponent={  <Image imageName={training.isCompleted ?  `cancel_green.svg` : `checkmark_white.svg`} width="20" height="20" />}
           onLeftSwipeConfirm={(onSuccess, onCancel) => {
             if (window.confirm("Do you really want to delete this item ?")) {

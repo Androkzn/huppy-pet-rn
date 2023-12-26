@@ -130,6 +130,7 @@ const Training = () => {
             <Image imageName="plus_round_fill_button.svg" width="35" height="35" />
           </button>
         </div>{/* Header container*/}
+        
         <div  style={styles.columnStyle}>{/* Trainings container*/}
           {/* Show Training cards if data avaliable, if not -> show placeholder*/}
           {trainingData && trainingData.length > 0 ? (

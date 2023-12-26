@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import { styled, alpha } from '@mui/material/styles';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-
+ 
 function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
   const navigate = useNavigate();
@@ -109,7 +109,7 @@ function MealCard({ meal, index, mealsCount }) {
       <Swipe
         height={50}  
         onLeftSwipe={deleteCurrentFood} 
-        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="25" height="25" />}
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
           if (window.confirm("Do you really want to delete this item ?")) {
             onSuccess();
@@ -170,27 +170,18 @@ function MealCard({ meal, index, mealsCount }) {
     />
   ))(({ theme }) => ({
     '& .MuiPaper-root': {
-      borderRadius: 6,
+      borderRadius: 10,
       marginTop: theme.spacing(1),
       minWidth: 180,
-      color:
-        theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+      color: colors.green,
       boxShadow:
         'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
       '& .MuiMenu-list': {
-        padding: '4px 0',
+        padding: '0px 0px',
       },
       '& .MuiMenuItem-root': {
-        '& .MuiSvgIcon-root': {
-          fontSize: 18,
-          color: theme.palette.text.secondary,
-          marginRight: theme.spacing(1.5),
-        },
         '&:active': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            theme.palette.action.selectedOpacity,
-          ),
+          backgroundColor: alpha(colors.lightOrange, 0.5 ),
         },
       },
     },
@@ -304,9 +295,11 @@ function MealCard({ meal, index, mealsCount }) {
                           height="15" 
                         />
                       </div>
-                      <div>Copy from date</div> 
+                      <div style={{fontFamily: "'Balsamiq Sans', sans-serif",}}>Copy from date</div> 
                     </MenuItem>
                     { mealsCount > 1 &&
+                     <div>
+                      <Divider sx={{ my: 0.1 }} />
                       <MenuItem onClick={() => 
                         {
                           popupState.close()
@@ -320,8 +313,9 @@ function MealCard({ meal, index, mealsCount }) {
                             height="17" 
                           />
                         </div>
-                        <div>Delete meal</div>
+                        <div style={{color: colors.orange, fontFamily: "'Balsamiq Sans', sans-serif",}}>Delete meal</div>
                       </MenuItem>
+                      </div>
                     }
                   </StyledMenu>
                 </Fragment>

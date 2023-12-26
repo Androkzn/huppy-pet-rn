@@ -35,7 +35,7 @@ function FoodCard({ food, openAddFoodPage }) {
           height={isSmallScreen ? 70 : 50}
           disabled={!food.isCustom || !isSmallScreen} 
           onLeftSwipe={deleteFoodTemplateHandler} 
-          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+          leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="25" height="25" />}
           onLeftSwipeConfirm={(onSuccess, onCancel) => {
             if (window.confirm("Do you really want to delete this food?")) {
               onSuccess();

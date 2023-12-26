@@ -28,6 +28,7 @@ import * as colors from './Colors'
     justifyContent: 'top',
     flexDirection: 'column',
     width: '100%',
+    marginBottom: "10px",
   };
 
   const textTitleStyle = {

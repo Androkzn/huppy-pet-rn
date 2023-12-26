@@ -83,6 +83,7 @@ import * as colors from './Colors'
     borderRadius: '10px',
     height: '30px',
     fontSize: '16px',
+    fontFamily: "'Balsamiq Sans', sans-serif",
   };
   
   const dropdownStyle = {

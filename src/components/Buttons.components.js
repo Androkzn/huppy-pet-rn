@@ -214,6 +214,7 @@ const Button = styled.button(
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.4 : 1,
       pointerEvents: disabled ? 'none' : 'auto',
+      fontFamily: "'Balsamiq Sans', sans-serif",
     })
   );
 

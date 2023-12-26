@@ -112,7 +112,7 @@ function ActivityCard({ activity}) {
       <Swipe
         onLeftSwipe={deleteCurrentActivity}
         height={140}  
-        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="30" height="30" />}
+        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="25" height="25" />}
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
           if (window.confirm("Do you really want to delete this item ?")) {
             onSuccess();
@@ -122,7 +122,7 @@ function ActivityCard({ activity}) {
         }}
         distructiveLeftSwipe = {true}
         rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
-        className="swiper"
+        className="swiper-activity"
         leftSwipeColor={colors.orange}
         rightSwipeColor={colors.lightGreen2}
       >

@@ -103,6 +103,14 @@ const caloriesValueStyle = {
   width: '50px',
 };
 
+const weightValueStyle = {
+  color: colors.green,
+  textAlign: 'center',
+  alignItems: 'center',
+  fontSize: "15px",
+  width: '50px',
+};
+
 
 const inputFieldStyle = {
   border: `2px solid ${colors.grayDark}`,  
@@ -221,6 +229,31 @@ const closeButtonContainer = {
   margin: "auto 15px",
 };
 
+const editFoodTitleStyle = {
+  display: 'flex',
+  justifyContent: 'center',  
+  margin: "10px",
+  color: colors.green,
+  fontWeight: 'bold',
+  fontSize: "18px",
+
+};
+
+const editFoodCaloriesStyle = {
+  display: 'flex',
+  justifyContent: 'center',  
+  margin: "10px",
+  color: colors.orange,
+};
+
+const editTextFieldAndButtonsStyle = {
+  display: 'flex',
+  justifyContent: 'center',  
+  marginTop: "20px",
+  marginBottom: "40px",
+  color: colors.orange,
+};
+
 const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
@@ -291,6 +324,10 @@ const unitCaloriesStyle = {
 };
   
 export {
+  editTextFieldAndButtonsStyle,
+  editFoodTitleStyle,
+  editFoodCaloriesStyle,
+  weightValueStyle,
   selectionStyle,
   weightTotalStyle,
   caloriesTotalStyle,

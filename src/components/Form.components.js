@@ -476,6 +476,96 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     );
   };
 
+  const ButtonsAndTextField = ({ id, initialValue, name, onChange, onChangeButton }) => {
+    const isSmallScreen = useMediaQuery(Constants.smallScreen);
+    const [count, setCount] = useState(initialValue || 0);
+    const decrementCount = () => {
+      if (count > 0) {
+        const newCount = Math.max(count - 10, 1);
+        setCount(newCount);
+        onChangeButton(name, newCount);
+      }
+    };
+  
+    const incrementCount = () => {
+      setCount(count + 10);
+      onChangeButton(name, count + 10);
+    };
+
+    const onChangeTextField = (e) =>{
+      const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+      setCount(newValue);
+      onChange(newValue);
+    }
+  
+    const containerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'left',
+      paddingRight: Constants.mainPadding,
+      paddingLeft: Constants.mainPadding,
+      margin: Constants.mainFormDevider,
+    };
+    
+    const controlGroup = {
+      display: 'flex',
+      alignItems: 'center',
+    };
+    
+    const textFieldStyle = {
+      border: `2px solid  ${colors.gray}`,  
+      outline: 'none',
+      width: '50px',
+      textAlign: 'center',
+      marginRight: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      marginLeft: isSmallScreen ? Constants.smallMargin : Constants.mainMargin,
+      borderRadius: '10px',
+      height: '30px',
+      fontSize:  isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+      fontFamily: "'Balsamiq Sans', sans-serif",
+    };
+  
+    return (
+      <div style={containerStyle}>
+        <div style={controlGroup}>
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => decrementCount()}
+          >
+            -
+          </ButtonText>
+          <input
+            id={id}
+            style={textFieldStyle}
+            type="number"
+            value={count.toString()}
+            onChange={(e) => {
+              onChangeTextField(e) 
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();  
+            }}
+
+            name={name} 
+          />
+          <ButtonText
+            as="button"
+            name={name}
+            variant="circleTextButton"
+            onClick={() => incrementCount()}
+          >
+            +
+          </ButtonText>
+        </div>
+      </div>
+    );
+  };
+
+ 
+
   const TitleAndToggle = ({ id, name, title, onChange, initialValue, containerStyle, titleStyle}) => {
     const isSmallScreen = useMediaQuery(Constants.smallScreen);
     const [checked, setChecked] =  useState(initialValue);
@@ -495,11 +585,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
       borderRadius: Constants.mainBorderRadius,
       background: `${colors.lightBrown}`,
       padding: `${padding} ${Constants.mainPadding} ${padding} ${Constants.mainPadding}`,
-      
-      // paddingRight:  isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
-      // paddingLeft: Constants.mainPadding, 
-      // paddingTop: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
-      // paddingBottom: isSmallScreen ? Constants.smallPadding : Constants.mainPadding,
       margin: Constants.mainFormDevider,
     };
 
@@ -909,5 +994,6 @@ const DescriptionTextBox = ({  id, name, initialValue, title, onChange, borderCo
     SelectedCustomFoodCategoryRow,
     UnselectedFoodCategoryRow,
     TitleAndSlider,
+    ButtonsAndTextField,
   };
   

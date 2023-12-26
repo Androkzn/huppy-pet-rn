@@ -21,7 +21,7 @@ import CustomDatePicker from "../components/CustomDatePicker.component";
 import LoadingAndError from "../components/LoadingAndError.components"
 import CustomCheckbox from "./Checkbox.component";
 import {useAddFood} from "../hooks/query.hooks"
-
+import {ButtonsAndTextField} from "../components/Form.components.js"
 
 function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
@@ -34,7 +34,8 @@ function MealCard({ meal, index, mealsCount }) {
   const [checkedMealsIds, setCheckedMeals] = useState([]);
   const [checkedFoodsIds, setCheckedFoods] = useState([]);
   const [isCopyTo, setIsCopyTo] = useState(false);
- 
+  const [isEditFoodExpanded, setEditFoodExpanded] = useState(false)
+  const [editingFood, setEditingFood] = useState(null)
 
   const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user, currentProfile, mealId);
   const { data: foodForDate, isLoading: isLoadingFoodForDate, isError: isErrorFoodForDate} = useGetFoodForDate(user, currentProfile, copyFromDate, true);
@@ -43,6 +44,7 @@ function MealCard({ meal, index, mealsCount }) {
   const {mutate: deleteMealMutation} = useDeleteMeal()
   const {mutate: deleteFoodMutation} = useDeleteFood()
   const {mutate: addFoodMutation} = useAddFood()
+  const {mutate: updateFoodMutation} = useUpdateFood()
 
   // Function is responsible for creating a new meal
   const addMealForDate = async () => {
@@ -174,8 +176,6 @@ function MealCard({ meal, index, mealsCount }) {
       return result;
     }, []);
   
-    console.log("getFoodForMeal groupedFoods", groupedFoods);
-  
     return groupedFoods;
   };
 
@@ -210,8 +210,23 @@ function MealCard({ meal, index, mealsCount }) {
     return Math.floor(total);
   }
 
+
+  // Function is responsible for deleting the Food
+ 
+
+  const saveEditedFood= async (newValue) => {
+    console.log("saveEditedFood", newValue)
+    const data = {
+      weight: newValue
+    }
+    updateFoodMutation({
+      user: user,
+      foodId: editingFood?._id,
+      updateData: data,
+    })
+  }
+
   const FoodItem = ({foodItem}) => {
-    const {mutate: updateFoodMutation} = useUpdateFood()
     // Function is responsible for deleting the Food
     const deleteCurrentFood = async () => {
         deleteFoodMutation({
@@ -220,24 +235,11 @@ function MealCard({ meal, index, mealsCount }) {
         });
     };
 
-    async function handleWeightChange(e, foodItem) {
-      const newValue = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
-      // Update the foodItem's weight with the new value
-      const data = {
-        weight: newValue
-      }
-      updateFoodMutation({
-        user: user,
-        foodId: foodItem._id,
-        updateData: data,
-      })
+    const editCurrentFood= async () => {
+      setEditingFood(foodItem)
+      setEditFoodExpanded(true)
     }
   
-
-    const editCurrentFood = async () => {
-          
-    }
-
     const getcaloriesForFood = (foodItem) => {
       return Math.floor(foodItem.calories / 100 * foodItem.weight)
     }
@@ -267,13 +269,7 @@ function MealCard({ meal, index, mealsCount }) {
               <div style={styles.headingFoodStyle}>{foodItem.name}</div>
               <div  style={styles.caloriesAndWeightContainerStyle}> 
                 <div style={styles.caloriesValueStyle}>{getcaloriesForFood(foodItem)}</div>
-                <input
-                  type="number"
-                  style={styles.inputFieldStyle}
-                  value={foodItem.weight}
-                  onChange={(e) => 
-                    handleWeightChange(e, foodItem)}
-                />
+                <div style={styles.weightValueStyle}>{foodItem.weight}</div>
               </div>
             </div> 
           </div>
@@ -292,38 +288,187 @@ function MealCard({ meal, index, mealsCount }) {
     )
   }
 
-  const StyledMenu = styled((props) => (
-    <Menu
-      elevation={0}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      {...props}
-    />
-  ))(({ theme }) => ({
-    '& .MuiPaper-root': {
-      borderRadius: 10,
-      marginTop: theme.spacing(1),
-      minWidth: 180,
-      color: colors.green,
-      boxShadow:
-        'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-      '& .MuiMenu-list': {
-        padding: '0px 0px',
-      },
-      '& .MuiMenuItem-root': {
-        '&:active': {
-          backgroundColor: alpha(colors.lightOrange, 0.5 ),
+
+  const MorePopup = () => {
+    const StyledMenu = styled((props) => (
+      <Menu
+        elevation={0}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        {...props}
+      />
+    ))(({ theme }) => ({
+      '& .MuiPaper-root': {
+        borderRadius: 10,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        color: colors.green,
+        boxShadow:
+          'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        '& .MuiMenu-list': {
+          padding: '0px 0px',
+        },
+        '& .MuiMenuItem-root': {
+          '&:active': {
+            backgroundColor: alpha(colors.lightOrange, 0.5 ),
+          },
         },
       },
-    },
-  }));
+    }));
+
+
+    return ( 
+    <PopupState variant="popover" popupId="demo-popup-menu">
+      {(popupState) => (
+        <Fragment>
+          <ButtonImage
+              variant="addButton"
+              width='60px'
+              height={30}
+              margin={0}
+              padding={0}
+              imageName="more_white.svg"
+              imageSize={20}
+              {...bindTrigger(popupState)}
+            >
+          </ButtonImage>
+          <StyledMenu {...bindMenu(popupState)}>
+            {/* Copy from date  */}
+            <MenuItem onClick={() => {}
+            }>
+              <div style={{marginRight: "10px"}}>
+                <Image 
+                  imageName= {"copy_green.svg"}
+                  width="15" 
+                  height="15" 
+                />
+              </div>
+              <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy from</div> 
+              <div style={styles.pickerContainerStyle}> 
+                <CustomDatePicker
+                  value={copyFromDate}
+                  onChange={(date) => {
+                    setCopyFromDate(date)
+                    setIsCopyTo(false)
+                    popupState.close()
+                    setCopyFromMealExpanded(true)
+                  }}
+                
+                  styleContainer= {styles.pickerStyle}
+                  backgroundColor={colors.white}
+                />
+              </div>
+            </MenuItem>
+            {/* Copy to date  */}
+            <MenuItem onClick={() => {}
+            }>
+                
+              <div style={{marginRight: "10px"}}>
+                <Image 
+                  imageName= {"copy_green.svg"}
+                  width="15" 
+                  height="15" 
+                />
+              </div>
+                <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy to</div> 
+                <div style={styles.pickerContainerStyle}> 
+                  <CustomDatePicker
+                    value={copyFromDate}
+                    onChange={(date) => {
+                      setIsCopyTo(true)
+                      setCopyFromDate(date)
+                      popupState.close()
+                      setCopyFromMealExpanded(true)
+                    }}
+                
+                    styleContainer= {styles.pickerStyle}
+                    backgroundColor={colors.white}
+                  />
+                </div>
+            </MenuItem>
+            { mealsCount > 1 &&
+            <div>
+              <Divider sx={{ my: 0.1 }} />
+              <MenuItem onClick={() => 
+                {
+                  popupState.close()
+                  deleteCurrentMeal()
+                }
+              }>
+                <div style={{marginRight: "10px"}}>
+                  <Image 
+                    imageName= {"delete_orange.svg"}
+                    width="17" 
+                    height="17" 
+                  />
+                </div>
+                <div style={{color: colors.orange, fontFamily: "'Balsamiq Sans', sans-serif",}}>Delete meal</div>
+              </MenuItem>
+              
+              </div>
+            }
+          </StyledMenu>
+        </Fragment>
+      )}
+    </PopupState>
+    )
+  }
+
+  const ButtonSheetCopyMeal= () => {
+    const [value, setValue] = useState(editingFood?.weight)
+
+    return <BottomSheet open={isEditFoodExpanded} >
+    <div style={styles.closeButtonContainer}>
+      <div style={styles.selectionStyle}>
+      <ButtonImage
+        variant="iconButton"
+        imageName="checkmark_orange.svg"
+        imageSize={25}
+        onClick={() => {
+          saveEditedFood(value)
+          setEditFoodExpanded(false)
+        }}
+        />
+      </div>
+      <div style={styles.closeButtonContainer}>
+        <ButtonImage
+          variant="iconButton"
+          imageName="close_round_green.svg"
+          imageSize={30}
+          onClick={() => {
+            setEditFoodExpanded(false)
+          }}
+        />
+      </div>
+    </div>
+    <div  style={styles.editFoodTitleStyle}>  
+      {editingFood?.name}
+    </div>
+    <div  style={styles.editFoodCaloriesStyle}>  
+      {Math.floor(editingFood?.calories/100 * value) + ", kcal"}
+    </div>
+    <div  style={styles.editTextFieldAndButtonsStyle}>   
+      <ButtonsAndTextField 
+         name={"weight"}
+         initialValue={value || 0} 
+         onChange={(valueNew) => {
+           setValue(valueNew)
+         }}
+         onChangeButton={(name, valueNew) => { 
+          setValue(valueNew)
+        }}
+      />
+    </div>
   
+  
+  </BottomSheet>
+  }
 
   return (
       <div style={styles.childConteinerStyle}> {/* Meals container*/}
@@ -403,100 +548,10 @@ function MealCard({ meal, index, mealsCount }) {
               Add Food
           </ButtonImage>
         
-            <PopupState variant="popover" popupId="demo-popup-menu">
-              {(popupState) => (
-                <Fragment>
-                  <ButtonImage
-                      variant="addButton"
-                      width='60px'
-                      height={30}
-                      margin={0}
-                      padding={0}
-                      imageName="more_white.svg"
-                      imageSize={20}
-                      {...bindTrigger(popupState)}
-                    >
-                  </ButtonImage>
-                  <StyledMenu {...bindMenu(popupState)}>
-                    {/* Copy from date  */}
-                    <MenuItem onClick={() => {}
-                    }>
-                      <div style={{marginRight: "10px"}}>
-                        <Image 
-                          imageName= {"copy_green.svg"}
-                          width="15" 
-                          height="15" 
-                        />
-                      </div>
-                      <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy from</div> 
-                      <div style={styles.pickerContainerStyle}> 
-                        <CustomDatePicker
-                          value={copyFromDate}
-                          onChange={(date) => {
-                            setCopyFromDate(date)
-                            setIsCopyTo(false)
-                            popupState.close()
-                            setCopyFromMealExpanded(true)
-                          }}
-                         
-                          styleContainer= {styles.pickerStyle}
-                          backgroundColor={colors.white}
-                        />
-                      </div>
-                    </MenuItem>
-                    {/* Copy to date  */}
-                    <MenuItem onClick={() => {}
-                    }>
-                        
-                      <div style={{marginRight: "10px"}}>
-                        <Image 
-                          imageName= {"copy_green.svg"}
-                          width="15" 
-                          height="15" 
-                        />
-                      </div>
-                        <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy to</div> 
-                        <div style={styles.pickerContainerStyle}> 
-                          <CustomDatePicker
-                            value={copyFromDate}
-                            onChange={(date) => {
-                              setIsCopyTo(true)
-                              setCopyFromDate(date)
-                              popupState.close()
-                              setCopyFromMealExpanded(true)
-                            }}
-                         
-                            styleContainer= {styles.pickerStyle}
-                            backgroundColor={colors.white}
-                          />
-                        </div>
-                    </MenuItem>
-                    { mealsCount > 1 &&
-                     <div>
-                      <Divider sx={{ my: 0.1 }} />
-                      <MenuItem onClick={() => 
-                        {
-                          popupState.close()
-                          deleteCurrentMeal()
-                        }
-                      }>
-                        <div style={{marginRight: "10px"}}>
-                          <Image 
-                            imageName= {"delete_orange.svg"}
-                            width="17" 
-                            height="17" 
-                          />
-                        </div>
-                        <div style={{color: colors.orange, fontFamily: "'Balsamiq Sans', sans-serif",}}>Delete meal</div>
-                      </MenuItem>
-                      
-                      </div>
-                    }
-                  </StyledMenu>
-                </Fragment>
-              )}
-            </PopupState>
-           
+          <MorePopup/>
+          
+          <ButtonSheetCopyMeal/>
+
             <BottomSheet open={isCopyFromMealExpanded} >
               <div style={styles.rowStyle}>
                 <div style={styles.closeButtonContainer}>

@@ -368,6 +368,7 @@ const Meals = () => {
           <Activities/>
       
         </styles.responsiveMainContainer>
+      
       </div>  
   </PageContainer>
 }

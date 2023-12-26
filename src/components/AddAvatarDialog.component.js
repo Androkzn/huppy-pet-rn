@@ -100,8 +100,8 @@ const isAvatarEmpty = () => {
       <div style={styles.closeDialogButtonContainer}>
         <ButtonImage
           variant="iconButton"
-          imageName="cancel_orange.svg"
-          imageSize={15}
+          imageName="close_round_orange.svg"
+          imageSize={30}
           onClick={onClose}
         />
       </div>

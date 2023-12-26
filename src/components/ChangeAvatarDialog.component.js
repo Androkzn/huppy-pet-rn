@@ -182,9 +182,11 @@ const isAvatarEmpty = () => {
       <div style={styles.closeDialogButtonContainer}>
         <ButtonImage
           variant="iconButton"
-          imageName="cancel_orange.svg"
-          imageSize={15}
+          imageName="close_round_orange.svg"
+          imageSize={30}
           onClick={() => {onClose()}}
+          padding= {0}
+          margin= {0}
         />
       </div>
       <h2  style={styles.dialogTitleStyle}>{isAvatarEmpty() ? "Add avatar" : "Edit avatar"}</h2>

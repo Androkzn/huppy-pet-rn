@@ -103,7 +103,7 @@ const saveState = (key, value) => {
         <ButtonImage
             variant="addButton"
             width='150px'
-            imageName="plus_round_fill_white_button.svg"
+            imageName="add_round_orange.svg"
             imageSize={20}
             onClick={openCeateNewFoodPage}
           >

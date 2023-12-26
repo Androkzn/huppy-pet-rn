@@ -202,6 +202,35 @@ const deleteContainerStyle =  {
   borderBottomRightRadius: '10px',
 };
 
+const mealTitleStyle = {
+  fontWeight: 'bold',
+}
+
+const mealContainerStyle = {
+  border: `2px solid ${colors.green}`,
+  margin: "10px 20px", 
+  borderRadius: "10px", 
+  fontWeight: 'bold',
+  color: colors.green,
+}
+
+const closeButtonContainer = {
+  display: 'flex',
+  justifyContent: 'flex-end',  
+  margin: "auto 15px",
+};
+
+const pickerContainerStyle = {
+  display: 'flex',
+  flex: '1 1 auto',
+  justifyContent: 'center',
+  margin: '5px',
+};
+
+const pickerStyle = {
+  margin: '0 0 0 0px',
+};
+
 const deleteItemStyle = (isSwiped) => ({
   transition: "transform 1s ease",
   border: isSwiped ? `1px solid ${colors.lightGreen}` : 'none',
@@ -287,4 +316,9 @@ export {
   placeholderStyle,
   deleteContainerStyle,
   deleteItemStyle,
+  closeButtonContainer,
+  pickerContainerStyle,
+  pickerStyle,
+  mealContainerStyle,
+  mealTitleStyle,
 };

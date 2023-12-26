@@ -68,7 +68,7 @@ import styled from '@emotion/styled/macro'
   const labelTextFieldStyle = {
     padding: '10px',
     textAlign: 'left',
-    fontSize: '20px',
+    fontSize: '18px',
     fontWeight: "bold",
     color: colors.green,
   };

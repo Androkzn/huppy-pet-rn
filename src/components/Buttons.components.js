@@ -220,7 +220,7 @@ const Button = styled.button(
 
 const ImageContainer = styled.div(({ margin, padding }) => ({
     margin: margin || '0 10px 0 10px',  
-    padding: padding || '0px',
+    padding: padding || '0 0 0 0',
   }));
 
 const ButtonText = ({ variant, name, navigateTo, width, height, children, onClick, disabled }) => {

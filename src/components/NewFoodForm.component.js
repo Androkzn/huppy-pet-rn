@@ -93,15 +93,17 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
           onChangeButton={onInputChange}
         />
       ))}
-
-      <TitleAndSlider
-        title={"Meat / Bones ratio"}
-        firstValueTitle = {"Meat"}
-        secondValueTitle = {"Bones"}
-        firstValue={foodItem?.meatRatio}
-        secondValue={foodItem?.bonesRatio}
-        onChange={(newMeatRatio, newBonesRatio) => {onSliderChange(newMeatRatio, newBonesRatio)}}
-      />
+      {/* Show meat and boans ratio slider if Food category selected */}
+      {foodItem.type === "food" && 
+        <TitleAndSlider
+          title={"Meat / Bones ratio"}
+          firstValueTitle = {"Meat"}
+          secondValueTitle = {"Bones"}
+          firstValue={foodItem?.meatRatio}
+          secondValue={foodItem?.bonesRatio}
+          onChange={(newMeatRatio, newBonesRatio) => {onSliderChange(newMeatRatio, newBonesRatio)}}
+        />
+      }
 
       <DescriptionTextBox name={"desc"} title={"Add Description"} onChange={onTextInputChange} />
        <div css={styles.addFoodButtonContainerStyle}> 

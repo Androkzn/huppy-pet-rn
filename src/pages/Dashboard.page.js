@@ -144,7 +144,7 @@ const Analytics = () => {
       ...item,
       average: overallAverage,
     }));
-    console.log("overallAverage",overallAverage)
+ 
     // Sort the grouped data by date
     const sortedGroupedData = finalData.sort((a, b) => new Date(a.name) - new Date(b.name));
   

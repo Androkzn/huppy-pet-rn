@@ -206,7 +206,6 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
       mutationFn: graphql.addMeal,
       onSuccess: (data) => {
         queryClient.invalidateQueries(["loadMealsForDate"]);
-        console.log("id meal new data",  data)
         return data;
       }
     });

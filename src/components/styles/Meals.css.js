@@ -151,12 +151,13 @@ const headerAddButtonStyle = {
   background: 'transparent',
   border: 'none',
   cursor: 'pointer',
-  marginRight: '20px'
+  marginRight: '10px'
 };
 
 const rowStyle = {
   display: 'flex',
   flexDirection: 'row',
+  alignItems: 'center',
   width: '100%',
 };
 
@@ -227,8 +228,13 @@ const pickerContainerStyle = {
   margin: '5px',
 };
 
+const selectionStyle = {
+  ...rowStyle,
+  justifyContent: "space-between",
+}
+
 const pickerStyle = {
-  margin: '0 0 0 0px',
+  margin: '0 0 0 0',
 };
 
 const deleteItemStyle = (isSwiped) => ({
@@ -285,6 +291,7 @@ const unitCaloriesStyle = {
 };
   
 export {
+  selectionStyle,
   weightTotalStyle,
   caloriesTotalStyle,
   unitWeightStyle,

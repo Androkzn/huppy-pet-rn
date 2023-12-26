@@ -5,17 +5,19 @@ import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+
 import {createTheme, ThemeProvider} from "@mui/material"
 import dayjs from 'dayjs';
 import * as colors from './styles/Colors'
 
-const CustomDatePicker = ({ label, value, onChange, style }) => {
+const CustomDatePicker = ({ label, value, onChange, style, disabled }) => {
   
   const defaultStyles = css({
     //border: '1px solid #000',  
     background: `${colors.grayBackground}`,  
     borderRadius: '5px',
-    width: '150px',
+    width: '120px',
     fontSize: "16px",
     fontFamily: "'Balsamiq Sans', sans-serif",
     fontWeight: "bold", 
@@ -36,14 +38,19 @@ const CustomDatePicker = ({ label, value, onChange, style }) => {
       <ThemeProvider theme={theme}>
           <DatePicker
             label={label}
-            value={dayjs(value)}
-            onChange={onChange}
+            //value={dayjs(value)}
+            defaultValue={dayjs(value)}
+            onChange={(newDate) => {
+              onChange(newDate)
+            }}
+
             slots={{
               textField: textFieldProps => <TextField {...textFieldProps} sx={mergedStyles} />
             }}
             slotProps={{ textField: {
               size: 'small', 
             } }}
+            disabled={disabled}
           />
          </ThemeProvider>
       </LocalizationProvider>

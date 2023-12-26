@@ -10,7 +10,7 @@ import { styled } from '@mui/system';
 import {Image} from '../components/Image.components'
 import React, { useState } from 'react';
 
-const CustomDatePickerWithArrows = ({ label, value, onChange, styleContainer, stylePicker,  backgroundColor, borderColor })  => { 
+const CustomDatePickerWithArrows = ({ label, value, onChange, styleContainer, stylePicker,  backgroundColor, borderColor, disabled })  => { 
   const [selectedDate, setSelectedDate] = useState(dayjs(value));
 
 // Create the CustomTextField component using Emotion's styled
@@ -56,11 +56,10 @@ const renderLabel = (date) => {
          <LocalizationProvider dateAdapter={AdapterDayjs} locale={enGB}>
           <DatePicker
             label="Small picker"
-     
             value={dayjs(value)}
             onChange={(newDate) => {
               setSelectedDate(newDate);
-              onChange();
+              onChange(new Date(dayjs(newDate)));
             }}
             slots={{ textField: CustomTextField }}
             slotProps={{ textField: { size: 'small'} }}
@@ -70,13 +69,16 @@ const renderLabel = (date) => {
                 {renderLabel(date)}
               </>
             )}
+            disabled={disabled}
           />
         </LocalizationProvider>
         <Image
           imageName={"arrow_right_black.svg"}
           width="20"
           height="20"
-          onClick={() => onChange(new Date(dayjs(value) + 24 * 60 * 60 * 1000))}
+          onClick={() => {
+            onChange(new Date(dayjs(value) + 24 * 60 * 60 * 1000))
+          }}
           style={{ cursor: "pointer" }}
         />
       </div>

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { UserContext } from "../contexts/user.context";
 import AddFoodForm from "../components/AddFoodForm.component";

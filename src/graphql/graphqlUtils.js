@@ -1230,7 +1230,7 @@ const addMeal = async ({user, currentProfile, currentDate}) => {
 
     try {
         const result = await request(GRAPHQL_ENDPOINT, createMealQuery, queryVariablesCreateMeal, headers);
-        return true
+        return result.insertOneMeal._id;
     } catch (error) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)

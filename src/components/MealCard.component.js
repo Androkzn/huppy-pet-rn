@@ -17,8 +17,11 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { BottomSheet } from 'react-spring-bottom-sheet'
 import 'react-spring-bottom-sheet/dist/style.css'
 import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
+import CustomDatePicker from "../components/CustomDatePicker.component";
 import LoadingAndError from "../components/LoadingAndError.components"
 import CustomCheckbox from "./Checkbox.component";
+import {useAddFood} from "../hooks/query.hooks"
+
 
 function MealCard({ meal, index, mealsCount }) {
   const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
@@ -28,8 +31,10 @@ function MealCard({ meal, index, mealsCount }) {
   const [isMealsExpanded, setMealsExpanded] = useState(true);
   const [isCopyFromMealExpanded, setCopyFromMealExpanded] = useState(false)
   const [copyFromDate, setCopyFromDate]  = useState(Date())
-  const [checkedMeals, setCheckedMeals] = useState([]);
-  const [checkedFoods, setCheckedFoods] = useState([]);
+  const [checkedMealsIds, setCheckedMeals] = useState([]);
+  const [checkedFoodsIds, setCheckedFoods] = useState([]);
+  const [isCopyTo, setIsCopyTo] = useState(false);
+ 
 
   const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user, currentProfile, mealId);
   const { data: foodForDate, isLoading: isLoadingFoodForDate, isError: isErrorFoodForDate} = useGetFoodForDate(user, currentProfile, copyFromDate, true);
@@ -37,6 +42,7 @@ function MealCard({ meal, index, mealsCount }) {
   const {mutate: addMealMutation} = useAddMeal()
   const {mutate: deleteMealMutation} = useDeleteMeal()
   const {mutate: deleteFoodMutation} = useDeleteFood()
+  const {mutate: addFoodMutation} = useAddFood()
 
   // Function is responsible for creating a new meal
   const addMealForDate = async () => {
@@ -47,9 +53,44 @@ function MealCard({ meal, index, mealsCount }) {
     })
   };
 
-   // Function is responsible for showing options for current meal
-   const copyMealToDate = async () => {
-    
+   // Function 
+   const copyMeal = async () => {
+    const checkedFoods = foodForDate.filter(food => checkedFoodsIds.includes(food._id));
+ 
+    if (isCopyTo) {
+    // Create a meal first
+      addMealMutation({
+        user:user, 
+        currentProfile:currentProfile, 
+        currentDate: currentDate
+      },
+      {
+        onSuccess: (data) => {
+          const id = data
+           // Add selected food to just created meal
+          for (const food of checkedFoods) {
+            addFoodMutation({
+              user: user,
+              mealId: id,
+              currentProfile: currentProfile,
+              foodItem: food,
+              selectedDate: currentDate,
+            });
+          }
+        },
+      })
+    } else {
+      // Add selected food to the current meal
+      for (const food of checkedFoods) {
+        addFoodMutation({
+          user: user,
+          mealId: mealId,
+          currentProfile: currentProfile,
+          foodItem: food,
+          selectedDate: currentDate,
+        });
+      }
+    }
   };
 
   //Clear aaray of selected meals and food when date is changed
@@ -303,18 +344,20 @@ function MealCard({ meal, index, mealsCount }) {
               {index}
             </ButtonText>
           </div>
-          <button
-            style={styles.headerAddButtonStyle}
-            onClick={() => {
-              if (isMealsExpanded) { 
-                addMealForDate();
-              } else {
-                setMealsExpanded(!isMealsExpanded)
-              }
-            }}
-          >
-            <Image imageName="add_round_orange.svg" width="30" height="30" />
-          </button>
+          <div style={styles.headerAddButtonStyle}>
+            <ButtonImage
+              variant="iconButton"
+              imageName="add_round_orange.svg"
+              imageSize={30}
+              onClick={() => {
+                if (isMealsExpanded) { 
+                  addMealForDate();
+                } else {
+                  setMealsExpanded(!isMealsExpanded)
+                }
+              }}
+              />
+            </div>
         </div> {/* Header container*/}
         
         <div  style={styles.bodyMealStyle}>  {/* Meal container*/}
@@ -359,8 +402,7 @@ function MealCard({ meal, index, mealsCount }) {
             >
               Add Food
           </ButtonImage>
-          
-       
+        
             <PopupState variant="popover" popupId="demo-popup-menu">
               {(popupState) => (
                 <Fragment>
@@ -376,20 +418,58 @@ function MealCard({ meal, index, mealsCount }) {
                     >
                   </ButtonImage>
                   <StyledMenu {...bindMenu(popupState)}>
-                    <MenuItem onClick={() => 
-                      {
-                        popupState.close()
-                        setCopyFromMealExpanded(true)
-                      }
+                    {/* Copy from date  */}
+                    <MenuItem onClick={() => {}
                     }>
-                      <div style={{marginRight: "15px"}}>
+                      <div style={{marginRight: "10px"}}>
                         <Image 
                           imageName= {"copy_green.svg"}
                           width="15" 
                           height="15" 
                         />
                       </div>
-                      <div style={{fontFamily: "'Balsamiq Sans', sans-serif",}}>Copy from date</div> 
+                      <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy from</div> 
+                      <div style={styles.pickerContainerStyle}> 
+                        <CustomDatePicker
+                          value={copyFromDate}
+                          onChange={(date) => {
+                            setCopyFromDate(date)
+                            setIsCopyTo(false)
+                            popupState.close()
+                            setCopyFromMealExpanded(true)
+                          }}
+                         
+                          styleContainer= {styles.pickerStyle}
+                          backgroundColor={colors.white}
+                        />
+                      </div>
+                    </MenuItem>
+                    {/* Copy to date  */}
+                    <MenuItem onClick={() => {}
+                    }>
+                        
+                      <div style={{marginRight: "10px"}}>
+                        <Image 
+                          imageName= {"copy_green.svg"}
+                          width="15" 
+                          height="15" 
+                        />
+                      </div>
+                        <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy to</div> 
+                        <div style={styles.pickerContainerStyle}> 
+                          <CustomDatePicker
+                            value={copyFromDate}
+                            onChange={(date) => {
+                              setIsCopyTo(true)
+                              setCopyFromDate(date)
+                              popupState.close()
+                              setCopyFromMealExpanded(true)
+                            }}
+                         
+                            styleContainer= {styles.pickerStyle}
+                            backgroundColor={colors.white}
+                          />
+                        </div>
                     </MenuItem>
                     { mealsCount > 1 &&
                      <div>
@@ -400,7 +480,7 @@ function MealCard({ meal, index, mealsCount }) {
                           deleteCurrentMeal()
                         }
                       }>
-                        <div style={{marginRight: "15px"}}>
+                        <div style={{marginRight: "10px"}}>
                           <Image 
                             imageName= {"delete_orange.svg"}
                             width="17" 
@@ -409,27 +489,27 @@ function MealCard({ meal, index, mealsCount }) {
                         </div>
                         <div style={{color: colors.orange, fontFamily: "'Balsamiq Sans', sans-serif",}}>Delete meal</div>
                       </MenuItem>
+                      
                       </div>
                     }
                   </StyledMenu>
                 </Fragment>
               )}
             </PopupState>
-            
-            <BottomSheet open={isCopyFromMealExpanded}>
+           
+            <BottomSheet open={isCopyFromMealExpanded} >
               <div style={styles.rowStyle}>
                 <div style={styles.closeButtonContainer}>
-                  <button
-                    style={styles.headerAddButtonStyle}
-                    onClick={() => {
-                      copyMealToDate()
-                      setCopyFromMealExpanded(false)
-                      clearSelectedFood()
-                    }}
-                    disabled={checkedFoods.length === 0}
-                  >
-                    <Image imageName="add_round_orange.svg" width="30" height="30" />
-                  </button>
+                <ButtonImage
+                  variant="iconButton"
+                  imageName="add_round_orange.svg"
+                  imageSize={30}
+                  onClick={() => {
+                    copyMeal()
+                    setCopyFromMealExpanded(false)
+                  }}
+                  disabled={checkedFoodsIds.length === 0}
+                  />
                 </div>
                 <div style={styles.pickerContainerStyle}> 
                   <CustomDatePickerWithArrows
@@ -437,18 +517,19 @@ function MealCard({ meal, index, mealsCount }) {
                     onChange={(date) => setCopyFromDate(date) }
                     styleContainer= {styles.pickerStyle}
                     backgroundColor={colors.white}
+                    disabled={true}
                   />
                 </div>
                 <div style={styles.closeButtonContainer}>
-                  <button
-                    style={styles.headerAddButtonStyle}
+                  <ButtonImage
+                    variant="iconButton"
+                    imageName="close_round_green.svg"
+                    imageSize={30}
                     onClick={() => {
                       setCopyFromMealExpanded(false)
                       clearSelectedFood()
                     }}
-                  >
-                    <Image imageName="close_round_green.svg" width="30" height="30" />
-                  </button>
+                  />
                 </div>
               </div>
               <div >  {/* Meals list container*/}
@@ -466,7 +547,7 @@ function MealCard({ meal, index, mealsCount }) {
                       {  getGroopedFood().map((meal, index) => 
                         <div key={meal[0].mealId} style={styles.mealContainerStyle}>
                           <CustomCheckbox
-                            checked={checkedMeals.includes(meal[0].mealId)}
+                            checked={checkedMealsIds.includes(meal[0].mealId)}
                             onChange={(isChecked) =>
                               handleMealCheckboxChange(isChecked, meal[0].mealId)
                             }
@@ -477,7 +558,7 @@ function MealCard({ meal, index, mealsCount }) {
                             meal.map((food, index) => 
                             <div key={food._id} style = {{marginLeft: "20px"}}>
                               <CustomCheckbox
-                              checked={checkedFoods.includes(food._id)}
+                              checked={checkedFoodsIds.includes(food._id)}
                               onChange={(isChecked) =>
                                 handleFoodCheckboxChange(isChecked, food._id)
                               }

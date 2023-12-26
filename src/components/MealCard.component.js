@@ -260,7 +260,7 @@ function MealCard({ meal, index, mealsCount }) {
                       <MenuItem onClick={() => 
                         {
                           popupState.close()
-                        
+                          deleteCurrentMeal()
                         }
                       }>
                         Delete meal

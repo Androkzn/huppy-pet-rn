@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext } from "react";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import { useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'

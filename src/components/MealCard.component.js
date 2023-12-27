@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useState, Fragment, useEffect } from "react";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context.js";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonImage, ButtonText} from '../components/Buttons.components'
 import { useNavigate } from 'react-router-dom';

@@ -3,7 +3,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import AddFoodForm from "../components/AddFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
 import * as styles  from '../components/styles/AddFood.css'

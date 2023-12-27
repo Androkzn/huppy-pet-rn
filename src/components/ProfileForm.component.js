@@ -9,7 +9,7 @@ import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import Avatar from './Avatar.components'
 import {useLoadFoodCategories} from "../hooks/query.hooks"
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import LoadingAndError from "../components/LoadingAndError.components"
 
 const ProfileForm = ({ updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {

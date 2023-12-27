@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import ProfileForm from "../components/ProfileForm.component";
 import {ButtonImage} from '../components/Buttons.components'
 import {useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"

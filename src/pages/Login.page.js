@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import * as styles  from '../components/styles/Login.css'
 import LoginForm from '../components/LoginForm.components'
 import Spiner from '../components/Spinner.components'

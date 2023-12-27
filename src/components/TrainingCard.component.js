@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useState } from "react";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import { Image } from "./Image.components";
 import {useDeleteTraining, useUpdateTraining} from "../hooks/query.hooks"
 import * as styleTraining from "./styles/Training.css";

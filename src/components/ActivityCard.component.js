@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext } from "react";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context.js";
 import {Image} from './Image.components'
 import * as stylesActivity from '../components/styles/Activity.css'
 import {ButtonImage, ButtonText } from '../components/Buttons.components'

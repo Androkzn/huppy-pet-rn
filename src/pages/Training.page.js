@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { DataContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/data.context';
 import * as styles  from '../components/styles/Training.css'
 import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'

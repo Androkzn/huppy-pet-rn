@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar.component";
 import TabBar from "./components/TabBar.component";
-import { DataProvider } from "./contexts/user.context";
+import { DataProvider } from "./contexts/data.context";
 import Dashboard from "./pages/Dashboard.page";
 import Home from "./pages/Home.page";
 import Login from "./pages/Login.page";

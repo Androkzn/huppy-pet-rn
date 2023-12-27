@@ -2,7 +2,7 @@
 
 import { useContext, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { DataContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/data.context';
 import * as styles  from '../components/styles/More.css'
 import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";

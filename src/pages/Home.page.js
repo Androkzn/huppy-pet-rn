@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { DataContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/data.context';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import * as Constants from "../helpers/Constants.helper"
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import PageContainer from "../components/PageContainer.component";
 import CustomDatePicker from "../components/CustomDatePicker.component";
 import CategoryChart from "../components/StatisticBarChart.component";

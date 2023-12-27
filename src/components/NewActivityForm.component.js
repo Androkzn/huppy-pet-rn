@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useState } from 'react';
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import * as styles  from './styles/CreateNewActivity.css'
 import {TitleAndDropdown} from "./Form.components"
 import { ButtonText } from "./Buttons.components"

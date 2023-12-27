@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useTheme } from '@mui/material';
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import { useContext } from "react";
 
 const PageContainer = (props) => {

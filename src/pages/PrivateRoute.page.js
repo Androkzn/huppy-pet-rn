@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 
 const PrivateRoute = (props) => {
 

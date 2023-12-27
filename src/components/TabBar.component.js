@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { DataContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/data.context';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as colors from './styles/Colors';

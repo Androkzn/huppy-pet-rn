@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useEffect, useState } from "react";
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import PageContainer from "../components/PageContainer.component";
 import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, Drawer} from '@mui/material';
 import { useNavigate, Link } from "react-router-dom";
-import { DataContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/data.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 import Avatar from './Avatar.components'

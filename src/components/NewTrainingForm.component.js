@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useState, useEffect } from 'react';
-import { DataContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/data.context";
 import PageContainer from "./PageContainer.component";
 import * as styles  from './styles/CreateNewTraining.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput} from "./Form.components"

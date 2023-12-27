@@ -84,7 +84,7 @@ const NavBar = () => {
 
 const TemporaryDrawer = (props) => {
   const { show, toggleDrawer, currentProfile, profiles } = props;
-  const {user, logOutUser, setCurrentPage} = useContext(DataContext);
+  const {user, setCurrentPage} = useContext(DataContext);
   const navigate = useNavigate();
   const {mutate: updateProfileMutation} = useUpdateProfile()
 

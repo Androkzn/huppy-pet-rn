@@ -5,7 +5,7 @@ import * as Constants from "../helpers/Constants.helper"
 import { useGetProfiles, useGetCurrentProfile } from "../hooks/query.hooks";
 
 // Creating a Realm App Instance
- const app = new App(process.env.REACT_APP_APP_ID);
+const app = new App(process.env.REACT_APP_APP_ID);
  
 // Creating a user context to manage and access all the user related functions
 // across different component and pages.
@@ -43,6 +43,7 @@ export const DataProvider = ({ children }) => {
       // the user using the same credentials once the signup is complete.
       return emailPasswordLogin(email, password);
     } catch (error) {
+      console.error("Error sign up", error)
       throw error;
     }
   };
@@ -59,6 +60,7 @@ export const DataProvider = ({ children }) => {
       }  
       return app.currentUser;
     } catch (error) {
+      console.error("Error fetch user", error)
       throw error;
     }
   }
@@ -72,6 +74,7 @@ export const DataProvider = ({ children }) => {
       setUser(null);
       return true;
     } catch (error) {
+      console.error("Error logout user", error)
       throw error
     }
   }

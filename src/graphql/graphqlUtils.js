@@ -1,13 +1,15 @@
 
 import request, { gql } from "graphql-request";
 import { getStartAndEndOfToday, getStartAndEndOfWeek, getEndOfDay, getStartOfDay } from "../helpers/Date.helper";
+import { useContext } from 'react';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT
 
-async function refreshAccessToken(user) {
+const refreshAccessToken= async (user) => {
   try {
     // Refresh the access token
     await user.refreshAccessToken();
+    console.log('Refreshed token:', user._accessToken);
     return user._accessToken;
   } catch (error) {
     // Handle the refresh error
@@ -16,10 +18,9 @@ async function refreshAccessToken(user) {
   }
 }
 
-
 // Func that is responsible for searching Food Templates in DB 
 // it return array of FoodTemplates based on search string
-async function searchForFood(searchQuery, user) {
+const searchForFood= async (searchQuery, user) => {
   if (!user) { return []}
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
@@ -77,7 +78,7 @@ async function searchForFood(searchQuery, user) {
 
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
-async function getAllFoodForMeal(user, currentProfile, mealId) {
+const  getAllFoodForMeal= async (user, currentProfile, mealId) => {
   if (!user) { return []}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
@@ -131,7 +132,7 @@ async function getAllFoodForMeal(user, currentProfile, mealId) {
 }
 
 // Func that is responsible for fetching  all food for specific time period
-async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
+const getFoodForPeriod= async (user, currentProfile, startTime, endTime) => {
   if (!user) {
     return [];
   }
@@ -194,7 +195,7 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
 }
 
 // Func that is responsible for fetching  all food for specific time period
-async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) {
+const getActivitiesForPeriod= async (user, currentProfile, startTime, endTime) => {
   if (!user) {
     return [];
   }
@@ -248,7 +249,7 @@ async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) 
 }
 
 // Func that is responsible for fetching  all food for specific time period
-async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
+const getTrainingsForPeriod= async (user, currentProfile, startTime, endTime) => {
   if (!user) {
     return [];
   }
@@ -305,7 +306,7 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
 
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
-async function getAllCustomFoodTemplates(user) {
+const getAllCustomFoodTemplates= async (user) =>{
   if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -359,7 +360,7 @@ async function getAllCustomFoodTemplates(user) {
 
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
-async function getAllFoodTemplatesForCategory(user, categoryType) {
+const getAllFoodTemplatesForCategory = async (user, categoryType) =>{
   if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -417,7 +418,7 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
 
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
-async function getAllFoodCategories(user, profileId) {
+const getAllFoodCategories= async (user, profileId) => {
   if (!user) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -460,7 +461,7 @@ async function getAllFoodCategories(user, profileId) {
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
-async function deleteMeal({user, _id}) {
+const deleteMeal= async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -494,7 +495,7 @@ async function deleteMeal({user, _id}) {
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
-async function deleteActivity({user, _id}) {
+const deleteActivity = async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -529,7 +530,7 @@ async function deleteActivity({user, _id}) {
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
-async function deleteTraining({user, _id}) {
+const deleteTraining= async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -563,7 +564,7 @@ async function deleteTraining({user, _id}) {
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
-async function deleteFood({user, _id}) {
+const deleteFood= async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -596,7 +597,7 @@ async function deleteFood({user, _id}) {
 
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
-async function deleteFoodTemplate({user, _id}) {
+const deleteFoodTemplate= async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -630,7 +631,7 @@ async function deleteFoodTemplate({user, _id}) {
 
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
-async function deleteFoodCategory({user, _id}) {
+const deleteFoodCategory= async ({user, _id}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -663,7 +664,7 @@ async function deleteFoodCategory({user, _id}) {
 
 // Func that is responsible for adding Food to DB   
 // it return bool value
-async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
+const addFood= async ({user, mealId, currentProfile, foodItem, selectedDate}) =>{
     if (!user) { return false}
 
     const accessToken = user._accessToken;
@@ -720,7 +721,7 @@ async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
 
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
-async function addFoodTemplate({user, foodItem}) {
+const addFoodTemplate= async ({user, foodItem}) => {
   if (!user) { return { success: false, templateId: "" }}
   const accessToken = user._accessToken;
   const userId = user.id
@@ -781,7 +782,7 @@ async function addFoodTemplate({user, foodItem}) {
 
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
-async function getUserProfiles(user) {
+const getUserProfiles= async (user) => {
   if (!user) { 
     return null;
   }
@@ -850,7 +851,7 @@ async function getUserProfiles(user) {
 
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
-async function getCurrentProfile(user) {
+const getCurrentProfile= async (user) =>{
   if (!user) { 
     return null;
   }
@@ -920,7 +921,7 @@ async function getCurrentProfile(user) {
 
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
-async function addProfile({user, profile}) {
+const addProfile= async ({user, profile}) => {
   if (!user) { return null}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -994,7 +995,7 @@ async function addProfile({user, profile}) {
   }
 };
 
-async function loadMeals(user, currentProfile, currentDate, isToday = true) {
+const loadMeals= async (user, currentProfile, currentDate, isToday = true) =>  {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1047,7 +1048,7 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
   }
 }
 
-async function loadFood(user, currentProfile, currentDate, isToday) {
+const loadFood= async (user, currentProfile, currentDate, isToday) => {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1110,7 +1111,7 @@ try {
 }
 }
 
-async function loadActivities(user, currentProfile, currentDate) {
+const loadActivities= async (user, currentProfile, currentDate) => {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1163,7 +1164,7 @@ async function loadActivities(user, currentProfile, currentDate) {
   }
 }
 
-async function loadTrainings(user, currentProfile, currentDate) {
+const loadTrainings= async (user, currentProfile, currentDate) => {
   if (!user || !currentProfile) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1259,7 +1260,7 @@ const addMeal = async ({user, currentProfile, currentDate}) => {
     }
 }
 
-async function addActivity({user, currentProfile, selectedDate, data}) {
+const addActivity = async ({user, currentProfile, selectedDate, data}) => {
 
     if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
@@ -1303,7 +1304,7 @@ async function addActivity({user, currentProfile, selectedDate, data}) {
     }
 }
 
-async function addTraining({user, currentProfile, selectedDate, data}) {
+const addTraining = async ({user, currentProfile, selectedDate, data}) => {
   if (!user || !currentProfile) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
@@ -1346,7 +1347,7 @@ async function addTraining({user, currentProfile, selectedDate, data}) {
     }
 }
 
-async function addFoodCategory({user, currentProfile, data}) {
+const addFoodCategory= async ({user, currentProfile, data}) => {
   if (!user || !currentProfile) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
@@ -1388,7 +1389,7 @@ async function addFoodCategory({user, currentProfile, data}) {
 }
 
 // Function to update an activity
-async function updateActivity({user, activityId, updateData}) {
+const updateActivity= async ({user, activityId, updateData}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1428,7 +1429,7 @@ async function updateActivity({user, activityId, updateData}) {
 }
 
 // Function to update an training
-async function updateTraining({user, trainingId, updateData}) {
+const updateTraining= async ({user, trainingId, updateData}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1472,7 +1473,7 @@ async function updateTraining({user, trainingId, updateData}) {
 }
 
 // Function to update Profile
-async function updateProfile({user, profileId, updateData}) {
+const updateProfile= async ({user, profileId, updateData}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1532,7 +1533,7 @@ async function updateProfile({user, profileId, updateData}) {
 }
 
 // Function to update an Food Category
-async function updateFoodCategory({user, categoryId, updateData}) {
+const  updateFoodCategory= async ({user, categoryId, updateData}) => {
   if (!user) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1575,7 +1576,7 @@ async function updateFoodCategory({user, categoryId, updateData}) {
 }
 
 // Function to update an Food Category
-async function updateFood({user, foodId, updateData}) {
+const updateFood= async ({user, foodId, updateData}) => {
   if (!user) { return false}
 
   const accessToken = user._accessToken;
@@ -1612,7 +1613,7 @@ async function updateFood({user, foodId, updateData}) {
 }
 
 // Function to update an Foof Template
-async function updateFoodTemplate({user, foodItem}) {
+const updateFoodTemplate= async ({user, foodItem}) => {
   if (!user) { return false}
 
   const accessToken = user._accessToken;

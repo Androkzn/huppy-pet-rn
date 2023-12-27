@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import ProfileForm from "../components/ProfileForm.component";
 import {ButtonImage} from '../components/Buttons.components'
 import {useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, currentProfile, setCurrentPage } = useContext(UserContext);
+  const { user, currentProfile, setCurrentPage } = useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addActivity");
 

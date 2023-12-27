@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import EditFoodForm from "../components/EditFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
 import * as styles  from '../components/styles/CreateNewFood.css'
@@ -13,7 +13,7 @@ import {useUpdateFoodTemplate} from "../hooks/query.hooks"
 import FoodImage from '../components/FoodImage.components'
 
 const EditFood = () => {
-  const { user, setCurrentPage } = useContext(UserContext);
+  const { user, setCurrentPage } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { food } = location.state || {};

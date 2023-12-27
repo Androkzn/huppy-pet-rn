@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useState } from "react";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import { Image } from "./Image.components";
 import {useDeleteTraining, useUpdateTraining} from "../hooks/query.hooks"
 import * as styleTraining from "./styles/Training.css";
@@ -15,7 +15,7 @@ import * as colors from '../components/styles/Colors';
 import Swipe  from '../components/Swipe.components.tsx';
 
 function TrainingCard({ training }) {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(DataContext);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const {mutate: deleteTrainingMutation} = useDeleteTraining()
   const {mutate: updateTrainingMutation} = useUpdateTraining()

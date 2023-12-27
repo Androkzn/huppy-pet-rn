@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useState, useEffect } from 'react';
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import PageContainer from "./PageContainer.component";
 import * as styles  from './styles/CreateNewTraining.css'
 import {TitleAndDropdown, DescriptionTextBox, TitleAndTextInput} from "./Form.components"
@@ -8,7 +8,7 @@ import { ButtonText } from "./Buttons.components"
 import * as Enums from "../helpers/Enums.helper"
 
 const NewTrainingForm = ({ onCreated, onClose  }) => {
-  const {currentProfile } = useContext(UserContext);
+  const {currentProfile } = useContext(DataContext);
  // Some prefilled form state
  const [form, setForm] = useState({
   category: Enums.TrainingCategory.OBEDIENCE,

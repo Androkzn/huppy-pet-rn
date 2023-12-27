@@ -2,7 +2,7 @@
 
 import { useContext, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/user.context';
 import * as styles  from '../components/styles/More.css'
 import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from "../components/NewTrainingForm.component";
@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 const More = () => {
   const navigate = useNavigate();
-  const {logOutUser, setCurrentPage } = useContext(UserContext);
+  const {logOutUser, setCurrentPage } = useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");
 

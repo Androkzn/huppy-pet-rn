@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { UserContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/user.context';
 import { Tabs, Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as colors from './styles/Colors';
@@ -9,7 +9,7 @@ import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unsel
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg'
 
 const TabBar = () => {
-  const {user, currentProfile, isSmallScreen, currentPage, setCurrentPage} = useContext(UserContext);
+  const {user, currentProfile, isSmallScreen, currentPage, setCurrentPage} = useContext(DataContext);
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px'

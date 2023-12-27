@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext } from "react";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import {Image} from './Image.components'
 import * as stylesActivity from '../components/styles/Activity.css'
 import {ButtonImage, ButtonText } from '../components/Buttons.components'
@@ -11,7 +11,7 @@ import * as colors from '../components/styles/Colors';
 import {useDeleteActivity, useUpdateActivity} from "../hooks/query.hooks"
 
 function ActivityCard({ activity}) {
-  const { user, currentProfile } = useContext(UserContext);
+  const { user, currentProfile } = useContext(DataContext);
   const {mutate: deleteActivityMutation} = useDeleteActivity()
   const {mutate: updateActivityMutation} = useUpdateActivity()
 

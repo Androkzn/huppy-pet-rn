@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import NewFoodForm from "../components/NewFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
 import * as styles  from '../components/styles/CreateNewFood.css'
@@ -12,7 +12,7 @@ import AddImageDialog from "../components/AddImageDialog.component";
 import {useAddFoodTemplate} from "../hooks/query.hooks"
 
 const CreateNewFood = () => {
-  const { user, setCurrentPage, currentDate } = useContext(UserContext);
+  const { user, setCurrentPage, currentDate } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);

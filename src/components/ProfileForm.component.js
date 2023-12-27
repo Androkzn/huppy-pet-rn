@@ -9,11 +9,11 @@ import {Image} from './Image.components'
 import ChartPie from './ChartPie.components'
 import Avatar from './Avatar.components'
 import {useLoadFoodCategories} from "../hooks/query.hooks"
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import LoadingAndError from "../components/LoadingAndError.components"
 
 const ProfileForm = ({ updateProfile, addCategory, deleteCategory, updateCategory, updateAvatar}) => {
-  const { user, currentProfile: profile } = useContext(UserContext);
+  const { user, currentProfile: profile } = useContext(DataContext);
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [avatarWidth, setAvatarWidth] = useState(150);

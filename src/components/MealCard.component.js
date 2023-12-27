@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useState, Fragment, useEffect } from "react";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Meals.css'
 import {ButtonImage, ButtonText} from '../components/Buttons.components'
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,7 @@ import {useAddFood} from "../hooks/query.hooks"
 import {ButtonsAndTextField} from "../components/Form.components.js"
 
 function MealCard({ meal, index, mealsCount }) {
-  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(UserContext);
+  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(DataContext);
   const navigate = useNavigate();
   const mealId = meal._id;
   const selectedDate = meal.date
@@ -302,8 +302,9 @@ function MealCard({ meal, index, mealsCount }) {
       />
     ))(({ theme }) => ({
       '& .MuiPaper-root': {
+        backgroundColor: alpha(colors.grayBackground, 1 ),
         borderRadius: 10,
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(2),
         minWidth: 180,
         color: colors.green,
         boxShadow:

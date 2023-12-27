@@ -3,7 +3,7 @@
 
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import {LoginTextInput, FormGroup} from '../components/Form.components'
 import {ButtonText} from '../components/Buttons.components'
@@ -54,12 +54,12 @@ function SignUpForm({onSubmit, buttonText}) {
 }
 
 const Signup = () => {
-  const { setCurrentPage } = useContext(UserContext);  
+  const { setCurrentPage } = useContext(DataContext);  
   const navigate = useNavigate();
   const location = useLocation();
 
   // As explained in the Login page.
-  const { emailPasswordSignup } = useContext(UserContext);
+  const { emailPasswordSignup } = useContext(DataContext);
 
   // As explained in the Login page.
   const redirectNow = () => {

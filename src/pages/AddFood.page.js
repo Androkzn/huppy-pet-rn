@@ -3,14 +3,14 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import AddFoodForm from "../components/AddFoodForm.component";
 import {ButtonLink} from '../components/Buttons.components'
 import * as styles  from '../components/styles/AddFood.css'
 import {useAddFood} from "../hooks/query.hooks"
 
 const AddFood = ({ }) => {
-  const { user, currentProfile, setCurrentPage, currentDate } = useContext(UserContext);
+  const { user, currentProfile, setCurrentPage, currentDate } = useContext(DataContext);
   const location = useLocation();
   const navigate = useNavigate();
   let foodItem = location.state?.foodItem;

@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/user.context';
 import MealCard from '../components/MealCard.component';
 import * as styles  from '../components/styles/Home.css'
 import {Image} from '../components/Image.components'
@@ -27,7 +27,7 @@ const Home = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(DataContext);
 
   // Responsible for fetching data for  meals/traings/activities/food when data is changed
   useEffect(() => {

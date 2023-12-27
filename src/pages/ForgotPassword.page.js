@@ -2,14 +2,14 @@
 
 import { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import * as styles from '../components/styles/Login.css';
 import {LoginTextInput, FormGroup } from '../components/Form.components';
 import { Image } from '../components/Image.components';
 import {ButtonText} from '../components/Buttons.components'
 
 function ForgotPasswordForm({ onSubmit}) {
-  const { setCurrentPage } = useContext(UserContext);  
+  const { setCurrentPage } = useContext(DataContext);  
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -76,7 +76,7 @@ function ForgotPasswordForm({ onSubmit}) {
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { emailPasswordSignup, setCurrentPage } = useContext(UserContext);
+  const { emailPasswordSignup, setCurrentPage } = useContext(DataContext);
 
   const redirectToLoginPage = () => {
     const redirectTo = location.search.replace("?redirectTo=", "");

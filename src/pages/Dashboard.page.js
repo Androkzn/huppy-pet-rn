@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import * as Constants from "../helpers/Constants.helper"
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
 import CustomDatePicker from "../components/CustomDatePicker.component";
 import CategoryChart from "../components/StatisticBarChart.component";
@@ -34,7 +34,7 @@ const Analytics = () => {
 
   const [fromDate, setFromDate] = useState( loadState("fromDate", dateOneWeekAgo()));
   const [toDate, setToDate] = useState( loadState("toDate", Date()));
-  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(UserContext);
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen} = useContext(DataContext);
   const [selectedFilter, setSelectedFilter] = useState( loadState("selectedFilterStatistic", Enums.FilterStatistic.CALORIES));
   
   const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetFoodForPeriod(user, currentProfile, fromDate, toDate);
@@ -191,7 +191,6 @@ const Analytics = () => {
     return Math.floor(Constants.estCalories * currentProfile.weight * currentProfile.dailyRatio);
   }
  
-
   const FilterContainer = () => {
 
     async function handleFilterChange(filter) {

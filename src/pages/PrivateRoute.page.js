@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 
 const PrivateRoute = (props) => {
 
   // Fetching the user from the user context.
-  const { user } = useContext(UserContext);
+  const { user } = useContext(DataContext);
   const location = useLocation();
 
   // If the user is not logged in we are redirecting them

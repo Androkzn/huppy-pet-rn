@@ -66,10 +66,11 @@ async function searchForFood(searchQuery, user) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         searchForFood(searchQuery, user)
-      } 
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error search for food', error);
+      }
       
-      alert('Error search for food with string:', searchQuery);
-      console.error('Error search for food', error);
       return [];
     }
 }
@@ -120,10 +121,11 @@ async function getAllFoodForMeal(user, currentProfile, mealId) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         getAllFoodForMeal(user, mealId)
-      } 
-      
-      alert('Error fetching food for meal with Id:', mealId);
-      console.error('Error fetching food for meal', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error fetching food for meal', error);
+      }
+
       return []
     }
 }
@@ -183,10 +185,10 @@ async function getFoodForPeriod(user, currentProfile, startTime, endTime) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user);
       getFoodForPeriod(user, startTime, endTime, profileId);
+    } else { 
+       console.error('Error fetching food for the time period and profileId', error);
     }
 
-    alert('Error fetching food for the time period and profileId');
-    console.error('Error fetching food for the time period and profileId', error);
     return [];
   }
 }
@@ -237,10 +239,10 @@ async function getActivitiesForPeriod(user, currentProfile, startTime, endTime) 
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user);
       getActivitiesForPeriod(user, startTime, endTime, profileId);
+    } else {
+      console.error('Error fetching food for the time period and profileId', error);
     }
 
-    alert('Error fetching food for the time period and profileId');
-    console.error('Error fetching food for the time period and profileId', error);
     return [];
   }
 }
@@ -292,10 +294,11 @@ async function getTrainingsForPeriod(user, currentProfile, startTime, endTime) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user);
       getFoodForPeriod(user, startTime, endTime, profileId);
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error fetching food for the time period and profileId', error);
     }
-
-    alert('Error fetching food for the time period and profileId');
-    console.error('Error fetching food for the time period and profileId', error);
+    
     return [];
   }
 }
@@ -345,10 +348,11 @@ async function getAllCustomFoodTemplates(user) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getAllCustomFoodTemplates(user)
-    } 
-    
-    alert('Error get All Custom Food Templates');
-    console.error('Error get All Custom Food Templates', error);
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error get All Custom Food Templates', error);
+    }
+
     return []
   }
 }
@@ -402,10 +406,11 @@ async function getAllFoodTemplatesForCategory(user, categoryType) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getAllFoodTemplatesForCategory(user, categoryType)
-    } 
-    
-    alert('Error get All Custom Food Templates for category: ', categoryType);
-    console.error('Error get All Custom Food Templates for category: ', error);
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error get All Custom Food Templates for category: ', error);
+    }    
+     
     return []
   }
 }
@@ -445,10 +450,10 @@ async function getAllFoodCategories(user, profileId) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getAllFoodCategories(user, profileId)
-    } 
-    
-    alert('Error get All Food Categories');
-    console.error('Error get All Food Categories', error);
+      console.error('InvalidSession', error);
+    } else {
+       console.error('Error get All Food Categories', error);
+    }
     return []
   }
 }
@@ -478,10 +483,11 @@ async function deleteMeal({user, _id}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         deleteMeal(user, _id)
-      } 
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error deleting meal', error);
+      }
       
-      console.error('Error deleting meal', error);
-      alert('Error deleting meal');
       return false
     }
 }
@@ -511,10 +517,12 @@ async function deleteActivity({user, _id}) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       deleteActivity(user, _id)
-    } 
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error deleting activity', error);
+    }
     
-    console.error('Error deleting activity', error);
-    alert('Error deleting activity');
+   
     return false
   }
 }
@@ -544,10 +552,11 @@ async function deleteTraining({user, _id}) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       deleteTraining(user, _id)
-    } 
-    
-    console.error('Error deleting training', error);
-    alert('Error deleting training');
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error deleting training', error);
+    }
+
     return false
   }
 }
@@ -577,10 +586,10 @@ async function deleteFood({user, _id}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         deleteFood(user, _id)
-      } 
-      
-      console.error('Error deleting food', error);
-      alert('Error deleting food');
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error deleting food', error); 
+      }
       return false
     }
 }
@@ -610,10 +619,11 @@ async function deleteFoodTemplate({user, _id}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         deleteFoodTemplate(user, _id)
-      } 
-      
-      console.error('Error deleting food template', error);
-      alert('Error deleting food template');
+        console.error('InvalidSession', error);
+      } else {
+         console.error('Error deleting food template', error);
+      }
+
       return false
     }
 }
@@ -643,10 +653,10 @@ async function deleteFoodCategory({user, _id}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         deleteFoodCategory(user, _id)
-      } 
-      
-      console.error('Error deleting food category', error);
-      alert('Error deleting food category');
+        console.error('InvalidSession', error);
+      } else { 
+        console.error('Error deleting food category', error);
+      }
       return false
     }
 }
@@ -700,10 +710,10 @@ async function addFood({user, mealId, currentProfile, foodItem, selectedDate}) {
         if (error.response.error_code === "InvalidSession") {
           await refreshAccessToken(user)
           addFood(user, mealId, foodItem, selectedDate)
-        } 
-        
-        console.error('Error add food', error);
-        alert('Error add food');
+          console.error('InvalidSession', error);
+        } else {       
+          console.error('Error add food', error);
+        }
         return false
       }
 }
@@ -760,11 +770,10 @@ async function addFoodTemplate({user, foodItem}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         addFoodTemplate(user, foodItem) 
-      } 
-      
-      console.error('Error add food template', error);
-      alert('Error add food template');
-      
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error add food template', error);
+      }
        return { success: false, templateId: "" };
     }
 }
@@ -830,10 +839,11 @@ async function getUserProfiles(user) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getUserProfiles(user)
-    } 
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error loading profiles:', error);
+    }
     
-    alert('Error get profiles');
-    console.error('Error loading profiles:', error);
     return null;
   }
 }
@@ -898,11 +908,11 @@ async function getCurrentProfile(user) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getUserProfiles(user)
-    } 
-    
-    console.error(error);
-    alert('Error get profiles');
-    console.error('Error loading profiles:', error);
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error loading profiles:', error);
+    }
+     
     return null;
   }
 }
@@ -975,10 +985,11 @@ async function addProfile({user, profile}) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       getUserProfiles(user)
-    } 
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error creating profile:', error);
+    }
     
-    alert('Error get profiles');
-    console.error('Error creating profile:', error);
     return null
   }
 };
@@ -1027,10 +1038,11 @@ async function loadMeals(user, currentProfile, currentDate, isToday = true) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       loadMeals(user, currentProfile, currentDate, isToday = true)
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error loading meals:', error);
     }
     
-    alert('Error loading meals');
-    console.error('Error loading meals:', error);
     return []
   }
 }
@@ -1089,10 +1101,11 @@ try {
   if (error.response.error_code === "InvalidSession") {
     await refreshAccessToken(user)
     loadFood(user, currentProfile, currentDate, isToday)
+    console.error('InvalidSession', error);
+  } else {
+    console.error('Error loading food:', error);
   }
   
-  alert('Error loading food');
-  console.error('Error loading food:', error);
   return []
 }
 }
@@ -1141,10 +1154,11 @@ async function loadActivities(user, currentProfile, currentDate) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       loadActivities(user, currentProfile, currentDate)
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error loading Activities:', error);
     }
     
-    alert('Error loading activities');
-    console.error('Error loading Activities:', error);
     return []
   }
 }
@@ -1194,10 +1208,11 @@ async function loadTrainings(user, currentProfile, currentDate) {
     if (error.response.error_code === "InvalidSession") {
       await refreshAccessToken(user)
       loadTrainings(user, currentProfile, currentDate)
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error loading trainings:', error);
     }
-    
-    alert('Error loading trainings');
-    console.error('Error loading trainings:', error);
+
     return []
   }
 }
@@ -1235,10 +1250,11 @@ const addMeal = async ({user, currentProfile, currentDate}) => {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         addMeal(user, currentProfile, currentDate)
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error adding meal:', error);
       }
       
-      alert('Error adding meal');
-      console.error('Error adding meal:', error);
       return false
     }
 }
@@ -1278,10 +1294,11 @@ async function addActivity({user, currentProfile, selectedDate, data}) {
         if (error.response.error_code === "InvalidSession") {
           await refreshAccessToken(user)
           addActivity(user, currentProfile, selectedDate, data) 
+          console.error('InvalidSession', error);
+        } else {
+          console.error('Error adding activity:', error);
         }
-        
-        alert('Error adding activity');
-        console.error('Error adding activity:', error);
+       
         return false
     }
 }
@@ -1320,9 +1337,11 @@ async function addTraining({user, currentProfile, selectedDate, data}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         addTraining(user, currentProfile, selectedDate, data)
-      } 
-      alert('Error adding training');
-      console.error('Error adding training:', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error adding training:', error);
+      }
+
       return false
     }
 }
@@ -1359,9 +1378,11 @@ async function addFoodCategory({user, currentProfile, data}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         addFoodCategory(user, currentProfile, data)
-      } 
-      alert('Error adding food category');
-      console.error('Error adding Food Category:', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error adding Food Category:', error);
+      }
+
       return false
   }
 }
@@ -1398,9 +1419,10 @@ async function updateActivity({user, activityId, updateData}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateActivity(user, activityId, updateData)
-      } 
-      alert('Error update activity');
-      console.error('Error update activity', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error update activity', error);
+      }
       return false;
   }
 }
@@ -1441,9 +1463,10 @@ async function updateTraining({user, trainingId, updateData}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateTraining(user, trainingId, updateData)
-      } 
-      alert('Error update training');
-      console.error('Error update training', error);
+        console.error('InvalidSession', error);
+      } else {
+         console.error('Error update training', error);
+      }
       return false;
   }
 }
@@ -1500,9 +1523,10 @@ async function updateProfile({user, profileId, updateData}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateProfile(user, profileId, updateData)
-      } 
-      alert('Error update profile');
-      console.error('Error update profile', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error update profile', error);
+      }
       return false;
   }
 }
@@ -1542,9 +1566,10 @@ async function updateFoodCategory({user, categoryId, updateData}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateFoodCategory(user, categoryId, updateData)
-      } 
-      alert('Error update food category');
-      console.error('Error update food category', error);
+        console.error('InvalidSession', error);
+      }else {
+        console.error('Error update food category', error);
+      }
       return false;
   }
 }
@@ -1578,9 +1603,10 @@ async function updateFood({user, foodId, updateData}) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateFood(user, foodId, updateData)
-      } 
-      alert('Error update food');
-      console.error('Error update food', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error update food', error);
+      }
       return false;
   }
 }
@@ -1650,17 +1676,16 @@ async function updateFoodTemplate({user, foodItem}) {
   };
 
   try {
-      console.log('Update food template');
       const result = await request(GRAPHQL_ENDPOINT, updateFoodTemplateQuery, queryVariables, headers)
-      console.log('Update food template', result);
       return true;
   } catch (error) {
       if (error.response.error_code === "InvalidSession") {
         await refreshAccessToken(user)
         updateFoodTemplate(user, foodItem)
-      } 
-      alert('Error update food template');
-      console.error('Error update food template', error);
+        console.error('InvalidSession', error);
+      } else {
+        console.error('Error update food template', error);
+      }
       return false;
   }
 }
@@ -1699,5 +1724,4 @@ export {
     updateFoodTemplate,
     updateFoodCategory,
     updateFood,
-
 };

@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import RegisterForm from "../components/RegisterForm.component";
 import {ButtonImage} from '../components/Buttons.components'
 import * as styles  from '../components/styles/Profile.css'
@@ -15,7 +15,7 @@ import {useAddProfile, useAddFoodCategory} from "../hooks/query.hooks"
 const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, setCurrentPage, currentProfile } = useContext(UserContext);
+  const { user, setCurrentPage, currentProfile } = useContext(DataContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);

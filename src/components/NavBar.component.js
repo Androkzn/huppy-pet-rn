@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, Drawer} from '@mui/material';
 import { useNavigate, Link } from "react-router-dom";
-import { UserContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/user.context';
 import * as colors from './styles/Colors'
 import {Image} from './Image.components'
 import Avatar from './Avatar.components'
@@ -13,7 +13,7 @@ import {useUpdateProfile} from "../hooks/query.hooks"
 
 const NavBar = () => {
   const [show, setShow] = useState(false);
-  const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate, currentPage } = useContext(UserContext);
+  const { user, currentProfile, profiles, isSmallScreen, currentDate, setCurrentDate, currentPage } = useContext(DataContext);
   
   const toggleDrawer = (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -84,7 +84,7 @@ const NavBar = () => {
 
 const TemporaryDrawer = (props) => {
   const { show, toggleDrawer, currentProfile, profiles } = props;
-  const {user, logOutUser, setCurrentPage} = useContext(UserContext);
+  const {user, logOutUser, setCurrentPage} = useContext(DataContext);
   const navigate = useNavigate();
   const {mutate: updateProfileMutation} = useUpdateProfile()
 

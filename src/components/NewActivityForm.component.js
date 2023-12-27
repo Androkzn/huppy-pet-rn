@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { useContext, useState } from 'react';
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import * as styles  from './styles/CreateNewActivity.css'
 import {TitleAndDropdown} from "./Form.components"
 import { ButtonText } from "./Buttons.components"
 import * as Enums from "../helpers/Enums.helper"
 
 const NewActivityForm = ({ onCreated, onClose }) => {
-  const {currentProfile } = useContext(UserContext);
+  const {currentProfile } = useContext(DataContext);
   const [value, setValue] = useState(0);
   // Some prefilled form state
   const [form, setForm] = useState({

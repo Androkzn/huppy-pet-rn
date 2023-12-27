@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar.component";
 import TabBar from "./components/TabBar.component";
-import { UserProvider } from "./contexts/user.context";
+import { DataProvider } from "./contexts/user.context";
 import Dashboard from "./pages/Dashboard.page";
 import Home from "./pages/Home.page";
 import Login from "./pages/Login.page";
@@ -20,7 +20,7 @@ import More from "./pages/More.page";
 function App() {
   return (
     <BrowserRouter>
-      <UserProvider>
+      <DataProvider>
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
           <NavBar />
           <div style={{ flex: 1 , overflowY: 'visible' }} >
@@ -44,7 +44,7 @@ function App() {
           </div>
           <TabBar />
         </div>
-      </UserProvider>
+      </DataProvider>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 import { App, Credentials } from "realm-web";
-import { getUserProfiles  } from "../graphql/graphqlUtils";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from "../helpers/Constants.helper"
 import { useGetProfiles, useGetCurrentProfile } from "../hooks/query.hooks";
@@ -10,9 +9,9 @@ import { useGetProfiles, useGetCurrentProfile } from "../hooks/query.hooks";
  
 // Creating a user context to manage and access all the user related functions
 // across different component and pages.
-export const UserContext = createContext();
+export const DataContext = createContext();
 
-export const UserProvider = ({ children }) => {
+export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState("home");
@@ -86,7 +85,7 @@ export const UserProvider = ({ children }) => {
     return (user && currentProfile && profiles)
   };
 
-  return <UserContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
+  return <DataContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
     {children}
-  </UserContext.Provider>;
+  </DataContext.Provider>;
 }

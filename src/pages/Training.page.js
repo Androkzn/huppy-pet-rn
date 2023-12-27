@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from 'react';
 import PageContainer from "../components/PageContainer.component";
-import { UserContext } from '../contexts/user.context';
+import { DataContext } from '../contexts/user.context';
 import * as styles  from '../components/styles/Training.css'
 import * as colors from '../components/styles/Colors';
 import {Image} from '../components/Image.components'
@@ -27,7 +27,7 @@ const Training = () => {
       localStorage.setItem(key, JSON.stringify(value));
     };
 
-  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen } = useContext(UserContext);
+  const {user, currentProfile, currentDate, setCurrentDate, isSmallScreen } = useContext(DataContext);
   // const [currentDate, setCurrentDate] = useState( loadState("currentDate", new Date()));
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState("addTraining");

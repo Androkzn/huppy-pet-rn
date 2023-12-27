@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import * as styles  from '../components/styles/Login.css'
 import LoginForm from '../components/LoginForm.components'
 import Spiner from '../components/Spinner.components'
@@ -10,7 +10,7 @@ import Spiner from '../components/Spinner.components'
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, fetchUser, emailPasswordLogin, setCurrentPage, loadUserProfiles, currentProfile } = useContext(UserContext);
+  const { user, fetchUser, emailPasswordLogin, setCurrentPage, loadUserProfiles, currentProfile } = useContext(DataContext);
   const [loading, setLoading] = useState(true);
 
   const redirectNow = () => {

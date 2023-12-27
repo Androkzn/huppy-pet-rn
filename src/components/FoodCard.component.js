@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext } from "react";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import { useNavigate } from 'react-router-dom';
 import {Image} from './Image.components'
 import * as style from './styles/AddFoodCard.css'
@@ -13,7 +13,7 @@ import '../components/styles/styles.css'
 
 // Function is responsible for updating the training 
 function FoodCard({ food, openAddFoodPage }) {
-  const { user, setCurrentPage, isSmallScreen } = useContext(UserContext);
+  const { user, setCurrentPage, isSmallScreen } = useContext(DataContext);
   const navigate = useNavigate();
   const {mutate: deleteFoodTemplateMutation} = useDeleteFoodTemplate()
 

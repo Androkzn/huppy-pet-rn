@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import PageContainer from "../components/PageContainer.component";
 import * as Enums from "../helpers/Enums.helper"
 import FoodCard from "../components/FoodCard.component"
@@ -34,7 +34,7 @@ const saveState = (key, value) => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setCurrentPage, isSmallScreen, currentDate } = useContext(UserContext);
+  const { user, setCurrentPage, isSmallScreen, currentDate } = useContext(DataContext);
 
   const [mealId, setMealId] = useState(location.state?.mealId || loadState("mealId", ""));
   // State for search query

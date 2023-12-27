@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 
 import { useTheme } from '@mui/material';
-import { UserContext } from "../contexts/user.context";
+import { DataContext } from "../contexts/user.context";
 import { useContext } from "react";
 
 const PageContainer = (props) => {
   const theme = useTheme();
-  const { isSmallScreen } = useContext(UserContext);
+  const { isSmallScreen } = useContext(DataContext);
 
   const defaultPageStyle = {
     display: 'flex',

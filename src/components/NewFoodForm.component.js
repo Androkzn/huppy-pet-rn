@@ -28,8 +28,7 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
   const onSliderChange = (newMeatRatio, newBonesRatio) => {
   setFoodItem({ ...foodItem, "meatRatio": newMeatRatio, "bonesRatio": newBonesRatio });
   }
-  console.log("NewFoodForm image:", image)
-  console.log("NewFoodForm foodItem:", foodItem)
+
   return <div css={styles.addFoodFormStyle}>
     <form >
       <div style={styles.imageContainerStyle}> 

@@ -10,8 +10,6 @@ const FoodImage = ({ foodItem, imageDataUrl, width = 150, borderRadius, borderWi
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
   const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem?.image);
 
-console.log("FoodImage foodItem:", foodItem)
-
   return (
     <div onClick={onClick}>
       {(isImageLoading || isImageError) && foodItem?._id !== "" ? (

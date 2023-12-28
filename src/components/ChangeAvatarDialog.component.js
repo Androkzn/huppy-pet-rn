@@ -131,7 +131,7 @@ const ChangeAvatarDialog = ({updateCurrentProfile, onClose, profile }) => {
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
       const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`); 
-      updateCurrentProfile("avatar", new Date().toISOString())
+      updateCurrentProfile("avatar", "")
       onClose();
     } catch (error) {
       console.log("Error deleting avatar:", error);

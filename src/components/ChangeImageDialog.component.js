@@ -129,7 +129,7 @@ const ChangeImageDialog = ({foodItem, onClose, setFoodItem}) => {
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
       const avatarResult = await axios.delete(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?destination=${destination}`); 
-      setFoodItem("image", "")
+      setFoodItem({ ...foodItem, "image": new Date().toISOString() });
       onClose();
     } catch (error) {
       console.log("Error deleting image:", error);

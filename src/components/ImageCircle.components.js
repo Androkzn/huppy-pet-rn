@@ -38,10 +38,8 @@ const ImageCircle = ({ imageName, imageDataUrl, width = 50, borderRadius = '50%'
     };
   }, [imageDataUrl]); 
  
-  console.log("width", width)
-
   const newWidth =  width > 60 ? 60 : width
-  console.log("newWidth", newWidth)
+  
   return (
     <div onClick={onClick} style={containerStyle}>
       {loading && <Spiner width={newWidth}/>}

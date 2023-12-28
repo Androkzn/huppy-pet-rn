@@ -5,19 +5,16 @@ import {useFetchImage} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
 
 const FoodImage = ({ foodItem, imageDataUrl, width = 150, borderRadius, borderWidth, borderColor, onClick , isEditing = true }) => {
- 
-  //const [loading, setLoading] = useState(true); // Added loading state
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
   const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem?.image);
 
-
-
+console.log("FoodImage foodItem:", foodItem)
 
   return (
     <div onClick={onClick}>
-      {isImageLoading || isImageError ? (
+      {(isImageLoading || isImageError) && foodItem?._id !== "" ? (
         <LoadingAndError isLoading={isImageLoading} isError={isImageError} />
       ) : (
         <ImageCircle

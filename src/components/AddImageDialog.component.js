@@ -42,11 +42,7 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
         input.type = 'file';
         input.accept = 'image/*';
         input.onchange = async (event) => {
-          const file = event.target.files[0] 
-          setFoodItem((prevFoodItem) => ({
-              ...prevFoodItem,
-              image:  file ? URL.createObjectURL(file) : null,
-          }));
+          const file = event.target.files[0]
           setImageSelected(file)
         };
         // Trigger the file input click programmatically
@@ -133,7 +129,7 @@ const AddImageDialog = ({foodItem, onClose, setFoodItem, image, setImage}) => {
     // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);  
     try {
       const avatarResult = await axios.delete(`${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?destination=${destination}`); 
-      setFoodItem("image", "")
+      setFoodItem({ ...foodItem, "image": new Date().toISOString() });
       onClose();
     } catch (error) {
       console.log("Error deleting image:", error);

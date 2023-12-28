@@ -414,7 +414,7 @@ const ProfileForm = ({ updateProfile, addCategory, deleteCategory, updateCategor
           <Avatar
             profile={profile}
             onClick={updateAvatar}
-            width={`${avatarWidth}px`}
+            width={avatarWidth}
           />
       </div>
     

@@ -38,11 +38,9 @@ const ImageCircle = ({ imageName, imageDataUrl, width = 50, borderRadius = '50%'
     };
   }, [imageDataUrl]); 
  
-  const newWidth =  width > 60 ? 60 : width
-  
   return (
     <div onClick={onClick} style={containerStyle}>
-      {loading && <Spiner width={newWidth}/>}
+      {loading && <Spiner width={width > 60 ? 60 : width}/>}
       {errorLoadingImage || !imageDataUrl ? (
         <img
           src={require(`./assets/${imageName}`)}

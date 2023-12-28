@@ -35,18 +35,22 @@ const TabBar = () => {
 
   const handleClick = (event) => {
     const id = parseInt(event.target.id, 10);
-    setValue(id);
+   
     switch (id) {
       case 0: 
+      setValue(0);
       setCurrentPage("")
       return navigate("/");;
       case 1: 
+      setValue(1);
       setCurrentPage("dashboard")
       return navigate("/dashboard");
       case 2: 
+      setValue(3);
       setCurrentPage("training")
       return navigate("/training");
       case 3: 
+      setValue(3);
       setCurrentPage("more")
       return navigate("/more");
     }

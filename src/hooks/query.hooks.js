@@ -9,43 +9,21 @@ import axios from "axios";
 
   // GET IMAGE 
   const useFetchImage = (url, object) => {
- 
-    //console.log("1 Atempt to useFetchImage object", object)
-    const key = 'fetchImage_' + (object?._id || "") 
-    //console.log("1 Atempt to useFetchImage with key", key)
-    return useQuery(['fetchImage', object], async () => {
-        try {
-          const avatarResult = await axios.get(url);
-          //console.log("!!!!! FETCHED for object", object)
-          //console.log("!!!!! useFetchImage avatarResult.data", avatarResult.data)
-           
-          return avatarResult.data;
-        } catch (error) {
-          console.log('Error fetching avatar:', error);
-          return null;
-        }
-      });
-    }
-
-      // GET IMAGE 
-  const useFetchAvatar = (url, profile) => {
-    console.log("1 Atempt to useFetchImage object", profile)
-    const key = 'fetchImage_' + (profile._id || "") 
-    console.log("1 Atempt to useFetchImage with key", key)
-    return useQuery(['fetchImage', profile], async () => {
-        try {
-          const avatarResult = await axios.get(url);
-          console.log("!!!!! FETCHED for object", profile)
-          console.log("!!!!! useFetchImage avatarResult.data", avatarResult.data)
-           
-          return avatarResult.data;
-        } catch (error) {
-          console.log('Error fetching avatar:', error);
-          return null;
-        }
-      });
-    }
-
+    const key = object?._id || "";
+    console.log("!!! Attempt to useFetchImage with key", key);
+  
+    return useQuery(['fetchImage', 'key'], async () => {
+      try {
+        const avatarResult = await axios.get(url);
+        console.error("FETCHED key:", "key");
+        return avatarResult.data;
+      } catch (error) {
+        console.log('Error fetching avatar:', error);
+        throw error; // Rethrow the error to let React Query handle it
+      }
+    });
+  };
+  
   //////////////////////////////
   //     GET / SEARCH        //
   ////////////////////////////

@@ -90,13 +90,13 @@ const More = () => {
         {/* // Health & Wellness */}
         <LinkComponent
           title={"Health & Wellness"}
-          icon={<HealthIcon fill={colors.green} width={30} />}
+          icon={<HealthIcon fill={colors.green} width={30} height={30}/>}
           onClick={() => navigateTo("")}
         />
          {/* // Logout link */}
          <LinkComponent
           title={"Logout"}
-          icon={<LogoutIcon fill={colors.green} width={30} />}
+          icon={<LogoutIcon fill={colors.green} width={30} height={30}/>}
           onClick={logOut}
         />
       </div>  

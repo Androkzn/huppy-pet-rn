@@ -7,7 +7,9 @@ const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '
   const type = 'url';
   const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
 
-  const { data: avatar, isLoading: isLoadingAvatar, isError: isErrorAvatar } = useFetchImage(url, profile);
+  const { data: avatar, isLoading: isLoadingAvatar, isError: isErrorAvatar } = useFetchImage(url, profile, {
+    refetchOnMount: false
+  });
    
   return (
     <div> 

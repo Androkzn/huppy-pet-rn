@@ -10,7 +10,9 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
-  const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem);
+  const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem, {
+    refetchOnMount: false
+  });
 
   return (
     <div onClick={onClick}>

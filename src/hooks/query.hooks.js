@@ -10,12 +10,11 @@ import axios from "axios";
   // GET IMAGE 
   const useFetchImage = (url, object) => {
     const key = object?._id || "";
-    console.log("!!! Attempt to useFetchImage with key", key);
-  
-    return useQuery(['fetchImage', 'key'], async () => {
+    console.log("Attempt to useFetchImage with key", key);
+    return useQuery(['fetchImage', key], async () => {
       try {
         const avatarResult = await axios.get(url);
-        console.error("FETCHED key:", "key");
+        console.error("FETCHED key:", key);
         return avatarResult.data;
       } catch (error) {
         console.log('Error fetching avatar:', error);

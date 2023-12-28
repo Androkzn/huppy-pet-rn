@@ -11,7 +11,11 @@ const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, bord
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
   const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem, {
-    refetchOnMount: false
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    cacheTime: 1 * 60 * 60 * 1000,
+    staleTime: 1 * 60 * 60 * 1000,
+    retry: 1
   });
 
   return (

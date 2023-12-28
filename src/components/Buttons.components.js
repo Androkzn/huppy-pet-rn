@@ -23,7 +23,7 @@ const buttonVariants = {
     paddingLeft: "10px",
     fontWeight: 'bold',
     transition: 'background-color 0.3s',  
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.orange,  
     },
     fill: colors.gray
@@ -46,7 +46,7 @@ const buttonVariants = {
     paddingLeft: "10px",
     fontWeight: 'bold',
     transition: 'background-color 0.3s',  
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.orange,  
     },
     fill: colors.gray
@@ -60,7 +60,7 @@ const buttonVariants = {
     alignItems: 'center',
     textDecoration: 'none',
     transition: 'background-color 0.3s', 
-    '&:hover': {  
+    '&:hover, &:focus': {  
       fill: colors.orange
     },
     fill: colors.green
@@ -80,7 +80,7 @@ const buttonVariants = {
     fontWeight: 'bold',
     transition: 'background-color 0.3s', 
     color: colors.white,
-    '&:hover': {  
+    '&:hover, &:focus': {  
       background: colors.orange,
     },
   },
@@ -113,7 +113,7 @@ const buttonVariants = {
     fontWeight: 'bold',
     transition: 'background-color 0.3s', 
     color: colors.white,
-    '&:hover': {  
+    '&:hover, &:focus': {  
       background: colors.orange,
     },
   },
@@ -133,7 +133,7 @@ const buttonVariants = {
     color: colors.white,
     transition: 'background-color 0.3s', 
     textDecoration: 'none',
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.orange,
     },
   },
@@ -154,7 +154,7 @@ const buttonVariants = {
     transition: 'background-color 0.3s',
     fontSize: "13px",
     textDecoration: 'none',
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.orange,
     },
   },
@@ -175,7 +175,7 @@ const buttonVariants = {
     fontWeight: 'bold',
     transition: 'background-color 0.3s', 
     textDecoration: 'none',
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.lightGreen,
     },
   },
@@ -197,7 +197,7 @@ const buttonVariants = {
     paddingLeft: "10px",
     fontWeight: 'bold',
     transition: 'background-color 0.3s',  
-    '&:hover': {
+    '&:hover, &:focus': {
       background: colors.orange,  
     },
     fill: colors.green

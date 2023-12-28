@@ -101,9 +101,9 @@ const nutritionContainerStyle = {
 
 const backButtonContainerStyle = {
   ...rowStyle,
+  margin: '10px 0 10px 0',
   justifyContent: 'space-between',
-  margin: '20px 0 10px 0',
-  textAlign: 'left',
+  textAlign: 'center',
   fontSize: '15px',
 };
 
@@ -164,7 +164,7 @@ const sectionTitleStyle = {
 
 const sectionImageContainerStyle = {
   cursor: "pointer", 
-  justifyContent: 'center', 
+  justifyContent: 'end', 
   width: '10%', 
   marginRight: "15px",
 };

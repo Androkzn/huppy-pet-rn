@@ -4,7 +4,7 @@ import { useContext, useState, useEffect  } from "react";
 import PageContainer from "../components/PageContainer.component";
 import { DataContext } from "../contexts/data.context";
 import ProfileForm from "../components/ProfileForm.component";
-import {ButtonImage} from '../components/Buttons.components'
+import {ButtonLink} from '../components/Buttons.components'
 import {useAddFoodCategory, useDeleteFoodCategory, useUpdateFoodCategory, useUpdateProfile} from "../hooks/query.hooks"
 import * as styles  from '../components/styles/Profile.css'
 import { Dialog, DialogContent } from '@mui/material';
@@ -52,12 +52,6 @@ const Profile = () => {
       
     } 
   };
-
-  // Navigate to Home page  
-  const navigateBack = () => {
-    setCurrentPage("")
-    navigate("/")
-  }
 
   //Callback func that opens avatar dialog 
   const updateAvatar = async () => {
@@ -165,14 +159,14 @@ const Profile = () => {
   return <PageContainer>
     <div style={styles.fixedTopContainer}>
     <div  style={styles.backButtonContainerStyle}>
-      <ButtonImage
-          variant="backButton"
-          onClick={navigateBack}
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-        >
-         Back
-      </ButtonImage>
+      <ButtonLink
+        variant="backButton"
+        to="/"
+        imageName="arrow_left_green.svg"
+        imageSize={20}
+      >
+        Back
+      </ButtonLink>
       <div  css={styles.profileTitleStyle}>{"Profile"}</div>
       <div style={{width: '100px'}}></div>
     </div>

@@ -35,8 +35,6 @@ const NewFoodForm = ({ addNewFood, foodItem, setFoodItem, updateImage, image }) 
           <FoodImage
             foodItem ={foodItem}
             imageName="food_placeholder.png" 
-            width="150px" 
-            height="150px"
             imageDataUrl={image ? URL.createObjectURL(image) : null}
             onClick={updateImage}
           />

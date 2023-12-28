@@ -9,7 +9,7 @@ const imageSources = [
   './assets/spinner/activity_indicator5.png',
 ];
 
-function PawActivityIndicatorView() {
+function PawActivityIndicatorView({ width = "60px" }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   useEffect(() => {
@@ -29,7 +29,7 @@ function PawActivityIndicatorView() {
       <img
         src={require(`${imageSources[currentImageIndex]}`)}
         alt={'Activity indicator'}
-        style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+        style={{ width: width, height: width, objectFit: 'contain' }}
       />
     </div>
   );

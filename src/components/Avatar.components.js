@@ -2,18 +2,11 @@ import React, { useState, useEffect } from 'react';
 import {ImageCircle} from './ImageCircle.components'
 import {useFetchImage} from "../hooks/query.hooks"
 
-const Avatar = ({ profile, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
+const Avatar = ({ profile, width = 50, borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL
   const type = 'url';
   const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
-
-  const { data: avatar, isLoading: isLoadingAvatar, isError: isErrorAvatar } = useFetchImage(url, profile, {
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    cacheTime: 1 * 60 * 60 * 1000,
-    staleTime: 1 * 60 * 60 * 1000,
-    retry: 1
-  });
+  const { data: avatar, isLoading: isLoadingAvatar, isError: isErrorAvatar } = useFetchImage(url, profile?.avatar);
    
   return (
     <div> 

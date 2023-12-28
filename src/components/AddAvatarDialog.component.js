@@ -126,7 +126,7 @@ const isAvatarEmpty = () => {
           (
             <ImageCircle
               imageName={"avatar_placeholder.png"}
-              width="150px"
+              width= {150}
               imageDataUrl={null}
             />
           ) : (  

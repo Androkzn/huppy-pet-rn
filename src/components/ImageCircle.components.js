@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import Spiner from "../components/Spinner.components"
 
-const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
-  const containertyle = {
+const ImageCircle = ({ imageName, imageDataUrl, width = 50, borderRadius = '50%', borderWidth = '2px', borderColor = 'white', onClick  }) => {
+ 
+  const containerStyle = {
      display: 'flex',
      flexDirection: 'row',
      justifyContent: "center",
@@ -17,10 +19,17 @@ const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '
   };
 
   const [errorLoadingImage, setErrorLoadingImage] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
+
   const handleImageError = () => {
-    
+    setLoading(false);
     setErrorLoadingImage(true);
   };
+
 
   useEffect(() => {
     // Cleanup function to reset the state when the component unmounts
@@ -29,23 +38,30 @@ const ImageCircle = ({ imageName, imageDataUrl, width = '50px', borderRadius = '
     };
   }, [imageDataUrl]); 
  
+  console.log("width", width)
 
+  const newWidth =  width > 60 ? 60 : width
+  console.log("newWidth", newWidth)
   return (
-    <div onClick={onClick} style={containertyle}>
-    { errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
-    <img
-      src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
-      alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text
-      style={imageStyle}
-    />
-    ) : (
-    <img
-      src={imageDataUrl}  
-      alt={imageName.replace(/\.[^/.]+$/, '')}
-      style={imageStyle}
-      onError={handleImageError}
-    />
-    )}
+    <div onClick={onClick} style={containerStyle}>
+      {loading && <Spiner width={newWidth}/>}
+      {errorLoadingImage || !imageDataUrl ? (
+        <img
+          src={require(`./assets/${imageName}`)}
+          alt={imageName.replace(/\.[^/.]+$/, '')}
+          style={{ ...imageStyle, display: loading ? 'none' : 'block' }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+        />
+      ) : (
+        <img
+          src={imageDataUrl}
+          alt={imageName.replace(/\.[^/.]+$/, '')}
+          style={{ ...imageStyle, display: loading ? 'none' : 'block' }}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+        />
+      )}
     </div>
   );
 };

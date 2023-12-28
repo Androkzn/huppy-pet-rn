@@ -4,24 +4,21 @@ import * as colors from './styles/Colors'
 import {useFetchImage} from "../hooks/query.hooks"
 import LoadingAndError from "../components/LoadingAndError.components"
 
-const FoodImage = ({ foodItem, imageDataUrl, width = '150px', borderRadius, borderWidth, borderColor, onClick , isEditing = true }) => {
+const FoodImage = ({ foodItem, imageDataUrl, width = 150, borderRadius, borderWidth, borderColor, onClick , isEditing = true }) => {
  
   //const [loading, setLoading] = useState(true); // Added loading state
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`
-  const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem, {
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    cacheTime: 1 * 60 * 60 * 1000,
-    staleTime: 1 * 60 * 60 * 1000,
-    retry: 1
-  });
+  const { data: image, isLoading: isImageLoading, isError: isImageError } = useFetchImage(url, foodItem?.image);
+
+
+
 
   return (
     <div onClick={onClick}>
       {isImageLoading || isImageError ? (
-        <LoadingAndError isLoading={isImageLoading} isError={isImageError}/>
+        <LoadingAndError isLoading={isImageLoading} isError={isImageError} />
       ) : (
         <ImageCircle
           imageName={isEditing ? "add_food_placeholder_orange.png" : "food_placeholder.png"}

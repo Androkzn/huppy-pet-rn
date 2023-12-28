@@ -6,23 +6,29 @@ import axios from "axios";
   //////////////////////////////
   //     GET IMAGE           //
   ////////////////////////////
-
-  // GET IMAGE 
-  const useFetchImage = (url, object) => {
-    const key = object?._id || "";
-    console.log("Attempt to useFetchImage with key", key);
-    return useQuery(['fetchImage', key], async () => {
+// GET IMAGE
+const useFetchImage = (url, key) => {
+  // console.log("Attempt to useFetchImage with key", key);
+  return useQuery([key], async () => {
       try {
         const avatarResult = await axios.get(url);
-        console.error("FETCHED key:", key);
+        console.error("FETCHED avatarResult.data:", avatarResult.data);
         return avatarResult.data;
       } catch (error) {
         console.log('Error fetching avatar:', error);
         throw error; // Rethrow the error to let React Query handle it
       }
-    });
-  };
-  
+    },
+    {
+      enabled: !!key,
+      refetchOnMount: false,
+      onSuccess: (data) => {
+        
+      }
+    }
+  );
+};
+
   //////////////////////////////
   //     GET / SEARCH        //
   ////////////////////////////

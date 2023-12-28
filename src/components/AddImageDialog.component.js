@@ -210,7 +210,7 @@ const isImageEmpty = () => {
           (
             <ImageCircle
               imageName={"food_placeholder.png"}
-              width="150px"
+              width={150}
               imageDataUrl={null}
             />
           ) : (  

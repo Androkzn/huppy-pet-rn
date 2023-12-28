@@ -273,7 +273,7 @@ const RegisterForm = ({ profile, avatar, customFoodCategories, setProfile, addCa
       <div style={styles.imageContainerStyle}>
         <ImageCircle
           imageName={"avatar_placeholder.png"}
-          width="150px"
+          width={150}
           imageDataUrl={avatar ? URL.createObjectURL(avatar) : null}
           onClick={updateAvatar}
         />

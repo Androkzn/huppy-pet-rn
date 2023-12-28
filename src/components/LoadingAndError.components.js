@@ -23,10 +23,11 @@ const LoadingAndError = (isLoading, isError) => {
   if (isError) {
     return (
       <div style={placeholderStyle}>
-        <Image imageName="general_error.png" width="200" height="250"/>
+        //<Image imageName="general_error.png" width="200" height="250"/>
       </div>
     )
   }
+  
 }
 
 export default LoadingAndError;

@@ -39,7 +39,6 @@ const Home = () => {
     }
   }, [currentDate, currentProfile]);
 
-
   function getTotalCategoryWeight (category) {
     return Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
   }

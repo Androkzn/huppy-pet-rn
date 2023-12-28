@@ -1,7 +1,6 @@
 
 import request, { gql } from "graphql-request";
 import { getStartAndEndOfToday, getStartAndEndOfWeek, getEndOfDay, getStartOfDay } from "../helpers/Date.helper";
-import { useContext } from 'react';
 
 const GRAPHQL_ENDPOINT = process.env.REACT_APP_GRAPHQL_ENDPOINT
 
@@ -21,7 +20,7 @@ const refreshAccessToken= async (user) => {
 // Func that is responsible for searching Food Templates in DB 
 // it return array of FoodTemplates based on search string
 const searchForFood= async (searchQuery, user) => {
-  if (!user) { return []}
+  if (!user || (user._accessToken === null) ) { return []}
     const accessToken = user._accessToken;
     const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -79,7 +78,7 @@ const searchForFood= async (searchQuery, user) => {
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 const  getAllFoodForMeal= async (user, currentProfile, mealId) => {
-  if (!user) { return []}
+  if (!user || (user._accessToken === null)) { return []}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const headers = { Authorization: `Bearer ${accessToken}` };
@@ -119,21 +118,21 @@ const  getAllFoodForMeal= async (user, currentProfile, mealId) => {
         // Update the 'food' state with the fetched data
         return resp.foods;
     } catch (error) {
-      if (error.response.error_code === "InvalidSession") {
+      if (error.response.error_code === "InvalidSession" || error.response?.status === 401) {
+        console.error('InvalidSession', error);
         await refreshAccessToken(user)
         getAllFoodForMeal(user, mealId)
-        console.error('InvalidSession', error);
       } else {
         console.error('Error fetching food for meal', error);
       }
-
+      throw error;
       return []
     }
 }
 
 // Func that is responsible for fetching  all food for specific time period
 const getFoodForPeriod= async (user, currentProfile, startTime, endTime) => {
-  if (!user) {
+  if (!user || (user._accessToken === null)) {
     return [];
   }
 
@@ -196,7 +195,7 @@ const getFoodForPeriod= async (user, currentProfile, startTime, endTime) => {
 
 // Func that is responsible for fetching  all food for specific time period
 const getActivitiesForPeriod= async (user, currentProfile, startTime, endTime) => {
-  if (!user) {
+  if (!user || (user._accessToken === null)) {
     return [];
   }
 
@@ -250,7 +249,7 @@ const getActivitiesForPeriod= async (user, currentProfile, startTime, endTime) =
 
 // Func that is responsible for fetching  all food for specific time period
 const getTrainingsForPeriod= async (user, currentProfile, startTime, endTime) => {
-  if (!user) {
+  if (!user || (user._accessToken === null)) {
     return [];
   }
 
@@ -307,7 +306,7 @@ const getTrainingsForPeriod= async (user, currentProfile, startTime, endTime) =>
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 const getAllCustomFoodTemplates= async (user) =>{
-  if (!user) { return []}
+  if (!user || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -361,7 +360,7 @@ const getAllCustomFoodTemplates= async (user) =>{
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 const getAllFoodTemplatesForCategory = async (user, categoryType) =>{
-  if (!user) { return []}
+  if (!user || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -419,7 +418,7 @@ const getAllFoodTemplatesForCategory = async (user, categoryType) =>{
 // Func that is responsible for fetching  all food for specific meal
 // it returna array of Food
 const getAllFoodCategories= async (user, profileId) => {
-  if (!user) { return []}
+  if (!user || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -462,7 +461,7 @@ const getAllFoodCategories= async (user, profileId) => {
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 const deleteMeal= async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -496,7 +495,7 @@ const deleteMeal= async ({user, _id}) => {
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 const deleteActivity = async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -531,7 +530,7 @@ const deleteActivity = async ({user, _id}) => {
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 const deleteTraining= async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -565,7 +564,7 @@ const deleteTraining= async ({user, _id}) => {
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
 const deleteFood= async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -598,7 +597,7 @@ const deleteFood= async ({user, _id}) => {
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
 const deleteFoodTemplate= async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -632,7 +631,7 @@ const deleteFoodTemplate= async ({user, _id}) => {
 // Func that is responsible for deleting a food template based on the expense-id
 // it return bool value
 const deleteFoodCategory= async ({user, _id}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -665,7 +664,7 @@ const deleteFoodCategory= async ({user, _id}) => {
 // Func that is responsible for adding Food to DB   
 // it return bool value
 const addFood= async ({user, mealId, currentProfile, foodItem, selectedDate}) =>{
-    if (!user) { return false}
+    if (!user || (user._accessToken === null)) { return false}
 
     const accessToken = user._accessToken;
     const userId = user.id
@@ -722,7 +721,7 @@ const addFood= async ({user, mealId, currentProfile, foodItem, selectedDate}) =>
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
 const addFoodTemplate= async ({user, foodItem}) => {
-  if (!user) { return { success: false, templateId: "" }}
+  if (!user || (user._accessToken === null)) { return { success: false, templateId: "" }}
   const accessToken = user._accessToken;
   const userId = user.id
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -783,8 +782,8 @@ const addFoodTemplate= async ({user, foodItem}) => {
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
 const getUserProfiles= async (user) => {
-  if (!user) { 
-    return null;
+  if (!user || (user._accessToken === null)) { 
+    return [];
   }
 
     const accessToken = user._accessToken;
@@ -833,8 +832,6 @@ const getUserProfiles= async (user) => {
   try {
     const resp = await request(GRAPHQL_ENDPOINT, getProfiles, queryVariablesProfiles, headers);
     const profiles = resp.profiles.map(profile => ({ ...profile, key: profile._id })) 
-    // const currentProfileFetched = resp.profiles.filter(profile => profile.isCurrent === true);
-    // const currentProfile = currentProfileFetched[0];
     return profiles
   } catch (error) {
     if (error.response.error_code === "InvalidSession") {
@@ -845,14 +842,14 @@ const getUserProfiles= async (user) => {
       console.error('Error loading profiles:', error);
     }
     
-    return null;
+    return [];
   }
 }
 
 // Func that is responsible for fetching  all all profiles for specific user
 // it returna arrayprofiles and current profile
 const getCurrentProfile= async (user) =>{
-  if (!user) { 
+  if (!user || (user._accessToken === null)) { 
     return null;
   }
 
@@ -922,7 +919,7 @@ const getCurrentProfile= async (user) =>{
 // Func that is responsible for adding FoodTemplate to DB   
 // it return bool value
 const addProfile= async ({user, profile}) => {
-  if (!user) { return null}
+  if (!user || (user._accessToken === null)) { return null}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -996,7 +993,7 @@ const addProfile= async ({user, profile}) => {
 };
 
 const loadMeals= async (user, currentProfile, currentDate, isToday = true) =>  {
-  if (!user || !currentProfile) { return []}
+  if (!user || !currentProfile || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -1049,7 +1046,7 @@ const loadMeals= async (user, currentProfile, currentDate, isToday = true) =>  {
 }
 
 const loadFood= async (user, currentProfile, currentDate, isToday) => {
-  if (!user || !currentProfile) { return []}
+  if (!user || !currentProfile || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -1112,7 +1109,7 @@ try {
 }
 
 const loadActivities= async (user, currentProfile, currentDate) => {
-  if (!user || !currentProfile) { return []}
+  if (!user || !currentProfile || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -1165,7 +1162,7 @@ const loadActivities= async (user, currentProfile, currentDate) => {
 }
 
 const loadTrainings= async (user, currentProfile, currentDate) => {
-  if (!user || !currentProfile) { return []}
+  if (!user || !currentProfile || (user._accessToken === null)) { return []}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -1219,7 +1216,7 @@ const loadTrainings= async (user, currentProfile, currentDate) => {
 }
 
 const addMeal = async ({user, currentProfile, currentDate}) => {
-  if (!user || !currentProfile) { return false}
+  if (!user || !currentProfile || (user._accessToken === null)) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1262,7 +1259,7 @@ const addMeal = async ({user, currentProfile, currentDate}) => {
 
 const addActivity = async ({user, currentProfile, selectedDate, data}) => {
 
-    if (!user || !currentProfile) { return false}
+    if (!user || !currentProfile || (user._accessToken === null)) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1305,7 +1302,7 @@ const addActivity = async ({user, currentProfile, selectedDate, data}) => {
 }
 
 const addTraining = async ({user, currentProfile, selectedDate, data}) => {
-  if (!user || !currentProfile) { return false}
+  if (!user || !currentProfile || (user._accessToken === null)) { return false}
     const accessToken = user._accessToken;
     const profileId = currentProfile._id
     const userId = user.id
@@ -1348,7 +1345,7 @@ const addTraining = async ({user, currentProfile, selectedDate, data}) => {
 }
 
 const addFoodCategory= async ({user, currentProfile, data}) => {
-  if (!user || !currentProfile) { return false}
+  if (!user || !currentProfile || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const profileId = currentProfile._id
   const userId = user.id
@@ -1390,7 +1387,7 @@ const addFoodCategory= async ({user, currentProfile, data}) => {
 
 // Function to update an activity
 const updateActivity= async ({user, activityId, updateData}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1430,7 +1427,7 @@ const updateActivity= async ({user, activityId, updateData}) => {
 
 // Function to update an training
 const updateTraining= async ({user, trainingId, updateData}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1474,7 +1471,7 @@ const updateTraining= async ({user, trainingId, updateData}) => {
 
 // Function to update Profile
 const updateProfile= async ({user, profileId, updateData}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1534,7 +1531,7 @@ const updateProfile= async ({user, profileId, updateData}) => {
 
 // Function to update an Food Category
 const  updateFoodCategory= async ({user, categoryId, updateData}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
 
@@ -1577,7 +1574,7 @@ const  updateFoodCategory= async ({user, categoryId, updateData}) => {
 
 // Function to update an Food Category
 const updateFood= async ({user, foodId, updateData}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
 
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };
@@ -1614,7 +1611,7 @@ const updateFood= async ({user, foodId, updateData}) => {
 
 // Function to update an Foof Template
 const updateFoodTemplate= async ({user, foodItem}) => {
-  if (!user) { return false}
+  if (!user || (user._accessToken === null)) { return false}
 
   const accessToken = user._accessToken;
   const headers = { Authorization: `Bearer ${accessToken}` };

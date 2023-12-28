@@ -19,9 +19,8 @@ export const DataProvider = ({ children }) => {
   const isMediumlScreen = useMediaQuery(Constants.mediumlScreen);
   const isLargeScreen = useMediaQuery(Constants.largeScreen);
 
- 
-  const { data: profiles, isLoading: isLoadingProfiles, isError: isErrorProfiles} = useGetProfiles(user);
-  const { data: currentProfile, isLoading: isLoadingProfile, isError: isErrorProfile} = useGetCurrentProfile(user);
+ const { data: profiles, isLoading: isLoadingProfiles, isError: isErrorProfiles} = useGetProfiles(user) 
+ const { data: currentProfile, isLoading: isLoadingProfile, isError: isErrorProfile} = useGetCurrentProfile(user)
 
     // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
@@ -33,7 +32,6 @@ export const DataProvider = ({ children }) => {
     }  
     return authedUser;
   };
-
 
   // Function to signup user into our Realm using their email & password
   const emailPasswordSignup = async (email, password) => {
@@ -50,6 +48,7 @@ export const DataProvider = ({ children }) => {
 
   // Function to fetch-user(if the user is already logged in) from local storage
   const fetchUser = async () => {
+   
     if (!app.currentUser) return null;
     try {
       await app.currentUser.refreshCustomData();
@@ -81,8 +80,17 @@ export const DataProvider = ({ children }) => {
 
   // Fetch profiles when user is fetched
   useEffect(() => {
-      loadUserProfiles(user);
+    loadUserProfiles(user);
   }, [user]);
+
+    // Fetch profiles when user is fetched
+  useEffect(() => {
+    if (user?._accessToken === undefined || user?._accessToken === null ) {
+      console.log("User accessToken:",user?._accessToken)
+      //alert("User session is expired. Please login again. ");
+      setUser(null);
+    }
+  }, [user?._accessToken]);
 
   const loadUserProfiles = async (user) => {
     return (user && currentProfile && profiles)

@@ -161,14 +161,14 @@ const useSearchForFood = (searchQuery, selectedFilter, selectedCategory, user) =
 
   // GET PTOFILES
   const useGetProfiles = (user) => {
-    return useQuery(['getProfiles', user], async () => {
+    return useQuery(['getProfiles', user?._accessToken], async () => {
         return graphql.getUserProfiles(user);
     });
   };
 
   // GET CURRENT PROFILE
   const useGetCurrentProfile = (user) => {
-    return useQuery(['getCurrentProfile', user], async () => {
+    return useQuery(['getCurrentProfile', user?._accessToken], async () => {
         return graphql.getCurrentProfile(user);
     });
   };

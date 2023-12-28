@@ -89,8 +89,8 @@ function TrainingCard({ training }) {
               </div>
 
               <div style={styleTraining.columnStyle}>
-                <h4 style={styleTraining.textTitleStyle}>{getTainingCategory()}</h4>
-                <h4 style={styleTraining.textStyle}>What to train: {getTainingType()}</h4>
+                <div style={styleTraining.textTitleStyle}>{getTainingCategory()}</div>
+                <div style={styleTraining.textStyle}>{getTainingType()}</div>
               </div>
             </div>
           </div>

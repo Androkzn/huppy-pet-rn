@@ -32,17 +32,19 @@ import * as colors from './Colors'
   };
 
   const textTitleStyle = {
-    padding: '5px',
+    padding: '10px 5px 0px 5px',
     margin: '0px',
     textAlign: 'left',
-    fontSize: '20px',
+    fontSize: '17px',
     color: colors.green,
+    fontWeight: "bold",
   };
 
  const textStyle = {
     padding: '5px',
     margin: '0px',
     textAlign: 'left',
+    fontSize: '15px',
   };
 
  

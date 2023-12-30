@@ -1,86 +1,106 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, Fragment, useEffect } from "react";
-import { DataContext } from "../contexts/data.context.js";
-import * as styles  from '../components/styles/Meals.css'
-import {ButtonImage, ButtonText} from '../components/Buttons.components'
+import { useContext, useState, Fragment, useEffect } from 'react';
+import { DataContext } from '../contexts/data.context.js';
+import * as styles from '../components/styles/Meals.css';
+import { ButtonImage, ButtonText } from '../components/Buttons.components';
 import { useNavigate } from 'react-router-dom';
-import {Image} from '../components/Image.components'
-import Swipe  from './Swipe.components.tsx';
+import { Image } from '../components/Image.components';
+import Swipe from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
-import {useGetAllFoodForMeal, useGetFoodForDate, useUpdateFood, useAddMeal, useDeleteFood, useDeleteMeal} from "../hooks/query.hooks"
+import {
+  useGetAllFoodForMeal,
+  useGetFoodForDate,
+  useUpdateFood,
+  useAddMeal,
+  useDeleteFood,
+  useDeleteMeal,
+} from '../hooks/query.hooks';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import { styled, alpha } from '@mui/material/styles';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import { BottomSheet } from 'react-spring-bottom-sheet'
-import 'react-spring-bottom-sheet/dist/style.css'
-import CustomDatePickerWithArrows from "../components/CustomDatePickerWithArrows.component";
-import CustomDatePicker from "../components/CustomDatePicker.component";
-import LoadingAndError from "../components/LoadingAndError.components"
-import CustomCheckbox from "./Checkbox.component";
-import {useAddFood} from "../hooks/query.hooks"
-import {ButtonsAndTextField} from "../components/Form.components.js"
+import { BottomSheet } from 'react-spring-bottom-sheet';
+import 'react-spring-bottom-sheet/dist/style.css';
+import CustomDatePickerWithArrows from '../components/CustomDatePickerWithArrows.component';
+import CustomDatePicker from '../components/CustomDatePicker.component';
+import LoadingAndError from '../components/LoadingAndError.components';
+import CustomCheckbox from './Checkbox.component';
+import { useAddFood } from '../hooks/query.hooks';
+import { ButtonsAndTextField } from '../components/Form.components.js';
 
 function MealCard({ meal, index, mealsCount }) {
-  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage} = useContext(DataContext);
+  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage } =
+    useContext(DataContext);
   const navigate = useNavigate();
   const mealId = meal._id;
-  const selectedDate = meal.date
+  const selectedDate = meal.date;
   const [isMealsExpanded, setMealsExpanded] = useState(true);
-  const [isCopyFromMealExpanded, setCopyFromMealExpanded] = useState(false)
-  const [copyFromDate, setCopyFromDate]  = useState(Date())
+  const [isCopyFromMealExpanded, setCopyFromMealExpanded] = useState(false);
+  const [copyFromDate, setCopyFromDate] = useState(Date());
   const [checkedMealsIds, setCheckedMeals] = useState([]);
   const [checkedFoodsIds, setCheckedFoods] = useState([]);
   const [isCopyTo, setIsCopyTo] = useState(false);
-  const [isEditFoodExpanded, setEditFoodExpanded] = useState(false)
-  const [editingFood, setEditingFood] = useState(null)
+  const [isEditFoodExpanded, setEditFoodExpanded] = useState(false);
+  const [editingFood, setEditingFood] = useState(null);
 
-  const { data: food, isLoading: isLoadingFood, isError: isErrorFood} = useGetAllFoodForMeal(user, currentProfile, mealId);
-  const { data: foodForDate, isLoading: isLoadingFoodForDate, isError: isErrorFoodForDate} = useGetFoodForDate(user, currentProfile, copyFromDate, true);
+  const {
+    data: food,
+    isLoading: isLoadingFood,
+    isError: isErrorFood,
+  } = useGetAllFoodForMeal(user, currentProfile, mealId);
+  const {
+    data: foodForDate,
+    isLoading: isLoadingFoodForDate,
+    isError: isErrorFoodForDate,
+  } = useGetFoodForDate(user, currentProfile, copyFromDate, true);
 
-  const {mutate: addMealMutation} = useAddMeal()
-  const {mutate: deleteMealMutation} = useDeleteMeal()
-  const {mutate: deleteFoodMutation} = useDeleteFood()
-  const {mutate: addFoodMutation} = useAddFood()
-  const {mutate: updateFoodMutation} = useUpdateFood()
+  const { mutate: addMealMutation } = useAddMeal();
+  const { mutate: deleteMealMutation } = useDeleteMeal();
+  const { mutate: deleteFoodMutation } = useDeleteFood();
+  const { mutate: addFoodMutation } = useAddFood();
+  const { mutate: updateFoodMutation } = useUpdateFood();
 
   // Function is responsible for creating a new meal
   const addMealForDate = async () => {
     addMealMutation({
-      user:user, 
-      currentProfile:currentProfile, 
-      currentDate: currentDate
-    })
+      user: user,
+      currentProfile: currentProfile,
+      currentDate: currentDate,
+    });
   };
 
-   // Function 
-   const copyMeal = async () => {
-    const checkedFoods = foodForDate.filter(food => checkedFoodsIds.includes(food._id));
- 
+  // Function
+  const copyMeal = async () => {
+    const checkedFoods = foodForDate.filter((food) =>
+      checkedFoodsIds.includes(food._id)
+    );
+
     if (isCopyTo) {
-    // Create a meal first
-      addMealMutation({
-        user:user, 
-        currentProfile:currentProfile, 
-        currentDate: currentDate
-      },
-      {
-        onSuccess: (data) => {
-          const id = data
-           // Add selected food to just created meal
-          for (const food of checkedFoods) {
-            addFoodMutation({
-              user: user,
-              mealId: id,
-              currentProfile: currentProfile,
-              foodItem: food,
-              selectedDate: currentDate,
-            });
-          }
+      // Create a meal first
+      addMealMutation(
+        {
+          user: user,
+          currentProfile: currentProfile,
+          currentDate: currentDate,
         },
-      })
+        {
+          onSuccess: (data) => {
+            const id = data;
+            // Add selected food to just created meal
+            for (const food of checkedFoods) {
+              addFoodMutation({
+                user: user,
+                mealId: id,
+                currentProfile: currentProfile,
+                foodItem: food,
+                selectedDate: currentDate,
+              });
+            }
+          },
+        }
+      );
     } else {
       // Add selected food to the current meal
       for (const food of checkedFoods) {
@@ -97,18 +117,18 @@ function MealCard({ meal, index, mealsCount }) {
 
   //Clear aaray of selected meals and food when date is changed
   useEffect(() => {
-    clearSelectedFood()
+    clearSelectedFood();
   }, [copyFromDate]);
 
-   //Clear aaray of selected meals and food for copy 
-  const clearSelectedFood=() => {
-    setCheckedMeals([])
-    setCheckedFoods([])
-  }
+  //Clear aaray of selected meals and food for copy
+  const clearSelectedFood = () => {
+    setCheckedMeals([]);
+    setCheckedFoods([]);
+  };
 
   // Function to handle checkbox change for meals
   const handleMealCheckboxChange = (event, mealId) => {
-    const isChecked = event.target.checked
+    const isChecked = event.target.checked;
 
     if (isChecked) {
       // Add mealId to the list of checked meals
@@ -128,40 +148,40 @@ function MealCard({ meal, index, mealsCount }) {
 
       // Remove all food items of the unchecked meal from the list of checked foods
       const mealFoods = foodForDate.filter((food) => food.mealId === mealId);
-      console.log("mealFoods", mealFoods)
-      console.log("mealId", mealId)
+      console.log('mealFoods', mealFoods);
+      console.log('mealId', mealId);
       setCheckedFoods((prevCheckedFoods) =>
-        prevCheckedFoods.filter((id) => !mealFoods.some((food) => food._id === id))
+        prevCheckedFoods.filter(
+          (id) => !mealFoods.some((food) => food._id === id)
+        )
       );
     }
-    
-
   };
 
-    // Function to handle checkbox change for foods
-    const handleFoodCheckboxChange = (event, foodId) => {
-      const isChecked = event.target.checked
+  // Function to handle checkbox change for foods
+  const handleFoodCheckboxChange = (event, foodId) => {
+    const isChecked = event.target.checked;
 
-      if (isChecked) {
-        // Add foodId to the list of checked foods
-        setCheckedFoods((prevCheckedFoods) => [...prevCheckedFoods, foodId]);
-      } else {
-        // Remove foodId from the list of checked foods
-        setCheckedFoods((prevCheckedFoods) =>
-          prevCheckedFoods.filter((id) => id !== foodId)
-        );
-      }
-    };
+    if (isChecked) {
+      // Add foodId to the list of checked foods
+      setCheckedFoods((prevCheckedFoods) => [...prevCheckedFoods, foodId]);
+    } else {
+      // Remove foodId from the list of checked foods
+      setCheckedFoods((prevCheckedFoods) =>
+        prevCheckedFoods.filter((id) => id !== foodId)
+      );
+    }
+  };
 
   const getGroopedFood = () => {
     if (!foodForDate || foodForDate.length === 0) return [];
-  
+
     const groupedFoods = foodForDate.reduce((result, food) => {
       const mealId = food.mealId;
-  
+
       // Find the index of the array with the corresponding mealId
       const index = result.findIndex((group) => group[0]?.mealId === mealId);
-  
+
       if (index !== -1) {
         // If the array with the mealId exists, push the food to it
         result[index].push(food);
@@ -169,10 +189,10 @@ function MealCard({ meal, index, mealsCount }) {
         // If the array with the mealId doesn't exist, create a new array
         result.push([food]);
       }
-  
+
       return result;
     }, []);
-  
+
     return groupedFoods;
   };
 
@@ -181,110 +201,122 @@ function MealCard({ meal, index, mealsCount }) {
     deleteMealMutation({
       user: user,
       _id: mealId,
-    })
-    await Promise.all(food.map(async foodItem => {
-      deleteFoodMutation({
-        user: user, 
-        _id: foodItem._id,
-      });
-    }));
-  }
+    });
+    await Promise.all(
+      food.map(async (foodItem) => {
+        deleteFoodMutation({
+          user: user,
+          _id: foodItem._id,
+        });
+      })
+    );
+  };
 
   const openAddFoodPage = () => {
-    setCurrentPage("searchFood")
-    navigate("/searchFood", { state: { mealId, selectedDate } });
-  }
-
+    setCurrentPage('searchFood');
+    navigate('/searchFood', { state: { mealId, selectedDate } });
+  };
 
   // Function to calculate the total weight of food for entire meal
-  const calculateTotalWeight= (foodItems) => {
-    const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.weight), 0);
+  const calculateTotalWeight = (foodItems) => {
+    const total = foodItems.reduce(
+      (total, foodItem) => total + Number(foodItem.weight),
+      0
+    );
     return Math.floor(total);
-  }
-   // Function to calculate the total calories of food for entire meal
-  const calculateTotalCalories= (foodItems) => {
-    const total = foodItems.reduce((total, foodItem) => total + Number(foodItem.calories/100 * foodItem.weight), 0);
+  };
+  // Function to calculate the total calories of food for entire meal
+  const calculateTotalCalories = (foodItems) => {
+    const total = foodItems.reduce(
+      (total, foodItem) =>
+        total + Number((foodItem.calories / 100) * foodItem.weight),
+      0
+    );
     return Math.floor(total);
-  }
-
+  };
 
   // Function is responsible for saving just editedfood
-  const saveEditedFood= async (newValue) => {
+  const saveEditedFood = async (newValue) => {
     const data = {
-      weight: newValue
-    }
+      weight: newValue,
+    };
     updateFoodMutation({
       user: user,
       foodId: editingFood?._id,
       updateData: data,
-    })
-  }
+    });
+  };
 
   // Food item component
-  const FoodItem = ({foodItem}) => {
+  const FoodItem = ({ foodItem }) => {
     // Function is responsible for deleting the Food
     const deleteCurrentFood = async () => {
-        deleteFoodMutation({
-          user: user, 
-          _id: foodItem._id,
-        });
+      deleteFoodMutation({
+        user: user,
+        _id: foodItem._id,
+      });
     };
 
     // Function is responsible forediting the Food
-    const editCurrentFood= async () => {
-      setEditingFood(foodItem)
-      setEditFoodExpanded(true)
-    }
- 
+    const editCurrentFood = async () => {
+      setEditingFood(foodItem);
+      setEditFoodExpanded(true);
+    };
+
     // Function is responsible calculate calories the Food
     const getcaloriesForFood = (foodItem) => {
-      return Math.floor(foodItem.calories / 100 * foodItem.weight)
-    }
+      return Math.floor((foodItem.calories / 100) * foodItem.weight);
+    };
 
     return (
       <Swipe
-        height={50}  
-        onLeftSwipe={deleteCurrentFood} 
-        leftSwipeComponent={  <Image imageName={`delete_white.svg`} width="25" height="25" />}
+        height={50}
+        onLeftSwipe={deleteCurrentFood}
+        leftSwipeComponent={
+          <Image imageName={`delete_white.svg`} width="25" height="25" />
+        }
         onLeftSwipeConfirm={(onSuccess, onCancel) => {
-          if (window.confirm("Do you really want to delete this item ?")) {
+          if (window.confirm('Do you really want to delete this item ?')) {
             onSuccess();
           } else {
             onCancel();
           }
         }}
-        distructiveLeftSwipe = {true}
+        distructiveLeftSwipe={true}
         onRightSwipe={editCurrentFood}
-        rightSwipeComponent={  <Image imageName={ `edit_white.svg`} width="20" height="20" />}
+        rightSwipeComponent={
+          <Image imageName={`edit_white.svg`} width="20" height="20" />
+        }
         className="swiper"
         leftSwipeColor={colors.orange}
         rightSwipeColor={colors.lightGreen2}
       >
-       <div style={styles.foodListRowStyle} key={foodItem._id}>
+        <div style={styles.foodListRowStyle} key={foodItem._id}>
           <div style={styles.headerFoodStyle()}>
             <div style={styles.headerTextStyle()}>
               <div style={styles.headingFoodStyle}>{foodItem.name}</div>
-              <div  style={styles.caloriesAndWeightContainerStyle}> 
-                <div style={styles.caloriesValueStyle}>{getcaloriesForFood(foodItem)}</div>
+              <div style={styles.caloriesAndWeightContainerStyle}>
+                <div style={styles.caloriesValueStyle}>
+                  {getcaloriesForFood(foodItem)}
+                </div>
                 <div style={styles.weightValueStyle}>{foodItem.weight}</div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
       </Swipe>
-    )
-  }
+    );
+  };
 
-  const FoodList = ({data}) => {
-    return(
-      <div  css={styles.foodListStyle}>
-      {food.map((foodItem) => (
-        <FoodItem foodItem={foodItem}  key={foodItem._id}/>
-      ))}
-    </div>
-    )
-  }
-
+  const FoodList = ({ data }) => {
+    return (
+      <div css={styles.foodListStyle}>
+        {food.map((foodItem) => (
+          <FoodItem foodItem={foodItem} key={foodItem._id} />
+        ))}
+      </div>
+    );
+  };
 
   const MorePopup = () => {
     const StyledMenu = styled((props) => (
@@ -302,7 +334,7 @@ function MealCard({ meal, index, mealsCount }) {
       />
     ))(({ theme }) => ({
       '& .MuiPaper-root': {
-        backgroundColor: alpha(colors.grayBackground, 1 ),
+        backgroundColor: alpha(colors.grayBackground, 1),
         borderRadius: 10,
         marginTop: theme.spacing(2),
         minWidth: 180,
@@ -314,341 +346,374 @@ function MealCard({ meal, index, mealsCount }) {
         },
         '& .MuiMenuItem-root': {
           '&:active': {
-            backgroundColor: alpha(colors.lightOrange, 0.5 ),
+            backgroundColor: alpha(colors.lightOrange, 0.5),
           },
         },
       },
     }));
 
-
-    return ( 
-    <PopupState variant="popover" popupId="demo-popup-menu">
-      {(popupState) => (
-        <Fragment>
-          <ButtonImage
+    return (
+      <PopupState variant="popover" popupId="demo-popup-menu">
+        {(popupState) => (
+          <Fragment>
+            <ButtonImage
               variant="addButton"
-              width='60px'
+              width="60px"
               height={30}
               margin={0}
               padding={0}
               imageName="more_white.svg"
               imageSize={20}
               {...bindTrigger(popupState)}
-            >
-          </ButtonImage>
-          <StyledMenu {...bindMenu(popupState)}>
-            {/* Copy from date  */}
-            <MenuItem onClick={() => {}
-            }>
-              <div style={{marginRight: "10px"}}>
-                <Image 
-                  imageName= {"copy_green.svg"}
-                  width="15" 
-                  height="15" 
-                />
-              </div>
-              <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy from</div> 
-              <div style={styles.pickerContainerStyle}> 
-                <CustomDatePicker
-                  value={copyFromDate}
-                  onChange={(date) => {
-                    setCopyFromDate(date)
-                    setIsCopyTo(false)
-                    popupState.close()
-                    setCopyFromMealExpanded(true)
+            ></ButtonImage>
+            <StyledMenu {...bindMenu(popupState)}>
+              {/* Copy from date  */}
+              <MenuItem onClick={() => {}}>
+                <div style={{ marginRight: '10px' }}>
+                  <Image imageName={'copy_green.svg'} width="15" height="15" />
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Balsamiq Sans', sans-serif",
+                    width: '80px',
                   }}
-                
-                  styleContainer= {styles.pickerStyle}
-                  backgroundColor={colors.white}
-                />
-              </div>
-            </MenuItem>
-            {/* Copy to date  */}
-            <MenuItem onClick={() => {}
-            }>
-                
-              <div style={{marginRight: "10px"}}>
-                <Image 
-                  imageName= {"copy_green.svg"}
-                  width="15" 
-                  height="15" 
-                />
-              </div>
-                <div style={{fontFamily: "'Balsamiq Sans', sans-serif", width: "80px"}}>Copy to</div> 
-                <div style={styles.pickerContainerStyle}> 
+                >
+                  Copy from
+                </div>
+                <div style={styles.pickerContainerStyle}>
                   <CustomDatePicker
                     value={copyFromDate}
                     onChange={(date) => {
-                      setIsCopyTo(true)
-                      setCopyFromDate(date)
-                      popupState.close()
-                      setCopyFromMealExpanded(true)
+                      setCopyFromDate(date);
+                      setIsCopyTo(false);
+                      popupState.close();
+                      setCopyFromMealExpanded(true);
                     }}
-                
-                    styleContainer= {styles.pickerStyle}
+                    styleContainer={styles.pickerStyle}
                     backgroundColor={colors.white}
                   />
                 </div>
-            </MenuItem>
-            { mealsCount > 1 &&
-            <div>
-              <Divider sx={{ my: 0.1 }} />
-              <MenuItem onClick={() => 
-                {
-                  popupState.close()
-                  deleteCurrentMeal()
-                }
-              }>
-                <div style={{marginRight: "10px"}}>
-                  <Image 
-                    imageName= {"delete_orange.svg"}
-                    width="17" 
-                    height="17" 
+              </MenuItem>
+              {/* Copy to date  */}
+              <MenuItem onClick={() => {}}>
+                <div style={{ marginRight: '10px' }}>
+                  <Image imageName={'copy_green.svg'} width="15" height="15" />
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Balsamiq Sans', sans-serif",
+                    width: '80px',
+                  }}
+                >
+                  Copy to
+                </div>
+                <div style={styles.pickerContainerStyle}>
+                  <CustomDatePicker
+                    value={copyFromDate}
+                    onChange={(date) => {
+                      setIsCopyTo(true);
+                      setCopyFromDate(date);
+                      popupState.close();
+                      setCopyFromMealExpanded(true);
+                    }}
+                    styleContainer={styles.pickerStyle}
+                    backgroundColor={colors.white}
                   />
                 </div>
-                <div style={{color: colors.orange, fontFamily: "'Balsamiq Sans', sans-serif",}}>Delete meal</div>
               </MenuItem>
-              
-              </div>
-            }
-          </StyledMenu>
-        </Fragment>
-      )}
-    </PopupState>
-    )
-  }
+              {mealsCount > 1 && (
+                <div>
+                  <Divider sx={{ my: 0.1 }} />
+                  <MenuItem
+                    onClick={() => {
+                      popupState.close();
+                      deleteCurrentMeal();
+                    }}
+                  >
+                    <div style={{ marginRight: '10px' }}>
+                      <Image
+                        imageName={'delete_orange.svg'}
+                        width="17"
+                        height="17"
+                      />
+                    </div>
+                    <div
+                      style={{
+                        color: colors.orange,
+                        fontFamily: "'Balsamiq Sans', sans-serif",
+                      }}
+                    >
+                      Delete meal
+                    </div>
+                  </MenuItem>
+                </div>
+              )}
+            </StyledMenu>
+          </Fragment>
+        )}
+      </PopupState>
+    );
+  };
 
-  const ButtonSheetCopyMeal= () => {
-    const [value, setValue] = useState(editingFood?.weight)
+  const ButtonSheetCopyMeal = () => {
+    const [value, setValue] = useState(editingFood?.weight);
 
-    return <BottomSheet open={isEditFoodExpanded} >
-    <div style={styles.closeButtonContainer}>
-    <div style={styles.selectionStyle}>
-      <div style={styles.closeButtonContainer}>
-        <ButtonImage
-          variant="iconButton"
-          imageName="close_round_green.svg"
-          imageSize={30}
-          onClick={() => {
-            setEditFoodExpanded(false)
-          }}
-        />
-      </div>
-      <div style={styles.closeButtonContainer}>
-        <ButtonImage
-          variant="iconButton"
-          imageName="checkmark_orange.svg"
-          imageSize={25}
-          onClick={() => {
-            saveEditedFood(value)
-            setEditFoodExpanded(false)
-          }}
+    return (
+      <BottomSheet open={isEditFoodExpanded}>
+        <div style={styles.closeButtonContainer}>
+          <div style={styles.selectionStyle}>
+            <div style={styles.closeButtonContainer}>
+              <ButtonImage
+                variant="iconButton"
+                imageName="close_round_green.svg"
+                imageSize={30}
+                onClick={() => {
+                  setEditFoodExpanded(false);
+                }}
+              />
+            </div>
+            <div style={styles.closeButtonContainer}>
+              <ButtonImage
+                variant="iconButton"
+                imageName="checkmark_orange.svg"
+                imageSize={25}
+                onClick={() => {
+                  saveEditedFood(value);
+                  setEditFoodExpanded(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div style={styles.editFoodTitleStyle}>{editingFood?.name}</div>
+        <div style={styles.editFoodCaloriesStyle}>
+          {Math.floor((editingFood?.calories / 100) * value) + ', kcal'}
+        </div>
+        <div style={styles.editTextFieldAndButtonsStyle}>
+          <ButtonsAndTextField
+            name={'weight'}
+            initialValue={value || 0}
+            onChange={(valueNew) => {
+              setValue(valueNew);
+            }}
+            onChangeButton={(name, valueNew) => {
+              setValue(valueNew);
+            }}
           />
         </div>
-      </div>
-    </div>
-    <div  style={styles.editFoodTitleStyle}>  
-      {editingFood?.name}
-    </div>
-    <div  style={styles.editFoodCaloriesStyle}>  
-      {Math.floor(editingFood?.calories/100 * value) + ", kcal"}
-    </div>
-    <div  style={styles.editTextFieldAndButtonsStyle}>   
-      <ButtonsAndTextField 
-         name={"weight"}
-         initialValue={value || 0} 
-         onChange={(valueNew) => {
-           setValue(valueNew)
-         }}
-         onChangeButton={(name, valueNew) => { 
-          setValue(valueNew)
-        }}
-      />
-    </div>
-  
-  
-  </BottomSheet>
-  }
+      </BottomSheet>
+    );
+  };
 
   return (
-      <div style={styles.childConteinerStyle}> {/* Meals container*/}
-        <div style={styles.headerStyle} onClick={() => {isSmallScreen ? setMealsExpanded(!isMealsExpanded) : setMealsExpanded(isMealsExpanded)}}>{/* Header container*/}
-          <div style={styles.headerTiteStyle}>
-            <div style={styles.headerArrowStyle} >
-              <Image 
-                imageName= {isMealsExpanded ? "arrow_down_green.svg" : "arrow_right_green.svg"}
-                width="20" 
-                height="20" 
-              />
-            </div>
-            <div style={styles.headingStyle}>MEAL</div>
-            <ButtonText
-              as="button"
-              variant="circleTextTransparentButton"
-            >
-              {index}
-            </ButtonText>
+    <div style={styles.childConteinerStyle}>
+      {' '}
+      {/* Meals container*/}
+      <div
+        style={styles.headerStyle}
+        onClick={() => {
+          isSmallScreen
+            ? setMealsExpanded(!isMealsExpanded)
+            : setMealsExpanded(isMealsExpanded);
+        }}
+      >
+        {/* Header container*/}
+        <div style={styles.headerTiteStyle}>
+          <div style={styles.headerArrowStyle}>
+            <Image
+              imageName={
+                isMealsExpanded
+                  ? 'arrow_down_green.svg'
+                  : 'arrow_right_green.svg'
+              }
+              width="20"
+              height="20"
+            />
           </div>
-          <div style={styles.headerAddButtonStyle}>
-            <ButtonImage
-              variant="iconButton"
-              imageName="add_round_orange.svg"
-              imageSize={30}
-              onClick={() => {
-                if (isMealsExpanded) { 
-                  addMealForDate();
-                } else {
-                  setMealsExpanded(!isMealsExpanded)
-                }
-              }}
-              />
-            </div>
-        </div> {/* Header container*/}
-        
-        <div  style={styles.bodyMealStyle}>  {/* Meal container*/}
-          {/* Show meals cards if data avaliable, if not -> show placeholder*/}
-          {isMealsExpanded && food && food.length > 0 ? (
-            <div style={styles.columnStyle}>
-              <div css={styles.totalWeightContainerStyle}>
-                <div css={styles.weightLabellStyle}></div>
-                <div  style={styles.caloriesAndWeightContainerStyle}> 
-                  <div css={styles.unitCaloriesStyle}>{"kcal"}</div>
-                  <div css={styles.unitWeightStyle}>{"g"}</div>
-                </div>
-              </div>
-              <div css={styles.totalWeightContainerStyle}>
-                <div style={styles.weightLabellStyle}>{"Total"}</div>
-                <div  style={styles.caloriesAndWeightContainerStyle}> 
-                  <div css={styles.caloriesTotalStyle}>{calculateTotalCalories(food)}</div>
-                  <div css={styles.weightTotalStyle}>{calculateTotalWeight(food)}</div>
-                </div>
-              </div>
-              <FoodList/>
-            </div>
-          ) : (
-            <div style={styles.placeholderStyle}>
-              <Image 
-                imageName= {isMealsExpanded ? "no_food_placeholder.png"  :  "more_green.svg"}
-                width={isMealsExpanded ? "200"  :  "30"}
-                height={isMealsExpanded ? "140"  :  "10"}
-              />
-              
-            </div>
-          )}
-
-          {isMealsExpanded && <div style={styles.addButtonStyle}>
+          <div style={styles.headingStyle}>MEAL</div>
+          <ButtonText as="button" variant="circleTextTransparentButton">
+            {index}
+          </ButtonText>
+        </div>
+        <div style={styles.headerAddButtonStyle}>
           <ButtonImage
+            variant="iconButton"
+            imageName="add_round_orange.svg"
+            imageSize={30}
+            onClick={() => {
+              if (isMealsExpanded) {
+                addMealForDate();
+              } else {
+                setMealsExpanded(!isMealsExpanded);
+              }
+            }}
+          />
+        </div>
+      </div>{' '}
+      {/* Header container*/}
+      <div style={styles.bodyMealStyle}>
+        {' '}
+        {/* Meal container*/}
+        {/* Show meals cards if data avaliable, if not -> show placeholder*/}
+        {isMealsExpanded && food && food.length > 0 ? (
+          <div style={styles.columnStyle}>
+            <div css={styles.totalWeightContainerStyle}>
+              <div css={styles.weightLabellStyle}></div>
+              <div style={styles.caloriesAndWeightContainerStyle}>
+                <div css={styles.unitCaloriesStyle}>{'kcal'}</div>
+                <div css={styles.unitWeightStyle}>{'g'}</div>
+              </div>
+            </div>
+            <div css={styles.totalWeightContainerStyle}>
+              <div style={styles.weightLabellStyle}>{'Total'}</div>
+              <div style={styles.caloriesAndWeightContainerStyle}>
+                <div css={styles.caloriesTotalStyle}>
+                  {calculateTotalCalories(food)}
+                </div>
+                <div css={styles.weightTotalStyle}>
+                  {calculateTotalWeight(food)}
+                </div>
+              </div>
+            </div>
+            <FoodList />
+          </div>
+        ) : (
+          <div style={styles.placeholderStyle}>
+            <Image
+              imageName={
+                isMealsExpanded ? 'no_food_placeholder.png' : 'more_green.svg'
+              }
+              width={isMealsExpanded ? '200' : '30'}
+              height={isMealsExpanded ? '140' : '10'}
+            />
+          </div>
+        )}
+        {isMealsExpanded && (
+          <div style={styles.addButtonStyle}>
+            <ButtonImage
               variant="addButton"
-              width='140px'
+              width="140px"
               height={30}
               imageName="add_round_orange.svg"
               imageSize={20}
               onClick={openAddFoodPage}
             >
               Add Food
-          </ButtonImage>
-        
-          <MorePopup/>
-          
-          <ButtonSheetCopyMeal/>
+            </ButtonImage>
 
-            <BottomSheet open={isCopyFromMealExpanded} >
+            <MorePopup />
+
+            <ButtonSheetCopyMeal />
+
+            <BottomSheet open={isCopyFromMealExpanded}>
               <div style={styles.rowStyle}>
-              <div style={styles.closeButtonContainer}>
+                <div style={styles.closeButtonContainer}>
                   <ButtonImage
                     variant="iconButton"
                     imageName="close_round_green.svg"
                     imageSize={30}
                     onClick={() => {
-                      setCopyFromMealExpanded(false)
-                      clearSelectedFood()
+                      setCopyFromMealExpanded(false);
+                      clearSelectedFood();
                     }}
                   />
                 </div>
-                <div style={styles.pickerContainerStyle}> 
+                <div style={styles.pickerContainerStyle}>
                   <CustomDatePickerWithArrows
                     value={copyFromDate}
-                    onChange={(date) => setCopyFromDate(date) }
-                    styleContainer= {styles.pickerStyle}
+                    onChange={(date) => setCopyFromDate(date)}
+                    styleContainer={styles.pickerStyle}
                     backgroundColor={colors.white}
                     disabled={true}
                   />
                 </div>
                 <div style={styles.closeButtonContainer}>
-                <ButtonImage
-                  variant="iconButton"
-                  imageName="add_round_orange.svg"
-                  imageSize={30}
-                  onClick={() => {
-                    copyMeal()
-                    setCopyFromMealExpanded(false)
-                  }}
-                  disabled={checkedFoodsIds.length === 0}
+                  <ButtonImage
+                    variant="iconButton"
+                    imageName="add_round_orange.svg"
+                    imageSize={30}
+                    onClick={() => {
+                      copyMeal();
+                      setCopyFromMealExpanded(false);
+                    }}
+                    disabled={checkedFoodsIds.length === 0}
                   />
                 </div>
-                
               </div>
-              <div >  {/* Meals list container*/}
-              { ( isLoadingFoodForDate|| isErrorFoodForDate)? 
-                (
-                <div style={styles.placeholderStyle}>
-                  <LoadingAndError isLoading = {isLoadingFoodForDate} isError = {isErrorFoodForDate}/>
-                </div>
-                ) : 
-                (
-                <div>  {/* Meals list container*/}
-                    { (getGroopedFood().length > 0) ?   
-                      (
+              <div>
+                {' '}
+                {/* Meals list container*/}
+                {isLoadingFoodForDate || isErrorFoodForDate ? (
+                  <div style={styles.placeholderStyle}>
+                    <LoadingAndError
+                      isLoading={isLoadingFoodForDate}
+                      isError={isErrorFoodForDate}
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    {' '}
+                    {/* Meals list container*/}
+                    {getGroopedFood().length > 0 ? (
                       <div>
-                      {  getGroopedFood().map((meal, index) => 
-                        <div key={meal[0].mealId} style={styles.mealContainerStyle}>
-                          <CustomCheckbox
-                            checked={checkedMealsIds.includes(meal[0].mealId)}
-                            onChange={(isChecked) =>
-                              handleMealCheckboxChange(isChecked, meal[0].mealId)
-                            }
-                          />
-                          {"Meal " + (index + 1)}
-                        <div>  {/* Food list container*/}
-                          {  
-                            meal.map((food, index) => 
-                            <div key={food._id} style = {{marginLeft: "20px"}}>
-                              <CustomCheckbox
-                              checked={checkedFoodsIds.includes(food._id)}
+                        {getGroopedFood().map((meal, index) => (
+                          <div
+                            key={meal[0].mealId}
+                            style={styles.mealContainerStyle}
+                          >
+                            <CustomCheckbox
+                              checked={checkedMealsIds.includes(meal[0].mealId)}
                               onChange={(isChecked) =>
-                                handleFoodCheckboxChange(isChecked, food._id)
+                                handleMealCheckboxChange(
+                                  isChecked,
+                                  meal[0].mealId
+                                )
                               }
                             />
-                              {food.name}
-                          
-                            </div>)
-                          }
-                        </div>  
+                            {'Meal ' + (index + 1)}
+                            <div>
+                              {' '}
+                              {/* Food list container*/}
+                              {meal.map((food, index) => (
+                                <div
+                                  key={food._id}
+                                  style={{ marginLeft: '20px' }}
+                                >
+                                  <CustomCheckbox
+                                    checked={checkedFoodsIds.includes(food._id)}
+                                    onChange={(isChecked) =>
+                                      handleFoodCheckboxChange(
+                                        isChecked,
+                                        food._id
+                                      )
+                                    }
+                                  />
+                                  {food.name}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-
-                      )}
+                    ) : (
+                      <div>
+                        <Image
+                          imageName={'no_food_placeholder.png'}
+                          width={'200px'}
+                          height={'140px'}
+                        />
                       </div>
-                      ) : (
-                        <div >
-                          <Image 
-                            imageName= {"no_food_placeholder.png"}
-                            width={"200px" }
-                            height={"140px"}
-                          />
-                        </div>
-                      )
-                    }
-                </div>  
-                )
-              }
+                    )}
+                  </div>
+                )}
               </div>
             </BottomSheet>
-     
-          </div>}
-
-        </div> {/* Meals container*/}
-      </div>  
-   );
+          </div>
+        )}
+      </div>{' '}
+      {/* Meals container*/}
+    </div>
+  );
 }
 
 export default MealCard;

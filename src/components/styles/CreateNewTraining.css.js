@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
- 
+import * as colors from './Colors';
 
 const addTrainingFormStyle = {
   maxWidth: '450px',
@@ -14,13 +13,11 @@ const addTrainingTitleStyle = {
   color: colors.lightGreen,
 };
 
-
 const addTrainingButtonContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
   marginTop: '20px',
 };
-
 
 const containerStyle = {
   display: 'flex',
@@ -31,16 +28,16 @@ const containerStyle = {
   paddingRight: '15px',
   paddingLeft: '15px',
   background: `${colors.lightBrown}`,
-  margin: '3px',  
+  margin: '3px',
 };
 
 const closeButtonContainer = {
   display: 'flex',
-  justifyContent: 'flex-end',  
+  justifyContent: 'flex-end',
 };
 
 const textFieldStyle = {
-  border: `2px solid ${colors.green}`,  
+  border: `2px solid ${colors.green}`,
   width: '50px',
   textAlign: 'center',
   marginRight: '15px',
@@ -56,7 +53,7 @@ const rowStyle = {
   flexDirection: 'row',
   width: '100%',
 };
- 
+
 const columnStyle = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -65,13 +62,13 @@ const columnStyle = {
   width: '100%',
 };
 
-export { 
+export {
   rowStyle,
   columnStyle,
   containerStyle,
-  textFieldStyle, 
-  addTrainingButtonContainerStyle, 
-  addTrainingFormStyle, 
+  textFieldStyle,
+  addTrainingButtonContainerStyle,
+  addTrainingFormStyle,
   addTrainingTitleStyle,
   closeButtonContainer,
-}
+};

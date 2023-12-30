@@ -17,12 +17,11 @@ const loginHeaderStyle = {
   marginTop: '200px',
   fontSize: '25px',
   fontWeight: 'bold',
-
 };
 
 const headingLoginStyle = {
   color: colors.green,
-  width: "170px"
+  width: '170px',
 };
 
 const loginConteinerStyle = {
@@ -60,8 +59,17 @@ const linkForgot = {
 };
 
 const linkSignup = {
-  color: colors.orange,  
+  color: colors.orange,
   textDecoration: 'none',
 };
 
-export { containerStyle, loginHeaderStyle, headingLoginStyle, loginConteinerStyle, formStyle, elementsInRow, linkForgot, linkSignup };
+export {
+  containerStyle,
+  loginHeaderStyle,
+  headingLoginStyle,
+  loginConteinerStyle,
+  formStyle,
+  elementsInRow,
+  linkForgot,
+  linkSignup,
+};

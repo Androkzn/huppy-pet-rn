@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 
-const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick, styles }) => {
+const Image = ({
+  imageName,
+  imageDataUrl,
+  width = '48',
+  height = '48',
+  onClick,
+  styles,
+}) => {
   const [errorLoadingImage, setErrorLoadingImage] = useState(false);
   const handleImageError = () => {
     setErrorLoadingImage(true);
@@ -35,7 +42,9 @@ const Image = ({ imageName, imageDataUrl, width = '48', height = '48', onClick, 
 
   return (
     <div style={containerStyle}>
-      {errorLoadingImage || imageDataUrl === null || imageDataUrl === undefined ? (
+      {errorLoadingImage ||
+      imageDataUrl === null ||
+      imageDataUrl === undefined ? (
         <img
           src={require(`./assets/${imageName}`)} // Images are in the 'assets' directory
           alt={imageName.replace(/\.[^/.]+$/, '')} // Remove file extension from alt text

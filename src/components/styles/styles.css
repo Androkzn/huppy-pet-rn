@@ -1,20 +1,19 @@
 .cropper {
-    background-color: #ffffff;
-    max-height: 250px;
-  }
+  background-color: #ffffff;
+  max-height: 250px;
+}
 
 .swiper {
   border-radius: 10px;
   margin: 5px 5px 0px 5px;
-  }
- 
-  .swiper-food {
-    border-radius: 10px;
-    margin: 5px 5px 5px 5px;
-  }
-   
-  .swiper-activity {
-    border-radius: 10px;
-    margin: 5px 5px 5px 5px;
-  }
-   
+}
+
+.swiper-food {
+  border-radius: 10px;
+  margin: 5px 5px 5px 5px;
+}
+
+.swiper-activity {
+  border-radius: 10px;
+  margin: 5px 5px 5px 5px;
+}

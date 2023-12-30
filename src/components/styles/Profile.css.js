@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
- 
+import * as colors from './Colors';
+
 const rowStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -36,10 +36,10 @@ const unselectedFoodCategoryStyle = {
   justifyContent: 'stretch',
   textAlign: 'center',
   width: '100%',
-  flexWrap: 'wrap', 
+  flexWrap: 'wrap',
 };
 
-const unusedCaloriesReminderStyle  = {
+const unusedCaloriesReminderStyle = {
   textAlign: 'center',
   width: '50%',
   margin: 'auto',
@@ -62,7 +62,6 @@ const foodRatioExpandedContainerStyle = {
   backgroundColor: colors.white,
 };
 
-
 const chartContainerStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -82,7 +81,7 @@ const unselectedCategoriesContainerStyle = {
 };
 
 const recommendedCaloriesStyle = {
-  ...rowStyle, 
+  ...rowStyle,
   justifyContent: 'space-between',
   width: '95%',
 };
@@ -110,8 +109,8 @@ const backButtonContainerStyle = {
 const fixedTopContainer = {
   position: 'sticky',
   top: 60,
-  zIndex: 1000,   
-  backgroundColor: 'white',  
+  zIndex: 1000,
+  backgroundColor: 'white',
   width: '100%',
 };
 
@@ -132,7 +131,7 @@ const profileTitleStyle = {
   color: colors.lightGreen,
   fontSize: '17px',
   fontWeight: 'bold',
-}
+};
 const nameStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
@@ -152,21 +151,21 @@ const ageStyle = {
 };
 
 const sectionTitleStyle = {
-  margin: "15px",
+  margin: '15px',
   width: '100%',
   textAlign: 'center',
   color: colors.lightGreen,
   marginRight: '10px',
-  cursor: "pointer",
-  fontWeight: "bold",
-  fontSize: "18px",
+  cursor: 'pointer',
+  fontWeight: 'bold',
+  fontSize: '18px',
 };
 
 const sectionImageContainerStyle = {
-  cursor: "pointer", 
-  justifyContent: 'end', 
-  width: '10%', 
-  marginRight: "15px",
+  cursor: 'pointer',
+  justifyContent: 'end',
+  width: '10%',
+  marginRight: '15px',
 };
 
 const addFoodButtonContainerStyle = {
@@ -191,7 +190,7 @@ const dialogLargeContainerStyle = {
 
 const closeDialogButtonContainer = {
   display: 'flex',
-  justifyContent: 'flex-end',  
+  justifyContent: 'flex-end',
 };
 
 const dialogTitleStyle = {
@@ -204,17 +203,16 @@ const avatarContainerStyle = {
   minWidth: '250px',
   margin: 'auto',
   textAlign: 'center',
-}
-
+};
 
 const leftDialogButtonStyle = {
   marginRight: '20px',
-}
+};
 
 const dialogButtonContainerStyle = (isSingleButton) => ({
   display: 'flex',
   justifyContent: isSingleButton ? 'center' : 'space-between',
-  marginTop: '20px' 
+  marginTop: '20px',
 });
 
 export {

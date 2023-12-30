@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 
 import { useTheme } from '@mui/material';
-import { DataContext } from "../contexts/data.context";
-import { useContext } from "react";
+import { DataContext } from '../contexts/data.context';
+import { useContext } from 'react';
 
 const PageContainer = (props) => {
   const theme = useTheme();
@@ -13,7 +13,7 @@ const PageContainer = (props) => {
     flexDirection: 'column',
     alignItems: 'center',
     margin: 'auto',
-    marginTop: isSmallScreen ? '60px' :'90px',
+    marginTop: isSmallScreen ? '60px' : '90px',
     borderRadius: '10px',
     maxWidth: '900px',
     width: '95%',
@@ -24,11 +24,7 @@ const PageContainer = (props) => {
 
   const mergedStyles = { ...defaultPageStyle, ...props.style };
 
-  return (
-    <div style={mergedStyles}>
-      {props.children}
-    </div>
-  );
+  return <div style={mergedStyles}>{props.children}</div>;
 };
 
 export default PageContainer;

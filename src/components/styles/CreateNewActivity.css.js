@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
- 
+import * as colors from './Colors';
+
 const addActivityFormStyle = {
   maxWidth: '450px',
   minWidth: '250px',
@@ -11,9 +11,9 @@ const addActivityFormStyle = {
 const addActivityTitleStyle = {
   textAlign: 'center',
   color: colors.lightGreen,
-  fontSize: "20px",
-  fontWeight: "bold",
-  margin: "20px 0px"
+  fontSize: '20px',
+  fontWeight: 'bold',
+  margin: '20px 0px',
 };
 
 const addActivityButtonContainerStyle = {
@@ -26,7 +26,7 @@ const estimatedCaloriesContainerStyle = {
   display: 'flex',
   justifyContent: 'center',
   textAlign: 'center',
-  borderRadius: '10px', 
+  borderRadius: '10px',
   backgroundColor: `${colors.lightBrown2}`,
   color: `${colors.orange}`,
 };
@@ -44,7 +44,7 @@ const containerStyle = {
   paddingRight: '15px',
   paddingLeft: '15px',
   background: `${colors.lightBrown}`,
-  margin: '3px',  
+  margin: '3px',
 };
 
 const circleButtonsGroupStyle = {
@@ -54,11 +54,11 @@ const circleButtonsGroupStyle = {
 
 const closeButtonContainer = {
   display: 'flex',
-  justifyContent: 'flex-end',  
+  justifyContent: 'flex-end',
 };
 
 const textFieldStyle = {
-  border: `2px solid ${colors.green}`,  
+  border: `2px solid ${colors.green}`,
   width: '50px',
   textAlign: 'center',
   marginRight: '15px',
@@ -76,7 +76,7 @@ const rowStyle = {
   flexDirection: 'row',
   width: '100%',
 };
- 
+
 const columnStyle = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -85,16 +85,16 @@ const columnStyle = {
   width: '100%',
 };
 
-export { 
+export {
   rowStyle,
   columnStyle,
   containerStyle,
-  textFieldStyle, 
-  circleButtonsGroupStyle,  
-  addActivityButtonContainerStyle, 
-  addActivityFormStyle, 
+  textFieldStyle,
+  circleButtonsGroupStyle,
+  addActivityButtonContainerStyle,
+  addActivityFormStyle,
   addActivityTitleStyle,
   closeButtonContainer,
   estimatedCaloriesContainerStyle,
   burnedCaloriesStyle,
-}
+};

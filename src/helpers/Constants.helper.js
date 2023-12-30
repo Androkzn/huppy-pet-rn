@@ -20,7 +20,6 @@ export const mainFormDevider = '3px';
 export const smallBorderRadius = '5px';
 export const mainBorderRadius = '10px';
 
-
 // Estimated calories per 1kg dog weight
 export const estCalories = 18.59;
 

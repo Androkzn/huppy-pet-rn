@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
- 
+import * as colors from './Colors';
+
 const rowStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -42,8 +42,8 @@ const topButtonsContainerStyle = {
 const fixedTopContainer = {
   position: 'sticky',
   top: 60,
-  zIndex: 1000,   
-  backgroundColor: 'white',  
+  zIndex: 1000,
+  backgroundColor: 'white',
   width: '100%',
 };
 
@@ -143,7 +143,7 @@ const imageContainerStyle = {
   justifyContent: 'center',
   margin: '10px 0 10px 0',
   borderRadius: '10px',
-  heigh: "150px",  
+  heigh: '150px',
   overflow: 'hidden',
 };
 

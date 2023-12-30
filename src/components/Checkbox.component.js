@@ -1,13 +1,13 @@
 import React from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { makeStyles } from '@mui/styles';
-import * as colors from './styles/Colors'
+import * as colors from './styles/Colors';
 
 const useStyles = makeStyles((theme) => ({
   customCheckbox: {
     '&$checked': {
       color: colors.orange, // Color of the checkmark when checked
-      backgroundColor: colors.white
+      backgroundColor: colors.white,
     },
   },
   checked: {}, // Empty class for checked state
@@ -22,7 +22,6 @@ const CustomCheckbox = ({ checked, onChange }) => {
         root: classes.customCheckbox,
         checked: classes.checked,
       }}
-      
       checked={checked}
       onChange={onChange}
       inputProps={{ 'aria-label': 'Select training' }}

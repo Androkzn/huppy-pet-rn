@@ -1,10 +1,14 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, DoughnutController } from 'chart.js';
-import "chartjs-plugin-datalabels";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  DoughnutController,
+} from 'chart.js';
+import 'chartjs-plugin-datalabels';
 ChartJS.register(ArcElement, Tooltip, Legend, DoughnutController);
-
- 
 
 const ChartPie = ({ data, isAnimated = true }) => {
   // Calculate total weight
@@ -12,12 +16,12 @@ const ChartPie = ({ data, isAnimated = true }) => {
 
   // Prepare data for the chart
   const chartData = {
-    labels: data.map(item => item.name),
+    labels: data.map((item) => item.name),
     datasets: [
       {
-        data: data.map(item => item.weight),
-        backgroundColor: data.map(item => item.color),
-        hoverOffset: 4
+        data: data.map((item) => item.weight),
+        backgroundColor: data.map((item) => item.color),
+        hoverOffset: 4,
       },
     ],
   };
@@ -41,22 +45,24 @@ const ChartPie = ({ data, isAnimated = true }) => {
       },
       datalabels: {
         formatter: (value) => {
-          return value + '%'
+          return value + '%';
         },
         anchor: 'end',
-          align: 'end',
-          labels: {
-            value: {
-              color: 'blue'
-            }
-          }
+        align: 'end',
+        labels: {
+          value: {
+            color: 'blue',
+          },
+        },
       },
-      
-      doughnutlabel: { // plugin scope
+
+      doughnutlabel: {
+        // plugin scope
         paddingPercentage: 5,
         labels: [
-          { // label scope
-            text: 'Text' ,
+          {
+            // label scope
+            text: 'Text',
             font: {
               size: '24',
               family: 'Arial, Helvetica, sans-serif',

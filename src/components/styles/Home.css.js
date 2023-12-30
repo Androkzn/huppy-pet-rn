@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import * as colors from './Colors';
 import * as mq from './Media-queries';
-import styled from '@emotion/styled/macro'
+import styled from '@emotion/styled/macro';
 
 const pickerStyle = {
   background: colors.lightBrown,
@@ -28,11 +28,11 @@ const headerStyle = {
   textAlign: 'center',
   width: '100%',
   backgroundColor: colors.brown,
-  height: "40px",
+  height: '40px',
 };
 
 const headerArrowStyle = {
-  margin: "3px 20px 0px 30px"
+  margin: '3px 20px 0px 30px',
 };
 
 const headerTiteStyle = {
@@ -45,8 +45,8 @@ const headerTiteStyle = {
 
 const headingStyle = {
   color: colors.green,
-  fontWeight: "bold",
-  fontSize: "16px",
+  fontWeight: 'bold',
+  fontSize: '16px',
   marginRight: '30px',
 };
 
@@ -59,7 +59,7 @@ const headerAddButtonStyle = {
   background: 'transparent',
   border: 'none',
   cursor: 'pointer',
-  marginRight: '20px'
+  marginRight: '20px',
 };
 
 const headerTextStyle = {
@@ -98,7 +98,7 @@ const placeholderStyle = {
   margin: '10px',
 };
 
-const columnLeftStyle =  styled.div({
+const columnLeftStyle = styled.div({
   ...columnStyle,
   flex: '0 1 50%',
   [mq.large]: {
@@ -123,15 +123,15 @@ const columnRightStyle = {
 const responsiveSubContainer = styled.div({
   ...rowStyle,
   flex: '0 1 66%',
-   [mq.small]: {
+  [mq.small]: {
     width: '100%',
     flexDirection: 'column',
   },
-})
+});
 
 const responsiveMainContainer = styled.div({
   ...rowStyle,
-   [mq.medium]: {
+  [mq.medium]: {
     width: '100%',
     flexDirection: 'column',
   },
@@ -139,7 +139,7 @@ const responsiveMainContainer = styled.div({
     width: '100%',
     flexDirection: 'column',
   },
-})
+});
 
 const chartContainerStyle = {
   ...rowStyle,
@@ -147,7 +147,7 @@ const chartContainerStyle = {
 };
 
 const chartStyle = {
-  flex: '0 1 100%',  
+  flex: '0 1 100%',
   margin: 'auto 20px auto 10px',
   maxWidth: '200px',
 };
@@ -162,7 +162,6 @@ const statisticContainerStyle = {
   ...columnStyle,
   width: '90%',
 };
-
 
 export {
   statisticContainerStyle,

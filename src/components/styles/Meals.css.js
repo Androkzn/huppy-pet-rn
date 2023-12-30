@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
-
+import * as colors from './Colors';
 
 const headerMealStyle = {
   display: 'flex',
@@ -22,7 +21,7 @@ const headerStyle = {
   textAlign: 'center',
   width: '100%',
   backgroundColor: colors.brown,
-  height: "40px",
+  height: '40px',
 };
 
 const headerFoodStyle = (isSwiped) => ({
@@ -64,10 +63,10 @@ const headerTextStyle = (isSwiped) => ({
   width: '90%',
   alignItems: 'center',
   height: '50px',
-  paddingLeft:  isSwiped ? "10px" : "0px",
-  transition: "transform 1s ease",
+  paddingLeft: isSwiped ? '10px' : '0px',
+  transition: 'transform 1s ease',
   border: isSwiped ? `1px solid ${colors.orange}` : 'none',
-  borderRadius: '15px'
+  borderRadius: '15px',
 });
 
 const foodListStyle = {
@@ -99,7 +98,7 @@ const caloriesValueStyle = {
   color: colors.orange,
   textAlign: 'center',
   alignItems: 'center',
-  fontSize: "15px",
+  fontSize: '15px',
   width: '50px',
 };
 
@@ -107,13 +106,12 @@ const weightValueStyle = {
   color: colors.green,
   textAlign: 'center',
   alignItems: 'center',
-  fontSize: "15px",
+  fontSize: '15px',
   width: '50px',
 };
 
-
 const inputFieldStyle = {
-  border: `2px solid ${colors.grayDark}`,  
+  border: `2px solid ${colors.grayDark}`,
   width: '50px',
   marginLeft: '0px',
   marginRight: '0px',
@@ -131,7 +129,7 @@ const childConteinerStyle = {
   alignItems: 'center',
   margin: '0px',
   borderRadius: '10px',
-  minWidth:'300px'
+  minWidth: '300px',
 };
 
 const headerTiteStyle = {
@@ -140,17 +138,16 @@ const headerTiteStyle = {
   alignItems: 'center',
   textAlign: 'center',
   width: '100%',
-
 };
 
 const headerArrowStyle = {
-  margin: "3px 20px 0px 30px"
+  margin: '3px 20px 0px 30px',
 };
 
 const headingStyle = {
   color: colors.green,
-  fontWeight: "bold",
-  fontSize: "16px",
+  fontWeight: 'bold',
+  fontSize: '16px',
   marginRight: '10px',
 };
 
@@ -159,7 +156,7 @@ const headerAddButtonStyle = {
   background: 'transparent',
   border: 'none',
   cursor: 'pointer',
-  marginRight: '10px'
+  marginRight: '10px',
 };
 
 const rowStyle = {
@@ -195,17 +192,17 @@ const placeholderStyle = {
 
 const addButtonStyle = {
   margin: '0 0 10px 0',
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-around",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-around',
   flexDirection: 'row',
 };
 
-const deleteContainerStyle =  {
+const deleteContainerStyle = {
   width: '80px',
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   backgroundColor: colors.orange,
   borderTopRightRadius: '10px',
   borderBottomRightRadius: '10px',
@@ -213,44 +210,43 @@ const deleteContainerStyle =  {
 
 const mealTitleStyle = {
   fontWeight: 'bold',
-}
+};
 
 const mealContainerStyle = {
   border: `2px solid ${colors.green}`,
-  margin: "10px 20px", 
-  borderRadius: "10px", 
+  margin: '10px 20px',
+  borderRadius: '10px',
   fontWeight: 'bold',
   color: colors.green,
-}
+};
 
 const closeButtonContainer = {
   display: 'flex',
-  justifyContent: 'center',  
-  margin: "auto 15px",
+  justifyContent: 'center',
+  margin: 'auto 15px',
 };
 
 const editFoodTitleStyle = {
   display: 'flex',
-  justifyContent: 'center',  
-  margin: "10px",
+  justifyContent: 'center',
+  margin: '10px',
   color: colors.green,
   fontWeight: 'bold',
-  fontSize: "18px",
-
+  fontSize: '18px',
 };
 
 const editFoodCaloriesStyle = {
   display: 'flex',
-  justifyContent: 'center',  
-  margin: "10px",
+  justifyContent: 'center',
+  margin: '10px',
   color: colors.orange,
 };
 
 const editTextFieldAndButtonsStyle = {
   display: 'flex',
-  justifyContent: 'center',  
-  marginTop: "20px",
-  marginBottom: "40px",
+  justifyContent: 'center',
+  marginTop: '20px',
+  marginBottom: '40px',
   color: colors.orange,
 };
 
@@ -263,30 +259,29 @@ const pickerContainerStyle = {
 
 const selectionStyle = {
   ...rowStyle,
-  justifyContent: "space-between",
-}
+  justifyContent: 'space-between',
+};
 
 const pickerStyle = {
   margin: '0 0 0 0',
 };
 
 const deleteItemStyle = (isSwiped) => ({
-  transition: "transform 1s ease",
+  transition: 'transform 1s ease',
   border: isSwiped ? `1px solid ${colors.lightGreen}` : 'none',
-  borderRadius: '15px'
+  borderRadius: '15px',
 });
 
 const totalWeightContainerStyle = {
   ...rowStyle,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   width: '90%',
 };
 
-
 const weightLabellStyle = {
-  margin: "0px 0px 0px 0px",
+  margin: '0px 0px 0px 0px',
   fontWeight: 'bold',
   width: 'auto',
   alignItems: 'center',
@@ -294,35 +289,35 @@ const weightLabellStyle = {
 };
 
 const weightTotalStyle = {
-  margin: "0px 5px 0px 0px",
+  margin: '0px 5px 0px 0px',
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "15px"
+  fontSize: '15px',
 };
 const caloriesTotalStyle = {
   color: colors.orange,
-  margin: "0px 0px 0px 0px",
+  margin: '0px 0px 0px 0px',
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "15px"
+  fontSize: '15px',
 };
 
 const unitWeightStyle = {
-  margin: "5px 5px 5px 0px",
+  margin: '5px 5px 5px 0px',
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "12px",
+  fontSize: '12px',
   color: colors.green,
 };
 
 const unitCaloriesStyle = {
-  margin: "5px 0px 5px 0px",
+  margin: '5px 0px 5px 0px',
   fontWeight: 'bold',
   width: '50px',
-  fontSize: "12px",
+  fontSize: '12px',
   color: colors.green,
 };
-  
+
 export {
   editTextFieldAndButtonsStyle,
   editFoodTitleStyle,

@@ -1,12 +1,12 @@
-import { createContext, useState, useEffect } from "react";
-import { App, Credentials } from "realm-web";
+import { createContext, useState, useEffect } from 'react';
+import { App, Credentials } from 'realm-web';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import * as Constants from "../helpers/Constants.helper"
-import { useGetProfiles, useGetCurrentProfile } from "../hooks/query.hooks";
+import * as Constants from '../helpers/Constants.helper';
+import { useGetProfiles, useGetCurrentProfile } from '../hooks/query.hooks';
 
 // Creating a Realm App Instance
 const app = new App(process.env.REACT_APP_APP_ID);
- 
+
 // Creating a user context to manage and access all the user related functions
 // across different component and pages.
 export const DataContext = createContext();
@@ -14,22 +14,30 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentPage, setCurrentPage] = useState("home");
+  const [currentPage, setCurrentPage] = useState('home');
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const isMediumlScreen = useMediaQuery(Constants.mediumlScreen);
   const isLargeScreen = useMediaQuery(Constants.largeScreen);
 
- const { data: profiles, isLoading: isLoadingProfiles, isError: isErrorProfiles} = useGetProfiles(user) 
- const { data: currentProfile, isLoading: isLoadingProfile, isError: isErrorProfile} = useGetCurrentProfile(user)
+  const {
+    data: profiles,
+    isLoading: isLoadingProfiles,
+    isError: isErrorProfiles,
+  } = useGetProfiles(user);
+  const {
+    data: currentProfile,
+    isLoading: isLoadingProfile,
+    isError: isErrorProfile,
+  } = useGetCurrentProfile(user);
 
-    // Function to login user into our Realm using their email & password
+  // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
     const credentials = Credentials.emailPassword(email, password);
     const authedUser = await app.logIn(credentials);
     if (authedUser) {
-      console.log("Set Login User", authedUser)
+      console.log('Set Login User', authedUser);
       setUser(authedUser);
-    }  
+    }
     return authedUser;
   };
 
@@ -41,14 +49,13 @@ export const DataProvider = ({ children }) => {
       // the user using the same credentials once the signup is complete.
       return emailPasswordLogin(email, password);
     } catch (error) {
-      console.error("Error sign up", error)
+      console.error('Error sign up', error);
       throw error;
     }
   };
 
   // Function to fetch-user(if the user is already logged in) from local storage
   const fetchUser = async () => {
-   
     if (!app.currentUser) return null;
     try {
       await app.currentUser.refreshCustomData();
@@ -56,13 +63,13 @@ export const DataProvider = ({ children }) => {
       // so that we can use it in our app across different components.
       if (app.currentUser) {
         setUser(app.currentUser);
-      }  
+      }
       return app.currentUser;
     } catch (error) {
-      console.error("Error fetch user", error)
+      console.error('Error fetch user', error);
       throw error;
     }
-  }
+  };
 
   // Function to logout user from our Realm
   const logOutUser = async () => {
@@ -73,30 +80,55 @@ export const DataProvider = ({ children }) => {
       setUser(null);
       return true;
     } catch (error) {
-      console.error("Error logout user", error)
-      throw error
+      console.error('Error logout user', error);
+      throw error;
     }
-  }
+  };
 
   // Fetch profiles when user is fetched
   useEffect(() => {
     loadUserProfiles(user);
   }, [user]);
 
-    // Fetch profiles when user is fetched
+  // Fetch profiles when user is fetched
   useEffect(() => {
-    if (user?._accessToken === undefined || user?._accessToken === null ) {
-      console.log("User accessToken:",user?._accessToken)
+    if (user?._accessToken === undefined || user?._accessToken === null) {
+      console.log('User accessToken:', user?._accessToken);
       //alert("User session is expired. Please login again. ");
       setUser(null);
     }
   }, [user?._accessToken]);
 
+  loadUserProfiles2();
+
   const loadUserProfiles = async (user) => {
-    return (user && currentProfile && profiles)
+    return user && currentProfile && profiles;
   };
 
-  return <DataContext.Provider value={{ user, currentProfile, profiles, currentDate, setCurrentDate, isSmallScreen, isMediumlScreen, isLargeScreen, currentPage, setCurrentPage, setUser, fetchUser, emailPasswordLogin, emailPasswordSignup, logOutUser, loadUserProfiles}}>
-    {children}
-  </DataContext.Provider>;
-}
+  async function loadUserProfiles2() {}
+
+  return (
+    <DataContext.Provider
+      value={{
+        user,
+        currentProfile,
+        profiles,
+        currentDate,
+        setCurrentDate,
+        isSmallScreen,
+        isMediumlScreen,
+        isLargeScreen,
+        currentPage,
+        setCurrentPage,
+        setUser,
+        fetchUser,
+        emailPasswordLogin,
+        emailPasswordSignup,
+        logOutUser,
+        loadUserProfiles,
+      }}
+    >
+      {children}
+    </DataContext.Provider>
+  );
+};

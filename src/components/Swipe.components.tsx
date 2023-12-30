@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import '../components/styles/swiper.css';
 
 export interface Props {
@@ -11,13 +11,13 @@ export interface Props {
   disabled?: boolean;
   height?: number;
   transitionDuration?: number;
-  swipeWidth?: number;  
-  swipeThreshold?: number; 
-  showSwipeAction?: boolean; 
-  leftSwipeColor?: string;  
-  leftSwipeText?: string; 
-  rightSwipeColor?: string;  
-  rightSwipeText?: string;  
+  swipeWidth?: number;
+  swipeThreshold?: number;
+  showSwipeAction?: boolean;
+  leftSwipeColor?: string;
+  leftSwipeText?: string;
+  rightSwipeColor?: string;
+  rightSwipeText?: string;
   className?: string;
   id?: string;
   disableLeftSwipe?: boolean;
@@ -30,7 +30,8 @@ export interface Props {
 const cursorPosition = (event: any) => {
   if (event?.touches?.[0]?.clientX) return event.touches[0].clientX;
   if (event?.clientX) return event?.clientX;
-  if (event?.nativeEvent?.touches?.[0]?.clientX) return event.nativeEvent.touches[0].clientX;
+  if (event?.nativeEvent?.touches?.[0]?.clientX)
+    return event.nativeEvent.touches[0].clientX;
   return event?.nativeEvent?.clientX;
 };
 
@@ -44,15 +45,15 @@ const Swipe = ({
   disabled = false,
   height = 50,
   transitionDuration = 250,
-  swipeWidth = 75, 
-  swipeThreshold = 50,  
-  showSwipeAction = true,  
-  leftSwipeColor = "rgba(252, 255, 148, 1.00)",  
-  leftSwipeText = "Edit",
-  rightSwipeColor= "rgba(252, 254, 250, 1.00)",
-  rightSwipeText = "Delete",
-  className = "",
-  id = "",
+  swipeWidth = 75,
+  swipeThreshold = 50,
+  showSwipeAction = true,
+  leftSwipeColor = 'rgba(252, 255, 148, 1.00)',
+  leftSwipeText = 'Edit',
+  rightSwipeColor = 'rgba(252, 254, 250, 1.00)',
+  rightSwipeText = 'Delete',
+  className = '',
+  id = '',
   disableLeftSwipe = false,
   disableRightSwipe = false,
   distructiveLeftSwipe = false,
@@ -63,14 +64,16 @@ const Swipe = ({
   const [translate, setTranslate] = useState(0);
   const [leftSwiping, setLeftSwiping] = useState(false);
   const [rightSwiping, setRightSwiping] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState("");
+  const [swipeDirection, setSwipeDirection] = useState('');
   const [transitioning, setTransitioning] = useState(false);
-  
+
   const startTouchPosition = useRef(0);
   const initTranslate = useRef(0);
   const container = useRef<HTMLDivElement>(null);
-  const containerWidth: number = container.current?.getBoundingClientRect().width || 0;
-  const swipeWithoutConfirmThreshold: number = containerWidth * (swipeThreshold / 100);  
+  const containerWidth: number =
+    container.current?.getBoundingClientRect().width || 0;
+  const swipeWithoutConfirmThreshold: number =
+    containerWidth * (swipeThreshold / 100);
 
   const onStart = useCallback(
     (event: React.TouchEvent | React.MouseEvent) => {
@@ -85,23 +88,31 @@ const Swipe = ({
 
   useEffect(() => {
     const root = container.current;
-    root?.style.setProperty("--swiperHeight", height + "px");
-    root?.style.setProperty("--swiperTransitionDuration", transitionDuration + "ms");
-    root?.style.setProperty("--swiperLeftColor", leftSwipeColor); 
-    root?.style.setProperty("--swiperRightColor", rightSwipeColor);   
-    root?.style.setProperty("--swiperSwipeWidth", swipeWidth + "px"); 
+    root?.style.setProperty('--swiperHeight', height + 'px');
+    root?.style.setProperty(
+      '--swiperTransitionDuration',
+      transitionDuration + 'ms'
+    );
+    root?.style.setProperty('--swiperLeftColor', leftSwipeColor);
+    root?.style.setProperty('--swiperRightColor', rightSwipeColor);
+    root?.style.setProperty('--swiperSwipeWidth', swipeWidth + 'px');
   }, [leftSwipeColor, rightSwipeColor, swipeWidth, height, transitionDuration]);
 
   useEffect(() => {
     const root = container.current;
-    root?.style.setProperty("--visibilityLeft", swipeDirection === "left" ? "visible" : "hidden"); 
-    root?.style.setProperty("--visibilityRight", swipeDirection === "right" ? "visible" : "hidden"); 
+    root?.style.setProperty(
+      '--visibilityLeft',
+      swipeDirection === 'left' ? 'visible' : 'hidden'
+    );
+    root?.style.setProperty(
+      '--visibilityRight',
+      swipeDirection === 'right' ? 'visible' : 'hidden'
+    );
   }, [swipeDirection]);
-
 
   useEffect(() => {
     const root = container.current;
-    root?.style.setProperty("--swiperTranslate", translate  + "px");
+    root?.style.setProperty('--swiperTranslate', translate + 'px');
   }, [translate, swipeWidth, containerWidth, swipeWithoutConfirmThreshold]);
 
   const onMove = useCallback(
@@ -109,7 +120,7 @@ const Swipe = ({
       if (!touching) return;
       const currentPosition = cursorPosition(event);
       const moveDistance = currentPosition - startTouchPosition.current;
-      setSwipeDirection(moveDistance >=0 ? "right" : "left")
+      setSwipeDirection(moveDistance >= 0 ? 'right' : 'left');
       setTranslate(moveDistance);
     },
     [touching]
@@ -130,18 +141,17 @@ const Swipe = ({
   );
 
   const onLeftSwipeConfirmed = useCallback(() => {
-    onSwipeCancel()
+    onSwipeCancel();
     setLeftSwiping(() => true);
     window.setTimeout(onLeftSwipe, transitionDuration);
   }, [onLeftSwipe, transitionDuration]);
 
   const onRightSwipeConfirmed = useCallback(() => {
-     onSwipeCancel()
-     setRightSwiping(() => true);
-     window.setTimeout(onRightSwipe, transitionDuration);
+    onSwipeCancel();
+    setRightSwiping(() => true);
+    window.setTimeout(onRightSwipe, transitionDuration);
   }, [onRightSwipe, transitionDuration]);
 
-  
   const onSwipeCancel = useCallback(() => {
     setTouching(() => false);
     setTranslate(() => 0);
@@ -163,128 +173,169 @@ const Swipe = ({
       setTransitioning(false);
       onLeftSwipeConfirmed();
     }
-  }, [onLeftSwipeConfirm, onLeftSwipeConfirmed, onSwipeCancel, disableLeftSwipe]);
+  }, [
+    onLeftSwipeConfirm,
+    onLeftSwipeConfirmed,
+    onSwipeCancel,
+    disableLeftSwipe,
+  ]);
 
   const onRightSwipeClick = useCallback(() => {
-    if (disableRightSwipe || disabled) return; 
+    if (disableRightSwipe || disabled) return;
     setTransitioning(true); // Set transitioning to true before the action
     if (onRightSwipeConfirm) {
       onRightSwipeConfirm(() => {
         setTransitioning(false); // Set transitioning to false after the action is done
-        onRightSwipeConfirmed()
+        onRightSwipeConfirmed();
       }, onSwipeCancel);
     } else {
       setTransitioning(false); // Set transitioning to false after the action is done
-      onRightSwipeConfirmed()
+      onRightSwipeConfirmed();
     }
-  }, [onRightSwipeConfirm, onRightSwipe, onSwipeCancel,disableRightSwipe, disabled]);
+  }, [
+    onRightSwipeConfirm,
+    onRightSwipe,
+    onSwipeCancel,
+    disableRightSwipe,
+    disabled,
+  ]);
 
   useEffect(() => {
     const handleTransitionEnd = () => {
       setTransitioning(false);
     };
-  
+
     const root = container.current;
-    root?.addEventListener("transitionend", handleTransitionEnd);
-  
+    root?.addEventListener('transitionend', handleTransitionEnd);
+
     return () => {
-      root?.removeEventListener("transitionend", handleTransitionEnd);
+      root?.removeEventListener('transitionend', handleTransitionEnd);
     };
   }, []);
-
 
   const onMouseUp = useCallback(
     function () {
       startTouchPosition.current = 0;
       const acceptableMoveLeft = -swipeWidth * 0.7;
       const acceptableMoveRight = swipeWidth * 0.7;
-      const showSwipeLeft = showSwipeAction ?  translate < acceptableMoveLeft : false;
-      const showSwipeRight = showSwipeAction ?  translate > acceptableMoveRight : false;
-      const notShowSwipe = showSwipeAction ?  translate >= acceptableMoveLeft &&  translate <= acceptableMoveRight : true;
-      const swipeWithoutConfirm = (swipeDirection === "right" ? 1 : -1) * translate >= swipeWithoutConfirmThreshold;
+      const showSwipeLeft = showSwipeAction
+        ? translate < acceptableMoveLeft
+        : false;
+      const showSwipeRight = showSwipeAction
+        ? translate > acceptableMoveRight
+        : false;
+      const notShowSwipe = showSwipeAction
+        ? translate >= acceptableMoveLeft && translate <= acceptableMoveRight
+        : true;
+      const swipeWithoutConfirm =
+        (swipeDirection === 'right' ? 1 : -1) * translate >=
+        swipeWithoutConfirmThreshold;
       if (swipeWithoutConfirm) {
-        setTranslate(() => translate)
+        setTranslate(() => translate);
       } else if (notShowSwipe) {
         setTranslate(() => 0);
       } else if (showSwipeLeft && !swipeWithoutConfirm) {
-        setTranslate(() => (swipeDirection === "right" ? 1 : -1) * swipeWidth);
+        setTranslate(() => (swipeDirection === 'right' ? 1 : -1) * swipeWidth);
       } else if (showSwipeRight && !swipeWithoutConfirm) {
-        setTranslate(() => (swipeDirection === "right" ? 1 : -1) * swipeWidth);
+        setTranslate(() => (swipeDirection === 'right' ? 1 : -1) * swipeWidth);
       }
- 
+
       setTouching(() => false);
 
       if (swipeWithoutConfirm) {
-         swipeDirection === "left" ?  onLeftSwipeClick() : onRightSwipeClick()
+        swipeDirection === 'left' ? onLeftSwipeClick() : onRightSwipeClick();
       }
     },
-    [containerWidth, swipeWidth, swipeWithoutConfirmThreshold, onLeftSwipeClick, onRightSwipeClick, translate, showSwipeAction]
+    [
+      containerWidth,
+      swipeWidth,
+      swipeWithoutConfirmThreshold,
+      onLeftSwipeClick,
+      onRightSwipeClick,
+      translate,
+      showSwipeAction,
+    ]
   );
 
   useEffect(() => {
     if (touching) {
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("touchmove", onTouchMove);
-      window.addEventListener("mouseup", onMouseUp);
-      window.addEventListener("touchend", onMouseUp);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('touchmove', onTouchMove);
+      window.addEventListener('mouseup', onMouseUp);
+      window.addEventListener('touchend', onMouseUp);
     } else {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchend", onMouseUp);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('touchend', onMouseUp);
     }
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchend", onMouseUp);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      window.removeEventListener('touchend', onMouseUp);
     };
   }, [onMouseMove, onMouseUp, onTouchMove, touching]);
 
   const classNameContainer = () => {
-    if (swipeDirection === "left")  {
-      const name = `swiper${leftSwiping && distructiveLeftSwipe ? " leftSwiping" : ""} ${className}`
-      return name
+    if (swipeDirection === 'left') {
+      const name = `swiper${
+        leftSwiping && distructiveLeftSwipe ? ' leftSwiping' : ''
+      } ${className}`;
+      return name;
     } else {
-      const name = `swiper${rightSwiping && distructiveRightSwipe? " rightSwiping" : ""} ${className}`
-      return name
+      const name = `swiper${
+        rightSwiping && distructiveRightSwipe ? ' rightSwiping' : ''
+      } ${className}`;
+      return name;
     }
-  } 
+  };
 
   const classNameContent = () => {
-    if (swipeDirection === "left")  {
-      const name = `content${leftSwiping && distructiveLeftSwipe ? " leftSwiping" : ""}${transitioning ? " transitioning" : ""}${!touching ? " transition" : ""}`
-      return name
+    if (swipeDirection === 'left') {
+      const name = `content${
+        leftSwiping && distructiveLeftSwipe ? ' leftSwiping' : ''
+      }${transitioning ? ' transitioning' : ''}${
+        !touching ? ' transition' : ''
+      }`;
+      return name;
     } else {
-      const name = `content${rightSwiping && distructiveRightSwipe ? " rightSwiping" : ""}${transitioning ? " transitioning" : ""}${!touching ? " transition" : ""}`
-      return name
+      const name = `content${
+        rightSwiping && distructiveRightSwipe ? ' rightSwiping' : ''
+      }${transitioning ? ' transitioning' : ''}${
+        !touching ? ' transition' : ''
+      }`;
+      return name;
     }
-  } 
+  };
 
   return (
-    <div id={id} className={ classNameContainer() } ref={container}>
-      
+    <div id={id} className={classNameContainer()} ref={container}>
       {/* Do not add left button if left swipe is disabled */}
-      {!disableLeftSwipe && 
-      <div className={`leftSwipe${leftSwiping ? " leftSwiping" : ""}`}>
-        <button onClick={onLeftSwipeClick}>{leftSwipeComponent ? leftSwipeComponent : leftSwipeText}</button>
-      </div>
-      }
-      
+      {!disableLeftSwipe && (
+        <div className={`leftSwipe${leftSwiping ? ' leftSwiping' : ''}`}>
+          <button onClick={onLeftSwipeClick}>
+            {leftSwipeComponent ? leftSwipeComponent : leftSwipeText}
+          </button>
+        </div>
+      )}
+
       {/* Do not add right button if right swipe is disabled */}
-      { !disableRightSwipe && 
-      <div className={`rightSwipe${rightSwiping ? " rightSwiping" : ""}`}>
-        <button onClick={onRightSwipeClick}>{rightSwipeComponent ? rightSwipeComponent : rightSwipeText}</button>
-      </div>
-      }
+      {!disableRightSwipe && (
+        <div className={`rightSwipe${rightSwiping ? ' rightSwiping' : ''}`}>
+          <button onClick={onRightSwipeClick}>
+            {rightSwipeComponent ? rightSwipeComponent : rightSwipeText}
+          </button>
+        </div>
+      )}
 
       <div
         className={classNameContent()}
         onMouseDown={onStart}
-        onTouchStart={onStart}>
+        onTouchStart={onStart}
+      >
         {children}
       </div>
-       
     </div>
   );
 };

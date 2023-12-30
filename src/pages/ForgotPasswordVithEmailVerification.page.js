@@ -1,27 +1,31 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import * as styles from '../components/styles/css';
 import { Input, FormGroup } from '../components/Shared.componentsb';
 import { Image } from '../components/Image.components';
-import {LoginTextInput} from '../components/Form.components'
-import {ButtonText} from '../components/Buttons.components'
+import { LoginTextInput } from '../components/Form.components';
+import { ButtonText } from '../components/Buttons.components';
 
-function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPasswords, onSubmitReset }) {
+function ForgotPasswordForm({
+  onFormInputChange,
+  onSubmitEmail,
+  onSubmitPasswords,
+  onSubmitReset,
+}) {
   const [resetMode, setResetMode] = useState(false);
- 
+
   const [form, setForm] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: "",
+    email: '',
+    password: '',
+    passwordConfirmation: '',
   });
 
   const onFormInputChange = (event) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
-
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -72,12 +76,22 @@ function ForgotPasswordForm({ onFormInputChange, onSubmitEmail, onSubmitPassword
           </FormGroup>
           <div css={styles.elementsInRow}>
             <FormGroup>
-              <ButtonText variant="primary" type="button" width="120px" onClick={() => setResetMode(false)}>
+              <ButtonText
+                variant="primary"
+                type="button"
+                width="120px"
+                onClick={() => setResetMode(false)}
+              >
                 Resend Email
               </ButtonText>
             </FormGroup>
             <FormGroup>
-              <ButtonText variant="primary" type="button" width="120px" onClick={onSubmitReset}>
+              <ButtonText
+                variant="primary"
+                type="button"
+                width="120px"
+                onClick={onSubmitReset}
+              >
                 Reset Password
               </ButtonText>
             </FormGroup>
@@ -99,12 +113,11 @@ const ForgotPassword = () => {
   const location = useLocation();
 
   const redirectToLoginPage = () => {
-    const redirectTo = location.search.replace("?redirectTo=", "");
-    navigate(redirectTo ? redirectTo : "/");
+    const redirectTo = location.search.replace('?redirectTo=', '');
+    navigate(redirectTo ? redirectTo : '/');
   };
 
   const onSubmitEmail = async (formData) => {
-
     try {
       // Implement your email submission logic here
       // Call redirectNow() or navigate to the next step
@@ -142,7 +155,10 @@ const ForgotPassword = () => {
         />
         <div>
           <p>
-            Have an account already? <Link to="/login" css={styles.linkSignup}>Login</Link>
+            Have an account already?{' '}
+            <Link to="/login" css={styles.linkSignup}>
+              Login
+            </Link>
           </p>
         </div>
       </div>

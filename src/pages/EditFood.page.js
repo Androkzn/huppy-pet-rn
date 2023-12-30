@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, useEffect } from "react";
-import PageContainer from "../components/PageContainer.component";
-import { DataContext } from "../contexts/data.context";
-import EditFoodForm from "../components/EditFoodForm.component";
-import {ButtonLink} from '../components/Buttons.components'
-import * as styles  from '../components/styles/CreateNewFood.css'
-import { useNavigate, useLocation } from "react-router-dom";
+import { useContext, useState, useEffect } from 'react';
+import PageContainer from '../components/PageContainer.component';
+import { DataContext } from '../contexts/data.context';
+import EditFoodForm from '../components/EditFoodForm.component';
+import { ButtonLink } from '../components/Buttons.components';
+import * as styles from '../components/styles/CreateNewFood.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent } from '@mui/material';
-import ChangeImageDialog from "../components/ChangeImageDialog.component";
-import {useUpdateFoodTemplate} from "../hooks/query.hooks"
-import FoodImage from '../components/FoodImage.components'
+import ChangeImageDialog from '../components/ChangeImageDialog.component';
+import { useUpdateFoodTemplate } from '../hooks/query.hooks';
+import FoodImage from '../components/FoodImage.components';
 
 const EditFood = () => {
   const { user, setCurrentPage } = useContext(DataContext);
@@ -18,9 +18,9 @@ const EditFood = () => {
   const location = useLocation();
   const { food } = location.state || {};
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState("addActivity");
-  const {mutate: updateFoodTemplateMutation} = useUpdateFoodTemplate()
-   
+  const [dialogType, setDialogType] = useState('addActivity');
+  const { mutate: updateFoodTemplateMutation } = useUpdateFoodTemplate();
+
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
     const storedValue = localStorage.getItem(key);
@@ -32,9 +32,9 @@ const EditFood = () => {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  // Opens dialog 
+  // Opens dialog
   const openDialog = (dialogTypeNew) => {
-    setDialogType(dialogTypeNew)
+    setDialogType(dialogTypeNew);
     setDialogOpen(true);
   };
 
@@ -45,19 +45,20 @@ const EditFood = () => {
 
   // Returns dialog component based on dialog type
   const getDialogContent = () => {
-    if (dialogType === "image") { 
-      return <ChangeImageDialog  
-        foodItem={foodItem} 
-        onClose={closeDialog} 
-        setFoodItem= {setFoodItem}
-      />
-    } else if (dialogType === "error") {
-      
-    } 
+    if (dialogType === 'image') {
+      return (
+        <ChangeImageDialog
+          foodItem={foodItem}
+          onClose={closeDialog}
+          setFoodItem={setFoodItem}
+        />
+      );
+    } else if (dialogType === 'error') {
+    }
   };
 
   const cachedFood = loadState('foodEdited', {
-    _id : food?._id,
+    _id: food?._id,
     name: food?.name,
     type: food?.type,
     units: food?.units,
@@ -77,14 +78,14 @@ const EditFood = () => {
     weight: food?.weight,
   });
 
-const [foodItem, setFoodItem] = useState(food|| cachedFood)
+  const [foodItem, setFoodItem] = useState(food || cachedFood);
 
   // addFood function is responsible for editing the Food
   const editFood = async () => {
-    if ( foodItem.name.length === 0 || foodItem.calories  === 0   ) {
+    if (foodItem.name.length === 0 || foodItem.calories === 0) {
       return;
     }
-    console.log("editFood:", foodItem);
+    console.log('editFood:', foodItem);
     updateFoodTemplateMutation(
       {
         user: user,
@@ -92,72 +93,64 @@ const [foodItem, setFoodItem] = useState(food|| cachedFood)
       },
       {
         onSuccess: () => {
-          setCurrentPage("searchFood")
-          navigate("/searchFood");
+          setCurrentPage('searchFood');
+          navigate('/searchFood');
         },
       }
-    );   
+    );
   };
 
-  //Callback func that opens image dialog 
+  //Callback func that opens image dialog
   const updateImage = async () => {
-    openDialog("image")
+    openDialog('image');
   };
 
-   // Updates food
-   const getFood = async () => {
+  // Updates food
+  const getFood = async () => {
     if (food) {
-      setFoodItem(food)
+      setFoodItem(food);
       saveState('foodEdited', food);
-      return food  
+      return food;
     } else {
-      setFoodItem(cachedFood)
-      return  cachedFood 
-  }
-}
+      setFoodItem(cachedFood);
+      return cachedFood;
+    }
+  };
 
+  // Save the profile to local storage whenever it changes
+  useEffect(() => {
+    getFood();
+  }, [food]);
 
-    // Save the profile to local storage whenever it changes
-    useEffect(() => {
-      getFood()
-    }, [food]);
-
-  return <PageContainer>
-    <div style={styles.fixedTopContainer}> 
-      <div  style={styles.topButtonsContainerStyle}>
-        <ButtonLink
+  return (
+    <PageContainer>
+      <div style={styles.fixedTopContainer}>
+        <div style={styles.topButtonsContainerStyle}>
+          <ButtonLink
             variant="backButton"
             to="/searchFood"
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
-          Back
-        </ButtonLink>
-        <div  css={styles.addFoodTitleStyle}>{"Edit Food"}</div>
-        <div style={{width: '100px'}}></div>
+            Back
+          </ButtonLink>
+          <div css={styles.addFoodTitleStyle}>{'Edit Food'}</div>
+          <div style={{ width: '100px' }}></div>
+        </div>
       </div>
-    </div>
-    <div style={styles.imageContainerStyle}> 
-      <FoodImage 
-        foodItem={foodItem}
-        onClick={updateImage} 
-      />
-    </div>
-    <EditFoodForm 
-      editFood={editFood} 
-      food={foodItem} 
-    />
-    
-    {/* Dialog */}
-    {dialogOpen && (          
-      <Dialog open={dialogOpen} >
-        <DialogContent>
-          {getDialogContent()}
-          </DialogContent>
-      </Dialog>
-    )}
-  
-  </PageContainer>
-}
+      <div style={styles.imageContainerStyle}>
+        <FoodImage foodItem={foodItem} onClick={updateImage} />
+      </div>
+      <EditFoodForm editFood={editFood} food={foodItem} />
+
+      {/* Dialog */}
+      {dialogOpen && (
+        <Dialog open={dialogOpen}>
+          <DialogContent>{getDialogContent()}</DialogContent>
+        </Dialog>
+      )}
+    </PageContainer>
+  );
+};
 
 export default EditFood;

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './Colors'
+import * as colors from './Colors';
 
 const rowStyle = {
   display: 'flex',
@@ -40,7 +40,7 @@ const descriptionStyle = {
 };
 
 const nutritionRowStyle = {
-  ...rowStyle, 
+  ...rowStyle,
   justifyContent: 'space-between',
   width: '80%',
   margin: '5px',
@@ -70,8 +70,8 @@ const topButtonsContainerStyle = {
 const fixedTopContainer = {
   position: 'sticky',
   top: 60,
-  zIndex: 1000,   
-  backgroundColor: 'white',  
+  zIndex: 1000,
+  backgroundColor: 'white',
   width: '100%',
 };
 
@@ -94,8 +94,8 @@ const nutritionFactsTitleStyle = {
   margin: '10px',
   fontSize: '17px',
   fontWeight: 'bold',
-  cursor: "pointer",
-  padding: "5px",
+  cursor: 'pointer',
+  padding: '5px',
 };
 
 const addFoodButtonContainerStyle = {
@@ -108,7 +108,7 @@ const imageContainerStyle = {
   justifyContent: 'center',
   marginTop: '10px',
   borderRadius: '10px',
-  maxHeigh: "150px",  
+  maxHeigh: '150px',
   overflow: 'hidden',
 };
 
@@ -125,5 +125,5 @@ export {
   nutritionFactsTitleStyle,
   topButtonsContainerStyle,
   imageContainerStyle,
-  fixedTopContainer
+  fixedTopContainer,
 };

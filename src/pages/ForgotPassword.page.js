@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { DataContext } from "../contexts/data.context";
+import { useContext, useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { DataContext } from '../contexts/data.context';
 import * as styles from '../components/styles/Login.css';
-import {LoginTextInput, FormGroup } from '../components/Form.components';
-import {ButtonText} from '../components/Buttons.components'
+import { LoginTextInput, FormGroup } from '../components/Form.components';
+import { ButtonText } from '../components/Buttons.components';
 
-function ForgotPasswordForm({ onSubmit}) {
-  const { setCurrentPage } = useContext(DataContext);  
+function ForgotPasswordForm({ onSubmit }) {
+  const { setCurrentPage } = useContext(DataContext);
   const [form, setForm] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: "",
+    email: '',
+    password: '',
+    passwordConfirmation: '',
   });
 
   function handleChange(event) {
@@ -21,7 +21,6 @@ function ForgotPasswordForm({ onSubmit}) {
       ...prevForm,
       [id]: value,
     }));
-
   }
 
   function handleSubmit() {
@@ -29,7 +28,7 @@ function ForgotPasswordForm({ onSubmit}) {
   }
 
   useEffect(() => {
-    setCurrentPage("signup")
+    setCurrentPage('signup');
   }, []);
 
   return (
@@ -62,7 +61,11 @@ function ForgotPasswordForm({ onSubmit}) {
           <ButtonText
             variant="login"
             onClick={handleSubmit}
-            disabled={form.email.length === 0 || form.password.length === 0 || form.passwordConfirmation.length === 0}
+            disabled={
+              form.email.length === 0 ||
+              form.password.length === 0 ||
+              form.passwordConfirmation.length === 0
+            }
           >
             Reset Password
           </ButtonText>
@@ -78,11 +81,10 @@ const ForgotPassword = () => {
   const { emailPasswordSignup, setCurrentPage } = useContext(DataContext);
 
   const redirectToLoginPage = () => {
-    const redirectTo = location.search.replace("?redirectTo=", "");
-    setCurrentPage("login")
-    navigate(redirectTo ? redirectTo : "/");
+    const redirectTo = location.search.replace('?redirectTo=', '');
+    setCurrentPage('login');
+    navigate(redirectTo ? redirectTo : '/');
   };
-
 
   const onSubmit = async (formData) => {
     try {
@@ -94,10 +96,10 @@ const ForgotPassword = () => {
       alert(error);
     }
   };
- 
-  const navigatedTo= (link) => {
-    setCurrentPage(link)
-  } 
+
+  const navigatedTo = (link) => {
+    setCurrentPage(link);
+  };
 
   return (
     <div css={styles.containerStyle}>
@@ -105,12 +107,13 @@ const ForgotPassword = () => {
         <div css={styles.loginHeaderStyle}>
           <div css={styles.headingLoginStyle}>RESET PASSWORD</div>
         </div>
-        <ForgotPasswordForm
-          onSubmit={onSubmit}
-        />
+        <ForgotPasswordForm onSubmit={onSubmit} />
         <div>
-          <p onClick={navigatedTo("login")}>
-            Have an account already? <Link to="/login" css={styles.linkSignup}>Login</Link>
+          <p onClick={navigatedTo('login')}>
+            Have an account already?{' '}
+            <Link to="/login" css={styles.linkSignup}>
+              Login
+            </Link>
           </p>
         </div>
       </div>

@@ -1,16 +1,21 @@
 /** @jsxImportSource @emotion/react */
 
-import * as colors from './styles/Colors'
+import * as colors from './styles/Colors';
 import { useState } from 'react';
 import Switch from '@mui/material/Switch';
-import {Image} from '../components/Image.components'
-import * as Constants from "../helpers/Constants.helper"
-import { getStartAndEndOfToday } from "../helpers/Date.helper";
+import { Image } from '../components/Image.components';
+import * as Constants from '../helpers/Constants.helper';
+import { getStartAndEndOfToday } from '../helpers/Date.helper';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import * as Enums from "../helpers/Enums.helper"
+import * as Enums from '../helpers/Enums.helper';
 
-function calculateTotalDataForCategory(dataType, foodType, foodData, categories) {
-  if (!foodData) return 0
+function calculateTotalDataForCategory(
+  dataType,
+  foodType,
+  foodData,
+  categories
+) {
+  if (!foodData) return 0;
 
   let totalData = foodData
     .filter((food) => {
@@ -46,10 +51,20 @@ function calculateTotalDataForCategory(dataType, foodType, foodData, categories)
                 : food.weight * (food.meatRatio / 100))
             );
           } else {
-            return sum + (food.units === 'serving' ? food.servings * food.servingWeight : food.weight);
+            return (
+              sum +
+              (food.units === 'serving'
+                ? food.servings * food.servingWeight
+                : food.weight)
+            );
           }
         case 'calories':
-          return sum + (food.units === 'serving' ? food.servings * food.caloriesServing : (food.weight / 100) * food.calories);
+          return (
+            sum +
+            (food.units === 'serving'
+              ? food.servings * food.caloriesServing
+              : (food.weight / 100) * food.calories)
+          );
         case 'nutrients':
           return sum + food.weight;
         default:
@@ -61,52 +76,65 @@ function calculateTotalDataForCategory(dataType, foodType, foodData, categories)
 }
 
 function calculateGoalForCategory(category, currentProfile, isToday) {
-  const weight  = Math.floor(currentProfile?.dailyPortion * category?.percentage / 100)
-  return isToday ?  weight : weight * 7;
+  const weight = Math.floor(
+    (currentProfile?.dailyPortion * category?.percentage) / 100
+  );
+  return isToday ? weight : weight * 7;
 }
- 
+
 function calculatePercentage(value, goal) {
   if (goal === 0) {
     return 0;
-  } else { 
-  return  Math.floor(Math.max((value / goal) * 100, 0));
+  } else {
+    return Math.floor(Math.max((value / goal) * 100, 0));
   }
 }
 
 function doesHaveMeatAndBones(categories) {
-    return (
-      categories.filter((category) => category.type === 'bones').length > 0 &&
-      categories.filter((category) => category.type === 'meat').length > 0
-    );
+  return (
+    categories.filter((category) => category.type === 'bones').length > 0 &&
+    categories.filter((category) => category.type === 'meat').length > 0
+  );
 }
 
-function calculateTotalConsumedCalories(currentProfile, food, categories, activities) {
+function calculateTotalConsumedCalories(
+  currentProfile,
+  food,
+  categories,
+  activities
+) {
   if (currentProfile) {
     let totalCalories = 0;
 
     //Calculates calories for base food categories
     for (const category of categories) {
-      totalCalories += calculateTotalDataForCategory("calories", category.type, food, categories);
+      totalCalories += calculateTotalDataForCategory(
+        'calories',
+        category.type,
+        food,
+        categories
+      );
     }
-  
+
     if (currentProfile && currentProfile.deductCalories && totalCalories > 0) {
       totalCalories -= getTotalCaloriesBurnedFor(currentProfile, activities);
     }
 
-    return  Math.floor(totalCalories);
+    return Math.floor(totalCalories);
   }
   return 0;
 }
 
 function getTotalCaloriesBurnedFor(currentProfile, activities) {
-
   if (currentProfile && currentProfile.deductCalories) {
-    const totalCalories = activities
-      .reduce((result, activity) => {
-        const value = activity.metric === 'distance' ? activity.distance : activity.duration;
-        return result + getCaloriesBurnedFor(activity.metric, value, currentProfile);
-      }, 0);
-    return  Math.floor(totalCalories);
+    const totalCalories = activities.reduce((result, activity) => {
+      const value =
+        activity.metric === 'distance' ? activity.distance : activity.duration;
+      return (
+        result + getCaloriesBurnedFor(activity.metric, value, currentProfile)
+      );
+    }, 0);
+    return Math.floor(totalCalories);
   }
 
   return 0;
@@ -130,8 +158,13 @@ function getCaloriesBurnedFor(metricType, value, currentProfile) {
 function getCaloriesGoal(currentProfile, isToday) {
   if (currentProfile) {
     const multiplier = isToday ? 1 : 7;
-     return Math.floor(Constants.estCalories * currentProfile.weight * currentProfile.dailyRatio * multiplier);
-  } 
+    return Math.floor(
+      Constants.estCalories *
+        currentProfile.weight *
+        currentProfile.dailyRatio *
+        multiplier
+    );
+  }
 
   return 0;
 }
@@ -144,18 +177,28 @@ function filterFoodForToday(foodData, currentDate) {
   const foodForToday = foodData.filter((foodItem) => {
     // Check if the food item's date is within today's range
     return foodItem.date >= todayRange.start && foodItem.date <= todayRange.end;
-  }); 
+  });
   return foodForToday;
 }
 
-
-const CaloriesStatisticSection = ({foodData, categories, activities, currentProfile, isStatisticToday }) => { 
+const CaloriesStatisticSection = ({
+  foodData,
+  categories,
+  activities,
+  currentProfile,
+  isStatisticToday,
+}) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  const food = foodData
-  
-  const calories= calculateTotalConsumedCalories(currentProfile, food, categories, activities)
-  const totalCalories = getCaloriesGoal(currentProfile, isStatisticToday)
-  const percentage = calculatePercentage(calories, totalCalories)
+  const food = foodData;
+
+  const calories = calculateTotalConsumedCalories(
+    currentProfile,
+    food,
+    categories,
+    activities
+  );
+  const totalCalories = getCaloriesGoal(currentProfile, isStatisticToday);
+  const percentage = calculatePercentage(calories, totalCalories);
 
   const statisticCaloriesSectionStyle = {
     display: 'flex',
@@ -178,37 +221,59 @@ const CaloriesStatisticSection = ({foodData, categories, activities, currentProf
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontWeight: 'bold',
     color: colors.green,
-    fontSize: '13px'
+    fontSize: '13px',
   };
 
   const valuesStyle = {
-     minWidth: '110px',
-     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
-     fontWeight: 'bold',
-     color: progressBarColor(percentage),
-     fontSize: '13px'
+    minWidth: '110px',
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    fontWeight: 'bold',
+    color: progressBarColor(percentage),
+    fontSize: '13px',
   };
 
   return (
     <div style={statisticCaloriesSectionStyle}>
-        <div style={imageStyle}> <Image imageName={`calories.png`} width="40" height="40" /></div>
-        {/* <div style={nameStyle}>{"Calories"}</div> */}
-        <ProgressBar
-          percentage={percentage}
-        />
-        <div style={valuesStyle}>{calories} / {totalCalories} kcal</div>
-
+      <div style={imageStyle}>
+        {' '}
+        <Image imageName={`calories.png`} width="40" height="40" />
+      </div>
+      {/* <div style={nameStyle}>{"Calories"}</div> */}
+      <ProgressBar percentage={percentage} />
+      <div style={valuesStyle}>
+        {calories} / {totalCalories} kcal
+      </div>
     </div>
-  )
-}
+  );
+};
 
-const CategoriesStatisticSection = ({category, categories, currentProfile, foodData, isStatisticToday}) => { 
+const CategoriesStatisticSection = ({
+  category,
+  categories,
+  currentProfile,
+  foodData,
+  isStatisticToday,
+}) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  const food = foodData
-  const weight= calculateTotalDataForCategory("weight", category.type, food, categories)
-  const total= calculateGoalForCategory(category, currentProfile, isStatisticToday)
-  const percentage = calculatePercentage(weight, total)
-  const caloriesOther = calculateTotalDataForCategory("calories", "other", foodData, categories);
+  const food = foodData;
+  const weight = calculateTotalDataForCategory(
+    'weight',
+    category.type,
+    food,
+    categories
+  );
+  const total = calculateGoalForCategory(
+    category,
+    currentProfile,
+    isStatisticToday
+  );
+  const percentage = calculatePercentage(weight, total);
+  const caloriesOther = calculateTotalDataForCategory(
+    'calories',
+    'other',
+    foodData,
+    categories
+  );
 
   const statisticCategoriesSectionStyle = {
     display: 'flex',
@@ -217,12 +282,10 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
     justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
-    height: '35px'
+    height: '35px',
   };
 
-  const imageStyle = {
-    
-  };
+  const imageStyle = {};
 
   const nameStyle = {
     textAlign: 'left',
@@ -235,202 +298,206 @@ const CategoriesStatisticSection = ({category, categories, currentProfile, foodD
   };
 
   const valuesStyle = {
-     minWidth: '110px',
-     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
-     fontWeight: 'bold',
-     color: progressBarColor(percentage),
-     fontSize: '13px'
-
+    minWidth: '110px',
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    fontWeight: 'bold',
+    color: progressBarColor(percentage),
+    fontSize: '13px',
   };
 
   return (
     <div>
-    { (category.type === Enums.FoodCategoryType.OTHER) ?(
-    <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> 
-        <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" />
-      </div>
-      <div style={nameStyle}>
-        {category.name}
-      </div>
-      <ProgressBar percentage={0}  style={{ opacity: 0 }}/>
-      <div style={valuesStyle}>
-        {weight} g / {caloriesOther} kcal
-      </div>
+      {category.type === Enums.FoodCategoryType.OTHER ? (
+        <div style={statisticCategoriesSectionStyle}>
+          <div style={imageStyle}>
+            <Image
+              imageName={`${category.type.toLowerCase()}.png`}
+              width="30"
+              height="30"
+            />
+          </div>
+          <div style={nameStyle}>{category.name}</div>
+          <ProgressBar percentage={0} style={{ opacity: 0 }} />
+          <div style={valuesStyle}>
+            {weight} g / {caloriesOther} kcal
+          </div>
+        </div>
+      ) : (
+        <div style={statisticCategoriesSectionStyle}>
+          <div style={imageStyle}>
+            <Image
+              imageName={`${category.type.toLowerCase()}.png`}
+              width="30"
+              height="30"
+            />
+          </div>
+          <div style={nameStyle}>{category.name}</div>
+          <ProgressBar percentage={percentage} />
+          <div style={valuesStyle}>
+            {weight} / {total} g
+          </div>
+        </div>
+      )}
     </div>
-    ) : (
-    <div style={statisticCategoriesSectionStyle}>
-      <div style={imageStyle}> 
-        <Image imageName={`${category.type.toLowerCase()}.png`} width="30" height="30" />
+  );
+};
+
+const ToggleStatisticSection = ({ initialValue, onChange }) => {
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  const [checked, setChecked] = useState(initialValue);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    onChange();
+  };
+
+  const statisticToggleLabelStyle = {
+    padding: '10px',
+    margin: '5px',
+    textAlign: 'left',
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    fontWeight: 'bold',
+    color: colors.green,
+  };
+
+  const statisticToggleSectionStyle = {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  };
+
+  return (
+    <div style={statisticToggleSectionStyle}>
+      <div style={statisticToggleLabelStyle}>Today</div>
+      <div>
+        <Switch
+          checked={checked}
+          onChange={handleChange}
+          inputProps={{ 'aria-label': 'controlled' }}
+          color="warning"
+          style={{ color: colors.green }}
+        />
       </div>
-      <div style={nameStyle}>
-        {category.name}
-      </div>
-      <ProgressBar percentage={percentage} />
-      <div style={valuesStyle}>
-        {weight} / {total} g 
-      </div>
+      <div style={statisticToggleLabelStyle}>This Week</div>
     </div>
-    )}
+  );
+};
+
+const FoodCategoryRow = ({ name, value, color, weight }) => {
+  const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  const containerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    textAlign: 'center',
+    borderRadius: '10px',
+    height: '40px',
+    marginRight: '10px',
+    width: '100%',
+  };
+
+  const nameStyle = {
+    fontSize: '18px',
+    fontWeight: 'bold',
+    minWidth: '100px',
+    borderRadius: '5px',
+    padding: '5px',
+    color: colors.white,
+    backgroundColor: `${color}`,
+  };
+
+  const weightStyle = {
+    padding: '5px',
+    minWidth: '70px',
+  };
+
+  const valueStyle = {
+    padding: '5px',
+    minWidth: '40px',
+  };
+
+  return (
+    <div style={containerStyle}>
+      <div style={nameStyle}>{name}</div>
+      <div style={weightStyle}>{weight} g</div>
+      <div style={valueStyle}>{value}%</div>
     </div>
-  )
+  );
+};
+
+function progressBarColor(value) {
+  if (value <= 100) {
+    return colors.green;
+  } else if (value <= 125) {
+    return colors.yellow;
+  } else if (value <= 150) {
+    return colors.orange;
+  } else {
+    return colors.red;
+  }
 }
 
- const ToggleStatisticSection = ({initialValue, onChange}) => { 
+const ProgressBar = (props) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  const [checked, setChecked] =  useState(initialValue);
+  const { percentage, style } = props;
+  const containerStyles = {
+    height: 20,
+    backgroundColor: '#e0e0de',
+    borderRadius: '10px',
+    borderBottomLeftRadius: '10px',
+    marginRight: '5px',
+    marginRiLeft: '5px',
+    maxWidth: '350px',
+    width: '100%',
+    ...style,
+  };
 
-    const handleChange = (event) => {
-      setChecked(event.target.checked);
-      onChange()
-    };
+  const fillerStyles = {
+    height: '100%',
+    width:
+      percentage < 5 && percentage > 0
+        ? '5%'
+        : percentage <= 100
+          ? `${percentage}%`
+          : '100%',
+    backgroundColor: progressBarColor(percentage),
+    transition: 'width 1s ease-in-out',
+    borderTopLeftRadius: '10px',
+    borderBottomLeftRadius: '10px',
+    borderTopRightRadius: percentage < 95 ? '0px' : '10px',
+    borderBottomRightRadius: percentage < 95 ? '0px' : '10px',
+    textAlign: 'right',
+  };
 
-    const statisticToggleLabelStyle = {
-      padding: '10px',
-      margin: '5px',
-      textAlign: 'left',
-      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
-      fontWeight: "bold",
-      color: colors.green,
-    };
-    
-    const statisticToggleSectionStyle = {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'center',
-    };
+  const labelStyles = {
+    padding: 5,
+    fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
+    color: percentage <= 20 ? 'black' : 'white',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    marginLeft: percentage <= 20 ? `${percentage + 10}px` : '0px',
+  };
 
-    return (
-      <div style={statisticToggleSectionStyle}>
-            <div style={statisticToggleLabelStyle}>Today</div>
-            <div  >
-              <Switch
-                checked={checked}
-                onChange={handleChange}
-                inputProps={{ 'aria-label': 'controlled' }}
-                color='warning'
-                style={{ color: colors.green }}
-              />
-            </div>
-            <div style={statisticToggleLabelStyle}>This Week</div>
-          </div>
-    )
- }
-
-
-  const FoodCategoryRow = ({ name, value, color, weight }) => {
-    const isSmallScreen = useMediaQuery(Constants.smallScreen);
-    const containerStyle = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      textAlign: 'center',
-      borderRadius: '10px',
-      height: '40px',
-      marginRight: '10px',
-      width: '100%',
-    };
-  
-    const nameStyle = {
-      fontSize: '18px',
-      fontWeight: "bold",
-      minWidth: '100px',
-      borderRadius: '5px',
-      padding: '5px',
-      color: colors.white,
-      backgroundColor: `${color}`, 
-       
-    };
-
-    const weightStyle = {
-      padding: '5px',
-      minWidth: '70px',
-    };
-
-    const valueStyle = {
-      padding: '5px',
-      minWidth: '40px',
-    };
-
-    return (
-      <div style={containerStyle}>
-        <div style={nameStyle} >{name}</div>  
-        <div style={weightStyle} >{weight} g</div>  
-        <div style={valueStyle} >{value}%</div>  
+  return (
+    <div style={containerStyles}>
+      <div style={fillerStyles}>
+        <span style={labelStyles}>{`${percentage}%`}</span>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  function progressBarColor(value) {
-    if (value <= 100) {
-        return colors.green;
-    } else if (value <= 125) {
-      return colors.yellow;
-    }  else if (value <= 150) {
-      return colors.orange;
-    } else   {
-      return colors.red;
-    }
-  }
-
-
-  const ProgressBar = (props) => {
-    const isSmallScreen = useMediaQuery(Constants.smallScreen);
-    const { percentage, style } = props;
-    const containerStyles = {
-      height: 20,
-      backgroundColor: "#e0e0de",
-      borderRadius: '10px',
-      borderBottomLeftRadius: '10px',
-      marginRight: '5px',
-      marginRiLeft: '5px',
-      maxWidth:  '350px',
-      width: '100%',
-      ...style,  
-    }
-  
-    const fillerStyles = {
-      height: '100%',
-      width:  (percentage < 5 && percentage > 0) ? '5%' : (percentage <= 100 ? `${percentage}%` : '100%'),
-      backgroundColor: progressBarColor(percentage),
-      transition: 'width 1s ease-in-out',
-      borderTopLeftRadius: '10px',
-      borderBottomLeftRadius: '10px',
-      borderTopRightRadius: percentage < 95 ? '0px' : '10px',
-      borderBottomRightRadius: percentage < 95 ? '0px' : '10px',
-      textAlign: 'right',
-    }
-  
-    const labelStyles = {
-      padding: 5,
-      fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
-      color: percentage <= 20 ? 'black' : 'white',
-      fontWeight: 'bold',
-      fontSize: '14px',
-      marginLeft: percentage <= 20? `${percentage + 10 }px` : '0px',
-    }
-  
-    return (
-      <div style={containerStyles}>
-        <div style={fillerStyles}>
-          <span style={labelStyles}>{`${percentage}%`}</span>
-        </div>
-      </div>
-    );
-  };
-  
-  export  {
-    CaloriesStatisticSection,
-    CategoriesStatisticSection,
-    ToggleStatisticSection,
-    FoodCategoryRow,
-    ProgressBar,
-    calculateTotalDataForCategory,
-    calculateGoalForCategory,
-    calculateTotalConsumedCalories,
-    getCaloriesGoal,
-  };
-  
+export {
+  CaloriesStatisticSection,
+  CategoriesStatisticSection,
+  ToggleStatisticSection,
+  FoodCategoryRow,
+  ProgressBar,
+  calculateTotalDataForCategory,
+  calculateGoalForCategory,
+  calculateTotalConsumedCalories,
+  getCaloriesGoal,
+};

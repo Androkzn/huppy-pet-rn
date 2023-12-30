@@ -9,13 +9,15 @@ const imageSources = [
   './assets/spinner/activity_indicator5.png',
 ];
 
-function PawActivityIndicatorView({ width = "60px" }) {
+function PawActivityIndicatorView({ width = '60px' }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   useEffect(() => {
     // Set up a timer to change the image index every 200ms
     const timer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageSources.length);
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % imageSources.length
+      );
     }, 200);
 
     // Clean up the timer when the component unmounts to prevent memory leaks
@@ -36,4 +38,3 @@ function PawActivityIndicatorView({ width = "60px" }) {
 }
 
 export default PawActivityIndicatorView;
-

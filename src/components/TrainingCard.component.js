@@ -89,7 +89,7 @@ function TrainingCard({ training }) {
           className="swiper"
           leftSwipeColor={colors.orange}
           rightSwipeColor={
-            training.isCompleted ? colors.yellow : colors.lightGreen2
+            training.isCompleted ? colors.brown : colors.lightGreen2
           }
         >
           <div
@@ -112,6 +112,16 @@ function TrainingCard({ training }) {
                 </div>
                 <div style={styleTraining.textStyle}>{getTainingType()}</div>
               </div>
+              
+              { (training.isCompleted) && 
+                <div style={styleTraining.rowStyle}>
+                  <Image
+                    imageName={`trophy.svg`}
+                    width="35"
+                    height="35"
+                  />
+                </div>
+              }
             </div>
           </div>
         </Swipe>

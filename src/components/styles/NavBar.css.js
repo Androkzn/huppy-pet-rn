@@ -29,7 +29,7 @@ const columnStyle = {
 const userInfoContainerStyle = (isSmallScreen) => ({
   justifyContent: 'flex-end',
   display: 'flex',
-  width: '100%',
+//  // width: '100%',
   alignItems: 'center',
   textAlign: 'center',
 });

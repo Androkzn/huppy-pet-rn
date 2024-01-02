@@ -39,18 +39,13 @@ const NavBar = () => {
 
   const DatePicker = () => {
     return (
-      <div>
-        {isSmallScreen &&
-          (currentPage === '' || currentPage === 'training') && (
-            <div style={styles.pickerContainerStyle}>
-              <CustomDatePickerWithArrows
-                value={currentDate}
-                onChange={(date) => setCurrentDate(date)}
-                styleContainer={styles.pickerStyle}
-                backgroundColor={colors.white}
-              />
-            </div>
-          )}
+      <div style={styles.pickerContainerStyle}>
+        <CustomDatePickerWithArrows
+          value={currentDate}
+          onChange={(date) => setCurrentDate(date)}
+          styleContainer={styles.pickerStyle}
+          backgroundColor={colors.white}
+        />
       </div>
     );
   };
@@ -74,8 +69,10 @@ const NavBar = () => {
   return (
     <>
       <AppBar position="fixed" sx={{ backgroundColor: colors.brown }}>
-        <Toolbar>
-          <DatePicker />
+        <Toolbar style={{display: "flex", justifyContent: 'space-between', width: "auto"}}>
+          {isSmallScreen && (currentPage === '' || currentPage === 'training') && (
+            <DatePicker />
+          )}
           <HeaderLogo />
           {isLoggedIn() && (
             <div style={styles.userInfoContainerStyle(isSmallScreen)}>
@@ -88,7 +85,7 @@ const NavBar = () => {
                   {currentProfile.name}
                 </h2>
               )}
-              <div style={styles.avatarIconStyle}>
+              <div  >
                 <Avatar
                   width="50px"
                   profile={currentProfile}

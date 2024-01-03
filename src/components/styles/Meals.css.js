@@ -14,8 +14,8 @@ const headerMealStyle = {
 
 const headerStyle = {
   display: 'flex',
-  borderTopLeftRadius: '20px',
-  borderTopRightRadius: '20px',
+  borderTopLeftRadius: '10px',
+  borderTopRightRadius: '10px',
   alignItems: 'center',
   justifyContent: 'start',
   textAlign: 'center',
@@ -66,7 +66,7 @@ const headerTextStyle = (isSwiped) => ({
   paddingLeft: isSwiped ? '10px' : '0px',
   transition: 'transform 1s ease',
   border: isSwiped ? `1px solid ${colors.orange}` : 'none',
-  borderRadius: '15px',
+  borderRadius: '10px',
 });
 
 const foodListStyle = {
@@ -178,8 +178,8 @@ const bodyMealStyle = {
   flexDirection: 'column',
   width: '100%',
   backgroundColor: colors.grayBackground,
-  borderBottomLeftRadius: '20px',
-  borderBottomRightRadius: '20px',
+  borderBottomLeftRadius: '10px',
+  borderBottomRightRadius: '10px',
 };
 
 const placeholderStyle = {
@@ -269,7 +269,7 @@ const pickerStyle = {
 const deleteItemStyle = (isSwiped) => ({
   transition: 'transform 1s ease',
   border: isSwiped ? `1px solid ${colors.lightGreen}` : 'none',
-  borderRadius: '15px',
+  borderRadius: '10px',
 });
 
 const totalWeightContainerStyle = {

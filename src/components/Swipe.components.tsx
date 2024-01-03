@@ -52,7 +52,7 @@ const cursorPosition = (event: any) => {
   return event?.nativeEvent?.clientX;
 };
 
-const Swipe = ({
+const Swiper = ({
   onLeftSwipe,
   onLeftSwipeConfirm,
   leftSwipeComponent,
@@ -514,4 +514,4 @@ const Swipe = ({
   );
 };
 
-export default Swipe;
+export default Swiper;

@@ -121,15 +121,15 @@ const Training = () => {
   const Trainings = ({ trainingData }) => {
     return (
       <div style={styles.childConteinerStyle}>
-        {' '}
+    
         {/* Trainings container*/}
         <div style={styles.headerStyle}>
           {/* Header container*/}
           <div style={styles.headerTiteStyle}>
-            <h3 style={styles.headingStyle}>TRAININGS</h3>
             <div style={styles.headerImageStyle}>
               <TrainingIcon fill={colors.green} />
             </div>
+            <div style={styles.headingStyle}>TRAININGS</div>
           </div>
           <button
             style={styles.headerAddButtonStyle}

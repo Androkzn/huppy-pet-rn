@@ -20,8 +20,8 @@ const pickerContainerStyle = {
 
 const headerStyle = {
   display: 'flex',
-  borderTopLeftRadius: '20px',
-  borderTopRightRadius: '20px',
+  borderTopLeftRadius: '10px',
+  borderTopRightRadius: '10px',
   alignItems: 'center',
   justifyContent: 'start',
   textAlign: 'center',
@@ -73,7 +73,7 @@ const childConteinerStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
-  borderRadius: '20px',
+  borderRadius: '10px',
   backgroundColor: colors.grayBackground,
 };
 

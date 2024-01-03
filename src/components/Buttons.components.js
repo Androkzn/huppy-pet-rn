@@ -72,7 +72,7 @@ const buttonVariants = {
     height: '35px',
     lineHeight: '35px',
     fontSize: '20px',
-    borderRadius: '10px',
+    borderRadius: '50%',
     textAlign: 'center',
     border: `none`,
     cursor: 'pointer',

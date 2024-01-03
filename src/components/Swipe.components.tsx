@@ -100,14 +100,33 @@ const Swipe = ({
 
   useEffect(() => {
     const root = container.current;
-    root?.style.setProperty(
-      '--visibilityLeft',
-      swipeDirection === 'left' ? 'visible' : 'hidden'
-    );
-    root?.style.setProperty(
-      '--visibilityRight',
-      swipeDirection === 'right' ? 'visible' : 'hidden'
-    );
+    // Sets fixed visibility in case when right swipe is disabled
+    if (disableRightSwipe) {
+      root?.style.setProperty(
+        '--visibilityLeft','visible'
+      );
+      root?.style.setProperty(
+        '--visibilityRight','hidden'
+      );
+    // Sets fixed visibility in case when left swipe is disabled
+    } else if  (disableLeftSwipe) {
+      root?.style.setProperty(
+        '--visibilityLeft','hidden'
+      );
+      root?.style.setProperty(
+        '--visibilityRight', 'visible'
+      );
+    // Sets dinamic visibility in case when both swipes are enabled
+    } else {
+      root?.style.setProperty(
+        '--visibilityLeft',
+        swipeDirection === 'left' ? 'visible' : 'hidden'
+      );
+      root?.style.setProperty(
+        '--visibilityRight',
+        swipeDirection === 'right' ? 'visible' : 'hidden'
+      );
+    }
   }, [swipeDirection]);
 
   useEffect(() => {
@@ -117,11 +136,41 @@ const Swipe = ({
 
   const onMove = useCallback(
     function (event: TouchEvent | MouseEvent) {
+      
       if (!touching) return;
       const currentPosition = cursorPosition(event);
       const moveDistance = currentPosition - startTouchPosition.current;
       setSwipeDirection(moveDistance >= 0 ? 'right' : 'left');
-      setTranslate(moveDistance);
+      
+      console.log("currentPosition: ", currentPosition)
+      console.log("moveDistance: ", moveDistance)
+      console.log("SwipeDirection: ", swipeDirection)
+      console.log("Translate: ", translate)
+      console.log("(translate >= 0 &&  moveDistance >=0) ", (translate >= 0 &&  moveDistance >=0))
+      console.log("disableRightSwipe", disableRightSwipe)
+
+      let newTranslate = moveDistance;
+
+      // Check if right swipe is disabled
+      if (disableRightSwipe) {
+        newTranslate = Math.min(0, translate + moveDistance);
+          console.log("newTranslate", newTranslate)
+          
+        if ((translate >= 0 &&  moveDistance >=0 )){
+          console.log("return", translate >= 0 &&  moveDistance >=0 && disableRightSwipe)
+          return;
+        }
+      } else if (disableLeftSwipe) {
+        newTranslate = Math.max(0, translate + moveDistance);
+          console.log("newTranslate", newTranslate)
+          
+        if ((translate <= 0 &&  moveDistance <=0 )){
+          console.log("return", translate >= 0 &&  moveDistance >=0 && disableRightSwipe)
+          return;
+        }
+      }
+
+      setTranslate(newTranslate);
     },
     [touching]
   );

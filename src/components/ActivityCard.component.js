@@ -124,6 +124,8 @@ function ActivityCard({ activity }) {
         }
       }}
       distructiveLeftSwipe={true}
+      disableRightSwipe={false}
+      disableLeftSwipe={true}
       rightSwipeComponent={
         <Image imageName={`edit_white.svg`} width="20" height="20" />
       }

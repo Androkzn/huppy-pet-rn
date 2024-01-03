@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../contexts/data.context.js';
 import { Image } from './Image.components';
 import * as stylesActivity from '../components/styles/Activity.css';
-import { ButtonImage, ButtonText } from '../components/Buttons.components';
+import { ButtonText } from '../components/Buttons.components';
 import * as enums from '../helpers/Enums.helper';
 import Swipe from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
@@ -14,6 +14,7 @@ function ActivityCard({ activity }) {
   const { user, currentProfile } = useContext(DataContext);
   const { mutate: deleteActivityMutation } = useDeleteActivity();
   const { mutate: updateActivityMutation } = useUpdateActivity();
+  const [swipeCompleted, setSwipeCompleted] = useState(true);
 
   function handleTextFieldValueChange(e) {
     const newValue = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
@@ -55,7 +56,7 @@ function ActivityCard({ activity }) {
   async function updateCurentActivity(newValue) {
     const updateData = {
       burnedCalories: getCaloriesBurnedFor(newValue),
-      [activity.metric === enums.ActivityMetric.DISTANCE
+      [activity?.metric === enums.ActivityMetric.DISTANCE
         ? 'distance'
         : 'duration']: newValue,
     };
@@ -76,7 +77,7 @@ function ActivityCard({ activity }) {
   };
 
   function getCaloriesBurnedFor(value) {
-    const weight = currentProfile.weight;
+    const weight = currentProfile?.weight;
     if (activity.metric === enums.ActivityMetric.DISTANCE) {
       // To calculate the number of calories burned during a walk,
       // simply multiply your weight by the distance walked and then multiply by 0.8.
@@ -124,14 +125,17 @@ function ActivityCard({ activity }) {
         }
       }}
       distructiveLeftSwipe={true}
-      disableRightSwipe={false}
-      disableLeftSwipe={true}
+      disableRightSwipe={true}
+      disableLeftSwipe={false}
       rightSwipeComponent={
         <Image imageName={`edit_white.svg`} width="20" height="20" />
       }
       className="swiper-activity"
       leftSwipeColor={colors.orange}
       rightSwipeColor={colors.lightGreen2}
+      onSwipeStateCompleted={(completed ) => {
+        setSwipeCompleted(completed);
+      }}
     >
       <div style={stylesActivity.headerActivityStyle}>
         <div style={stylesActivity.rowStyle}>
@@ -143,7 +147,10 @@ function ActivityCard({ activity }) {
             />
           </div>
           <div style={stylesActivity.columnStyle}>
-            <div style={stylesActivity.topRowStyle}>
+            <div style={{
+              ...stylesActivity.topRowStyle,
+             pointerEvents: swipeCompleted ? 'auto' : 'none'}}
+             >
               <select
                 name={'activityType'}
                 value={activity.type}
@@ -164,7 +171,10 @@ function ActivityCard({ activity }) {
         </div>
       </div>
 
-      <div style={stylesActivity.bodyActivityStyle}>
+      <div style={{
+        ...stylesActivity.bodyActivityStyle,
+        pointerEvents: swipeCompleted ? 'auto' : 'none',
+      }}>
         <div style={stylesActivity.bodyRowStyle}>
           <select
             name={'activityMetric'}
@@ -186,6 +196,7 @@ function ActivityCard({ activity }) {
                 handleButtonValueChange(-1 * getChangeValueStep());
               }}
               name={'integerMetric'}
+              disabled={!swipeCompleted}
             >
               -
             </ButtonText>
@@ -201,6 +212,7 @@ function ActivityCard({ activity }) {
                 handleButtonValueChange(getChangeValueStep());
               }}
               name={'integerMetric'}
+              disabled={!swipeCompleted}
             >
               +
             </ButtonText>

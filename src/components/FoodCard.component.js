@@ -32,7 +32,7 @@ function FoodCard({ food, openAddFoodPage }) {
   return (
     <div style={style.mainConteinerStyle}>
       <Swipe
-        height={isSmallScreen ? 70 : 50}
+        height={isSmallScreen ? 73 : 50}
         disabled={!food.isCustom || !isSmallScreen}
         onLeftSwipe={deleteFoodTemplateHandler}
         leftSwipeComponent={

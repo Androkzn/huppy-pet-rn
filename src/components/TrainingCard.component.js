@@ -78,13 +78,13 @@ function TrainingCard({ training }) {
               height="20"
             />
           }
-          onLeftSwipeConfirm={(onSuccess, onCancel) => {
-            if (window.confirm('Do you really want to delete this item ?')) {
-              onSuccess();
-            } else {
-              onCancel();
-            }
-          }}
+          // onLeftSwipeConfirm={(onSuccess, onCancel) => {
+          //   if (window.confirm('Do you really want to delete this item ?')) {
+          //     onSuccess();
+          //   } else {
+          //     onCancel();
+          //   }
+          // }}
           distructiveLeftSwipe={true}
           className="swiper"
           leftSwipeColor={colors.orange}

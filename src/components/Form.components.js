@@ -1016,8 +1016,8 @@ const LoginTextInput = ({ id, name, onChange, placeholder, borderColor, isPasswo
     padding: '8px 12px',
     paddingRight: Constants.mainPadding,
     paddingLeft: Constants.mainPadding,
-    minWidth: '250px',
-    maxWidth: '300px',
+    minWidth: '270px',
+    maxWidth: '270px',
     border: `2px solid  ${borderColor || 'none'}`,
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
   };

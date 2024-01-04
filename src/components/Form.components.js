@@ -5,7 +5,7 @@ import { styled as styledMaterial } from '@mui/material/styles';
 import * as colors from './styles/Colors';
 import { useState } from 'react';
 import Switch from '@mui/material/Switch';
-import { ButtonText } from './Buttons.components';
+import { ButtonText, ButtonImage } from './Buttons.components';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import CustomDatePicker from '../components/CustomDatePicker.component';
@@ -1002,7 +1002,9 @@ const UnselectedFoodCategoryRow = ({ name, onAdd, color }) => {
   );
 };
 
-const LoginTextInput = ({ id, name, onChange, placeholder, borderColor }) => {
+const LoginTextInput = ({ id, name, onChange, placeholder, borderColor, isPassword = false }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const containerStyle = {
     display: 'flex',
@@ -1031,18 +1033,37 @@ const LoginTextInput = ({ id, name, onChange, placeholder, borderColor }) => {
     height: '30px',
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontFamily: "'Balsamiq Sans', sans-serif",
+    color: colors.green
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+    onChange(e); // Propagate the change event to the parent component if needed
   };
 
   return (
     <div style={containerStyle}>
       <input
         id={id}
-        type="text"
+        type={showPassword ? 'text' : (isPassword ? 'password' : 'text')}
         placeholder={placeholder}
         style={textFieldStyle}
         name={name}
-        onChange={onChange}
+        value={inputValue}
+        onChange={handleInputChange}
       />
+      {isPassword && inputValue.trim() !== '' && (
+        <ButtonImage
+          variant="iconButton"
+          imageName={showPassword ? 'show_password.svg' : 'hide_password.svg'}
+          imageSize={20}
+          onClick={togglePasswordVisibility}
+        />
+      )}
     </div>
   );
 };

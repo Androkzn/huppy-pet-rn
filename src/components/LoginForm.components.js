@@ -38,8 +38,8 @@ function LoginForm({ onSubmit }) {
       <FormGroup>
         <LoginTextInput
           id="password"
-          type="password"
           placeholder="Password"
+          isPassword= {true}
           value={form.password}
           onChange={handleChange}
         />

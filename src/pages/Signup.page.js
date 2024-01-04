@@ -38,7 +38,7 @@ function SignUpForm({ onSubmit, buttonText }) {
       <FormGroup>
         <LoginTextInput
           id="password"
-          type="password"
+          isPassword= {true}
           placeholder="Password"
           onChange={handleChange}
         />
@@ -46,7 +46,7 @@ function SignUpForm({ onSubmit, buttonText }) {
       <FormGroup>
         <LoginTextInput
           id="passwordConfirmation"
-          type="password"
+          isPassword= {true}
           placeholder="Repeat password"
           onChange={handleChange}
         />

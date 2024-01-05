@@ -338,8 +338,6 @@ const ProfileForm = ({
       return isaAvailable;
     };
 
-    console.log("categories percentage", categories[0].percentage)
-    console.log("category", categories[0])
     return (
       <div>
         {isLoadingCategories || isErrorCategories ? (

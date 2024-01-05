@@ -69,7 +69,7 @@ const useGetMealsForDate = (user, currentProfile, currentDate) => {
 
 // GET FOOD CATEGORIES
 const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) => {
-  return useQuery(['loadFoodCategories', preset], async () => {
+  return useQuery(['loadFoodCategories' + addOther, preset], async () => {
     if (currentProfile && user) {
       if (currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
         const allCategoriesForPresset = Enums.getCategoriesForRatioPreset(
@@ -85,18 +85,21 @@ const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) =
           type: category.type,
         }));
 
-        // Add optionalCategory to the data array
-        let optionalCategory = Enums.getDefaultCategory(
-          Enums.FoodCategoryType.OTHER,
-          currentProfile._id
-        );
-        data.push({
-          name: optionalCategory.name,
-          weight: optionalCategory.weight,
-          percentage: optionalCategory.percentage,
-          color: optionalCategory.color,
-          type: optionalCategory.type,
-        });
+        if (addOther) {
+          // Add optionalCategory to the data array
+          let optionalCategory = Enums.getDefaultCategory(
+            Enums.FoodCategoryType.OTHER,
+            currentProfile._id
+          );
+
+          data.push({
+            name: optionalCategory.name,
+            weight: optionalCategory.weight,
+            percentage: optionalCategory.percentage,
+            color: optionalCategory.color,
+            type: optionalCategory.type,
+          });
+        }
 
         return data;
       } else {
@@ -117,6 +120,7 @@ const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) =
         }));
 
         if (addOther) {
+          console.log("addOther", addOther)
           // Add optionalCategory to the data array
           let optionalCategory = Enums.getDefaultCategory(
             Enums.FoodCategoryType.OTHER,
@@ -351,11 +355,11 @@ const useUpdateFood = () => {
 
 // FOOD CATEGORY
 const useUpdateFoodCategory = () => {
-  //const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationFn: graphql.updateFoodCategory,
     onSuccess: () => {
-      //queryClient.invalidateQueries(['loadFoodCategories']);
+      // queryClient.invalidateQueries(['loadFoodCategories']);
     },
   });
 };

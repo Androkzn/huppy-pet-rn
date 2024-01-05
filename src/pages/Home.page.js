@@ -187,7 +187,8 @@ const Home = () => {
       isLoading,
       isError,
     } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
-
+    
+    console.log("Chart category", categories)
     return (
       <div
         style={{

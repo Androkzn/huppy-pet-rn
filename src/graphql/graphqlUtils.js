@@ -1034,7 +1034,7 @@ const getUserProfiles = async (user) => {
       queryVariablesProfiles,
       headers
     );
-    console.log('getUserProfiles', resp.profiles);
+    
     const profiles = resp.profiles.map((profile) => ({
       ...profile,
       key: profile._id,

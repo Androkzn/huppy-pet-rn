@@ -275,26 +275,26 @@ const ProfileForm = ({
       isError: isErrorCategories,
     } = useLoadFoodCategories(user, profile, profile.preset);
 
-    // Returns unused categories that can be added to custom categories
-    const getUnusedCategories = (categories) => {
-      const allCategories = Enums.getAllFoodCategories(profile._id);
-      if (
-        categories &&
-        categories.length > 0 &&
-        profile?.preset === Enums.RatioPresets.CUSTOM
-      ) {
-        // Filter out categories that already exist
-        const unusedCategories = allCategories.filter(
-          (category) =>
-            !categories.some(
-              (existingCategory) => existingCategory.index == category.index
-            )
-        );
-        return unusedCategories;
-      } else {
-        return allCategories;
-      }
-    };
+    // // Returns unused categories that can be added to custom categories
+    // const getUnusedCategories = (categories) => {
+    //   const allCategories = Enums.getAllFoodCategories(profile._id);
+    //   if (
+    //     categories &&
+    //     categories.length > 0 &&
+    //     profile?.preset === Enums.RatioPresets.CUSTOM
+    //   ) {
+    //     // Filter out categories that already exist
+    //     const unusedCategories = allCategories.filter(
+    //       (category) =>
+    //         !categories.some(
+    //           (existingCategory) => existingCategory.index == category.index
+    //         )
+    //     );
+    //     return unusedCategories;
+    //   } else {
+    //     return allCategories;
+    //   }
+    // };
 
     // Provides default presset categories or returns custom categories depends on preset value
     const getCategoriesForPresset = () => {
@@ -314,9 +314,10 @@ const ProfileForm = ({
       }
     };
 
-    let categoriesCanBeAdded = getUnusedCategories(categories);
+    //let categoriesCanBeAdded = getUnusedCategories(categories);
     let unusedCategoryPercentage = checkUnusedCategoryPercentage(categories);
     let chartData = [];
+
     function getChartData() {
       const categoriesNew = getCategoriesForPresset();
       const data = categoriesNew.map((category) => ({
@@ -337,6 +338,8 @@ const ProfileForm = ({
       return isaAvailable;
     };
 
+    console.log("categories percentage", categories[0].percentage)
+    console.log("category", categories[0])
     return (
       <div>
         {isLoadingCategories || isErrorCategories ? (
@@ -388,7 +391,7 @@ const ProfileForm = ({
                           (profile?.dailyPortion * category?.percentage) / 100
                         )}
                         color={category?.color}
-                        value={category?.percentage}
+                        initialValue={category?.percentage}
                         onChange={(value) => {
                           onTextInputCategoryChange(value, category?._id);
                         }}
@@ -414,8 +417,39 @@ const ProfileForm = ({
               </div>
             </div>
 
-            {/* Select custom category section */}
-            {categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
+            <SelectCastomCategorySection categories={categories}/>
+
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const SelectCastomCategorySection = (categories) => {
+    // Returns unused categories that can be added to custom categories
+    const getUnusedCategories = (categories) => {
+      const allCategories = Enums.getAllFoodCategories(profile._id);
+      if (
+        categories &&
+        categories.length > 0 &&
+        profile?.preset === Enums.RatioPresets.CUSTOM
+      ) {
+        // Filter out categories that already exist
+        const unusedCategories = allCategories.filter(
+          (category) =>
+            !categories.some(
+              (existingCategory) => existingCategory.index == category.index
+            )
+        );
+        return unusedCategories;
+      } else {
+        return allCategories;
+      }
+    };
+
+    let categoriesCanBeAdded = getUnusedCategories(categories);
+
+    return <div> {categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
               <div style={styles.foodRatioContainerStyle}>
                 <div style={styles.columnStyle}>
                   <div style={styles.rowStyle}>
@@ -465,11 +499,9 @@ const ProfileForm = ({
                 </div>
               </div>
             )}
-          </div>
-        )}
-      </div>
-    );
-  };
+    </div>
+  }
+
 
   return (
     <div style={{ ...styles.profileFormStyle }}>

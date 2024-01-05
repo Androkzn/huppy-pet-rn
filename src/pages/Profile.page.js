@@ -104,7 +104,6 @@ const Profile = () => {
 
   // Adds new Food Category
   const addCategory = async (category) => {
-    console.log("category", category)
     addFoodCategoryMutation({
       user: user,
       currentProfile: currentProfile,

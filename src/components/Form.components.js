@@ -360,6 +360,7 @@ const TitleButtonsAndTextField = ({
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [count, setCount] = useState(initialValue || 0);
+
   const decrementCount = () => {
     if (count > 0) {
       setCount(count - 1);
@@ -837,26 +838,35 @@ const SelectedCustomFoodCategoryRow = ({
   name,
   onChange,
   onDelete,
-  value,
+  initialValue,
   color,
   weight,
   onChangeButton,
   remainingPercentage,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-
-  const [count, setCount] = useState(value);
-
+  
   const decrementCount = () => {
-    if (count > 0) {
-      setCount(count - 1);
-      onChangeButton(name, count - 1);
+    if (initialValue > 0) {
+      onChangeButton(name, initialValue - 1);
     }
   };
 
   const incrementCount = () => {
-    setCount(count + 1);
-    onChangeButton(name, count + 1);
+    onChangeButton(name, initialValue + 1);
+  };
+
+  const onChangeTextField = (e) => {
+    const newValue =
+    e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+    // Prevents more than 100% in total for all categories
+    if (
+      (newValue > initialValue && remainingPercentage >= newValue - initialValue) ||
+      newValue < initialValue
+    ) {
+      onChange(newValue);
+    }
+    e.preventDefault();
   };
 
   const containerStyle = {
@@ -915,8 +925,8 @@ const SelectedCustomFoodCategoryRow = ({
           as="button"
           name={name}
           variant="circleTextButton"
-          onClick={() => decrementCount()}
-          disabled={count === 0}
+          onClick={() => {decrementCount()}}
+          disabled={initialValue === 0}
         >
           -
         </ButtonText>
@@ -924,19 +934,9 @@ const SelectedCustomFoodCategoryRow = ({
           id={id}
           style={textFieldStyle}
           type="number"
-          value={count.toString()}
+          value={initialValue.toString()}
           onChange={(e) => {
-            const newValue =
-              e.target.value === '' ? 0 : parseInt(e.target.value, 10);
-            // Prevents more than 100% in total for all categories
-            if (
-              (newValue > count && remainingPercentage >= newValue - count) ||
-              newValue < count
-            ) {
-              setCount(newValue);
-              onChange(newValue);
-            }
-            e.preventDefault();
+            onChangeTextField(e);
           }}
           onSubmit={(e) => {
             e.preventDefault();
@@ -947,7 +947,7 @@ const SelectedCustomFoodCategoryRow = ({
           as="button"
           name={name}
           variant="circleTextButton"
-          onClick={() => incrementCount()}
+          onClick={() => {incrementCount()}}
           disabled={remainingPercentage <= 0}
         >
           +

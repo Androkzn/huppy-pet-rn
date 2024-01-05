@@ -104,7 +104,6 @@ const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) =
           user,
           currentProfile._id
         );
-        console.log("categories", categories)
         let data = categories.map((category) => ({
           _id: category._id,
           name: category.name,
@@ -352,11 +351,11 @@ const useUpdateFood = () => {
 
 // FOOD CATEGORY
 const useUpdateFoodCategory = () => {
-  const queryClient = useQueryClient();
+  //const queryClient = useQueryClient();
   return useMutation({
     mutationFn: graphql.updateFoodCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['loadFoodCategories']);
+      //queryClient.invalidateQueries(['loadFoodCategories']);
     },
   });
 };

@@ -68,7 +68,7 @@ const useGetMealsForDate = (user, currentProfile, currentDate) => {
 };
 
 // GET FOOD CATEGORIES
-const useLoadFoodCategories = (user, currentProfile, preset) => {
+const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) => {
   return useQuery(['loadFoodCategories', preset], async () => {
     if (currentProfile && user) {
       if (currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {
@@ -104,6 +104,7 @@ const useLoadFoodCategories = (user, currentProfile, preset) => {
           user,
           currentProfile._id
         );
+        console.log("categories", categories)
         let data = categories.map((category) => ({
           _id: category._id,
           name: category.name,
@@ -116,18 +117,21 @@ const useLoadFoodCategories = (user, currentProfile, preset) => {
           userId: category.userId,
         }));
 
-        // Add optionalCategory to the data array
-        let optionalCategory = Enums.getDefaultCategory(
-          Enums.FoodCategoryType.OTHER,
-          currentProfile._id
-        );
-        data.push({
-          name: optionalCategory.name,
-          weight: optionalCategory.weight,
-          percentage: optionalCategory.percentage,
-          color: optionalCategory.color,
-          type: optionalCategory.type,
-        });
+        if (addOther) {
+          // Add optionalCategory to the data array
+          let optionalCategory = Enums.getDefaultCategory(
+            Enums.FoodCategoryType.OTHER,
+            currentProfile._id
+          );
+
+          data.push({
+            name: optionalCategory.name,
+            weight: optionalCategory.weight,
+            percentage: optionalCategory.percentage,
+            color: optionalCategory.color,
+            type: optionalCategory.type,
+          });
+        }
         return data;
       }
     } else {

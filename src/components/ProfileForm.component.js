@@ -277,14 +277,14 @@ const ProfileForm = ({
 
     // Returns unused categories that can be added to custom categories
     const getUnusedCategories = (categories) => {
+      const allCategories = Enums.getAllFoodCategories(profile._id);
       if (
         categories &&
         categories.length > 0 &&
         profile?.preset === Enums.RatioPresets.CUSTOM
       ) {
-        const remainingCategories = Enums.getAllFoodCategories(profile._id);
         // Filter out categories that already exist
-        const unusedCategories = remainingCategories.filter(
+        const unusedCategories = allCategories.filter(
           (category) =>
             !categories.some(
               (existingCategory) => existingCategory.index == category.index
@@ -292,7 +292,7 @@ const ProfileForm = ({
         );
         return unusedCategories;
       } else {
-        return [];
+        return allCategories;
       }
     };
 
@@ -616,7 +616,7 @@ const ProfileForm = ({
                   {/*"Food ratio preset field */}
                   <TitleAndDropdown
                     name={'preset'}
-                    title={'Food ratio preset'}
+                    title={'Ratio preset'}
                     dropdownOptions={Object.values(Enums.RatioPresets).map(
                       (type) => ({
                         rawValue: type,

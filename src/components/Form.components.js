@@ -227,6 +227,7 @@ const TitleAndDropdown = ({
   disabled,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
+  
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -251,7 +252,6 @@ const TitleAndDropdown = ({
   };
 
   const dropdownStyle = {
-    width: '210px',
     borderRadius: '10px',
     height: '35px',
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
@@ -261,7 +261,7 @@ const TitleAndDropdown = ({
     color: colors.green,
     fontFamily: "'Balsamiq Sans', sans-serif",
     fontSize: '15px',
-    maxWidth: '150px',
+    maxWidth: '210px',
   };
 
   return (

@@ -218,14 +218,14 @@ export const getAllFoodCategories = (profileId) => {
       percentage: 0,
       color: getColorFoodCategory(FoodCategoryType.FIBER),
     },
-    {
-      index: getIndexFoodCategory(FoodCategoryType.OTHER),
-      type: FoodCategoryType.OTHER,
-      name: getTitleUpercased(FoodCategoryType.OTHER),
-      weight: 0,
-      percentage: 0,
-      color: getColorFoodCategory(FoodCategoryType.OTHER),
-    },
+    // {
+    //   index: getIndexFoodCategory(FoodCategoryType.OTHER),
+    //   type: FoodCategoryType.OTHER,
+    //   name: getTitleUpercased(FoodCategoryType.OTHER),
+    //   weight: 0,
+    //   percentage: 0,
+    //   color: getColorFoodCategory(FoodCategoryType.OTHER),
+    // },
   ];
 };
 

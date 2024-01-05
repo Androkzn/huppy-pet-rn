@@ -1654,6 +1654,7 @@ const addFoodCategory = async ({ user, currentProfile, data }) => {
   if (!user || !currentProfile || user._accessToken === null) {
     return false;
   }
+  
   const accessToken = user._accessToken;
   const profileId = currentProfile._id;
   const userId = user.id;

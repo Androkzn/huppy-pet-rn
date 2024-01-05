@@ -90,7 +90,7 @@ const Home = () => {
       data: categories,
       isLoading: isLoadingCategories,
       isError: isErrorCategories,
-    } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
+    } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset, true);
     const {
       data: activities,
       isLoading: isLoadingActivities,

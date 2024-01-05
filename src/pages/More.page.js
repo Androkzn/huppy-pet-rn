@@ -100,11 +100,11 @@ const More = () => {
     <PageContainer>
       <div style={styles.columnStyle}>
         {/* // Health & Wellness */}
-        <LinkComponent
+        {/* <LinkComponent
           title={'Health & Wellness'}
           icon={<HealthIcon fill={colors.green} width={30} height={30} />}
           onClick={() => navigateTo('')}
-        />
+        /> */}
         {/* // Logout link */}
         <LinkComponent
           title={'Logout'}

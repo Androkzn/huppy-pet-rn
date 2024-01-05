@@ -18,7 +18,6 @@ const Login = () => {
     fetchUser,
     emailPasswordLogin,
     setCurrentPage,
-    loadUserProfiles,
     currentProfile,
     profiles
   } = useContext(DataContext);

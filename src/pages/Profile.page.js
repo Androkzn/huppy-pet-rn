@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react';
 import PageContainer from '../components/PageContainer.component';
 import { DataContext } from '../contexts/data.context';
 import ProfileForm from '../components/ProfileForm.component';
-import { ButtonLink } from '../components/Buttons.components';
+import { ButtonImage } from '../components/Buttons.components';
 import {
   useAddFoodCategory,
   useDeleteFoodCategory,
@@ -166,18 +166,23 @@ const Profile = () => {
     getProfile();
   }, [currentProfile]);
 
+  const navigateTo = async () => {
+      setCurrentPage('');
+      navigate('/');
+  }
+
   return (
     <PageContainer>
       <div style={styles.fixedTopContainer}>
         <div style={styles.backButtonContainerStyle}>
-          <ButtonLink
+          <ButtonImage
             variant="backButton"
-            to="/"
+            onClick={navigateTo}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
             Back
-          </ButtonLink>
+          </ButtonImage>
           <div css={styles.profileTitleStyle}>{'Profile'}</div>
           <div style={{ width: '100px' }}></div>
         </div>

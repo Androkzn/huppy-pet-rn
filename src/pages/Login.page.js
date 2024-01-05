@@ -78,10 +78,6 @@ const Login = () => {
     navigate('/' + link);
   };
 
-  console.log("loading", loading)
-  console.log("currentProfile", currentProfile)
-  console.log("profiles", profiles)
-  console.log("user", user)
   return (
     <div css={styles.containerStyle}>
       {(loading && !currentProfile) || currentProfile ? (

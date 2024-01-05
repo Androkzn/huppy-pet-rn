@@ -47,6 +47,15 @@ const formStyle = {
   },
 };
 
+const validationTipsStyle = {
+  color: colors.orange,
+  fontSize: "14px",
+  fontWeight: "regular",
+  alignItems: 'center',
+  textAlign: 'center',
+  maxWidth: '300px',
+};
+
 const elementsInRow = {
   display: 'flex',
   justifyContent: 'space-between',
@@ -73,6 +82,7 @@ const rowStyle = {
 };
 
 export {
+  validationTipsStyle,
   rowStyle,
   containerStyle,
   loginHeaderStyle,

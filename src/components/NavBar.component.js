@@ -115,7 +115,7 @@ const TemporaryDrawer = (props) => {
   const { mutate: updateProfileMutation } = useUpdateProfile();
 
   const changeCurrentProfileTo = async (profileNew) => {
-    const oldProfile = currentProfile;
+    const oldProfileId = currentProfile?._id; 
     updateProfileMutation(
       {
         user: user,
@@ -124,18 +124,15 @@ const TemporaryDrawer = (props) => {
           isCurrent: true,
         },
       },
-      {
-        onSuccess: () => {
-          updateProfileMutation({
-            user: user,
-            profileId: oldProfile._id,
-            updateData: {
-              isCurrent: false,
-            },
-          });
-        },
-      }
     );
+
+    updateProfileMutation({
+      user: user,
+      profileId: oldProfileId,
+      updateData: {
+        isCurrent: false,
+      },
+    });
   };
 
   const navigateTo = (link) => {

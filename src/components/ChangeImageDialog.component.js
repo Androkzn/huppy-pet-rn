@@ -160,7 +160,6 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
         const response = await fetch(url);
         const blob = await response.blob();
         const imageFile = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-        console.log('convertUrlToImageFile:', imageFile);
         setImageSelected(imageFile);
       } catch (error) {
         console.error('Error converting stream to blob:', error);
@@ -177,7 +176,6 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
         `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`
       );
       const data = result.data;
-      console.log('getImageUrl data:', data);
       return data;
     } catch (error) {
       console.log('Error fetching image:', error);

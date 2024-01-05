@@ -155,7 +155,6 @@ const Profile = () => {
           const updatedProfile = data;
           setProfile(updatedProfile);
           saveState('currentProfile', updatedProfile);
-          console.log('updateProfileMutation', updatedProfile);
         },
       }
     );

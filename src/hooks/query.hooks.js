@@ -9,7 +9,6 @@ import axios from 'axios';
 
 // GET IMAGE
 const useFetchImage = (url, key) => {
-  // console.log("Attempt to useFetchImage with key", key);
   return useQuery(
     [key],
     async () => {
@@ -120,7 +119,6 @@ const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) =
         }));
 
         if (addOther) {
-          console.log("addOther", addOther)
           // Add optionalCategory to the data array
           let optionalCategory = Enums.getDefaultCategory(
             Enums.FoodCategoryType.OTHER,

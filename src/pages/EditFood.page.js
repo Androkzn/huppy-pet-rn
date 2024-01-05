@@ -85,7 +85,6 @@ const EditFood = () => {
     if (foodItem.name.length === 0 || foodItem.calories === 0) {
       return;
     }
-    console.log('editFood:', foodItem);
     updateFoodTemplateMutation(
       {
         user: user,

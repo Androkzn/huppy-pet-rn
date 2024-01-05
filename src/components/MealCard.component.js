@@ -148,8 +148,6 @@ function MealCard({ meal, index, mealsCount }) {
 
       // Remove all food items of the unchecked meal from the list of checked foods
       const mealFoods = foodForDate.filter((food) => food.mealId === mealId);
-      console.log('mealFoods', mealFoods);
-      console.log('mealId', mealId);
       setCheckedFoods((prevCheckedFoods) =>
         prevCheckedFoods.filter(
           (id) => !mealFoods.some((food) => food._id === id)

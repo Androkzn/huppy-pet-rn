@@ -297,11 +297,32 @@ const ProfileForm = ({
       }
     };
 
-    //let categoriesCanBeAdded = getUnusedCategories(categories);
+    // Returns unused categories that can be added to custom categories
+    const getUnusedCategories = (categories) => {
+      const allCategories = Enums.getAllFoodCategories(profile._id);
+      if (
+        categories &&
+        categories.length > 0 &&
+        profile?.preset === Enums.RatioPresets.CUSTOM
+      ) {
+        // Filter out categories that already exist
+        const unusedCategories = allCategories.filter(
+          (category) =>
+            !categories.some(
+              (existingCategory) => existingCategory.index == category.index
+            )
+        );
+        return unusedCategories;
+      } else {
+        return allCategories;
+      }
+    };
+
+    let categoriesCanBeAdded = getUnusedCategories(categories);
     let unusedCategoryPercentage = checkUnusedCategoryPercentage(categories);
     let chartData = [];
 
-    function getChartData() {
+    const getChartData= () =>{
       const categoriesNew = getCategoriesForPresset();
       const data = categoriesNew.map((category) => ({
         name: category.name,
@@ -314,7 +335,7 @@ const ProfileForm = ({
       return chartData;
     }
 
-    const isChartDataAvailable = () => {
+    const isChartDataAvailable= () => {
       const isaAvailable = getChartData().some(
         (category) => category.percentage > 0
       );
@@ -399,7 +420,56 @@ const ProfileForm = ({
               </div>
             </div>
 
-            <SelectCastomCategorySection categories={categories}/>
+            {categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
+              <div style={styles.foodRatioContainerStyle}>
+                <div style={styles.columnStyle}>
+                  <div style={styles.rowStyle}>
+                    <div
+                      style={styles.sectionTitleStyle}
+                      onClick={() =>
+                        setFoodCategoryExpanded(!isFoodCategoryExpanded)
+                      }
+                    >
+                      {isFoodCategoryExpanded
+                        ? 'Hide categoties'
+                        : 'Add more food categories'}
+                    </div>
+                    <Image
+                      imageName={
+                        isFoodCategoryExpanded
+                          ? 'arrow_down_green.svg'
+                          : 'arrow_right_green.svg'
+                      }
+                      width="20"
+                      height="20"
+                      onClick={() =>
+                        setFoodCategoryExpanded(!isFoodCategoryExpanded)
+                      }
+                      styles={styles.sectionImageContainerStyle}
+                    />
+                  </div>
+
+                  {isFoodCategoryExpanded && (
+                    <div style={styles.unselectedCategoriesContainerStyle}>
+                      {
+                        <div style={styles.unselectedFoodCategoryStyle}>
+                          {categoriesCanBeAdded.map((category) => (
+                            <UnselectedFoodCategoryRow
+                              key={category?.name}
+                              name={category.name}
+                              color={category.color}
+                              onAdd={() => {
+                                addCategory(category);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      }
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
           </div>
         )}

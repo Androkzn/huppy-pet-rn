@@ -281,6 +281,7 @@ const useAddProfile = () => {
     mutationFn: graphql.addProfile,
     onSuccess: () => {
       queryClient.invalidateQueries(['getProfiles']);
+      queryClient.invalidateQueries(['getCurrentProfile']);
     },
   });
 };
@@ -405,6 +406,18 @@ const useDeleteMeal = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['loadMealsForDate']);
       queryClient.invalidateQueries(['loadFoodForDate']);
+    },
+  });
+};
+
+// PROFILE
+const useDeleteProfile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: graphql.deleteProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getProfiles']);
+      queryClient.invalidateQueries(['getCurrentProfile']);
     },
   });
 };

@@ -8,13 +8,14 @@ import { Dialog, DialogContent } from '@mui/material';
 import NewTrainingForm from '../components/NewTrainingForm.component';
 import { ReactComponent as LogoutIcon } from '../components/assets/logout_tab_icon_unselected.svg';
 import { ReactComponent as HealthIcon } from '../components/assets/health_tab_icon_unselected.svg';
+import { ReactComponent as DeleteAccountIcon } from '../components/assets/delete_account.svg';
 import * as colors from '../components/styles/Colors';
 import { Image } from '../components/Image.components';
 import { useNavigate } from 'react-router-dom';
 
 const More = () => {
   const navigate = useNavigate();
-  const { logOutUser, setCurrentPage } = useContext(DataContext);
+  const { logOutUser, setCurrentPage, deleteUserAccount } = useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addTraining');
 
@@ -50,6 +51,24 @@ const More = () => {
     await logOutUser();
     window.location.reload(true);
     return;
+  };
+
+  const deleteAccount = async () => {
+    // Display a confirmation prompt
+    const shouldDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+  
+    // Check if the user confirmed the action
+    if (shouldDelete) {
+      try {
+        // Call the function to delete the user account
+        await deleteUserAccount();
+        // Reload the page or perform any other necessary actions
+        window.location.reload(true);
+      } catch (error) {
+        // Handle errors, show a message, or log the error
+        console.error('Error deleting account', error);
+      }
+    }
   };
 
   const navigateTo = (link) => {
@@ -91,6 +110,12 @@ const More = () => {
           title={'Logout'}
           icon={<LogoutIcon fill={colors.green} width={30} height={30} />}
           onClick={logOut}
+        />
+        {/* // Logout link */}
+        <LinkComponent
+          title={'Delete account'}
+          icon={<DeleteAccountIcon fill={colors.green} width={30} height={30} />}
+          onClick={deleteAccount}
         />
       </div>
 

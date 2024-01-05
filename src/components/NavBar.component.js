@@ -5,6 +5,7 @@ import { DataContext } from '../contexts/data.context';
 import * as colors from './styles/Colors';
 import { Image } from './Image.components';
 import Avatar from './Avatar.components';
+import { ImageCircle } from './ImageCircle.components';
 import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg';
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg';
 import * as styles from '../components/styles/NavBar.css';
@@ -159,7 +160,7 @@ const TemporaryDrawer = (props) => {
         onClick={() => navigateTo('profile')}
       >
         <div style={styles.linkIconStyle}>
-          <Avatar width="50px" profile={currentProfile} />
+            <Avatar width="50px" profile={currentProfile} />
         </div>
         <div style={styles.linkTitleStyle}> Current Profile </div>
       </div>
@@ -176,7 +177,7 @@ const TemporaryDrawer = (props) => {
       </div>
 
       {/* // Change Profile link */}
-      {profiles.length > 0 && (
+      {profiles.length > 1 && (
         <div>
           <div style={styles.linkContainerStyle}>
             <div style={styles.linkIconStyle}>

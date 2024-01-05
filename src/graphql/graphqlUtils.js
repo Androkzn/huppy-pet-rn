@@ -608,6 +608,42 @@ const deleteMeal = async ({ user, _id }) => {
 
 // Func that is responsible for deleting a meal based on the expense-id
 // it return bool value
+const deleteProfile = async ({ user, _id }) => {
+  if (!user || user._accessToken === null) {
+    return false;
+  }
+  const accessToken = user._accessToken;
+  const headers = { Authorization: `Bearer ${accessToken}` };
+
+  // GraphQL query to delete an meal
+  const deleteProfileQuery = gql`
+    mutation DeleteProfile($query: ProfileQueryInput!) {
+      deleteOneProfile(query: $query) {
+        _id
+      }
+    }
+  `;
+
+  const queryVariables = { query: { _id } };
+
+  try {
+    await request(GRAPHQL_ENDPOINT, deleteProfileQuery, queryVariables, headers);
+    return true;
+  } catch (error) {
+    if (error.response.error_code === 'InvalidSession') {
+      await refreshAccessToken(user);
+      deleteProfile(user, _id);
+      console.error('InvalidSession', error);
+    } else {
+      console.error('Error deleting meal', error);
+    }
+
+    return false;
+  }
+};
+
+// Func that is responsible for deleting a meal based on the expense-id
+// it return bool value
 const deleteActivity = async ({ user, _id }) => {
   if (!user || user._accessToken === null) {
     return false;
@@ -945,7 +981,7 @@ const addFoodTemplate = async ({ user, foodItem }) => {
 // it returna arrayprofiles and current profile
 const getUserProfiles = async (user) => {
   if (!user || user._accessToken === null) {
-    return [];
+    return null;
   }
 
   const accessToken = user._accessToken;
@@ -998,10 +1034,12 @@ const getUserProfiles = async (user) => {
       queryVariablesProfiles,
       headers
     );
+    console.log('getUserProfiles', resp.profiles);
     const profiles = resp.profiles.map((profile) => ({
       ...profile,
       key: profile._id,
     }));
+
     return profiles;
   } catch (error) {
     if (error.response.error_code === 'InvalidSession') {
@@ -1012,7 +1050,7 @@ const getUserProfiles = async (user) => {
       console.error('Error loading profiles:', error);
     }
 
-    return [];
+    return null;
   }
 };
 
@@ -1074,15 +1112,22 @@ const getCurrentProfile = async (user) => {
       queryVariablesProfiles,
       headers
     );
+
+    // Check if at least one profile exists
+    if  (resp.profiles.length === 0) {
+      return null
+    }
+
     const currentProfileFetched = resp.profiles.filter(
       (profile) => profile.isCurrent === true
     );
+
     const currentProfile = currentProfileFetched[0];
     return currentProfile;
   } catch (error) {
     if (error.response.error_code === 'InvalidSession') {
       await refreshAccessToken(user);
-      getUserProfiles(user);
+      getCurrentProfile(user);
       console.error('InvalidSession', error);
     } else {
       console.error('Error loading profiles:', error);
@@ -2019,6 +2064,7 @@ export {
   getAllFoodCategories,
   deleteFoodCategory,
   deleteMeal,
+  deleteProfile,
   deleteActivity,
   deleteTraining,
   deleteFood,

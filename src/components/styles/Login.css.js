@@ -61,9 +61,19 @@ const linkForgot = {
 const linkSignup = {
   color: colors.orange,
   textDecoration: 'none',
+  marginLeft: "20px"
+};
+
+const rowStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+  width: '100%',
 };
 
 export {
+  rowStyle,
   containerStyle,
   loginHeaderStyle,
   headingLoginStyle,

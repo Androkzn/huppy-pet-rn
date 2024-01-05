@@ -6,7 +6,7 @@ import { DataContext } from '../contexts/data.context';
 import RegisterForm from '../components/RegisterForm.component';
 import { ButtonImage } from '../components/Buttons.components';
 import * as styles from '../components/styles/Profile.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Dialog, DialogContent } from '@mui/material';
 import AddAvatarDialog from '../components/AddAvatarDialog.component';
@@ -14,8 +14,7 @@ import { useAddProfile, useAddFoodCategory } from '../hooks/query.hooks';
 
 const Register = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { user, setCurrentPage, currentProfile } = useContext(DataContext);
+  const { user, setCurrentPage, currentProfile, profiles, logOutUser } = useContext(DataContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -24,6 +23,28 @@ const Register = () => {
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const { mutate: addProfileMutation } = useAddProfile();
   const { mutate: addFoodCategoryMutation } = useAddFoodCategory();
+  
+  const newProfile = {
+    _id: '',
+    name: '',
+    activityType: 'active',
+    avatar: '',
+    breed: '',
+    categories: [customFoodCategories],
+    dailyPortion: 250,
+    dailyRatio: 5,
+    weight: 5,
+    deductCalories: false,
+    dob: new Date().toISOString(),
+    isCurrent: !(profiles && profiles.length > 0),
+    preset: 'barfAdult',
+    size: 'small',
+    userId: user?.id || '',
+    isRatioSelected: false,
+  };
+
+  // Some prefilled form state
+  const [profile, setProfile] = useState(newProfile);
 
   // Opens dialog
   const openDialog = (dialogTypeNew) => {
@@ -54,6 +75,7 @@ const Register = () => {
   // Handles dialog submission
   const saveAvatar = async (avatar) => {
     setAvatar(avatar);
+    setProfile({ ...profile, 'avatar': new Date().toISOString() });
     closeDialog();
   };
 
@@ -64,13 +86,15 @@ const Register = () => {
       data.append('image', avatar);
       data.append('name', profileId);
       data.append('destination', 'avatar');
-      const result = await axios.post(`${backendEndpoint}/api/avatar`, data);
+      await axios.post(`${backendEndpoint}/api/avatar`, data);
     }
   };
 
+
+
   // Handles dialog submission
   const deleteAvatar = async () => {
-    profile.avatar = '';
+    setProfile({ ...profile, 'avatar': '' });
     setAvatar(null);
     closeDialog();
   };
@@ -80,33 +104,25 @@ const Register = () => {
     openDialog('avatar');
   };
 
-  const redirectNow = () => {
-    const redirectTo = location.search.replace('?redirectTo=', '');
-    setCurrentPage('home');
-    navigate(redirectTo ? redirectTo : '/');
+  const navigateTo = async () => {
+    // If a user logged in and alredy created profile =>  navigate to home page
+    if (currentProfile) {
+      setCurrentPage('');
+      navigate('/');
+    } else {
+      const registrationCredentials = JSON.parse(localStorage.getItem('registrationCredentials'))
+      // If a user logged during registration but profile is not created =>  navigate to signup page
+      if (registrationCredentials, registrationCredentials.email !== '', registrationCredentials.password !== '') {
+        setCurrentPage('signup');
+        navigate('/signup');
+      // If a succesfully user logged in but profile is not created during registration=>  navigate to signup page
+      } else { 
+        await logOutUser()  
+        setCurrentPage('login');
+        navigate('/login');
+      }
+    }
   };
-
-  let newProfile = {
-    _id: '',
-    name: '',
-    activityType: 'active',
-    avatar: '',
-    breed: '',
-    categories: [customFoodCategories],
-    dailyPortion: 250,
-    dailyRatio: 5,
-    weight: 5,
-    deductCalories: false,
-    dob: new Date().toISOString(),
-    isCurrent: true,
-    preset: 'barfAdult',
-    size: 'small',
-    userId: user?.id || '',
-    isRatioSelected: false,
-  };
-
-  // Some prefilled form state
-  const [profile, setProfile] = useState(newProfile);
 
   // Adds new Food Category
   const addCategory = async (category) => {
@@ -150,8 +166,12 @@ const Register = () => {
               });
             }
           }
-
-          redirectNow();
+    
+          //Clear temporarly saved credentials from local storage
+          localStorage.removeItem('registrationCredentials'); 
+          setCurrentPage('home');
+          navigate('/');
+         
         },
       }
     );
@@ -179,16 +199,14 @@ const Register = () => {
       <div style={styles.fixedTopContainer}>
         <div style={styles.backButtonContainerStyle}>
           {/* Show back button if profile created for existing user */}
-          {currentProfile && (
-            <ButtonImage
-              variant="backButton"
-              onClick={redirectNow}
-              imageName="arrow_left_green.svg"
-              imageSize={20}
-            >
-              Back
-            </ButtonImage>
-          )}
+          <ButtonImage
+            variant="backButton"
+            onClick={navigateTo}
+            imageName="arrow_left_green.svg"
+            imageSize={20}
+          >
+            Back
+          </ButtonImage>
           <div css={styles.profileTitleStyle}>{'Create Profile'}</div>
           <div style={{ width: '100px' }}></div>
         </div>

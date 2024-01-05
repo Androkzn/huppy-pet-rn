@@ -1002,9 +1002,9 @@ const UnselectedFoodCategoryRow = ({ name, onAdd, color }) => {
   );
 };
 
-const LoginTextInput = ({ id, name, onChange, placeholder, borderColor, isPassword = false }) => {
+const LoginTextInput = ({ id, name, initialValue, onChange, placeholder, borderColor, isPassword = false }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(initialValue);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const containerStyle = {
     display: 'flex',

@@ -24,6 +24,7 @@ export const DataProvider = ({ children }) => {
     isLoading: isLoadingProfiles,
     isError: isErrorProfiles,
   } = useGetProfiles(user);
+  
   const {
     data: currentProfile,
     isLoading: isLoadingProfile,
@@ -33,12 +34,24 @@ export const DataProvider = ({ children }) => {
   // Function to login user into our Realm using their email & password
   const emailPasswordLogin = async (email, password) => {
     const credentials = Credentials.emailPassword(email, password);
-    const authedUser = await app.logIn(credentials);
-    if (authedUser) {
-      console.log('Set Login User', authedUser);
-      setUser(authedUser);
+    try { 
+      const authedUser = await app.logIn(credentials);
+      if (authedUser) {
+        console.log('Set Login User', authedUser);
+        setUser(authedUser);
+        localStorage.removeItem('loginCredentials'); 
+      }
+      return authedUser;
+    } catch (error) {
+      setUser(null);
+      // Check the error code to provide custom error messages
+      if ((error.statusCode === 401) && (error.errorCode === 'InvalidPassword')) {
+        throw new Error('Username or password is not correct. Please enter valid credentials.');
+      } else {
+        // For other errors, you can provide a generic error message
+        throw new Error('An error occurred during login. Please try again.');
+      }
     }
-    return authedUser;
   };
 
   // Function to signup user into our Realm using their email & password
@@ -49,8 +62,14 @@ export const DataProvider = ({ children }) => {
       // the user using the same credentials once the signup is complete.
       return emailPasswordLogin(email, password);
     } catch (error) {
-      console.error('Error sign up', error);
-      throw error;
+      await logOutUser()
+       // Check the error code to provide custom error messages
+       if ((error.statusCode === 409) && (error.errorCode === 'AccountNameInUse')) {
+        throw new Error('This username is alredy in use. Try another one or login with the credentials');
+      } else {
+        // For other errors, you can provide a generic error message
+        throw new Error('An error occurred during sign up. Please try again.');
+      }
     }
   };
 
@@ -74,8 +93,22 @@ export const DataProvider = ({ children }) => {
   // Function to logout user from our Realm
   const logOutUser = async () => {
     if (!app.currentUser) return false;
+    localStorage.removeItem('loginCredentials'); 
     try {
       await app.currentUser.logOut();
+      // Setting the user to null once loggedOut.
+      setUser(null);
+      return true;
+    } catch (error) {
+      console.error('Error logout user', error);
+      throw error;
+    }
+  };
+
+  const deleteUserAccount = async () => {
+    if (!app.currentUser) return false;
+    try {
+      await app.deleteUser(app.currentUser);
       // Setting the user to null once loggedOut.
       setUser(null);
       return true;
@@ -99,13 +132,9 @@ export const DataProvider = ({ children }) => {
     }
   }, [user?._accessToken]);
 
-  loadUserProfiles2();
-
   const loadUserProfiles = async (user) => {
     return user && currentProfile && profiles;
   };
-
-  async function loadUserProfiles2() {}
 
   return (
     <DataContext.Provider
@@ -126,6 +155,7 @@ export const DataProvider = ({ children }) => {
         emailPasswordSignup,
         logOutUser,
         loadUserProfiles,
+        deleteUserAccount,
       }}
     >
       {children}

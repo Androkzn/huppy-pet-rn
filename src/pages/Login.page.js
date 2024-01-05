@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 import { DataContext } from '../contexts/data.context';
 import * as styles from '../components/styles/Login.css';
 import LoginForm from '../components/LoginForm.components';
@@ -9,7 +9,10 @@ import Spiner from '../components/Spinner.components';
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+
+  // Retrieve saved credentials from localStorage
+  const loginCredentials = JSON.parse(localStorage.getItem('loginCredentials')) || { username: '', password: '' };
+  
   const {
     user,
     fetchUser,
@@ -17,14 +20,9 @@ const Login = () => {
     setCurrentPage,
     loadUserProfiles,
     currentProfile,
+    profiles
   } = useContext(DataContext);
   const [loading, setLoading] = useState(true);
-
-  const redirectNow = () => {
-    const redirectTo = location.search.replace('?redirectTo=', '');
-    setCurrentPage('');
-    navigate(redirectTo ? redirectTo : '/');
-  };
 
   const loadUser = async () => {
     if (!user) {
@@ -48,10 +46,21 @@ const Login = () => {
 
   useEffect(() => {
     if (currentProfile) {
-      redirectNow();
+      navigatedTo('');
+      //Clear temporarly saved credentials from local storage
+      localStorage.removeItem('loginCredentials'); 
+      localStorage.removeItem('registrationCredentials'); 
       setLoading(false);
-    }
+    } 
   }, [currentProfile]);
+
+  useEffect(() => {
+    if (profiles && profiles.length === 0) {
+      setCurrentPage('register');
+      navigatedTo('register');
+      setLoading(false);
+    } 
+  }, [profiles]);
 
   const onSubmit = async (formData) => {
     try {
@@ -60,13 +69,19 @@ const Login = () => {
       await fetchUser();
     } catch (error) {
       alert(error);
+      setLoading(false);
     }
   };
 
   const navigatedTo = (link) => {
     setCurrentPage(link);
+    navigate('/' + link);
   };
 
+  console.log("loading", loading)
+  console.log("currentProfile", currentProfile)
+  console.log("profiles", profiles)
+  console.log("user", user)
   return (
     <div css={styles.containerStyle}>
       {(loading && !currentProfile) || currentProfile ? (
@@ -87,18 +102,14 @@ const Login = () => {
           <div css={styles.loginHeaderStyle}>
             <div css={styles.headingLoginStyle}>WELCOME TO HUPPY!</div>
           </div>
-          <LoginForm onSubmit={onSubmit} />
+          <LoginForm onSubmit={onSubmit} loginCredentials={loginCredentials}/>
           <div css={styles.elementsInRow}>
-            <p onClick={navigatedTo('forgot')}>
-              <Link to="/forgot" css={styles.linkForgot}>
-                Forgot password?
-              </Link>
-            </p>
-            <p onClick={navigatedTo('signup')}>
-              <Link to="/signup" css={styles.linkSignup}>
-                Signup
-              </Link>
-            </p>
+            <div onClick={() => navigatedTo('forgot')} css={styles.linkForgot}>
+              Forgot password?
+            </div>
+            <div onClick={() =>navigatedTo('signup')} css={styles.linkSignup}>
+              Signup
+            </div>
           </div>
         </div>
       )}

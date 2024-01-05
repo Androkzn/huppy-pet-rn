@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as styles from '../components/styles/Login.css';
 import { ButtonText } from '../components/Buttons.components';
 import { LoginTextInput, FormGroup } from '../components/Form.components';
 
-function LoginForm({ onSubmit }) {
+function LoginForm({ onSubmit, loginCredentials }) {
   const [form, setForm] = useState({
-    username: '',
-    password: '',
+    username: loginCredentials.username,
+    password: loginCredentials.password,
   });
 
   function handleChange(event) {
@@ -23,6 +23,11 @@ function LoginForm({ onSubmit }) {
     onSubmit(form);
   }
 
+  useEffect(() => {
+    // Save credentials to localStorage when form data changes
+    localStorage.setItem('loginCredentials', JSON.stringify({ username: form.username, password: form.password }));
+  }, [form]);
+
   return (
     <form css={styles.formStyle}>
       <FormGroup>
@@ -33,6 +38,7 @@ function LoginForm({ onSubmit }) {
           onChange={(e) => {
             handleChange(e);
           }}
+          initialValue={loginCredentials.username}
         />
       </FormGroup>
       <FormGroup>
@@ -42,6 +48,7 @@ function LoginForm({ onSubmit }) {
           isPassword= {true}
           value={form.password}
           onChange={handleChange}
+          initialValue={loginCredentials.password}
         />
       </FormGroup>
       <FormGroup>

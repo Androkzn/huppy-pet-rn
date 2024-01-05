@@ -131,6 +131,7 @@ const profileTitleStyle = {
   color: colors.lightGreen,
   fontSize: '17px',
   fontWeight: 'bold',
+  margin: "auto"
 };
 const nameStyle = {
   textAlign: 'center',

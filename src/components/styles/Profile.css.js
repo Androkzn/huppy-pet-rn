@@ -42,14 +42,14 @@ const unselectedFoodCategoryStyle = {
 const unusedCaloriesReminderStyle = {
   textAlign: 'center',
   width: '50%',
-  margin: 'auto',
-  padding: '10px',
+  // margin: 'auto',
+  // padding: '10px',
   borderRadius: '10px',
   fontWeight: 'bold',
-  fontSize: '18px',
-  backgroundColor: colors.red,
-  color: colors.white,
-  marginTop: '10px',
+  fontSize: '22px',
+  //backgroundColor: colors.red,
+  color: colors.orange,
+  // marginTop: '10px',
 };
 
 const foodRatioExpandedContainerStyle = {

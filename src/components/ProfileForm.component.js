@@ -355,16 +355,18 @@ const ProfileForm = ({
             <div style={styles.chartContainerStyle}>
               {/* Show placeholder if no data */}
               {isChartDataAvailable() ? (
-                <div>
-                  <ChartPie data={getChartData()} />
-
-                  {/* Unused calories reminder */}
-                  {unusedCategoryPercentage > 0 && (
-                    <div style={styles.unusedCaloriesReminderStyle}>
-                      You have {unusedCategoryPercentage}% unused!
-                    </div>
-                  )}
-                </div>
+               <div style={{ position: 'relative' }}>
+               <div style={{ position: 'absolute', top: 110, left: 100, zIndex: 1 }}>
+                 {/* Unused calories reminder */}
+                 {unusedCategoryPercentage > 0 && (
+                   <div style={styles.unusedCaloriesReminderStyle}>
+                     You have {unusedCategoryPercentage}% unused!
+                   </div>
+                 )}
+               </div>
+             
+               <ChartPie data={getChartData()} />
+             </div>
               ) : (
                 <Image
                   imageName={

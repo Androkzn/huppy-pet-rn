@@ -34,6 +34,7 @@ const ProfileForm = ({
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
   const [avatarWidth, setAvatarWidth] = useState(150);
+  const [focusedRow, setFocusedRow] = useState(null);
 
   // Handle form changes
   const onFormInputChange = (event) => {
@@ -64,6 +65,7 @@ const ProfileForm = ({
         updateProfile(name, value);
       }
     } else {
+      setFocusedRow(null);
       updateCategory(id, value);
       checkUnusedCategoryPercentage();
     }
@@ -94,9 +96,11 @@ const ProfileForm = ({
   };
 
   // Handle text input fields changes
-  const onTextInputCategoryChange = (value, id) => {
+  const onTextInputCategoryChange = (value, id, index) => {
     updateCategory(id, value);
     checkUnusedCategoryPercentage();
+    // Update the focused row to the current index
+    setFocusedRow(index);
   };
 
   // Handle DOB changes
@@ -275,27 +279,6 @@ const ProfileForm = ({
       isError: isErrorCategories,
     } = useLoadFoodCategories(user, profile, profile.preset);
 
-    // // Returns unused categories that can be added to custom categories
-    // const getUnusedCategories = (categories) => {
-    //   const allCategories = Enums.getAllFoodCategories(profile._id);
-    //   if (
-    //     categories &&
-    //     categories.length > 0 &&
-    //     profile?.preset === Enums.RatioPresets.CUSTOM
-    //   ) {
-    //     // Filter out categories that already exist
-    //     const unusedCategories = allCategories.filter(
-    //       (category) =>
-    //         !categories.some(
-    //           (existingCategory) => existingCategory.index == category.index
-    //         )
-    //     );
-    //     return unusedCategories;
-    //   } else {
-    //     return allCategories;
-    //   }
-    // };
-
     // Provides default presset categories or returns custom categories depends on preset value
     const getCategoriesForPresset = () => {
       if (
@@ -379,7 +362,7 @@ const ProfileForm = ({
             {/* Selected categories section*/}
             <div style={styles.selectedCategoriesContainerStyle}>
               <div style={styles.columnStyle}>
-                {categories.map((category) => (
+                {categories.map((category, index) => (
                   <div key={category.type}>
                     {profile?.preset === Enums.RatioPresets.CUSTOM ? (
                       <SelectedCustomFoodCategoryRow
@@ -391,7 +374,7 @@ const ProfileForm = ({
                         color={category?.color}
                         initialValue={category?.percentage}
                         onChange={(value) => {
-                          onTextInputCategoryChange(value, category?._id);
+                          onTextInputCategoryChange(value, category?._id, index);
                         }}
                         onDelete={() => {
                           deleteCategory(category);
@@ -399,6 +382,7 @@ const ProfileForm = ({
                         onChangeButton={(name, value) => {
                           onButtonInputChange(name, value, category?._id);
                         }}
+                        isFocused={index === focusedRow}
                       />
                     ) : (
                       <SelectedFoodCategoryRow

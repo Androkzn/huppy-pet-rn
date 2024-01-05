@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import { styled as styledMaterial } from '@mui/material/styles';
 import * as colors from './styles/Colors';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Switch from '@mui/material/Switch';
 import { ButtonText, ButtonImage } from './Buttons.components';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
@@ -843,9 +843,18 @@ const SelectedCustomFoodCategoryRow = ({
   weight,
   onChangeButton,
   remainingPercentage,
+  isFocused
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  
+  const inputRef = useRef(null);
+
+  // Set focus on the input element after each render
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
+
   const decrementCount = () => {
     if (initialValue > 0) {
       onChangeButton(name, initialValue - 1);
@@ -931,6 +940,7 @@ const SelectedCustomFoodCategoryRow = ({
           -
         </ButtonText>
         <input
+          ref={inputRef} 
           id={id}
           style={textFieldStyle}
           type="number"

@@ -82,12 +82,10 @@ const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
-  marginTop: '20px',
-  marginBottom: '10px',
 };
 
 const pickerStyle = {
-  // Your styles for picker
+  background: colors.lightBrown,
 };
 
 const headerStyle = {

@@ -105,14 +105,14 @@ const Training = () => {
     return (
       <div style={styles.rowStyle}>
         <div style={styles.columnStyle}>
-          <div style={styles.pickerContainerStyle}>
-            <CustomDatePickerWithArrows
-              label="Select date:"
-              value={currentDate}
-              onChange={(date) => setCurrentDate(date)}
-              styleContainer={styles.pickerStyle}
-            />
-          </div>
+        <div style={styles.pickerContainerStyle}>
+          <CustomDatePickerWithArrows
+            label="Select date:"
+            value={currentDate}
+            onChange={(date) => setCurrentDate(date)}
+            stylePicker={styles.pickerStyle}
+          />
+        </div>
         </div>
       </div>
     );

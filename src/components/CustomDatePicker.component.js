@@ -12,7 +12,6 @@ import * as colors from './styles/Colors';
 
 const CustomDatePicker = ({ label, value, onChange, style, disabled }) => {
   const defaultStyles = css({
-    //border: '1px solid #000',
     background: `${colors.grayBackground}`,
     borderRadius: '5px',
     width: '120px',

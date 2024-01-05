@@ -352,7 +352,7 @@ const ToggleStatisticSection = ({ initialValue, onChange }) => {
   };
 
   const statisticToggleLabelStyle = {
-    padding: '10px',
+    padding: '0px',
     margin: '5px',
     textAlign: 'left',
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
@@ -394,17 +394,17 @@ const FoodCategoryRow = ({ name, value, color, weight }) => {
     justifyContent: 'space-between',
     textAlign: 'center',
     borderRadius: '10px',
-    height: '40px',
+    height: '30px',
     marginRight: '10px',
     width: '100%',
   };
 
   const nameStyle = {
-    fontSize: '18px',
+    fontSize: '16px',
     fontWeight: 'bold',
     minWidth: '100px',
     borderRadius: '5px',
-    padding: '5px',
+    padding: '3px',
     color: colors.white,
     backgroundColor: `${color}`,
   };

@@ -3,12 +3,12 @@
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { enGB } from 'date-fns/locale';
 import dayjs from 'dayjs';
 import * as colors from './styles/Colors';
 import { styled } from '@mui/system';
 import { Image } from '../components/Image.components';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 const CustomDatePickerWithArrows = ({
   label,
@@ -35,28 +35,12 @@ const CustomDatePickerWithArrows = ({
     ...stylePicker,
   });
 
-  const dateLabels = [
-    { date: dayjs(), label: 'Today', color: 'green' },
-    { date: dayjs().add(1, 'day'), label: 'Tomorrow', color: 'blue' },
-    { date: dayjs().subtract(1, 'day'), label: 'Yesterday', color: 'red' },
-  ];
-
-  const renderLabel = (date) => {
-    const matchedLabel = dateLabels.find((item) =>
-      dayjs(item.date).isSame(date, 'day')
-    );
-
-    // Update text field value if the date matches the selected date
-    if (dayjs(date).isSame(selectedDate, 'day')) {
-      onChange(date.toDate());
-    }
-
-    return matchedLabel ? (
-      <div style={{ color: matchedLabel.color, fontWeight: 'bold' }}>
-        {matchedLabel.label}
-      </div>
-    ) : null;
-  };
+  const theme = createTheme({
+    typography: {
+      fontFamily: ['Balsamiq Sans'],
+      fontSize: 14,
+    },
+  });
 
   return (
     <span style={styleContainer}>
@@ -68,24 +52,20 @@ const CustomDatePickerWithArrows = ({
           onClick={() => onChange(new Date(dayjs(value) - 24 * 60 * 60 * 1000))}
           style={{ cursor: 'pointer' }}
         />
-        <LocalizationProvider dateAdapter={AdapterDayjs} locale={enGB}>
-          <DatePicker
-            label="Small picker"
-            value={dayjs(value)}
-            onChange={(newDate) => {
-              setSelectedDate(newDate);
-              onChange(new Date(dayjs(newDate)));
-            }}
-            slots={{ textField: CustomTextField }}
-            slotProps={{ textField: { size: 'small' } }}
-            renderDay={(date, value, dayInCurrentMonth, dayComponent) => (
-              <>
-                {dayComponent}
-                {renderLabel(date)}
-              </>
-            )}
-            disabled={disabled}
-          />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ThemeProvider theme={theme}>
+            <DatePicker
+              label="Small picker"
+              value={dayjs(value)}
+              onChange={(newDate) => {
+                setSelectedDate(newDate);
+                onChange(new Date(dayjs(newDate)));
+              }}
+              slots={{ textField: CustomTextField }}
+              slotProps={{ textField: { size: 'small' } }}
+              disabled={disabled}
+            />
+           </ThemeProvider>
         </LocalizationProvider>
         <Image
           imageName={'arrow_right_black.svg'}

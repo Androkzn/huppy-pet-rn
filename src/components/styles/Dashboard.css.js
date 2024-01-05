@@ -38,12 +38,12 @@ const responsiveMainContainer = styled.div({
 });
 
 const SelectDateContainer = styled.div({
-  ...rowStyle,
+  ...columnStyle,
   marginTop: '15px',
-  width: '60%',
+  marginBottom: '15px',
+  width: '100%',
   [mq.small]: {
-    width: '100%',
-    flexDirection: 'column',
+    marginBottom: '0px',
   },
 });
 

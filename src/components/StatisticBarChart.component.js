@@ -35,6 +35,9 @@ const StatisticBarChart = ({ data, title, goal }) => {
 
   chartData.push([index, null, '', average, goal]);
   const options = {
+    tooltip: {
+      trigger: 'none', // Disable tooltip trigger on click
+    },
     annotations: {
       textStyle: {
         fontSize: 11,

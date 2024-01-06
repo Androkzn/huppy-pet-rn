@@ -49,7 +49,7 @@ const SelectDateContainer = styled.div({
 
 const fixedTopContainer = (isSmallScreen) => ({
   position: 'sticky',
-  top: isSmallScreen ? 60 : 60,
+  top: 60,
   zIndex: 1000,
   backgroundColor: 'white',
   width: '100%',

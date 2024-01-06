@@ -86,6 +86,7 @@ const addFoodTitleStyle = {
   color: colors.lightGreen,
   fontSize: '17px',
   fontWeight: 'bold',
+  margin: '10px',
 };
 
 const nutritionFactsTitleStyle = {

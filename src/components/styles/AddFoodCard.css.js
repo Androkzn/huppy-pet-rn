@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
 import * as colors from './Colors';
-import * as mq from './Media-queries';
 import styled from '@emotion/styled/macro';
 
 // Main container
@@ -36,6 +35,18 @@ const columnStyle = {
 const nameContainerStyle = {
   ...rowStyle,
   justifyContent: 'start',
+  width: '100%',
+};
+
+const buttonsContainerStyle = {
+  ...rowStyle,
+  justifyContent: 'end',
+  width: '20%'
+};
+
+const foodIconContainerStyle = {
+  height: '25px',
+  margin: '0px 5px',
 };
 
 const textTitleStyle = {
@@ -46,10 +57,10 @@ const textTitleStyle = {
   fontWeight: 'bold',
 };
 
-const textStyle = {
-  textAlign: 'right',
-  fontSize: '15px',
-  color: colors.green,
+const textCaloriesStyle = {
+  textAlign: 'center',
+  fontSize: '13px',
+  color: colors.orange,
   padding: '5px',
 };
 
@@ -59,35 +70,28 @@ const iconContainerStyle = {
 
 const deleteButonStyle = {
   color: colors.green,
-  marginRight: '10px',
+  marginLeft: "15px"
 };
 
 const editButonStyle = {
   color: colors.orange,
-  marginRight: '10px',
 };
 
 const customContainerStyle = {
   ...rowStyle,
   justifyContent: 'center',
-  width: '100px',
+  width: '25px',
   height: '25px',
-  borderRadius: '10px',
+  borderRadius: '50%',
   backgroundColor: colors.lightGreen2,
-  margin: '0px',
-  padding: '5px 5px',
+  padding: '5px 10px',
 };
 
 const customTitleStyle = {
-  fontSize: '13px',
+  fontSize: '12px',
   color: colors.white,
   fontWeight: 'bold',
   fontFamily: "'Balsamiq Sans', sans-serif",
-};
-
-const foodIconContainerStyle = {
-  height: '25px',
-  margin: '5px 5px',
 };
 
 const headerTrainingStyle = {
@@ -110,17 +114,10 @@ const dropdownStyle = {
   fontFamily: "'Balsamiq Sans', sans-serif",
 };
 
-const responsiveMainContainer = styled.div({
-  ...rowStyle,
-  margin: '5px 10px 5px 10px',
-  [mq.small]: {
-    width: '100%',
-    flexDirection: 'column',
-  },
-});
+ 
 
 export {
-  responsiveMainContainer,
+  buttonsContainerStyle,
   headerTrainingStyle,
   nameContainerStyle,
   mainConteinerStyle,
@@ -128,7 +125,7 @@ export {
   rowStyle,
   columnStyle,
   dropdownStyle,
-  textStyle,
+  textCaloriesStyle,
   textTitleStyle,
   customContainerStyle,
   deleteButonStyle,

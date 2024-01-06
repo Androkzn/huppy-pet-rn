@@ -32,7 +32,7 @@ function FoodCard({ food, openAddFoodPage }) {
   return (
     <div style={style.mainConteinerStyle}>
       <Swipe
-        height={isSmallScreen ? 73 : 50}
+        height={isSmallScreen ? 50 : 50}
         disabled={!food.isCustom || !isSmallScreen}
         onLeftSwipe={deleteFoodTemplateHandler}
         leftSwipeComponent={
@@ -63,60 +63,57 @@ function FoodCard({ food, openAddFoodPage }) {
       >
         <div style={style.headerTrainingStyle}>
           <div style={style.rowStyle}>
-            <style.responsiveMainContainer>
-              <div style={style.rowStyle}>
-                <div
-                  style={style.nameContainerStyle}
-                  onClick={() => openAddFoodPage(food)}
-                >
-                  <span style={style.textTitleStyle}>{food.name}</span>
-                  <span style={style.textStyle}>{food.calories} kcal</span>
+           
+            {/* Food name container */}  
+            <div
+              style={style.nameContainerStyle}
+              onClick={() => openAddFoodPage(food)}
+            >
+              {food.categoryType && food.categoryType !== '' && (
+                  <div style={style.foodIconContainerStyle}>
+                    <Image
+                      imageName={`${food.categoryType}.png`}
+                      width="25"
+                      height="25"
+                    />
+                  </div>
+                )}
+              <span style={style.textTitleStyle}>{food.name}</span>
+              <span style={style.textCaloriesStyle}>{food.calories} kcal</span>
+            </div>
+            
+            {/* Hides delete/edit buttons and label if food template is no custom */}
+            {food.isCustom && (
+              <div style={style.buttonsContainerStyle}>
+                <div style={style.customContainerStyle}>
+                  <Image imageName="paw_white.png" width="20" height="20" />
                 </div>
-              </div>
-
-              <div style={style.rowStyle}>
-                {/* Hides delete/edit buttons and label if food template is no custom */}
-                {food.isCustom && (
-                  <div style={style.nameContainerStyle}>
-                    {food.categoryType && food.categoryType !== '' && (
-                      <div style={style.foodIconContainerStyle}>
-                        <Image
-                          imageName={`${food.categoryType}.png`}
-                          width="25"
-                          height="25"
-                        />
-                      </div>
-                    )}
-                    <div style={style.customContainerStyle}>
-                      <div style={style.customTitleStyle}>CUSTOM</div>
-                      <Image imageName="paw_white.png" width="20" height="20" />
-                    </div>
-                    {/* Hides delete buttons for small screens */}
-                    {!isSmallScreen && (
-                      <div css={style.deleteButonStyle}>
-                        <ButtonImage
-                          variant="iconButton"
-                          imageName="delete_green.svg"
-                          imageSize={25}
-                          onClick={() => deleteFoodTemplateHandler()}
-                        />
-                      </div>
-                    )}
-                    {/* Hides edit buttons for small screens */}
-                    {!isSmallScreen && (
-                      <div css={style.editButonStyle}>
-                        <ButtonImage
-                          variant="iconButton"
-                          imageName="edit_orange.svg"
-                          imageSize={20}
-                          onClick={() => editFoodHandler()}
-                        />
-                      </div>
-                    )}
+                {/* Hides delete buttons for small screens */}
+                {!isSmallScreen && (
+                  <div css={style.deleteButonStyle}>
+                    <ButtonImage
+                      variant="iconButton"
+                      imageName="delete_green.svg"
+                      imageSize={25}
+                      onClick={() => deleteFoodTemplateHandler()}
+                    />
+                  </div>
+                )}
+                {/* Hides edit buttons for small screens */}
+                {!isSmallScreen && (
+                  <div css={style.editButonStyle}>
+                    <ButtonImage
+                      variant="iconButton"
+                      imageName="edit_orange.svg"
+                      imageSize={20}
+                      onClick={() => editFoodHandler()}
+                    />
                   </div>
                 )}
               </div>
-            </style.responsiveMainContainer>
+            )}
+            
+            {/* Arrow button */}  
             <ButtonImage
               variant="iconButton"
               imageName="arrow_right_green.svg"

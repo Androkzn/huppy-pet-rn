@@ -67,7 +67,12 @@ const useGetMealsForDate = (user, currentProfile, currentDate) => {
 };
 
 // GET FOOD CATEGORIES
-const useLoadFoodCategories = (user, currentProfile, preset, addOther = false) => {
+const useLoadFoodCategories = (
+  user,
+  currentProfile,
+  preset,
+  addOther = false
+) => {
   return useQuery(['loadFoodCategories' + addOther, preset], async () => {
     if (currentProfile && user) {
       if (currentProfile?.preset !== Enums.RatioPresets.CUSTOM) {

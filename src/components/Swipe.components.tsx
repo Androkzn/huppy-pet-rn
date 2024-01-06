@@ -214,7 +214,10 @@ const Swiper = ({
       }
 
       // If swipe fixed in the swipeWidth position use it as initial starting point
-      if ((newTranslate > 0 && swipeDirection === "right") || (newTranslate < 0 && swipeDirection === "left")){
+      if (
+        (newTranslate > 0 && swipeDirection === 'right') ||
+        (newTranslate < 0 && swipeDirection === 'left')
+      ) {
         setTranslate(translate + newTranslate);
         setSwipeDirection(moveDistance >= 0 ? 'right' : 'left');
       } else {

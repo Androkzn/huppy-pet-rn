@@ -141,7 +141,7 @@ const childConteinerStyle = (isSmallScreen) => ({
   alignItems: 'center',
   width: '100%',
   borderRadius: '10px',
-  marginTop: isSmallScreen? '15px' : "0px",
+  marginTop: isSmallScreen ? '15px' : '0px',
   backgroundColor: colors.grayBackground,
 });
 

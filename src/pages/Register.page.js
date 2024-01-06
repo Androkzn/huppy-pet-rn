@@ -14,7 +14,8 @@ import { useAddProfile, useAddFoodCategory } from '../hooks/query.hooks';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { user, setCurrentPage, currentProfile, profiles, logOutUser } = useContext(DataContext);
+  const { user, setCurrentPage, currentProfile, profiles, logOutUser } =
+    useContext(DataContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -23,7 +24,7 @@ const Register = () => {
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const { mutate: addProfileMutation } = useAddProfile();
   const { mutate: addFoodCategoryMutation } = useAddFoodCategory();
-  
+
   const newProfile = {
     _id: '',
     name: '',
@@ -75,7 +76,7 @@ const Register = () => {
   // Handles dialog submission
   const saveAvatar = async (avatar) => {
     setAvatar(avatar);
-    setProfile({ ...profile, 'avatar': new Date().toISOString() });
+    setProfile({ ...profile, avatar: new Date().toISOString() });
     closeDialog();
   };
 
@@ -90,11 +91,9 @@ const Register = () => {
     }
   };
 
-
-
   // Handles dialog submission
   const deleteAvatar = async () => {
-    setProfile({ ...profile, 'avatar': '' });
+    setProfile({ ...profile, avatar: '' });
     setAvatar(null);
     closeDialog();
   };
@@ -110,14 +109,20 @@ const Register = () => {
       setCurrentPage('');
       navigate('/');
     } else {
-      const registrationCredentials = JSON.parse(localStorage.getItem('registrationCredentials'))
+      const registrationCredentials = JSON.parse(
+        localStorage.getItem('registrationCredentials')
+      );
       // If a user logged during registration but profile is not created =>  navigate to signup page
-      if (registrationCredentials, registrationCredentials.email !== '', registrationCredentials.password !== '') {
+      if (
+        (registrationCredentials,
+        registrationCredentials.email !== '',
+        registrationCredentials.password !== '')
+      ) {
         setCurrentPage('signup');
         navigate('/signup');
-      // If a succesfully user logged in but profile is not created during registration=>  navigate to signup page
-      } else { 
-        await logOutUser()  
+        // If a succesfully user logged in but profile is not created during registration=>  navigate to signup page
+      } else {
+        await logOutUser();
         setCurrentPage('login');
         navigate('/login');
       }
@@ -166,12 +171,11 @@ const Register = () => {
               });
             }
           }
-    
+
           //Clear temporarly saved credentials from local storage
-          localStorage.removeItem('registrationCredentials'); 
+          localStorage.removeItem('registrationCredentials');
           setCurrentPage('home');
           navigate('/');
-         
         },
       }
     );

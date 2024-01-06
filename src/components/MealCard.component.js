@@ -393,33 +393,38 @@ function MealCard({ meal, index, mealsCount }) {
                 </div>
               </MenuItem>
               {/* Copy to date  */}
-              { food?.length > 0 && <MenuItem onClick={() => {}}>
-                <div style={{ marginRight: '10px' }}>
-                  <Image imageName={'copy_green.svg'} width="15" height="15" />
-                </div>
-                <div
-                  style={{
-                    fontFamily: "'Balsamiq Sans', sans-serif",
-                    width: '80px',
-                  }}
-                >
-                  Copy to
-                </div>
-                <div style={styles.pickerContainerStyle}>
-                  <CustomDatePicker
-                    value={copyFromDate}
-                    onChange={(date) => {
-                      setIsCopyTo(true);
-                      setCopyFromDate(date);
-                      popupState.close();
-                      setCopyFromMealExpanded(true);
+              {food?.length > 0 && (
+                <MenuItem onClick={() => {}}>
+                  <div style={{ marginRight: '10px' }}>
+                    <Image
+                      imageName={'copy_green.svg'}
+                      width="15"
+                      height="15"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Balsamiq Sans', sans-serif",
+                      width: '80px',
                     }}
-                    styleContainer={styles.pickerStyle}
-                    backgroundColor={colors.white}
-                  />
-                </div>
-              </MenuItem>
-              }
+                  >
+                    Copy to
+                  </div>
+                  <div style={styles.pickerContainerStyle}>
+                    <CustomDatePicker
+                      value={copyFromDate}
+                      onChange={(date) => {
+                        setIsCopyTo(true);
+                        setCopyFromDate(date);
+                        popupState.close();
+                        setCopyFromMealExpanded(true);
+                      }}
+                      styleContainer={styles.pickerStyle}
+                      backgroundColor={colors.white}
+                    />
+                  </div>
+                </MenuItem>
+              )}
               {mealsCount > 1 && (
                 <div>
                   <Divider sx={{ my: 0.1 }} />

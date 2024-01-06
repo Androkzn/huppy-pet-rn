@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useContext, useEffect, useState } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DataContext } from '../contexts/data.context';
 import * as styles from '../components/styles/Login.css';
 import LoginForm from '../components/LoginForm.components';
@@ -11,15 +11,17 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Retrieve saved credentials from localStorage
-  const loginCredentials = JSON.parse(localStorage.getItem('loginCredentials')) || { username: '', password: '' };
-  
+  const loginCredentials = JSON.parse(
+    localStorage.getItem('loginCredentials')
+  ) || { username: '', password: '' };
+
   const {
     user,
     fetchUser,
     emailPasswordLogin,
     setCurrentPage,
     currentProfile,
-    profiles
+    profiles,
   } = useContext(DataContext);
   const [loading, setLoading] = useState(true);
 
@@ -47,10 +49,10 @@ const Login = () => {
     if (currentProfile) {
       navigatedTo('');
       //Clear temporarly saved credentials from local storage
-      localStorage.removeItem('loginCredentials'); 
-      localStorage.removeItem('registrationCredentials'); 
+      localStorage.removeItem('loginCredentials');
+      localStorage.removeItem('registrationCredentials');
       setLoading(false);
-    } 
+    }
   }, [currentProfile]);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ const Login = () => {
       setCurrentPage('register');
       navigatedTo('register');
       setLoading(false);
-    } 
+    }
   }, [profiles]);
 
   const onSubmit = async (formData) => {
@@ -97,12 +99,12 @@ const Login = () => {
           <div css={styles.loginHeaderStyle}>
             <div css={styles.headingLoginStyle}>WELCOME TO HUPPY!</div>
           </div>
-          <LoginForm onSubmit={onSubmit} loginCredentials={loginCredentials}/>
+          <LoginForm onSubmit={onSubmit} loginCredentials={loginCredentials} />
           <div css={styles.elementsInRow}>
             <div onClick={() => navigatedTo('forgot')} css={styles.linkForgot}>
               Forgot password?
             </div>
-            <div onClick={() =>navigatedTo('signup')} css={styles.linkSignup}>
+            <div onClick={() => navigatedTo('signup')} css={styles.linkSignup}>
               Signup
             </div>
           </div>

@@ -41,7 +41,7 @@ const nameContainerStyle = {
 const buttonsContainerStyle = {
   ...rowStyle,
   justifyContent: 'end',
-  width: '20%'
+  width: '20%',
 };
 
 const foodIconContainerStyle = {
@@ -70,7 +70,7 @@ const iconContainerStyle = {
 
 const deleteButonStyle = {
   color: colors.green,
-  marginLeft: "15px"
+  marginLeft: '15px',
 };
 
 const editButonStyle = {
@@ -113,8 +113,6 @@ const dropdownStyle = {
   backgroundColor: colors.oliveLight,
   fontFamily: "'Balsamiq Sans', sans-serif",
 };
-
- 
 
 export {
   buttonsContainerStyle,

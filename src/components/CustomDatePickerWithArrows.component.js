@@ -53,7 +53,7 @@ const CustomDatePickerWithArrows = ({
           style={{ cursor: 'pointer' }}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <ThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
             <DatePicker
               label="Small picker"
               value={dayjs(value)}
@@ -65,7 +65,7 @@ const CustomDatePickerWithArrows = ({
               slotProps={{ textField: { size: 'small' } }}
               disabled={disabled}
             />
-           </ThemeProvider>
+          </ThemeProvider>
         </LocalizationProvider>
         <Image
           imageName={'arrow_right_black.svg'}

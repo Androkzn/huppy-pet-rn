@@ -171,7 +171,7 @@ const statisticContainerStyle = {
 };
 
 export {
-  fixedTopContainer,  
+  fixedTopContainer,
   statisticContainerStyle,
   chartContainerStyle,
   chartLegentStyle,

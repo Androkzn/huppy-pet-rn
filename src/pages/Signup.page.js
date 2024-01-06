@@ -8,7 +8,6 @@ import { LoginTextInput, FormGroup } from '../components/Form.components';
 import { ButtonText } from '../components/Buttons.components';
 
 function SignUpForm({ onSubmit, buttonText, registrationCredentials }) {
-
   const [form, setForm] = useState({
     email: registrationCredentials.email,
     password: registrationCredentials.password,
@@ -29,56 +28,69 @@ function SignUpForm({ onSubmit, buttonText, registrationCredentials }) {
 
   useEffect(() => {
     // Save credentials to localStorage when form data changes
-    localStorage.setItem('registrationCredentials', JSON.stringify({ email: form.email, password: form.password }));
+    localStorage.setItem(
+      'registrationCredentials',
+      JSON.stringify({ email: form.email, password: form.password })
+    );
   }, [form]);
 
   // Validation for Continue button
-  const isFormValid= () => {
-     return (
+  const isFormValid = () => {
+    return (
       isEmailValid(form.email) &&
       isPasswordValid(form.password) &&
-      isPasswordValid(form.passwordConfirmation) && 
+      isPasswordValid(form.passwordConfirmation) &&
       form.password === form.passwordConfirmation
-      )
-  }
+    );
+  };
 
-  const getValidationTip= () => {
-    
-    if (form.email.length > 5 && !isEmailValid(form.email)) return "Email has invalid format" 
-    
-    if ((form.password.length > 2 && !isPasswordValid(form.password)) || (form.passwordConfirmation.length > 2 &&!isPasswordValid(form.passwordConfirmation))) return "Password must contain at least 8 characters, one special character an one number" 
-    
-    if (form.password.length > 7 && form.password.passwordConfirmation > 7 && form.password !== form.passwordConfirmation) return "Passwords do not match" 
- }
+  const getValidationTip = () => {
+    if (form.email.length > 5 && !isEmailValid(form.email))
+      return 'Email has invalid format';
 
- const isEmailValid = (email) => {
-  // Regular expression for a simple email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const isValid = emailRegex.test(email);
-  return isValid
-};
+    if (
+      (form.password.length > 2 && !isPasswordValid(form.password)) ||
+      (form.passwordConfirmation.length > 2 &&
+        !isPasswordValid(form.passwordConfirmation))
+    )
+      return 'Password must contain at least 8 characters, one special character an one number';
 
-const isPasswordValid = (password) => {
-  // Check for minimum length
-  if (password.length < 8) {
-    return false;
-  }
+    if (
+      form.password.length > 7 &&
+      form.password.passwordConfirmation > 7 &&
+      form.password !== form.passwordConfirmation
+    )
+      return 'Passwords do not match';
+  };
 
-  // Check for at least one special character
-  const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
-  if (!specialCharacterRegex.test(password)) {
-    return false;
-  }
+  const isEmailValid = (email) => {
+    // Regular expression for a simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(email);
+    return isValid;
+  };
 
-  // Check for at least one number
-  const numberRegex = /\d/;
-  if (!numberRegex.test(password)) {
-    return false;
-  }
+  const isPasswordValid = (password) => {
+    // Check for minimum length
+    if (password.length < 8) {
+      return false;
+    }
 
-  // Password meets all criteria
-  return true;
-};
+    // Check for at least one special character
+    const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (!specialCharacterRegex.test(password)) {
+      return false;
+    }
+
+    // Check for at least one number
+    const numberRegex = /\d/;
+    if (!numberRegex.test(password)) {
+      return false;
+    }
+
+    // Password meets all criteria
+    return true;
+  };
 
   return (
     <form css={styles.formStyle}>
@@ -93,7 +105,7 @@ const isPasswordValid = (password) => {
       <FormGroup>
         <LoginTextInput
           id="password"
-          isPassword= {true}
+          isPassword={true}
           placeholder="Password"
           onChange={handleChange}
           initialValue={registrationCredentials.password}
@@ -102,16 +114,14 @@ const isPasswordValid = (password) => {
       <FormGroup>
         <LoginTextInput
           id="passwordConfirmation"
-          isPassword= {true}
+          isPassword={true}
           placeholder="Repeat password"
           onChange={handleChange}
           initialValue={registrationCredentials.password}
         />
       </FormGroup>
       <FormGroup>
-        <div style={styles.validationTipsStyle}>
-          {getValidationTip()}
-        </div>
+        <div style={styles.validationTipsStyle}>{getValidationTip()}</div>
       </FormGroup>
       <FormGroup>
         <ButtonText
@@ -131,16 +141,18 @@ const Signup = () => {
   const navigate = useNavigate();
 
   // Retrieve saved credentials from localStorage
-  const registrationCredentials = JSON.parse(localStorage.getItem('registrationCredentials')) || { email: '', password: '' };
+  const registrationCredentials = JSON.parse(
+    localStorage.getItem('registrationCredentials')
+  ) || { email: '', password: '' };
 
   // As explained in the Login page.
   const { emailPasswordSignup } = useContext(DataContext);
 
   const navigatedTo = async (link) => {
     setCurrentPage(link);
-    if (link === "login") {
-       await logOutUser()
-       navigate('/' +link);
+    if (link === 'login') {
+      await logOutUser();
+      navigate('/' + link);
     } else {
       navigate('/' + link);
     }
@@ -151,7 +163,7 @@ const Signup = () => {
     try {
       const user = await emailPasswordSignup(formData.email, formData.password);
       if (user) {
-        navigatedTo('register') ;
+        navigatedTo('register');
       }
     } catch (error) {
       alert(error);
@@ -164,11 +176,13 @@ const Signup = () => {
         <div css={styles.loginHeaderStyle}>
           <div css={styles.headingLoginStyle}>CREATE ACCOUNT</div>
         </div>
-        <SignUpForm onSubmit={onSubmit} buttonText="Continue" registrationCredentials={registrationCredentials} />
-        <div  style={styles.rowStyle}>
-          <div>
-            Have an account already?{' '}
-          </div>
+        <SignUpForm
+          onSubmit={onSubmit}
+          buttonText="Continue"
+          registrationCredentials={registrationCredentials}
+        />
+        <div style={styles.rowStyle}>
+          <div>Have an account already? </div>
           <div onClick={() => navigatedTo('login')} style={styles.linkSignup}>
             Login
           </div>

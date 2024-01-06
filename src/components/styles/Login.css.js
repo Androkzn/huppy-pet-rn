@@ -49,8 +49,8 @@ const formStyle = {
 
 const validationTipsStyle = {
   color: colors.orange,
-  fontSize: "14px",
-  fontWeight: "regular",
+  fontSize: '14px',
+  fontWeight: 'regular',
   alignItems: 'center',
   textAlign: 'center',
   maxWidth: '300px',
@@ -70,7 +70,7 @@ const linkForgot = {
 const linkSignup = {
   color: colors.orange,
   textDecoration: 'none',
-  marginLeft: "20px"
+  marginLeft: '20px',
 };
 
 const rowStyle = {

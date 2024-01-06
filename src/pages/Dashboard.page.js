@@ -299,7 +299,7 @@ const Analytics = () => {
 
   return (
     <PageContainer>
-       <div style={styles.fixedTopContainer(isSmallScreen)}>
+      <div style={styles.fixedTopContainer(isSmallScreen)}>
         <styles.SelectDateContainer>
           <div style={styles.datePickerContainerStyle}>
             <div style={styles.datePickerStyle}>
@@ -310,7 +310,11 @@ const Analytics = () => {
               />
             </div>
             <div style={styles.datePickerStyle}>
-              <CustomDatePicker label="To" value={toDate} onChange={setToDate} />
+              <CustomDatePicker
+                label="To"
+                value={toDate}
+                onChange={setToDate}
+              />
             </div>
           </div>
           <div style={styles.rowStyle}>

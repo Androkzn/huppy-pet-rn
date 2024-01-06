@@ -70,10 +70,17 @@ const NavBar = () => {
   return (
     <>
       <AppBar position="fixed" sx={{ backgroundColor: colors.brown }}>
-        <Toolbar style={{display: "flex", justifyContent: 'space-between', width: "auto"}}>
-          {isSmallScreen && (currentPage === '' || currentPage === 'training') && (
-            <DatePicker />
-          )}
+        <Toolbar
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: 'auto',
+          }}
+        >
+          {isSmallScreen &&
+            (currentPage === '' || currentPage === 'training') && (
+              <DatePicker />
+            )}
           <HeaderLogo />
           {isLoggedIn() && (
             <div style={styles.userInfoContainerStyle(isSmallScreen)}>
@@ -86,7 +93,7 @@ const NavBar = () => {
                   {currentProfile.name}
                 </h2>
               )}
-              <div  >
+              <div>
                 <Avatar
                   width="50px"
                   profile={currentProfile}
@@ -115,16 +122,14 @@ const TemporaryDrawer = (props) => {
   const { mutate: updateProfileMutation } = useUpdateProfile();
 
   const changeCurrentProfileTo = async (profileNew) => {
-    const oldProfileId = currentProfile?._id; 
-    updateProfileMutation(
-      {
-        user: user,
-        profileId: profileNew._id,
-        updateData: {
-          isCurrent: true,
-        },
+    const oldProfileId = currentProfile?._id;
+    updateProfileMutation({
+      user: user,
+      profileId: profileNew._id,
+      updateData: {
+        isCurrent: true,
       },
-    );
+    });
 
     updateProfileMutation({
       user: user,
@@ -157,7 +162,7 @@ const TemporaryDrawer = (props) => {
         onClick={() => navigateTo('profile')}
       >
         <div style={styles.linkIconStyle}>
-            <Avatar width="50px" profile={currentProfile} />
+          <Avatar width="50px" profile={currentProfile} />
         </div>
         <div style={styles.linkTitleStyle}> Current Profile </div>
       </div>

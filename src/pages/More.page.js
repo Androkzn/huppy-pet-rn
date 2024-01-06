@@ -15,7 +15,8 @@ import { useNavigate } from 'react-router-dom';
 
 const More = () => {
   const navigate = useNavigate();
-  const { logOutUser, setCurrentPage, deleteUserAccount } = useContext(DataContext);
+  const { logOutUser, setCurrentPage, deleteUserAccount } =
+    useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addTraining');
 
@@ -55,8 +56,10 @@ const More = () => {
 
   const deleteAccount = async () => {
     // Display a confirmation prompt
-    const shouldDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
-  
+    const shouldDelete = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.'
+    );
+
     // Check if the user confirmed the action
     if (shouldDelete) {
       try {
@@ -114,7 +117,9 @@ const More = () => {
         {/* // Logout link */}
         <LinkComponent
           title={'Delete account'}
-          icon={<DeleteAccountIcon fill={colors.green} width={30} height={30} />}
+          icon={
+            <DeleteAccountIcon fill={colors.green} width={30} height={30} />
+          }
           onClick={deleteAccount}
         />
       </div>

@@ -25,7 +25,10 @@ function LoginForm({ onSubmit, loginCredentials }) {
 
   useEffect(() => {
     // Save credentials to localStorage when form data changes
-    localStorage.setItem('loginCredentials', JSON.stringify({ username: form.username, password: form.password }));
+    localStorage.setItem(
+      'loginCredentials',
+      JSON.stringify({ username: form.username, password: form.password })
+    );
   }, [form]);
 
   return (
@@ -45,7 +48,7 @@ function LoginForm({ onSubmit, loginCredentials }) {
         <LoginTextInput
           id="password"
           placeholder="Password"
-          isPassword= {true}
+          isPassword={true}
           value={form.password}
           onChange={handleChange}
           initialValue={loginCredentials.password}

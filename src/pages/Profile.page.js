@@ -166,9 +166,9 @@ const Profile = () => {
   }, [currentProfile]);
 
   const navigateTo = async () => {
-      setCurrentPage('');
-      navigate('/');
-  }
+    setCurrentPage('');
+    navigate('/');
+  };
 
   return (
     <PageContainer>

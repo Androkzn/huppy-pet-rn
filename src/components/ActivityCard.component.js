@@ -133,7 +133,7 @@ function ActivityCard({ activity }) {
       className="swiper-activity"
       leftSwipeColor={colors.orange}
       rightSwipeColor={colors.lightGreen2}
-      onSwipeStateCompleted={(completed ) => {
+      onSwipeStateCompleted={(completed) => {
         setSwipeCompleted(completed);
       }}
     >
@@ -147,10 +147,12 @@ function ActivityCard({ activity }) {
             />
           </div>
           <div style={stylesActivity.columnStyle}>
-            <div style={{
-              ...stylesActivity.topRowStyle,
-             pointerEvents: swipeCompleted ? 'auto' : 'none'}}
-             >
+            <div
+              style={{
+                ...stylesActivity.topRowStyle,
+                pointerEvents: swipeCompleted ? 'auto' : 'none',
+              }}
+            >
               <select
                 name={'activityType'}
                 value={activity.type}
@@ -171,10 +173,12 @@ function ActivityCard({ activity }) {
         </div>
       </div>
 
-      <div style={{
-        ...stylesActivity.bodyActivityStyle,
-        pointerEvents: swipeCompleted ? 'auto' : 'none',
-      }}>
+      <div
+        style={{
+          ...stylesActivity.bodyActivityStyle,
+          pointerEvents: swipeCompleted ? 'auto' : 'none',
+        }}
+      >
         <div style={stylesActivity.bodyRowStyle}>
           <select
             name={'activityMetric'}

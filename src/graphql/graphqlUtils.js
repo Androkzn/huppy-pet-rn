@@ -627,7 +627,12 @@ const deleteProfile = async ({ user, _id }) => {
   const queryVariables = { query: { _id } };
 
   try {
-    await request(GRAPHQL_ENDPOINT, deleteProfileQuery, queryVariables, headers);
+    await request(
+      GRAPHQL_ENDPOINT,
+      deleteProfileQuery,
+      queryVariables,
+      headers
+    );
     return true;
   } catch (error) {
     if (error.response.error_code === 'InvalidSession') {
@@ -1034,7 +1039,7 @@ const getUserProfiles = async (user) => {
       queryVariablesProfiles,
       headers
     );
-    
+
     const profiles = resp.profiles.map((profile) => ({
       ...profile,
       key: profile._id,
@@ -1114,8 +1119,8 @@ const getCurrentProfile = async (user) => {
     );
 
     // Check if at least one profile exists
-    if  (resp.profiles?.length === 0) {
-      return null
+    if (resp.profiles?.length === 0) {
+      return null;
     }
 
     const currentProfileFetched = resp.profiles.filter(
@@ -1654,7 +1659,7 @@ const addFoodCategory = async ({ user, currentProfile, data }) => {
   if (!user || !currentProfile || user._accessToken === null) {
     return false;
   }
-  
+
   const accessToken = user._accessToken;
   const profileId = currentProfile._id;
   const userId = user.id;

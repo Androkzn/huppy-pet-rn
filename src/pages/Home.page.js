@@ -90,7 +90,12 @@ const Home = () => {
       data: categories,
       isLoading: isLoadingCategories,
       isError: isErrorCategories,
-    } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset, true);
+    } = useLoadFoodCategories(
+      user,
+      currentProfile,
+      currentProfile?.preset,
+      true
+    );
     const {
       data: activities,
       isLoading: isLoadingActivities,
@@ -187,7 +192,7 @@ const Home = () => {
       isLoading,
       isError,
     } = useLoadFoodCategories(user, currentProfile, currentProfile?.preset);
-    
+
     return (
       <div
         style={{
@@ -442,9 +447,9 @@ const Home = () => {
 
   return (
     <PageContainer style={styles.pageStyle}>
-       <div style={styles.fixedTopContainer(isSmallScreen)}>
-          {!isSmallScreen && <DatePicker />}
-       </div>
+      <div style={styles.fixedTopContainer(isSmallScreen)}>
+        {!isSmallScreen && <DatePicker />}
+      </div>
       <div style={styles.columnStyle}>
         <styles.responsiveMainContainer>
           <styles.responsiveSubContainer>

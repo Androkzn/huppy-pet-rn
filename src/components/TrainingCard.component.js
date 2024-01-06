@@ -112,16 +112,12 @@ function TrainingCard({ training }) {
                 </div>
                 <div style={styleTraining.textStyle}>{getTainingType()}</div>
               </div>
-              
-              { (training.isCompleted) && 
+
+              {training.isCompleted && (
                 <div style={styleTraining.rowStyle}>
-                  <Image
-                    imageName={`trophy.svg`}
-                    width="35"
-                    height="35"
-                  />
+                  <Image imageName={`trophy.svg`} width="35" height="35" />
                 </div>
-              }
+              )}
             </div>
           </div>
         </Swipe>

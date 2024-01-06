@@ -227,7 +227,7 @@ const TitleAndDropdown = ({
   disabled,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  
+
   const containerStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -843,7 +843,7 @@ const SelectedCustomFoodCategoryRow = ({
   weight,
   onChangeButton,
   remainingPercentage,
-  isFocused
+  isFocused,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const inputRef = useRef(null);
@@ -866,11 +866,11 @@ const SelectedCustomFoodCategoryRow = ({
   };
 
   const onChangeTextField = (e) => {
-    const newValue =
-    e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+    const newValue = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
     // Prevents more than 100% in total for all categories
     if (
-      (newValue > initialValue && remainingPercentage >= newValue - initialValue) ||
+      (newValue > initialValue &&
+        remainingPercentage >= newValue - initialValue) ||
       newValue < initialValue
     ) {
       onChange(newValue);
@@ -934,13 +934,15 @@ const SelectedCustomFoodCategoryRow = ({
           as="button"
           name={name}
           variant="circleTextButton"
-          onClick={() => {decrementCount()}}
+          onClick={() => {
+            decrementCount();
+          }}
           disabled={initialValue === 0}
         >
           -
         </ButtonText>
         <input
-          ref={inputRef} 
+          ref={inputRef}
           id={id}
           style={textFieldStyle}
           type="number"
@@ -957,7 +959,9 @@ const SelectedCustomFoodCategoryRow = ({
           as="button"
           name={name}
           variant="circleTextButton"
-          onClick={() => {incrementCount()}}
+          onClick={() => {
+            incrementCount();
+          }}
           disabled={remainingPercentage <= 0}
         >
           +
@@ -1012,7 +1016,15 @@ const UnselectedFoodCategoryRow = ({ name, onAdd, color }) => {
   );
 };
 
-const LoginTextInput = ({ id, name, initialValue, onChange, placeholder, borderColor, isPassword = false }) => {
+const LoginTextInput = ({
+  id,
+  name,
+  initialValue,
+  onChange,
+  placeholder,
+  borderColor,
+  isPassword = false,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState(initialValue);
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
@@ -1043,7 +1055,7 @@ const LoginTextInput = ({ id, name, initialValue, onChange, placeholder, borderC
     height: '30px',
     fontSize: isSmallScreen ? Constants.smallFontSize : Constants.mainFontSize,
     fontFamily: "'Balsamiq Sans', sans-serif",
-    color: colors.green
+    color: colors.green,
   };
 
   const togglePasswordVisibility = () => {
@@ -1059,7 +1071,7 @@ const LoginTextInput = ({ id, name, initialValue, onChange, placeholder, borderC
     <div style={containerStyle}>
       <input
         id={id}
-        type={showPassword ? 'text' : (isPassword ? 'password' : 'text')}
+        type={showPassword ? 'text' : isPassword ? 'password' : 'text'}
         placeholder={placeholder}
         style={textFieldStyle}
         name={name}

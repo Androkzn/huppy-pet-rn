@@ -63,25 +63,24 @@ function FoodCard({ food, openAddFoodPage }) {
       >
         <div style={style.headerTrainingStyle}>
           <div style={style.rowStyle}>
-           
-            {/* Food name container */}  
+            {/* Food name container */}
             <div
               style={style.nameContainerStyle}
               onClick={() => openAddFoodPage(food)}
             >
               {food.categoryType && food.categoryType !== '' && (
-                  <div style={style.foodIconContainerStyle}>
-                    <Image
-                      imageName={`${food.categoryType}.png`}
-                      width="25"
-                      height="25"
-                    />
-                  </div>
-                )}
+                <div style={style.foodIconContainerStyle}>
+                  <Image
+                    imageName={`${food.categoryType}.png`}
+                    width="25"
+                    height="25"
+                  />
+                </div>
+              )}
               <span style={style.textTitleStyle}>{food.name}</span>
               <span style={style.textCaloriesStyle}>{food.calories} kcal</span>
             </div>
-            
+
             {/* Hides delete/edit buttons and label if food template is no custom */}
             {food.isCustom && (
               <div style={style.buttonsContainerStyle}>
@@ -112,8 +111,8 @@ function FoodCard({ food, openAddFoodPage }) {
                 )}
               </div>
             )}
-            
-            {/* Arrow button */}  
+
+            {/* Arrow button */}
             <ButtonImage
               variant="iconButton"
               imageName="arrow_right_green.svg"

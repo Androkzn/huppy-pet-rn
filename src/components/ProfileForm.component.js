@@ -322,7 +322,7 @@ const ProfileForm = ({
     let unusedCategoryPercentage = checkUnusedCategoryPercentage(categories);
     let chartData = [];
 
-    const getChartData= () =>{
+    const getChartData = () => {
       const categoriesNew = getCategoriesForPresset();
       const data = categoriesNew.map((category) => ({
         name: category.name,
@@ -333,9 +333,9 @@ const ProfileForm = ({
       chartData = data;
 
       return chartData;
-    }
+    };
 
-    const isChartDataAvailable= () => {
+    const isChartDataAvailable = () => {
       const isaAvailable = getChartData().some(
         (category) => category.percentage > 0
       );
@@ -355,18 +355,25 @@ const ProfileForm = ({
             <div style={styles.chartContainerStyle}>
               {/* Show placeholder if no data */}
               {isChartDataAvailable() ? (
-               <div style={{ position: 'relative' }}>
-               <div style={{ position: 'absolute', top: 110, left: 100, zIndex: 1 }}>
-                 {/* Unused calories reminder */}
-                 {unusedCategoryPercentage > 0 && (
-                   <div style={styles.unusedCaloriesReminderStyle}>
-                     You have {unusedCategoryPercentage}% unused!
-                   </div>
-                 )}
-               </div>
-             
-               <ChartPie data={getChartData()} />
-             </div>
+                <div style={{ position: 'relative' }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 110,
+                      left: 100,
+                      zIndex: 1,
+                    }}
+                  >
+                    {/* Unused calories reminder */}
+                    {unusedCategoryPercentage > 0 && (
+                      <div style={styles.unusedCaloriesReminderStyle}>
+                        You have {unusedCategoryPercentage}% unused!
+                      </div>
+                    )}
+                  </div>
+
+                  <ChartPie data={getChartData()} />
+                </div>
               ) : (
                 <Image
                   imageName={
@@ -397,7 +404,11 @@ const ProfileForm = ({
                         color={category?.color}
                         initialValue={category?.percentage}
                         onChange={(value) => {
-                          onTextInputCategoryChange(value, category?._id, index);
+                          onTextInputCategoryChange(
+                            value,
+                            category?._id,
+                            index
+                          );
                         }}
                         onDelete={() => {
                           deleteCategory(category);
@@ -472,7 +483,6 @@ const ProfileForm = ({
                 </div>
               </div>
             )}
-
           </div>
         )}
       </div>
@@ -503,59 +513,62 @@ const ProfileForm = ({
 
     let categoriesCanBeAdded = getUnusedCategories(categories);
 
-    return <div> {categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
-              <div style={styles.foodRatioContainerStyle}>
-                <div style={styles.columnStyle}>
-                  <div style={styles.rowStyle}>
-                    <div
-                      style={styles.sectionTitleStyle}
-                      onClick={() =>
-                        setFoodCategoryExpanded(!isFoodCategoryExpanded)
-                      }
-                    >
-                      {isFoodCategoryExpanded
-                        ? 'Hide categoties'
-                        : 'Add more food categories'}
-                    </div>
-                    <Image
-                      imageName={
-                        isFoodCategoryExpanded
-                          ? 'arrow_down_green.svg'
-                          : 'arrow_right_green.svg'
-                      }
-                      width="20"
-                      height="20"
-                      onClick={() =>
-                        setFoodCategoryExpanded(!isFoodCategoryExpanded)
-                      }
-                      styles={styles.sectionImageContainerStyle}
-                    />
-                  </div>
-
-                  {isFoodCategoryExpanded && (
-                    <div style={styles.unselectedCategoriesContainerStyle}>
-                      {
-                        <div style={styles.unselectedFoodCategoryStyle}>
-                          {categoriesCanBeAdded.map((category) => (
-                            <UnselectedFoodCategoryRow
-                              key={category?.name}
-                              name={category.name}
-                              color={category.color}
-                              onAdd={() => {
-                                addCategory(category);
-                              }}
-                            />
-                          ))}
-                        </div>
-                      }
-                    </div>
-                  )}
+    return (
+      <div>
+        {' '}
+        {categoriesCanBeAdded && categoriesCanBeAdded.length > 0 && (
+          <div style={styles.foodRatioContainerStyle}>
+            <div style={styles.columnStyle}>
+              <div style={styles.rowStyle}>
+                <div
+                  style={styles.sectionTitleStyle}
+                  onClick={() =>
+                    setFoodCategoryExpanded(!isFoodCategoryExpanded)
+                  }
+                >
+                  {isFoodCategoryExpanded
+                    ? 'Hide categoties'
+                    : 'Add more food categories'}
                 </div>
+                <Image
+                  imageName={
+                    isFoodCategoryExpanded
+                      ? 'arrow_down_green.svg'
+                      : 'arrow_right_green.svg'
+                  }
+                  width="20"
+                  height="20"
+                  onClick={() =>
+                    setFoodCategoryExpanded(!isFoodCategoryExpanded)
+                  }
+                  styles={styles.sectionImageContainerStyle}
+                />
               </div>
-            )}
-    </div>
-  }
 
+              {isFoodCategoryExpanded && (
+                <div style={styles.unselectedCategoriesContainerStyle}>
+                  {
+                    <div style={styles.unselectedFoodCategoryStyle}>
+                      {categoriesCanBeAdded.map((category) => (
+                        <UnselectedFoodCategoryRow
+                          key={category?.name}
+                          name={category.name}
+                          color={category.color}
+                          onAdd={() => {
+                            addCategory(category);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  }
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{ ...styles.profileFormStyle }}>

@@ -105,14 +105,14 @@ const Training = () => {
     return (
       <div style={styles.rowStyle}>
         <div style={styles.columnStyle}>
-        <div style={styles.pickerContainerStyle}>
-          <CustomDatePickerWithArrows
-            label="Select date:"
-            value={currentDate}
-            onChange={(date) => setCurrentDate(date)}
-            stylePicker={styles.pickerStyle}
-          />
-        </div>
+          <div style={styles.pickerContainerStyle}>
+            <CustomDatePickerWithArrows
+              label="Select date:"
+              value={currentDate}
+              onChange={(date) => setCurrentDate(date)}
+              stylePicker={styles.pickerStyle}
+            />
+          </div>
         </div>
       </div>
     );
@@ -170,9 +170,9 @@ const Training = () => {
 
   return (
     <PageContainer>
-       <div style={styles.fixedTopContainer(isSmallScreen)}>
-          {!isSmallScreen && <DatePicker />}
-       </div>
+      <div style={styles.fixedTopContainer(isSmallScreen)}>
+        {!isSmallScreen && <DatePicker />}
+      </div>
       <div style={styles.columnStyle}>
         {isLoadingTrainings || isErrorTrainings ? (
           <LoadingAndError

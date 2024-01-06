@@ -47,6 +47,14 @@ const SelectDateContainer = styled.div({
   },
 });
 
+const fixedTopContainer = (isSmallScreen) => ({
+  position: 'sticky',
+  top: isSmallScreen ? 60 : 60,
+  zIndex: 1000,
+  backgroundColor: 'white',
+  width: '100%',
+});
+
 const datePickerContainerStyle = {
   ...rowStyle,
   width: '95%',
@@ -54,7 +62,7 @@ const datePickerContainerStyle = {
 };
 
 const datePickerStyle = {
-  margin: '10px 10px',
+  margin: '0px 20px 10px 20px',
 };
 
 const placeholderContainerStyle = {
@@ -68,6 +76,7 @@ const chartContainerStyle = {
 };
 
 export {
+  fixedTopContainer,
   chartContainerStyle,
   placeholderContainerStyle,
   datePickerContainerStyle,

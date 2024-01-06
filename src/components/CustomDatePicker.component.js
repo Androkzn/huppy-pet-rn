@@ -13,7 +13,7 @@ import * as colors from './styles/Colors';
 const CustomDatePicker = ({ label, value, onChange, style, disabled }) => {
   const defaultStyles = css({
     background: `${colors.grayBackground}`,
-    borderRadius: '5px',
+    borderRadius: '10px',
     width: '120px',
     fontSize: '16px',
     fontFamily: "'Balsamiq Sans', sans-serif",

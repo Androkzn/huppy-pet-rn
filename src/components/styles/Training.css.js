@@ -28,7 +28,6 @@ const columnStyle = {
   justifyContent: 'top',
   flexDirection: 'column',
   width: '100%',
-  marginBottom: '10px',
 };
 
 const textTitleStyle = {
@@ -78,10 +77,19 @@ const checkboxStyle = {
   height: '35px',
 };
 
+const fixedTopContainer = (isSmallScreen) => ({
+  position: 'sticky',
+  top: isSmallScreen ? 60 : 60,
+  zIndex: 1000,
+  backgroundColor: 'white',
+  width: '100%',
+});
+
 const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
+  margin: '15px 0px 5px 0px',
 };
 
 const pickerStyle = {
@@ -126,16 +134,16 @@ const headerAddButtonStyle = {
   marginRight: '20px',
 };
 
-const childConteinerStyle = {
+const childConteinerStyle = (isSmallScreen) => ({
   display: 'flex',
   flex: '1',
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
   borderRadius: '10px',
-  marginTop: '10px',
+  marginTop: isSmallScreen? '15px' : "0px",
   backgroundColor: colors.grayBackground,
-};
+});
 
 const placeholderStyle = {
   display: 'flex',
@@ -166,6 +174,7 @@ const deleteContainerStyle = {
 };
 
 export {
+  fixedTopContainer,
   headerTrainingStyle,
   checkmarkContainerStyle,
   deleteContainerStyle,

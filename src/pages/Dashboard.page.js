@@ -299,23 +299,25 @@ const Analytics = () => {
 
   return (
     <PageContainer>
-      <styles.SelectDateContainer>
-        <div style={styles.datePickerContainerStyle}>
-          <div style={styles.datePickerStyle}>
-            <CustomDatePicker
-              label="From"
-              value={fromDate}
-              onChange={setFromDate}
-            />
+       <div style={styles.fixedTopContainer(isSmallScreen)}>
+        <styles.SelectDateContainer>
+          <div style={styles.datePickerContainerStyle}>
+            <div style={styles.datePickerStyle}>
+              <CustomDatePicker
+                label="From"
+                value={fromDate}
+                onChange={setFromDate}
+              />
+            </div>
+            <div style={styles.datePickerStyle}>
+              <CustomDatePicker label="To" value={toDate} onChange={setToDate} />
+            </div>
           </div>
-          <div style={styles.datePickerStyle}>
-            <CustomDatePicker label="To" value={toDate} onChange={setToDate} />
+          <div style={styles.rowStyle}>
+            <FilterContainer />
           </div>
-        </div>
-        <div style={styles.rowStyle}>
-          <FilterContainer />
-        </div>
-      </styles.SelectDateContainer>
+        </styles.SelectDateContainer>
+      </div>
       {/* Chart section   */}
       {isLoadingFood || isErrorFood ? (
         <div>

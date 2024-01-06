@@ -442,8 +442,10 @@ const Home = () => {
 
   return (
     <PageContainer style={styles.pageStyle}>
+       <div style={styles.fixedTopContainer(isSmallScreen)}>
+          {!isSmallScreen && <DatePicker />}
+       </div>
       <div style={styles.columnStyle}>
-        {!isSmallScreen && <DatePicker />}
         <styles.responsiveMainContainer>
           <styles.responsiveSubContainer>
             <styles.columnLeftStyle>

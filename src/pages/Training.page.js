@@ -120,8 +120,7 @@ const Training = () => {
 
   const Trainings = ({ trainingData }) => {
     return (
-      <div style={styles.childConteinerStyle}>
-    
+      <div style={styles.childConteinerStyle(isSmallScreen)}>
         {/* Trainings container*/}
         <div style={styles.headerStyle}>
           {/* Header container*/}
@@ -171,9 +170,10 @@ const Training = () => {
 
   return (
     <PageContainer>
+       <div style={styles.fixedTopContainer(isSmallScreen)}>
+          {!isSmallScreen && <DatePicker />}
+       </div>
       <div style={styles.columnStyle}>
-        {!isSmallScreen && <DatePicker />}
-
         {isLoadingTrainings || isErrorTrainings ? (
           <LoadingAndError
             isLoading={isLoadingTrainings}

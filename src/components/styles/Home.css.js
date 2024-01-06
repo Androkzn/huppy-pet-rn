@@ -11,11 +11,19 @@ const pageStyle = {
   maxWidth: '95%',
 };
 
+const fixedTopContainer = (isSmallScreen) => ({
+  position: 'sticky',
+  top: isSmallScreen ? 60 : 60,
+  zIndex: 1000,
+  backgroundColor: 'white',
+  width: '100%',
+});
+
 const pickerContainerStyle = {
   display: 'flex',
   flex: '1 1 auto',
   justifyContent: 'center',
-  marginBottom: '10px',
+  margin: '15px 0px 5px 0px',
 };
 
 const headerStyle = {
@@ -163,6 +171,7 @@ const statisticContainerStyle = {
 };
 
 export {
+  fixedTopContainer,  
   statisticContainerStyle,
   chartContainerStyle,
   chartLegentStyle,

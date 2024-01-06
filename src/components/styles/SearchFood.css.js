@@ -19,7 +19,7 @@ const mainConteinerStyle = {
 
 const fixedTopContainer = (isSmallScreen) => ({
   position: 'sticky',
-  top: isSmallScreen ? 60 : 90,
+  top: 60,
   zIndex: 1000,
   backgroundColor: 'white',
   width: '100%',

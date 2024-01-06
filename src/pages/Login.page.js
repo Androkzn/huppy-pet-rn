@@ -54,7 +54,7 @@ const Login = () => {
   }, [currentProfile]);
 
   useEffect(() => {
-    if (profiles && profiles.length === 0) {
+    if (profiles && profiles?.length === 0) {
       setCurrentPage('register');
       navigatedTo('register');
       setLoading(false);

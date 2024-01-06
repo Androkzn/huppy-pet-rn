@@ -1114,7 +1114,7 @@ const getCurrentProfile = async (user) => {
     );
 
     // Check if at least one profile exists
-    if  (resp.profiles.length === 0) {
+    if  (resp.profiles?.length === 0) {
       return null
     }
 

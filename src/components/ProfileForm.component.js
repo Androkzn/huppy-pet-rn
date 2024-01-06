@@ -200,8 +200,8 @@ const ProfileForm = ({
   // Checks if pet is adult
   function isAdultDog(dob) {
     const ageComponents = getAgeComponentForDOB(dob);
-    const months = ageComponents.month || 1;
-    const years = ageComponents.year || 0;
+    const months = ageComponents?.month || 1;
+    const years = ageComponents?.year || 0;
     return months === 12 || years >= 1;
   }
 

@@ -174,7 +174,7 @@ const TemporaryDrawer = (props) => {
       </div>
 
       {/* // Change Profile link */}
-      {profiles.length > 1 && (
+      {profiles?.length > 1 && (
         <div>
           <div style={styles.linkContainerStyle}>
             <div style={styles.linkIconStyle}>

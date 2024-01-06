@@ -62,7 +62,7 @@ const datePickerContainerStyle = {
 };
 
 const datePickerStyle = {
-  margin: '0px 20px 10px 20px',
+  margin: '10px 15px',
 };
 
 const placeholderContainerStyle = {

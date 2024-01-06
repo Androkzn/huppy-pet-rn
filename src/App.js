@@ -26,7 +26,7 @@ function App() {
         >
           <NavBar />
           <div style={{ flex: 1, overflowY: 'visible' }}>
-            <Routes>
+            <Routes scrollRestoration="manual">
               <Route path="/login" element={<Login />} />
               <Route path="/forgot" element={<ForgotPassword />} />
               <Route path="/signup" element={<Signup />} />

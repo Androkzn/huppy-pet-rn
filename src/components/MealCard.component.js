@@ -393,7 +393,7 @@ function MealCard({ meal, index, mealsCount }) {
                 </div>
               </MenuItem>
               {/* Copy to date  */}
-              <MenuItem onClick={() => {}}>
+              { food?.length > 0 && <MenuItem onClick={() => {}}>
                 <div style={{ marginRight: '10px' }}>
                   <Image imageName={'copy_green.svg'} width="15" height="15" />
                 </div>
@@ -419,6 +419,7 @@ function MealCard({ meal, index, mealsCount }) {
                   />
                 </div>
               </MenuItem>
+              }
               {mealsCount > 1 && (
                 <div>
                   <Divider sx={{ my: 0.1 }} />

@@ -130,7 +130,7 @@ const dropdownStyle = {
   paddingLeft: '10px',
   marginRight: '10px',
   backgroundColor: colors.white,
-  fontSize: '18px',
+  fontSize: '16px',
   color: colors.green,
   fontFamily: "'Balsamiq Sans', sans-serif",
 };

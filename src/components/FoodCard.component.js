@@ -8,20 +8,32 @@ import * as style from './styles/AddFoodCard.css';
 import { ButtonImage } from './Buttons.components';
 import Swipe from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
-import { useDeleteFoodTemplate } from '../hooks/query.hooks';
+import { useDeleteFoodTemplate, deleteImage } from '../hooks/query.hooks';
 import '../components/styles/styles.css';
+
 
 // Function is responsible for updating the training
 function FoodCard({ food, openAddFoodPage }) {
   const { user, setCurrentPage, isSmallScreen } = useContext(DataContext);
   const navigate = useNavigate();
   const { mutate: deleteFoodTemplateMutation } = useDeleteFoodTemplate();
+ 
 
   const deleteFoodTemplateHandler = async () => {
     deleteFoodTemplateMutation({
       user: user,
       _id: food._id,
-    });
+    }, {
+      onSuccess: (data) => {
+        const destination = "food"
+        const key = `${food.userId}/${food?._id}`
+        deleteImage(destination, key)
+    }
+   });
+  };
+
+  const deleteImage = async () => {
+    
   };
 
   const editFoodHandler = async () => {

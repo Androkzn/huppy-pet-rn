@@ -7,16 +7,15 @@ import { ImageCircle } from './ImageCircle.components';
 import { Cropper, CircleStencil } from 'react-mobile-cropper';
 import 'react-mobile-cropper/dist/style.css';
 import Spiner from '../components/Spinner.components';
-import axios from 'axios';
 import '../components/styles/styles.css';
+import { uploadImage, deleteImage, getImageUrl } from '../hooks/query.hooks';
 
 const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   const [imageSelected, setImageSelected] = useState(null);
-  const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const cropperRef = useRef(null);
   let croppedImage = null;
-  const type = 'url';
-  const url = `${backendEndpoint}/avatar/${profile?._id}?type=${type}`;
+  const destination = "avatar"
+  const key = `${profile?._id}?type="url"`
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -61,71 +60,11 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
     saveAvatar(croppedImage || imageSelected);
   };
 
-  const compressImage = async (
-    file,
-    { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }
-  ) => {
-    // Get as image data
-    const imageBitmap = await createImageBitmap(file);
-
-    // Calculate new dimensions while maintaining the aspect ratio
-    let newWidth, newHeight;
-    if (imageBitmap.width > imageBitmap.height) {
-      newWidth = maxWidth;
-      newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
-    } else {
-      newHeight = maxHeight;
-      newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
-    }
-
-    // Draw to canvas with new dimensions
-    const canvas = document.createElement('canvas');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
-
-    // Turn into Blob
-    return await new Promise((resolve) =>
-      canvas.toBlob(resolve, type, quality)
-    );
-  };
-
-  // Function to fetch avatar data when component mounts
-  const fetchAvatar = async () => {
-    try {
-      const type = 'url';
-      const avatarResult = await axios.get(
-        `${backendEndpoint}/avatar/${profile?._id}?type=${type}`
-      );
-      const url = avatarResult.data;
-      updateCurrentProfile('avatar', new Date().toISOString());
-      return;
-    } catch (error) {
-      console.log('Error fetching avatar:', error);
-    }
-  };
-
   // Handles dialog submission
   const saveAvatar = async (file) => {
     if (file) {
       try {
-        const compressedFile = await compressImage(file, {
-          type: 'image/jpeg',
-        });
-        // Create a new FormData object
-        const data = new FormData();
-        // Append the compressed file as a Blob
-        data.append('image', compressedFile);
-        // Append other form data fields
-        data.append('name', profile._id);
-        data.append('destination', 'avatar');
-        // Use Axios to send the FormData to the server
-        const result = await axios.post(
-          `${backendEndpoint}/avatar/${profile._id}`,
-          data
-        );
-        await fetchAvatar();
+        const isUploaded = await uploadImage(file,destination, key)
       } catch (error) {
         console.log('Error uploading file:', error);
       }
@@ -135,14 +74,12 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
 
   // Handles dialog submission
   const deleteAvatar = async () => {
-    const destination = 'avatar';
-    // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
     try {
-      const avatarResult = await axios.delete(
-        `${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`
-      );
-      updateCurrentProfile('avatar', '');
-      onClose();
+      const isDeleted = await deleteImage(destination, key)
+      if (isDeleted) {
+        updateCurrentProfile('avatar', '');
+        onClose();
+      }
     } catch (error) {
       console.log('Error deleting avatar:', error);
     }
@@ -172,14 +109,8 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
 
   // Function to fetch avatar data when the component mounts
   const getAvatarUrl = async () => {
-    const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
     try {
-      const type = 'url';
-      const avatarResult = await axios.get(
-        `${backendEndpoint}/avatar/${profile._id}?type=${type}`
-      );
-      const avatarData = avatarResult.data;
-
+      const avatarData = await getImageUrl(destination, key)
       return avatarData;
     } catch (error) {
       console.log('Error fetching avatar:', error);

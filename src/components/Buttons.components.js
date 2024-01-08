@@ -185,7 +185,6 @@ const buttonVariants = {
     border: 'none',
     borderRadius: '10px',
     cursor: 'pointer',
-
     height: '35px',
     lineHeight: '10px',
     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -194,13 +193,35 @@ const buttonVariants = {
     textDecoration: 'none',
     color: colors.green,
     paddingRight: '10px',
-    paddingLeft: '10px',
+    paddingLeft: '0px',
     fontWeight: 'bold',
     transition: 'background-color 0.3s',
     '&:active': {
       background: colors.orange,
     },
     fill: colors.green,
+  },
+
+  actionNavigationButton: {
+    background: colors.lightGreen,
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    height: '35px',
+    lineHeight: '10px',
+    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
+    textDecoration: 'none',
+    color: colors.white,
+    paddingRight: '10px',
+    paddingLeft: '0px',
+    fontWeight: 'bold',
+    transition: 'background-color 0.3s',
+    '&:active': {
+      background: colors.orange,
+    },
   },
 };
 

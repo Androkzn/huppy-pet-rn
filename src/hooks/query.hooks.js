@@ -2,9 +2,12 @@ import * as graphql from '../graphql/graphqlUtils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Enums from '../helpers/Enums.helper';
 import axios from 'axios';
+import { compressImage } from '../helpers/Image.helper';
+
+const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
 
 //////////////////////////////
-//     GET IMAGE           //
+//    IMAGE           //
 ////////////////////////////
 
 // GET IMAGE
@@ -13,20 +16,78 @@ const useFetchImage = (url, key) => {
     [key],
     async () => {
       try {
-        const avatarResult = await axios.get(url);
-        console.error('FETCHED avatarResult.data:', avatarResult.data);
-        return avatarResult.data;
+        const imageResult = await axios.get(url);
+        console.log('FETCHED imageResult:', imageResult.data);
+        return imageResult.data;
       } catch (error) {
-        console.log('Error fetching image:', error);
+        console.error('Error fetching image:', error);
         throw error; // Rethrow the error to let React Query handle it
       }
     },
     {
-      enabled: !!key,
+      enabled: !!key || key === '',
       refetchOnMount: false,
-      onSuccess: (data) => {},
+      onSuccess: (data) => {
+
+      },
     }
   );
+};
+
+// DELETE IMAGE
+const deleteImage = async (destination, key) => {
+  const url = `${backendEndpoint}/${destination}/${key}`
+  try {
+    console.log("deleteImage url", url)
+    const result = await axios.delete(url);
+    console.log("deleteImage result", result)
+    return result
+  } catch (error) {
+    console.log('Error deleting image with url:', url);
+    return false
+  }
+};
+
+// UPLOAD IMAGE
+const uploadImage = async (file, destination, key) => {
+  const url = `${backendEndpoint}/${destination}/${key}`
+  const compressedFile = await compressImage(file, {
+    type: 'image/jpeg',
+  });
+  // Create a new FormData object
+  const data = new FormData();
+  // Append the compressed file as a Blob
+  data.append('image', compressedFile);
+
+  try {
+    console.log("uploadImage url", url)
+    const result = await axios.post(
+      url,
+      data
+    );
+    console.log("uploadImage result", result)
+    return result
+  } catch (error) {
+    console.log('Error uploading image with url:', url);
+    return false
+  }
+}
+
+  // GET IMAGE URL
+const getImageUrl = async (destination, key) => {
+  const type = 'url';
+  const url = `${backendEndpoint}/${destination}/${key}?type=${type}`
+  
+  try {
+    console.log("getImageUrl url", url)
+    const result = await axios.get(url);
+    const data = result.data;
+    console.log("getImageUrl result", result)
+    return data;
+  } catch (error) {
+    console.log('Error fetching image:', error);
+    return null;
+  }
 };
 
 //////////////////////////////
@@ -479,6 +540,9 @@ const useDeleteFoodCategory = () => {
 
 export {
   useFetchImage,
+  deleteImage,
+  uploadImage,
+  getImageUrl,
   useGetCurrentProfile,
   useGetProfiles,
   useSearchForFood,

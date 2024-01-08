@@ -62,96 +62,15 @@ const AddImageDialog = ({
 
   const handleSave = () => {
     // Use the cropped image when saving
-    saveImage(croppedImage || imageSelected);
     setImage(croppedImage || imageSelected);
-  };
-
-  const compressImage = async (
-    file,
-    { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }
-  ) => {
-    // Get as image data
-    const imageBitmap = await createImageBitmap(file);
-
-    // Calculate new dimensions while maintaining the aspect ratio
-    let newWidth, newHeight;
-    if (imageBitmap.width > imageBitmap.height) {
-      newWidth = maxWidth;
-      newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
-    } else {
-      newHeight = maxHeight;
-      newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
-    }
-
-    // Draw to canvas with new dimensions
-    const canvas = document.createElement('canvas');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
-
-    // Turn into Blob
-    return await new Promise((resolve) =>
-      canvas.toBlob(resolve, type, quality)
-    );
-  };
-
-  // Function to fetch avatar data when component mounts
-  const fetchImage = async () => {
-    try {
-      const type = 'url';
-      const avatarResult = await axios.get(
-        `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`
-      );
-      const url = avatarResult.data;
-      setFoodItem('image', url);
-      return;
-    } catch (error) {
-      console.log('Error fetching avatar:', error);
-    }
-  };
-
-  // Handles dialog submission
-  const saveImage = async (file) => {
-    if (file) {
-      try {
-        const compressedFile = await compressImage(file, {
-          type: 'image/jpeg',
-        });
-        // Create a new FormData object
-        const data = new FormData();
-        // Append the compressed file as a Blob
-        data.append('image', compressedFile);
-        // Append other form data fields
-        data.append('name', foodItem._id);
-        data.append('destination', 'food');
-        // Use Axios to send the FormData to the server
-        const result = await axios.post(
-          `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}`,
-          data
-        );
-        await fetchImage();
-      } catch (error) {
-        console.log('Error uploading file:', error);
-      }
-    }
     onClose();
   };
 
   // Handles dialog submission
-  const deleteImage = async () => {
-    const destination = 'food';
-    // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
-    try {
-      const avatarResult = await axios.delete(
-        `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?destination=${destination}`
-      );
-      setFoodItem({ ...foodItem, image: new Date().toISOString() });
+  const deleteImage =  () => {
+      setFoodItem({ ...foodItem, image:'' });
       setImage(null);
       onClose();
-    } catch (error) {
-      console.log('Error deleting image:', error);
-    }
   };
 
   useEffect(() => {

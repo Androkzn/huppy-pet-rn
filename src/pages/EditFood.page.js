@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react';
 import PageContainer from '../components/PageContainer.component';
 import { DataContext } from '../contexts/data.context';
 import EditFoodForm from '../components/EditFoodForm.component';
-import { ButtonLink } from '../components/Buttons.components';
+import { ButtonImage, ButtonText } from '../components/Buttons.components';
 import * as styles from '../components/styles/CreateNewFood.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent } from '@mui/material';
@@ -20,6 +20,7 @@ const EditFood = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addActivity');
   const { mutate: updateFoodTemplateMutation } = useUpdateFoodTemplate();
+  const [isEdited, setIsEdited] = useState(false);
 
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {
@@ -41,6 +42,25 @@ const EditFood = () => {
   // Closes dialog
   const closeDialog = () => {
     setDialogOpen(false);
+  };
+
+  // Navigation
+  const navigateTo = async (link, state = {}) => {
+    // Ask user to save changes when back button is pressed
+    if (isEdited) {
+      const userResponse = window.confirm(
+        'You have unsaved changes. Do you want to save them before leaving?'
+      );
+
+      if (userResponse) {
+        editFood()
+      } 
+      setCurrentPage(link);
+      navigate('/' + link, { state });
+    } else {
+      setCurrentPage(link);
+      navigate('/' + link, { state });
+    }
   };
 
   // Returns dialog component based on dialog type
@@ -76,6 +96,8 @@ const EditFood = () => {
     bonesRatio: food?.bonesRatio,
     desc: food?.desc,
     weight: food?.weight,
+    userId: food?.userId,
+    image: food?.image,
   });
 
   const [foodItem, setFoodItem] = useState(food || cachedFood);
@@ -104,6 +126,8 @@ const EditFood = () => {
     openDialog('image');
   };
 
+  console.log('foodItem image:', foodItem.image);
+
   // Updates food
   const getFood = async () => {
     if (food) {
@@ -116,31 +140,47 @@ const EditFood = () => {
     }
   };
 
-  // Save the profile to local storage whenever it changes
+  //Set initial food
   useEffect(() => {
     getFood();
   }, [food]);
+  
+  // Set isEdited flag 
+  useEffect(() => {
+    // Change the flag only ones
+    if (!isEdited && food !== foodItem) {
+      setIsEdited(true)
+    }
+  }, [foodItem]);
 
   return (
     <PageContainer>
       <div style={styles.fixedTopContainer}>
         <div style={styles.topButtonsContainerStyle}>
-          <ButtonLink
+          <ButtonImage
             variant="backButton"
-            to="/searchFood"
+            onClick={ () => navigateTo('searchFood') }
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
             Back
-          </ButtonLink>
+          </ButtonImage>
           <div css={styles.addFoodTitleStyle}>{'Edit Food'}</div>
-          <div style={{ width: '100px' }}></div>
+          <ButtonImage
+            variant="actionNavigationButton"
+            onClick={ () => editFood() }
+            imageName="checkmark_orange.svg"
+            imageSize={15}
+            disabled={!isEdited}
+          >
+            Save
+          </ButtonImage>
         </div>
       </div>
       <div style={styles.imageContainerStyle}>
         <FoodImage foodItem={foodItem} onClick={updateImage} />
       </div>
-      <EditFoodForm editFood={editFood} food={foodItem} />
+      <EditFoodForm foodItem={foodItem}  setFoodItem={setFoodItem} isEdited={isEdited} setIsEdited={setIsEdited}/>
 
       {/* Dialog */}
       {dialogOpen && (

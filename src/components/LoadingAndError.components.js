@@ -11,7 +11,12 @@ const placeholderStyle = {
   margin: '10px',
 };
 
-const LoadingAndError = (isLoading, isError) => {
+const LoadingAndError = ({
+  isLoading, 
+  isError, 
+  placeholder = "general_error.png"
+}) => {
+ 
   if (isLoading) {
     return (
       <div style={placeholderStyle}>
@@ -23,8 +28,7 @@ const LoadingAndError = (isLoading, isError) => {
   if (isError) {
     return (
       <div style={placeholderStyle}>
-        //
-        <Image imageName="general_error.png" width="200" height="250" />
+        <Image imageName={placeholder} width="200" height="250" />
       </div>
     );
   }

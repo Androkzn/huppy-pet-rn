@@ -54,8 +54,9 @@ const NewFoodForm = ({
 
   // Responsible for disable/enable add food buttons
   const isValidForm=() => {
+    console.log("isValidForm foodItem", foodItem)
     // New food must have name, calories and at least one macros that is more than 0
-    const isValid = foodItem.name.length > 2 && foodItem.calories > 0 && (foodItem.protein > 0 || foodItem.fat > 0 || foodItem.carb > 0)
+    const isValid = foodItem !== undefined && foodItem?.name.length > 2 && foodItem?.calories > 0 && (foodItem?.protein > 0 || foodItem?.fat > 0 || foodItem?.carb > 0)
     setIsValid(isValid)
   }
   

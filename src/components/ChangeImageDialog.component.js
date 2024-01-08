@@ -7,16 +7,19 @@ import { Image } from './Image.components';
 import { Cropper, RectangleStencil } from 'react-mobile-cropper';
 import 'react-mobile-cropper/dist/style.css';
 import Spiner from './Spinner.components';
-import axios from 'axios';
 import '../components/styles/styles.css';
+import { uploadImage, deleteImage, getImageUrl } from '../hooks/query.hooks';
 
-const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
+const ChangeImageDialog = ({ 
+  foodItem, 
+  onClose, 
+  setFoodItem 
+}) => {
   const [imageSelected, setImageSelected] = useState(null);
-  const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const cropperRef = useRef(null);
   let croppedImage = null;
-
- console.log('foodItem', foodItem)
+  const destination = "food"
+  const key = `${foodItem.userId}/${foodItem?._id}`
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -60,72 +63,15 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
     saveImage(croppedImage || imageSelected);
   };
 
-  const compressImage = async (
-    file,
-    { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }
-  ) => {
-    // Get as image data
-    const imageBitmap = await createImageBitmap(file);
-
-    // Calculate new dimensions while maintaining the aspect ratio
-    let newWidth, newHeight;
-    if (imageBitmap.width > imageBitmap.height) {
-      newWidth = maxWidth;
-      newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
-    } else {
-      newHeight = maxHeight;
-      newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
-    }
-
-    // Draw to canvas with new dimensions
-    const canvas = document.createElement('canvas');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
-
-    // Turn into Blob
-    return await new Promise((resolve) =>
-      canvas.toBlob(resolve, type, quality)
-    );
-  };
-
-  // Function to fetch avatar data when component mounts
-  const fetchImage = async () => {
-    if (foodItem?.userId && foodItem?._id)
-      try {
-        const type = 'url';
-        const avatarResult = await axios.get(
-          `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`
-        );
-        const url = avatarResult.data;
-        return;
-      } catch (error) {
-        console.log('Error fetching avatar:', error);
-      }
-  };
-
   // Handles dialog submission
   const saveImage = async (file) => {
     if (file) {
       try {
-        const compressedFile = await compressImage(file, {
-          type: 'image/jpeg',
-        });
-        // Create a new FormData object
-        const data = new FormData();
-        // Append the compressed file as a Blob
-        data.append('image', compressedFile);
-        // Append other form data fields
-        data.append('name', foodItem._id);
-        data.append('destination', `food/${foodItem.userId}`);
-        // Use Axios to send the FormData to the server
-        const result = await axios.post(
-          `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}`,
-          data
-        );
-        setFoodItem({ ...foodItem, image: new Date().toISOString() });
-        await fetchImage();
+        const isUploaded = await uploadImage(file,destination, key )
+        if (isUploaded) {
+          await setFoodItem({ ...foodItem, image: new Date().toISOString() });
+        }
+
       } catch (error) {
         console.log('Error uploading file:', error);
       }
@@ -134,15 +80,13 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
   };
 
   // Handles dialog submission
-  const deleteImage = async () => {
-    const destination = 'food';
-    // const avatarResult = await axios.delete(`${backendEndpoint}/avatar/${profile?._id}?destination=${destination}`);
+  const deleteFoodImage = async () => {
     try {
-      const avatarResult = await axios.delete(
-        `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?destination=${destination}`
-      );
-      setFoodItem({ ...foodItem, image: new Date().toISOString() });
-      onClose();
+      const isDeleted = await deleteImage(destination, key)
+        if (isDeleted) {
+          setFoodItem({ ...foodItem, image:"" });
+          onClose();
+        }
     } catch (error) {
       console.log('Error deleting image:', error);
     }
@@ -151,12 +95,12 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
   useEffect(() => {
     // Function to fetch avatar data when component mounts
     convertUrlToImageFile();
-    fetchImage();
+    //fetchImage();
   }, []);
 
   const convertUrlToImageFile = async () => {
     // Fetch the image from the URL and convert it to a file
-    const url = await getImageUrl();
+    const url = await getUrl();
     if (url) {
       try {
         const response = await fetch(url);
@@ -170,17 +114,13 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
   };
 
   // Function to fetch avatar data when the component mounts
-  const getImageUrl = async () => {
+  const getUrl = async () => {
     if (!foodItem.userId || !foodItem._id) return;
     try {
-      const type = 'url';
-      const result = await axios.get(
-        `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`
-      );
-      const data = result.data;
+      const data = await getImageUrl(destination, key)
       return data;
     } catch (error) {
-      console.log('Error fetching image:', error);
+      console.log('Error fetching image url:', error);
       return null;
     }
   };
@@ -255,7 +195,7 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
               variant="iconButton"
               imageName="delete_orange.svg"
               imageSize={30}
-              onClick={deleteImage}
+              onClick={deleteFoodImage}
             />
           )}
         </div>

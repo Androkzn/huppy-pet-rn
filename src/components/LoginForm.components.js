@@ -37,6 +37,7 @@ function LoginForm({ onSubmit, loginCredentials }) {
         <LoginTextInput
           id="username"
           placeholder="Username"
+          autoComplete="username"
           value={form.username}
           onChange={(e) => {
             handleChange(e);
@@ -48,6 +49,7 @@ function LoginForm({ onSubmit, loginCredentials }) {
         <LoginTextInput
           id="password"
           placeholder="Password"
+          autoComplete="current-password"
           isPassword={true}
           value={form.password}
           onChange={handleChange}

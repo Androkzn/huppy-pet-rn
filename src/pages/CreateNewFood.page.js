@@ -12,6 +12,7 @@ import AddImageDialog from '../components/AddImageDialog.component';
 import { useAddFoodTemplate } from '../hooks/query.hooks';
 import CustomAlert from '../components/CustomAlert.component';
 import * as Enums from '../helpers/Enums.helper'
+import axios from 'axios';
 
 const CreateNewFood = () => {
   const { user, setCurrentPage } = useContext(DataContext);
@@ -27,6 +28,7 @@ const CreateNewFood = () => {
   const [ message, setMessage] = useState('')
   const [ alertType, setAlertType] = useState('error')
   const [ state, setState] = useState(null)
+  const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
 
   // Navigation
   const navigateTo = async (link, state = {}) => {
@@ -65,7 +67,7 @@ const CreateNewFood = () => {
     _id: '',
     userId: user.id,
     name: '',
-    image: new Date().toISOString(),
+    image: '',
     type: 'food',
     units: 'gram',
     categoryType: 'meat',
@@ -106,9 +108,10 @@ const CreateNewFood = () => {
       },
       {
         onSuccess: (data) => {
+          const templateId = data?.templateId;
+          foodItem._id = templateId;
+          setFoodItem({ ...foodItem, "_id": templateId });
           if (name === 'createAndAddFood') {
-            const templateId = data?.templateId;
-            foodItem._id = templateId;
             const state = { mealId, foodItem } 
             setState(state)
           }
@@ -116,6 +119,7 @@ const CreateNewFood = () => {
             "Food template created", 
             Enums.AlertType.SUCCESS
           )
+          saveImage(image, templateId)
         },
         onError: (error) => {
           handleMutation(
@@ -147,6 +151,59 @@ const CreateNewFood = () => {
   //Callback func that opens image dialog
   const updateImage = async () => {
     openDialog('image');
+  };
+
+  const compressImage = async (
+    file,
+    { quality = 0.2, type = 'image/jpeg', maxWidth = 1000, maxHeight = 1000 }
+  ) => {
+    // Get as image data
+    const imageBitmap = await createImageBitmap(file);
+
+    // Calculate new dimensions while maintaining the aspect ratio
+    let newWidth, newHeight;
+    if (imageBitmap.width > imageBitmap.height) {
+      newWidth = maxWidth;
+      newHeight = (maxWidth / imageBitmap.width) * imageBitmap.height;
+    } else {
+      newHeight = maxHeight;
+      newWidth = (maxHeight / imageBitmap.height) * imageBitmap.width;
+    }
+
+    // Draw to canvas with new dimensions
+    const canvas = document.createElement('canvas');
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imageBitmap, 0, 0, newWidth, newHeight);
+
+    // Turn into Blob
+    return await new Promise((resolve) =>
+      canvas.toBlob(resolve, type, quality)
+    );
+  };
+
+  // Handles dialog submission
+  const saveImage = async (file, templateId) => {
+    if (file) {
+      try {
+        const compressedFile = await compressImage(file, {
+          type: 'image/jpeg',
+        });
+        // Create a new FormData object
+        const data = new FormData();
+        // Append the compressed file as a Blob
+        data.append('image', compressedFile);
+        
+        // Use Axios to send the FormData to the server
+        const result = await axios.post(
+          `${backendEndpoint}/food/${foodItem.userId}/${templateId}`,
+          data
+        );
+      } catch (error) {
+        console.log('Error uploading file:', error);
+      }
+    }
   };
 
   return (

@@ -17,23 +17,22 @@ const FoodImage = ({
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const type = 'url';
   const url = `${backendEndpoint}/food/${foodItem?.userId}/${foodItem?._id}?type=${type}`;
+
   const {
     data: image,
     isLoading: isImageLoading,
     isError: isImageError,
   } = useFetchImage(url, foodItem?.image);
 
+  const placeholder =  isEditing ? 'add_food_placeholder_orange.png' : 'food_placeholder.png'
+
   return (
     <div onClick={onClick}>
-      {(isImageLoading || isImageError) && foodItem?._id !== '' ? (
-        <LoadingAndError isLoading={isImageLoading} isError={isImageError} />
+      {(isImageLoading || isImageError) && (foodItem?._id !== '' && foodItem?.image !== '') ? (
+        <LoadingAndError isLoading={isImageLoading} isError={isImageError}/>
       ) : (
         <ImageCircle
-          imageName={
-            isEditing
-              ? 'add_food_placeholder_orange.png'
-              : 'food_placeholder.png'
-          }
+          imageName={placeholder}
           width={width}
           height={width}
           imageDataUrl={imageDataUrl ? imageDataUrl : image}

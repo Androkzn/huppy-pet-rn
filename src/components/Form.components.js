@@ -1024,6 +1024,7 @@ const LoginTextInput = ({
   placeholder,
   borderColor,
   isPassword = false,
+  autoComplete 
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState(initialValue);
@@ -1077,6 +1078,7 @@ const LoginTextInput = ({
         name={name}
         value={inputValue}
         onChange={handleInputChange}
+        autoComplete={autoComplete}
       />
       {isPassword && inputValue.trim() !== '' && (
         <ButtonImage

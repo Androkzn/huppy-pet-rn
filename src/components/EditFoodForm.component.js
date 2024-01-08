@@ -10,10 +10,9 @@ import {
   TitleButtonsAndTextField,
 } from './Form.components';
 import * as enums from '../helpers/Enums.helper';
-import FoodImage from '../components/FoodImage.components';
 
-const EditFoodForm = ({ editFood, food }) => {
-  const [foodItem, setFoodItem] = useState(food);
+const EditFoodForm = ({ foodItem, setFoodItem }) => {
+ 
 
   const onTextInputChange = (event) => {
     const { name, value } = event.target;
@@ -124,17 +123,6 @@ const EditFoodForm = ({ editFood, food }) => {
           title={'Add Description'}
           onChange={onTextInputChange}
         />
-        <div css={styles.addFoodButtonContainerStyle}>
-          <ButtonText
-            as="button"
-            name="createFood"
-            width="200px"
-            variant="rectangleTextButton"
-            onClick={(e) => editFood(e)}
-          >
-            {'Save changes'} Food
-          </ButtonText>
-        </div>
       </form>
     </div>
   );

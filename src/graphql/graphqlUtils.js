@@ -855,7 +855,7 @@ const addFood = async ({
   selectedDate,
 }) => {
   if (!user || user._accessToken === null) {
-    return false;
+    return Promise.reject(new Error('User or access token is missing.'));
   }
 
   const accessToken = user._accessToken;
@@ -911,7 +911,7 @@ const addFood = async ({
     } else {
       console.error('Error add food', error);
     }
-    return false;
+    return Promise.reject(error);
   }
 };
 

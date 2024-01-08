@@ -11,6 +11,7 @@ import {
 } from './Form.components';
 import * as enums from '../helpers/Enums.helper';
 import FoodImage from '../components/FoodImage.components';
+import { useState, useEffect } from 'react';
 
 const NewFoodForm = ({
   addNewFood,
@@ -19,6 +20,8 @@ const NewFoodForm = ({
   updateImage,
   image,
 }) => {
+  const [isValid, setIsValid] =useState(false)
+
   const onInputChange = (name, value) => {
     if (name === 'type' && value !== 'food') {
       setFoodItem({
@@ -43,6 +46,18 @@ const NewFoodForm = ({
       bonesRatio: newBonesRatio,
     });
   };
+
+  // Check validation when foodItem is changed
+  useEffect(() => {
+    isValidForm()
+  }, [foodItem]);
+
+  // Responsible for disable/enable add food buttons
+  const isValidForm=() => {
+    // New food must have name, calories and at least one macros that is more than 0
+    const isValid = foodItem.name.length > 2 && foodItem.calories > 0 && (foodItem.protein > 0 || foodItem.fat > 0 || foodItem.carb > 0)
+    setIsValid(isValid)
+  }
 
   return (
     <div css={styles.addFoodFormStyle}>
@@ -147,6 +162,7 @@ const NewFoodForm = ({
             width="130px"
             variant="rectangleTextButton"
             onClick={(e) => addNewFood(e)}
+            disabled={!isValid}
           >
             {'Create'} Food
           </ButtonText>
@@ -156,6 +172,7 @@ const NewFoodForm = ({
             width="200px"
             variant="rectangleTextButton"
             onClick={(e) => addNewFood(e)}
+            disabled={!isValid}
           >
             {'Create'} and Add to Meal
           </ButtonText>

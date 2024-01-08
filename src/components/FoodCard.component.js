@@ -94,7 +94,15 @@ function FoodCard({ food, openAddFoodPage }) {
                       variant="iconButton"
                       imageName="delete_green.svg"
                       imageSize={25}
-                      onClick={() => deleteFoodTemplateHandler()}
+                      onClick={() => 
+                        {const shouldDelete = window.confirm(
+                          'Are you sure you want to delete food template? This action cannot be undone.'
+                        );
+                    
+                        // Check if the user confirmed the action
+                        if (shouldDelete) deleteFoodTemplateHandler()
+                        }
+                      }
                     />
                   </div>
                 )}
@@ -105,7 +113,15 @@ function FoodCard({ food, openAddFoodPage }) {
                       variant="iconButton"
                       imageName="edit_orange.svg"
                       imageSize={20}
-                      onClick={() => editFoodHandler()}
+                      onClick={() => 
+                        {const shouldOpen = window.confirm(
+                          'Open edit food template page?'
+                        );
+                    
+                        // Check if the user confirmed the action
+                        if (shouldOpen) editFoodHandler()
+                        }
+                      }
                     />
                   </div>
                 )}

@@ -165,9 +165,9 @@ const Profile = () => {
     getProfile();
   }, [currentProfile]);
 
-  const navigateTo = async () => {
-    setCurrentPage('');
-    navigate('/');
+  const navigateTo = async (link) => {
+    setCurrentPage(link);
+    navigate('/'+ link);
   };
 
   return (
@@ -176,7 +176,7 @@ const Profile = () => {
         <div style={styles.backButtonContainerStyle}>
           <ButtonImage
             variant="backButton"
-            onClick={navigateTo}
+            onClick={navigateTo('')}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >

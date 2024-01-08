@@ -4,15 +4,16 @@ import { useContext, useState, useEffect } from 'react';
 import PageContainer from '../components/PageContainer.component';
 import { DataContext } from '../contexts/data.context';
 import NewFoodForm from '../components/NewFoodForm.component';
-import { ButtonLink } from '../components/Buttons.components';
+import { ButtonImage } from '../components/Buttons.components';
 import * as styles from '../components/styles/CreateNewFood.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from '../components/AddImageDialog.component';
 import { useAddFoodTemplate } from '../hooks/query.hooks';
+import CustomAlert from '../components/CustomAlert.component';
 
 const CreateNewFood = () => {
-  const { user, setCurrentPage, currentDate } = useContext(DataContext);
+  const { user, setCurrentPage } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);
@@ -20,6 +21,17 @@ const CreateNewFood = () => {
   const [dialogType, setDialogType] = useState('addActivity');
   const [image, setImage] = useState(null);
   const { mutate: addFoodTemplateMutation } = useAddFoodTemplate();
+  // States for displaying alert
+  const [ showAlert, setShowAlert] = useState(false);
+  const [ message, setMessage] = useState('')
+  const [ alertType, setAlertType] = useState('error')
+  const [ state, setState] = useState(null)
+
+  // Navigation
+  const navigateTo = async (link, state = {}) => {
+    setCurrentPage(link);
+    navigate('/' + link, { state });
+  };
 
   // Opens dialog
   const openDialog = (dialogTypeNew) => {
@@ -52,7 +64,7 @@ const CreateNewFood = () => {
   const [foodItem, setFoodItem] = useState({
     _id: '',
     name: '',
-    image: null,
+    image: new Date().toISOString(),
     type: 'food',
     units: 'gram',
     categoryType: 'meat',
@@ -93,19 +105,43 @@ const CreateNewFood = () => {
       },
       {
         onSuccess: (data) => {
-          const templateId = data?.templateId;
           if (name === 'createAndAddFood') {
+            const templateId = data?.templateId;
             foodItem._id = templateId;
-            setCurrentPage('addFood');
-            navigate('/addFood', { state: { mealId, foodItem } });
-          } else {
-            setCurrentPage('searchFood');
-            navigate('/searchFood');
+            const state = { mealId, foodItem } 
+            setState(state)
           }
+          handleMutation(
+            "Food template created", 
+            "success"
+          )
+        },
+        onError: (error) => {
+          handleMutation(
+            "Food template cannot be added. Try again.", 
+            "error"
+          )
         },
       }
     );
   };
+
+  useEffect(() => {
+    if (!showAlert && alertType === "success") {
+      if (state) { 
+        navigateTo('addFood', state)
+      } else {
+        navigateTo('searchFood')
+      }
+    }
+  }, [showAlert]);
+
+  // Function to open alert
+  const handleMutation=(messageNew, alertTypeNew) => {
+    setMessage(messageNew)
+    setAlertType(alertTypeNew)
+    setShowAlert(true)
+  }
 
   //Callback func that opens image dialog
   const updateImage = async () => {
@@ -114,20 +150,23 @@ const CreateNewFood = () => {
 
   return (
     <PageContainer>
+      {/* Top navigation container */}
       <div style={styles.fixedTopContainer}>
         <div style={styles.topButtonsContainerStyle}>
-          <ButtonLink
+          <ButtonImage
             variant="backButton"
-            to="/searchFood"
+            onClick={ () => navigateTo('searchFood') }
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
             Back
-          </ButtonLink>
+          </ButtonImage>
           <div css={styles.addFoodTitleStyle}>{'Add New Food'}</div>
           <div style={{ width: '100px' }}></div>
         </div>
       </div>
+
+      {/* Add new food form */}
       <NewFoodForm
         addNewFood={addNewFood}
         foodItem={foodItem}
@@ -135,12 +174,16 @@ const CreateNewFood = () => {
         updateImage={updateImage}
         image={image}
       />
+
       {/* Dialog */}
       {dialogOpen && (
         <Dialog open={dialogOpen}>
           <DialogContent>{getDialogContent()}</DialogContent>
         </Dialog>
       )}
+
+      {/* Alert */}
+      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
     </PageContainer>
   );
 };

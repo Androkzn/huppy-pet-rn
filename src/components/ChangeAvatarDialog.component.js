@@ -12,7 +12,6 @@ import '../components/styles/styles.css';
 
 const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   const [imageSelected, setImageSelected] = useState(null);
-  // const [croppedImage, setCroppedImage] = useState(null);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const cropperRef = useRef(null);
   let croppedImage = null;

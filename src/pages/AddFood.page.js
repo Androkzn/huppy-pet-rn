@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PageContainer from '../components/PageContainer.component';
 import { DataContext } from '../contexts/data.context';
 import AddFoodForm from '../components/AddFoodForm.component';
-import { ButtonLink } from '../components/Buttons.components';
+import { ButtonImage } from '../components/Buttons.components';
 import * as styles from '../components/styles/AddFood.css';
 import { useAddFood } from '../hooks/query.hooks';
+import CustomAlert from '../components/CustomAlert.component';
 
 const AddFood = ({}) => {
   const { user, currentProfile, setCurrentPage, currentDate } =
@@ -16,7 +17,18 @@ const AddFood = ({}) => {
   const navigate = useNavigate();
   let foodItem = location.state?.foodItem;
   let mealId = location.state?.mealId;
+
   const { mutate: addFoodMutation } = useAddFood();
+  // States for displaying alert
+  const [ showAlert, setShowAlert] = useState(false);
+  const [ message, setMessage] = useState('')
+  const [ alertType, setAlertType] = useState('error')
+  
+  // Navigation
+  const navigateTo = async (link, state = {}) => {
+    setCurrentPage(link);
+    navigate('/' + link, { state });
+  };
 
   // addFood function is responsible for adding the Food
   const addFoodToMeal = (units, weight) => {
@@ -29,11 +41,35 @@ const AddFood = ({}) => {
       currentProfile: currentProfile,
       foodItem: foodItem,
       selectedDate: currentDate,
-    });
+    },
+    {
+      onSuccess: (data) => {
+        handleMutation(
+          " added to your meal.", 
+          "success"
+        )
+      },
+      onError: (error) => {
+        handleMutation(
+          " cannot be added. Try again.", 
+          "error"
+        )
+      },
+    },
+  )};
 
-    setCurrentPage('searchFood');
-    navigate('/searchFood');
-  };
+  const handleMutation=(messageNew, alertTypeNew) => {
+    setMessage(foodItem.name + messageNew)
+    setAlertType(alertTypeNew)
+    setShowAlert(true)
+  }
+
+  useEffect(() => {
+    if (!showAlert && alertType === "success") {
+      navigateTo('searchFood')  
+    }
+  }, [showAlert]);
+
 
   useEffect(() => {
     // Fetch or set foodItem if it's not available
@@ -45,21 +81,27 @@ const AddFood = ({}) => {
 
   return (
     <PageContainer>
+      {/* Top navigation container */}
       <div style={styles.fixedTopContainer}>
         <div style={styles.topButtonsContainerStyle}>
-          <ButtonLink
+          <ButtonImage
             variant="backButton"
-            to="/searchFood"
+            onClick={ () => navigateTo('searchFood') }
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
             Back
-          </ButtonLink>
+          </ButtonImage>
           <div css={styles.addFoodTitleStyle}>{'Add to meal'}</div>
           <div style={{ width: '100px' }}></div>
         </div>
       </div>
+
+      {/* Add food form */}
       <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} />
+      
+      {/* Alert */}
+      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
     </PageContainer>
   );
 };

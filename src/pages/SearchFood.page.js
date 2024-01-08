@@ -19,6 +19,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { useSearchForFood } from '../hooks/query.hooks';
 import LoadingAndError from '../components/LoadingAndError.components';
+import CustomAlert from '../components/CustomAlert.component';
 
 const SearchFood = () => {
   // Function to load state from localStorage
@@ -60,21 +61,42 @@ const SearchFood = () => {
   const [searchFilterQuery, setSearchFilterQuery] = useState(
     loadState('searchFilterQuery', '')
   );
+  // States for displaying alert
+  const [showAlert, setShowAlert] = useState(false);
+  const [ message, setMessage] = useState('')
+  const [ alertType, setAlertType] = useState('success')
+  
+  // Navigation
+  const navigateTo = async (link, state = {}) => {
+    setCurrentPage(link);
+    navigate('/' + link, { state });
+  };
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
+    const state = { mealId, foodItem}
     setCurrentPage('addFood');
-    navigate('/addFood', { state: { mealId, foodItem } });
+    navigateTo('addFood', state)
+    //navigate('/addFood', { state: { mealId, foodItem} });
   };
 
+  // Function to open the NewFoodPage when a a button is clicked
   const openCeateNewFoodPage = () => {
+    const state = { mealId}
     setCurrentPage('createNewFood');
-    navigate('/createNewFood', { state: { mealId } });
+    navigateTo('createNewFood', state)
+   //navigate('/createNewFood', { state: { mealId } });
   };
-
+  // Function to clear search field
   const handleClearSearch = () => {
     setSearchQuery('');
   };
+  // Function to open alert
+  const handleAlert = (messageNew, alertTypeNew) => {
+      setMessage(messageNew)
+      setAlertType(alertTypeNew)
+      setShowAlert(true)
+  }
 
   // Function to save state to localStorage whenever it changes
   useEffect(() => {
@@ -105,17 +127,14 @@ const SearchFood = () => {
     return (
       <div style={styles.buttonsContainerStyle}>
         <div style={styles.buttonsStyle}>
-          <ButtonLink
+          <ButtonImage
             variant="backButton"
-            to="/"
+            onClick={() => navigateTo('')}
             imageName="arrow_left_green.svg"
             imageSize={20}
-            onClick={() => {
-              setCurrentPage('');
-            }}
           >
             Back
-          </ButtonLink>
+          </ButtonImage>
           <ButtonImage
             variant="addButton"
             width="150px"
@@ -310,6 +329,7 @@ const SearchFood = () => {
         searchResult={searchResult}
         openAddFoodPage={openAddFoodPage}
       />
+      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
     </PageContainer>
   );
 };

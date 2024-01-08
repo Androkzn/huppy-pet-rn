@@ -126,8 +126,6 @@ const EditFood = () => {
     openDialog('image');
   };
 
-  console.log('foodItem image:', foodItem.image);
-
   // Updates food
   const getFood = async () => {
     if (food) {

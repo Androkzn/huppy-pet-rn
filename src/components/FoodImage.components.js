@@ -28,7 +28,7 @@ const FoodImage = ({
 
   return (
     <div onClick={onClick}>
-      {(isImageLoading || isImageError) && (foodItem?._id !== '' && foodItem?.image !== '') ? (
+      {(isImageLoading) && (foodItem?._id !== '' && foodItem?.image !== '') ? (
         <LoadingAndError isLoading={isImageLoading} isError={isImageError}/>
       ) : (
         <ImageCircle

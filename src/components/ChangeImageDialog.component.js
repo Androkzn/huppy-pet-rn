@@ -126,6 +126,7 @@ const ChangeImageDialog = ({
   };
 
   const isImageEmpty = () => {
+    console.log('foodItem.image:', foodItem.image);
     return foodItem.image === null || foodItem.image === '';
   };
 
@@ -163,27 +164,24 @@ const ChangeImageDialog = ({
             />
           ) : (
             <div>
-              {isImageEmpty() ? (
                 <Image
                   imageName={'food_placeholder.png'}
                   width="150px"
                   height="150px"
                   imageDataUrl={null}
                 />
-              ) : (
-                // Display loading spinner while waiting for fetchUser or login
-                <Spiner />
-              )}
             </div>
           )}
         </div>
         <div style={styles.dialogButtonContainerStyle(isImageEmpty())}>
-          <ButtonImage
-            variant="iconButton"
-            imageName="save_green.svg"
-            imageSize={25}
-            onClick={handleSave}
-          />
+          {imageSelected && (
+            <ButtonImage
+              variant="iconButton"
+              imageName="save_green.svg"
+              imageSize={25}
+              onClick={handleSave}
+            />
+          )}
           <ButtonImage
             variant="iconButton"
             imageName="add_green.svg"

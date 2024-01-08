@@ -15,7 +15,7 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   const cropperRef = useRef(null);
   let croppedImage = null;
   const destination = "avatar"
-  const key = `${profile?._id}?type="url"`
+  const key = `${profile?._id}`
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -176,14 +176,16 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
           )}
         </div>
         <div style={styles.dialogButtonContainerStyle(isAvatarEmpty())}>
-          <ButtonImage
-            variant="iconButton"
-            imageName="save_green.svg"
-            imageSize={25}
-            onClick={() => {
-              handleSave();
-            }}
-          />
+          {imageSelected && (
+            <ButtonImage
+              variant="iconButton"
+              imageName="save_green.svg"
+              imageSize={25}
+              onClick={() => {
+                handleSave();
+              }}
+            />
+          )}
           <ButtonImage
             variant="iconButton"
             imageName="add_green.svg"

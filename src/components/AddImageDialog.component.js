@@ -162,12 +162,14 @@ const AddImageDialog = ({
           )}
         </div>
         <div style={styles.dialogButtonContainerStyle(isImageEmpty())}>
-          <ButtonImage
-            variant="iconButton"
-            imageName="save_green.svg"
-            imageSize={25}
-            onClick={handleSave}
-          />
+          {!isImageEmpty() && (
+            <ButtonImage
+              variant="iconButton"
+              imageName="save_green.svg"
+              imageSize={25}
+              onClick={handleSave}
+            />
+          )}
           <ButtonImage
             variant="iconButton"
             imageName="add_green.svg"

@@ -27,6 +27,7 @@ const useFetchImage = (url, key) => {
     {
       enabled: !!key || key === '',
       refetchOnMount: false,
+      retry: 1, // Set the number of retries
       onSuccess: (data) => {
 
       },

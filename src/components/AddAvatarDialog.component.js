@@ -146,12 +146,14 @@ const AddAvatarDialog = ({ onSave, onDelete, onClose, avatar, profileId }) => {
           )}
         </div>
         <div style={styles.dialogButtonContainerStyle(isAvatarEmpty())}>
-          <ButtonImage
-            variant="iconButton"
-            imageName="save_green.svg"
-            imageSize={25}
-            onClick={handleSave}
-          />
+          {!isAvatarEmpty() && (
+            <ButtonImage
+              variant="iconButton"
+              imageName="save_green.svg"
+              imageSize={25}
+              onClick={handleSave}
+            />
+          )}
           <ButtonImage
             variant="iconButton"
             imageName="add_green.svg"

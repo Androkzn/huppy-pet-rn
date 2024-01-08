@@ -17,7 +17,7 @@ const useFetchImage = (url, key) => {
         console.error('FETCHED avatarResult.data:', avatarResult.data);
         return avatarResult.data;
       } catch (error) {
-        console.log('Error fetching avatar:', error);
+        console.log('Error fetching image:', error);
         throw error; // Rethrow the error to let React Query handle it
       }
     },

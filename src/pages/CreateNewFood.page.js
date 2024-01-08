@@ -63,6 +63,7 @@ const CreateNewFood = () => {
   // Some prefilled form state
   const [foodItem, setFoodItem] = useState({
     _id: '',
+    userId: user.id,
     name: '',
     image: new Date().toISOString(),
     type: 'food',

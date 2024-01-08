@@ -5,7 +5,6 @@ import { DataContext } from '../contexts/data.context';
 import * as colors from './styles/Colors';
 import { Image } from './Image.components';
 import Avatar from './Avatar.components';
-import { ImageCircle } from './ImageCircle.components';
 import { ReactComponent as ChangeProfileIcon } from './assets/change_profile.svg';
 import { ReactComponent as AddProfileIcon } from './assets/add_profile.svg';
 import * as styles from '../components/styles/NavBar.css';

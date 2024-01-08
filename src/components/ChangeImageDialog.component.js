@@ -16,6 +16,8 @@ const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
   const cropperRef = useRef(null);
   let croppedImage = null;
 
+ console.log('foodItem', foodItem)
+
   // Updates the cropped image in the state
   const onChange = (cropper) => {
     if (cropperRef.current) {

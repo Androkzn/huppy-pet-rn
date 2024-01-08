@@ -176,7 +176,7 @@ const Profile = () => {
         <div style={styles.backButtonContainerStyle}>
           <ButtonImage
             variant="backButton"
-            onClick={navigateTo('')}
+            onClick={() => navigateTo('')}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >

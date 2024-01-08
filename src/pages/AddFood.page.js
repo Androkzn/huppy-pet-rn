@@ -9,6 +9,7 @@ import { ButtonImage } from '../components/Buttons.components';
 import * as styles from '../components/styles/AddFood.css';
 import { useAddFood } from '../hooks/query.hooks';
 import CustomAlert from '../components/CustomAlert.component';
+import * as Enums from '../helpers/Enums.helper'
 
 const AddFood = ({}) => {
   const { user, currentProfile, setCurrentPage, currentDate } =
@@ -22,7 +23,7 @@ const AddFood = ({}) => {
   // States for displaying alert
   const [ showAlert, setShowAlert] = useState(false);
   const [ message, setMessage] = useState('')
-  const [ alertType, setAlertType] = useState('error')
+  const [ alertType, setAlertType] = useState(Enums.AlertType.ERROR)
   
   // Navigation
   const navigateTo = async (link, state = {}) => {
@@ -46,13 +47,13 @@ const AddFood = ({}) => {
       onSuccess: (data) => {
         handleMutation(
           " added to your meal.", 
-          "success"
+          Enums.AlertType.SUCCESS
         )
       },
       onError: (error) => {
         handleMutation(
-          " cannot be added. Try again.", 
-          "error"
+          " cannot be added . Try again.", 
+          Enums.AlertType.ERROR
         )
       },
     },
@@ -65,7 +66,7 @@ const AddFood = ({}) => {
   }
 
   useEffect(() => {
-    if (!showAlert && alertType === "success") {
+    if (!showAlert && alertType === Enums.AlertType.SUCCESS) {
       navigateTo('searchFood')  
     }
   }, [showAlert]);

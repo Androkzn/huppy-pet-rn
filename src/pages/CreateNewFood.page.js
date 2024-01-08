@@ -11,6 +11,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from '../components/AddImageDialog.component';
 import { useAddFoodTemplate } from '../hooks/query.hooks';
 import CustomAlert from '../components/CustomAlert.component';
+import * as Enums from '../helpers/Enums.helper'
 
 const CreateNewFood = () => {
   const { user, setCurrentPage } = useContext(DataContext);
@@ -56,8 +57,7 @@ const CreateNewFood = () => {
           setImage={setImage}
         />
       );
-    } else if (dialogType === 'error') {
-    }
+    } 
   };
 
   // Some prefilled form state
@@ -113,13 +113,13 @@ const CreateNewFood = () => {
           }
           handleMutation(
             "Food template created", 
-            "success"
+            Enums.AlertType.SUCCESS
           )
         },
         onError: (error) => {
           handleMutation(
             "Food template cannot be added. Try again.", 
-            "error"
+            Enums.AlertType.ERROR
           )
         },
       }
@@ -127,7 +127,7 @@ const CreateNewFood = () => {
   };
 
   useEffect(() => {
-    if (!showAlert && alertType === "success") {
+    if (!showAlert && alertType === Enums.AlertType.SUCCESS) {
       if (state) { 
         navigateTo('addFood', state)
       } else {

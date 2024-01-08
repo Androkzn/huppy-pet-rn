@@ -64,7 +64,7 @@ const SearchFood = () => {
   // States for displaying alert
   const [showAlert, setShowAlert] = useState(false);
   const [ message, setMessage] = useState('')
-  const [ alertType, setAlertType] = useState('success')
+  const [ alertType, setAlertType] = useState(Enums.AlertType.SUCCESS)
   
   // Navigation
   const navigateTo = async (link, state = {}) => {

@@ -9,7 +9,7 @@ import { ButtonImage } from './Buttons.components';
 import Slide from '@mui/material/Slide';
 import * as Enums from '../helpers/Enums.helper'
 
-const CustomAlert = ({ message, type, style, show, setApperance, timeout = "3000" }) => {
+const CustomAlert = ({ message, type, style, show, setApperance, timeout = 3000 }) => {
   const [open, setOpen] = useState(show);
   const vertical= 'top'
   const horizontal= 'center'
@@ -23,7 +23,6 @@ const CustomAlert = ({ message, type, style, show, setApperance, timeout = "3000
   // Update the 'open' state when the 'show' prop changes
   useEffect(() => {
     setOpen(show);
-    console.log("CustomAlert message" , message)
   }, [show]);
 
   const handleClose = (event, reason) => {

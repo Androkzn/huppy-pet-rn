@@ -17,6 +17,7 @@ import Profile from './pages/Profile.page';
 import Register from './pages/Register.page';
 import Training from './pages/Training.page';
 import More from './pages/More.page';
+import NotFound from './pages/NotFound.page'
 import {ScrollToTop}  from './helpers/Navigation.helper';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
                     <Route path="/training" element={<Training />} />
                     <Route path="/more" element={<More />} />
                   </Route>
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </LocalErrorBoundary>
             </div>

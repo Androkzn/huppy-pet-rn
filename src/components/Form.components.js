@@ -27,6 +27,7 @@ const reducer = (state, action) => {
     case 'SET_COUNT':
       return { count: action.payload };
     default:
+      console.error("Unsuported action type: ", action.type)
       return state;
   }
 };

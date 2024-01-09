@@ -1,3 +1,4 @@
+import { LocalErrorBoundary, GlobalErrorBoundary } from './helpers/Errors.helper';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar.component';
 import TabBar from './components/TabBar.component';
@@ -17,41 +18,42 @@ import Register from './pages/Register.page';
 import Training from './pages/Training.page';
 import More from './pages/More.page';
 import {ScrollToTop}  from './helpers/Navigation.helper';
-import { ErrorBoundary } from 'react-error-boundary';
 
 function App() {
   return (
     <BrowserRouter>
-      <ScrollToTop/>
-      <DataProvider>
-        <div
-          style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
-        >
-          <NavBar />
-          <div style={{ flex: 1, overflowY: 'visible' }}>
-            <ErrorBoundary>
-              <Routes scrollRestoration="manual">
-                <Route path="/login" element={<Login />} />
-                <Route path="/forgot" element={<ForgotPassword />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/register" element={<Register />} />
-                <Route element={<PrivateRoute />}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/createNewFood" element={<CreateNewFood />} />
-                  <Route path="/searchFood" element={<SearchFood />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/addFood" element={<AddFood />} />
-                  <Route path="/editFood" element={<EditFood />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/training" element={<Training />} />
-                  <Route path="/more" element={<More />} />
-                </Route>
-              </Routes>
-            </ErrorBoundary>
+      <GlobalErrorBoundary> 
+        <ScrollToTop/>
+        <DataProvider>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
+          >
+            <NavBar />
+            <div style={{ flex: 1, overflowY: 'visible' }}>
+              <LocalErrorBoundary>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/forgot" element={<ForgotPassword />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route element={<PrivateRoute />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/createNewFood" element={<CreateNewFood />} />
+                    <Route path="/searchFood" element={<SearchFood />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/addFood" element={<AddFood />} />
+                    <Route path="/editFood" element={<EditFood />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/training" element={<Training />} />
+                    <Route path="/more" element={<More />} />
+                  </Route>
+                </Routes>
+              </LocalErrorBoundary>
+            </div>
+            <TabBar />
           </div>
-          <TabBar />
-        </div>
-      </DataProvider>
+        </DataProvider>
+      </GlobalErrorBoundary> 
     </BrowserRouter>
   );
 }

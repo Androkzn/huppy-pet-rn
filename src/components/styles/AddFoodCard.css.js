@@ -41,7 +41,7 @@ const nameContainerStyle = {
 const buttonsContainerStyle = {
   ...rowStyle,
   justifyContent: 'end',
-  width: '20%',
+  width: '10%',
 };
 
 const foodIconContainerStyle = {
@@ -62,6 +62,7 @@ const textCaloriesStyle = {
   fontSize: '13px',
   color: colors.orange,
   padding: '5px',
+  minWidth: "65px"
 };
 
 const iconContainerStyle = {

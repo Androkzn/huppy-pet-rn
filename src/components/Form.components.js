@@ -3,7 +3,7 @@
 import styled from '@emotion/styled';
 import { styled as styledMaterial } from '@mui/material/styles';
 import * as colors from './styles/Colors';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useReducer } from 'react';
 import Switch from '@mui/material/Switch';
 import { ButtonText, ButtonImage } from './Buttons.components';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
@@ -14,6 +14,23 @@ import Slider from '@mui/material/Slider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from '../helpers/Constants.helper';
 import * as enums from '../helpers/Enums.helper';
+
+// SHARED FUNCTIONS
+
+// Responsible for increment/decrement/set value in forms with "+" and "-" buttons
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: (state.count + action.step) > (action.maxValue || 9999) ? (action.maxValue || 9999) : state.count + action.step };
+    case 'DECREMENT':
+      return { count: (state.count - action.step) > 0  ? state.count - action.step :  (action.minValue || 0) };
+    case 'SET_COUNT':
+      return { count: action.payload };
+    default:
+      return state;
+  }
+};
+
 
 const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
@@ -359,23 +376,22 @@ const TitleButtonsAndTextField = ({
   onChangeButton,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  const [count, setCount] = useState(initialValue || 0);
+  const [state, dispatch] = useReducer(reducer, { count: initialValue || 0 });
+  const step = 1
 
   const decrementCount = () => {
-    if (count > 0) {
-      setCount(count - 1);
-      onChangeButton(name, count - 1);
-    }
+      dispatch({ type: 'DECREMENT', step: step });
+      onChangeButton(name, state.count - step);
   };
 
   const incrementCount = () => {
-    setCount(count + 1);
-    onChangeButton(name, count + 1);
+    dispatch({ type: 'INCREMENT', step: step });
+    onChangeButton(name, state.count + step);
   };
 
   const onChangeTextField = (e) => {
     const newValue = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
-    setCount(newValue);
+    dispatch({ type: 'SET_COUNT', payload: newValue });
     onChange(newValue);
   };
 
@@ -423,7 +439,7 @@ const TitleButtonsAndTextField = ({
           name={name}
           variant="circleTextButton"
           onClick={() => decrementCount()}
-          disabled={count === 0}
+          disabled={state.count === 0}
         >
           -
         </ButtonText>
@@ -431,7 +447,7 @@ const TitleButtonsAndTextField = ({
           id={id}
           style={textFieldStyle}
           type="number"
-          value={count.toString()}
+          value={state.count.toString()}
           onChange={(e) => {
             onChangeTextField(e);
           }}
@@ -519,23 +535,23 @@ const ButtonsAndTextField = ({
   onChangeButton,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
-  const [count, setCount] = useState(initialValue || 0);
+  const [state, dispatch] = useReducer(reducer, { count: initialValue || 0 });
+  const step = 10
+  const minValue = 1 
+
   const decrementCount = () => {
-    if (count > 0) {
-      const newCount = Math.max(count - 10, 1);
-      setCount(newCount);
-      onChangeButton(name, newCount);
-    }
+      dispatch({ type: 'DECREMENT', step: step, minValue: minValue });
+      onChangeButton(name, Math.max(state.count - step, minValue));
   };
 
   const incrementCount = () => {
-    setCount(count + 10);
-    onChangeButton(name, count + 10);
+    dispatch({ type: 'INCREMENT', step: step });
+    onChangeButton(name, state.count + step);
   };
 
   const onChangeTextField = (e) => {
     const newValue = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
-    setCount(newValue);
+    dispatch({ type: 'SET_COUNT', payload: newValue });
     onChange(newValue);
   };
 
@@ -567,6 +583,8 @@ const ButtonsAndTextField = ({
     fontFamily: "'Balsamiq Sans', sans-serif",
   };
 
+  console.log("state.count", state.count)
+
   return (
     <div style={containerStyle}>
       <div style={controlGroup}>
@@ -575,7 +593,7 @@ const ButtonsAndTextField = ({
           name={name}
           variant="circleTextButton"
           onClick={() => decrementCount()}
-          disabled={count === 0}
+          disabled={state.count === 0}
         >
           -
         </ButtonText>
@@ -583,7 +601,7 @@ const ButtonsAndTextField = ({
           id={id}
           style={textFieldStyle}
           type="number"
-          value={count.toString()}
+          value={state.count.toString()}
           onChange={(e) => {
             onChangeTextField(e);
           }}
@@ -670,24 +688,21 @@ const TitleToggleAndButtons = ({
   toggleValue,
   dailyRatioValue,
   onChangeDailyRatioValue,
-  maxCountValue = 3000,
+  maxCountValue = 9999,
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [checked, setChecked] = useState(toggleValue);
-  const [count, setCount] = useState(dailyRatioValue);
+  const [state, dispatch] = useReducer(reducer, { count: dailyRatioValue || 0 });
+  const step = 1
 
   const decrementCount = () => {
-    if (count > 0) {
-      setCount(count - 1);
-      onChangeDailyRatioValue(count - 1);
-    }
+    dispatch({ type: 'DECREMENT', step: step });
+    onChangeDailyRatioValue(state.count - step);
   };
 
   const incrementCount = () => {
-    if (count < maxCountValue) {
-      setCount(count + 1);
-      onChangeDailyRatioValue(count + 1);
-    }
+    dispatch({ type: 'INCREMENT', step: step, maxValue: maxCountValue });
+    onChangeDailyRatioValue(state.count + step);
   };
 
   const handleToggleChange = (event) => {
@@ -698,10 +713,10 @@ const TitleToggleAndButtons = ({
   const handleTextFieldChange = (event) => {
     const newValue =
       event.target.value === '' ? 0 : parseInt(event.target.value, 10);
-    setCount(newValue <= maxCountValue ? newValue : maxCountValue);
-    onChangeDailyRatioValue(
-      newValue <= maxCountValue ? newValue : maxCountValue
-    );
+    const value = newValue <= maxCountValue ? newValue : maxCountValue
+
+    dispatch({ type: 'SET_COUNT', payload: value });  
+    onChangeDailyRatioValue(value);
   };
 
   const containerStyle = {
@@ -765,7 +780,7 @@ const TitleToggleAndButtons = ({
               name={name}
               variant="circleTextButton"
               onClick={decrementCount}
-              disabled={count === 0}
+              disabled={state.count === 0}
             >
               -
             </ButtonText>
@@ -773,7 +788,7 @@ const TitleToggleAndButtons = ({
               id={id}
               style={textFieldStyle}
               type="number"
-              value={count.toString()}
+              value={state.count.toString()}
               onChange={(e) => {
                 handleTextFieldChange(e);
               }}
@@ -787,7 +802,7 @@ const TitleToggleAndButtons = ({
               name={name}
               variant="circleTextButton"
               onClick={incrementCount}
-              disabled={count === maxCountValue}
+              disabled={state.count === maxCountValue}
             >
               +
             </ButtonText>

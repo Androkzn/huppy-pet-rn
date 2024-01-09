@@ -32,6 +32,7 @@
     "react": "^17.0.2",
     "react-chartjs-2": "^4.3.1",
     "react-dom": "^17.0.2",
+    "react-error-boundary": "^4.0.12",
     "react-google-charts": "^4.0.1",
     "react-icons": "^4.4.0",
     "react-image-crop": "^11.0.1",
@@ -44,11 +45,11 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1",
+    "@tanstack/react-query-devtools": "4.36.1",
     "@types/node": "^20.10.6",
     "babel-preset-react-app": "^10.0.1",
     "prettier": "3.1.1",
-    "tailwindcss": "^3.4.0",
-    "@tanstack/react-query-devtools": "4.36.1"
+    "tailwindcss": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

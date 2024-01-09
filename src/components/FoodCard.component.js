@@ -45,7 +45,7 @@ function FoodCard({ food, openAddFoodPage }) {
     <div style={style.mainConteinerStyle}>
       <Swipe
         height={isSmallScreen ? 50 : 50}
-        disabled={food.isCustom || !isSmallScreen}
+        disabled={!food.isCustom || !isSmallScreen}
         onLeftSwipe={deleteFoodTemplateHandler}
         leftSwipeComponent={
           <Image imageName={`delete_white.svg`} width="25" height="25" />

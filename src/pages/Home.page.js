@@ -59,10 +59,8 @@ const Home = () => {
   }, [currentDate, currentProfile]);
 
   function getTotalCategoryWeight(category) {
-    const currentP = undefined
-    console.log("currentProfile", currentP.name)
     return Math.floor(
-      (currentP?.dailyPortion * category?.percentage) / 100
+      (currentProfile?.dailyPortion * category?.percentage) / 100
     );
   }
 

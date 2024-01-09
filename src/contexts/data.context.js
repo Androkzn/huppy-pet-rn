@@ -7,8 +7,7 @@ import { useGetProfiles, useGetCurrentProfile } from '../hooks/query.hooks';
 // Creating a Realm App Instance
 const app = new App(process.env.REACT_APP_APP_ID);
 
-// Creating a user context to manage and access all the user related functions
-// across different component and pages.
+// Creating a data context to manage and access data across different component and pages.
 export const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {

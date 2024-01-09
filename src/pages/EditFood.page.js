@@ -98,6 +98,7 @@ const EditFood = () => {
     weight: food?.weight,
     userId: food?.userId,
     image: food?.image,
+    isCustom: food?.isCustom
   });
 
   const [foodItem, setFoodItem] = useState(food || cachedFood);

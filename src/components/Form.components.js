@@ -423,6 +423,7 @@ const TitleButtonsAndTextField = ({
           name={name}
           variant="circleTextButton"
           onClick={() => decrementCount()}
+          disabled={count === 0}
         >
           -
         </ButtonText>
@@ -574,6 +575,7 @@ const ButtonsAndTextField = ({
           name={name}
           variant="circleTextButton"
           onClick={() => decrementCount()}
+          disabled={count === 0}
         >
           -
         </ButtonText>

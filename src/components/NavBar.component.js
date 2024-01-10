@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { AppBar, Box, Toolbar, Drawer } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useMatch } from 'react-router-dom';
 import { DataContext } from '../contexts/data.context';
 import * as colors from './styles/Colors';
 import { Image } from './Image.components';
@@ -12,6 +12,13 @@ import CustomDatePickerWithArrows from '../components/CustomDatePickerWithArrows
 import { useUpdateProfile } from '../hooks/query.hooks';
 
 const NavBar = () => {
+  const matchLogin = useMatch('login')
+  const matchForgot = useMatch('forgot')
+  const matchSignup = useMatch('signup')
+  const matchRegister = useMatch('register')
+  const matchTraining = useMatch('training')
+  const matchHome = useMatch('')
+ 
   const [show, setShow] = useState(false);
   const {
     user,
@@ -20,7 +27,6 @@ const NavBar = () => {
     isSmallScreen,
     currentDate,
     setCurrentDate,
-    currentPage,
   } = useContext(DataContext);
 
   const toggleDrawer = (event) => {
@@ -51,12 +57,13 @@ const NavBar = () => {
   };
 
   const HeaderLogo = () => {
+
     const isDisplayed =
       !isSmallScreen ||
-      currentPage === 'login' ||
-      currentPage === 'forgot' ||
-      currentPage === 'signup' ||
-      currentPage === 'register';
+      matchLogin ||
+      matchForgot||
+      matchRegister ||
+      matchSignup;
     return (
       <div>
         {isDisplayed && (
@@ -77,7 +84,7 @@ const NavBar = () => {
           }}
         >
           {isSmallScreen &&
-            (currentPage === '' || currentPage === 'training') && (
+            (matchHome || matchTraining) && (
               <DatePicker />
             )}
           <HeaderLogo />
@@ -116,7 +123,7 @@ const NavBar = () => {
 
 const TemporaryDrawer = (props) => {
   const { show, toggleDrawer, currentProfile, profiles } = props;
-  const { user, setCurrentPage } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
   const { mutate: updateProfileMutation } = useUpdateProfile();
 
@@ -140,11 +147,6 @@ const TemporaryDrawer = (props) => {
   };
 
   const navigateTo = (link) => {
-    if (link === 'register' && currentProfile) {
-      setCurrentPage('addProfile');
-    } else {
-      setCurrentPage(link);
-    }
     navigate('/' + link);
   };
 

@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 const More = () => {
   const navigate = useNavigate();
-  const { logOutUser, setCurrentPage, deleteUserAccount } =
+  const { logOutUser, deleteUserAccount } =
     useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addTraining');
@@ -75,7 +75,6 @@ const More = () => {
   };
 
   const navigateTo = (link) => {
-    setCurrentPage(link);
     navigate('/' + link);
   };
 

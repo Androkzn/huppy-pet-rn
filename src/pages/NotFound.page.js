@@ -28,10 +28,7 @@ const buttonContainerrStyle = {
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const { setCurrentPage } = useContext(DataContext);
-
   const navigatedTo = (link) => {
-    setCurrentPage(link);
     navigate('/' + link);
   };
 

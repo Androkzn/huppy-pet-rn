@@ -12,7 +12,7 @@ import CustomAlert from '../components/CustomAlert.component';
 import * as Enums from '../helpers/Enums.helper'
 
 const AddFood = ({}) => {
-  const { user, currentProfile, setCurrentPage, currentDate } =
+  const { user, currentProfile, currentDate } =
     useContext(DataContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,7 +27,6 @@ const AddFood = ({}) => {
   
   // Navigation
   const navigateTo = async (link, state = {}) => {
-    setCurrentPage(link);
     navigate('/' + link, { state });
   };
 

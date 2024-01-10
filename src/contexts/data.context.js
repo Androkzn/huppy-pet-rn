@@ -13,7 +13,6 @@ export const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentPage, setCurrentPage] = useState('home');
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const isMediumlScreen = useMediaQuery(Constants.mediumlScreen);
   const isLargeScreen = useMediaQuery(Constants.largeScreen);
@@ -149,8 +148,6 @@ export const DataProvider = ({ children }) => {
         isSmallScreen,
         isMediumlScreen,
         isLargeScreen,
-        currentPage,
-        setCurrentPage,
         setUser,
         fetchUser,
         emailPasswordLogin,

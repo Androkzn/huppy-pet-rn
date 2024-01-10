@@ -31,7 +31,7 @@ import { useAddFood } from '../hooks/query.hooks';
 import { ButtonsAndTextField } from '../components/Form.components.js';
 
 function MealCard({ meal, index, mealsCount }) {
-  const { user, currentProfile, isSmallScreen, currentDate, setCurrentPage } =
+  const { user, currentProfile, isSmallScreen, currentDate } =
     useContext(DataContext);
   const navigate = useNavigate();
   const mealId = meal._id;
@@ -211,7 +211,6 @@ function MealCard({ meal, index, mealsCount }) {
   };
 
   const openAddFoodPage = () => {
-    setCurrentPage('searchFood');
     navigate('/searchFood', { state: { mealId, selectedDate } });
   };
 

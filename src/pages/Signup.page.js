@@ -137,7 +137,7 @@ function SignUpForm({ onSubmit, buttonText, registrationCredentials }) {
 }
 
 const Signup = () => {
-  const { setCurrentPage, logOutUser } = useContext(DataContext);
+  const { logOutUser } = useContext(DataContext);
   const navigate = useNavigate();
 
   // Retrieve saved credentials from localStorage
@@ -145,11 +145,9 @@ const Signup = () => {
     localStorage.getItem('registrationCredentials')
   ) || { email: '', password: '' };
 
-  // As explained in the Login page.
   const { emailPasswordSignup } = useContext(DataContext);
 
   const navigatedTo = async (link) => {
-    setCurrentPage(link);
     if (link === 'login') {
       await logOutUser();
       navigate('/' + link);
@@ -158,7 +156,6 @@ const Signup = () => {
     }
   };
 
-  // As explained in the Login page.
   const onSubmit = async (formData) => {
     try {
       const user = await emailPasswordSignup(formData.email, formData.password);

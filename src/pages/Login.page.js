@@ -19,7 +19,6 @@ const Login = () => {
     user,
     fetchUser,
     emailPasswordLogin,
-    setCurrentPage,
     currentProfile,
     profiles,
   } = useContext(DataContext);
@@ -41,7 +40,6 @@ const Login = () => {
   };
 
   useEffect(() => {
-    setCurrentPage('login');
     loadUser();
   }, []);
 
@@ -57,7 +55,6 @@ const Login = () => {
 
   useEffect(() => {
     if (profiles && profiles?.length === 0) {
-      setCurrentPage('register');
       navigatedTo('register');
       setLoading(false);
     }
@@ -75,7 +72,6 @@ const Login = () => {
   };
 
   const navigatedTo = (link) => {
-    setCurrentPage(link);
     navigate('/' + link);
   };
 

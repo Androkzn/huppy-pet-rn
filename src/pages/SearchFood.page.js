@@ -35,7 +35,7 @@ const SearchFood = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setCurrentPage, isSmallScreen, currentDate } =
+  const { user, isSmallScreen, currentDate } =
     useContext(DataContext);
 
   const [mealId, setMealId] = useState(
@@ -68,14 +68,12 @@ const SearchFood = () => {
   
   // Navigation
   const navigateTo = async (link, state = {}) => {
-    setCurrentPage(link);
     navigate('/' + link, { state });
   };
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
     const state = { mealId, foodItem}
-    setCurrentPage('addFood');
     navigateTo('addFood', state)
     //navigate('/addFood', { state: { mealId, foodItem} });
   };
@@ -83,7 +81,6 @@ const SearchFood = () => {
   // Function to open the NewFoodPage when a a button is clicked
   const openCeateNewFoodPage = () => {
     const state = { mealId}
-    setCurrentPage('createNewFood');
     navigateTo('createNewFood', state)
    //navigate('/createNewFood', { state: { mealId } });
   };

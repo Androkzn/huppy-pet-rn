@@ -14,7 +14,7 @@ import { useAddProfile, useAddFoodCategory } from '../hooks/query.hooks';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { user, setCurrentPage, currentProfile, profiles, logOutUser } =
+  const { user, currentProfile, profiles, logOutUser } =
     useContext(DataContext);
   const [isFormCompleated, setIsFormCompleated] = useState(false);
   const [customFoodCategories, setCustomFoodCategories] = useState([]);
@@ -106,7 +106,6 @@ const Register = () => {
   const navigateTo = async () => {
     // If a user logged in and alredy created profile =>  navigate to home page
     if (currentProfile) {
-      setCurrentPage('');
       navigate('/');
     } else {
       const registrationCredentials = JSON.parse(
@@ -118,12 +117,10 @@ const Register = () => {
         registrationCredentials.email !== '',
         registrationCredentials.password !== '')
       ) {
-        setCurrentPage('signup');
         navigate('/signup');
         // If a succesfully user logged in but profile is not created during registration=>  navigate to signup page
       } else {
         await logOutUser();
-        setCurrentPage('login');
         navigate('/login');
       }
     }
@@ -174,7 +171,6 @@ const Register = () => {
 
           //Clear temporarly saved credentials from local storage
           localStorage.removeItem('registrationCredentials');
-          setCurrentPage('home');
           navigate('/');
         },
       }

@@ -14,7 +14,7 @@ import '../components/styles/styles.css';
 
 // Function is responsible for updating the training
 function FoodCard({ food, openAddFoodPage }) {
-  const { user, setCurrentPage, isSmallScreen } = useContext(DataContext);
+  const { user,isSmallScreen } = useContext(DataContext);
   const navigate = useNavigate();
   const { mutate: deleteFoodTemplateMutation } = useDeleteFoodTemplate();
  
@@ -37,7 +37,6 @@ function FoodCard({ food, openAddFoodPage }) {
   };
 
   const editFoodHandler = async () => {
-    setCurrentPage('editFood');
     navigate('/editFood', { state: { food } });
   };
 

@@ -26,7 +26,7 @@ import {
   useAddActivity,
 } from '../hooks/query.hooks';
 import LoadingAndError from '../components/LoadingAndError.components';
-
+ 
 const Home = () => {
   // Function to load state from localStorage
   const loadState = (key, defaultValue) => {

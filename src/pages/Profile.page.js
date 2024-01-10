@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, currentProfile, setCurrentPage } = useContext(DataContext);
+  const { user, currentProfile } = useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addActivity');
 
@@ -166,7 +166,6 @@ const Profile = () => {
   }, [currentProfile]);
 
   const navigateTo = async (link) => {
-    setCurrentPage(link);
     navigate('/'+ link);
   };
 

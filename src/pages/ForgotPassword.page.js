@@ -8,7 +8,6 @@ import { LoginTextInput, FormGroup } from '../components/Form.components';
 import { ButtonText } from '../components/Buttons.components';
 
 function ForgotPasswordForm({ onSubmit }) {
-  const { setCurrentPage } = useContext(DataContext);
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -26,10 +25,6 @@ function ForgotPasswordForm({ onSubmit }) {
   function handleSubmit() {
     onSubmit(form);
   }
-
-  useEffect(() => {
-    setCurrentPage('signup');
-  }, []);
 
   return (
     <form css={styles.formStyle}>
@@ -78,12 +73,10 @@ function ForgotPasswordForm({ onSubmit }) {
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { emailPasswordSignup, setCurrentPage } = useContext(DataContext);
+  const { emailPasswordSignup } = useContext(DataContext);
 
   const redirectToLoginPage = () => {
-    const redirectTo = location.search.replace('?redirectTo=', '');
-    setCurrentPage('login');
-    navigate(redirectTo ? redirectTo : '/');
+    navigate('/');
   };
 
   const onSubmit = async (formData) => {
@@ -97,10 +90,6 @@ const ForgotPassword = () => {
     }
   };
 
-  const navigatedTo = (link) => {
-    setCurrentPage(link);
-  };
-
   return (
     <div css={styles.containerStyle}>
       <div css={styles.loginConteinerStyle}>
@@ -109,7 +98,7 @@ const ForgotPassword = () => {
         </div>
         <ForgotPasswordForm onSubmit={onSubmit} />
         <div>
-          <p onClick={navigatedTo('login')}>
+          <p>
             Have an account already?{' '}
             <Link to="/login" css={styles.linkSignup}>
               Login

@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { DataContext } from '../contexts/data.context';
 import { Tabs, Tab } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useMatch } from 'react-router-dom';
 import * as colors from './styles/Colors';
 import { ReactComponent as DiaryIcon } from './assets/diary_tab_icon_unselected.svg';
 import { ReactComponent as DashboardIcon } from './assets/dashboard_tab_icon_unselected.svg';
@@ -9,9 +9,10 @@ import { ReactComponent as TrainingIcon } from './assets/training_tab_icon_unsel
 import { ReactComponent as MoreIcon } from './assets/more_tab_icon_unselected.svg';
 
 const TabBar = () => {
-  const { user, currentProfile, isSmallScreen, currentPage, setCurrentPage } =
+  const { user, currentProfile, isSmallScreen } =
     useContext(DataContext);
   const navigate = useNavigate();
+ 
   const [value, setValue] = useState(0);
   const fontSize = isSmallScreen ? '11px' : '15px';
   const imageSize = isSmallScreen ? '25px' : '50px';
@@ -20,16 +21,12 @@ const TabBar = () => {
     setValue(newValue);
     switch (newValue) {
       case 0:
-        setCurrentPage('');
         return navigate('/');
       case 1:
-        setCurrentPage('dashboard');
         return navigate('/dashboard');
       case 2:
-        setCurrentPage('training');
         return navigate('/training');
       case 3:
-        setCurrentPage('more');
         return navigate('/more');
     }
   };
@@ -40,40 +37,18 @@ const TabBar = () => {
     switch (id) {
       case 0:
         setValue(0);
-        setCurrentPage('');
         return navigate('/');
       case 1:
         setValue(1);
-        setCurrentPage('dashboard');
         return navigate('/dashboard');
       case 2:
         setValue(3);
-        setCurrentPage('training');
         return navigate('/training');
       case 3:
         setValue(3);
-        setCurrentPage('more');
         return navigate('/more');
     }
   };
-
-  const handleSetCurrentPage = () => {
-    switch (currentPage) {
-      case '':
-        return setValue(0);
-      case 'dashboard':
-        return setValue(1);
-      case 'training':
-        return setValue(2);
-      case 'more':
-        return setValue(3);
-    }
-  };
-
-  useEffect(() => {
-    // Function to fetch avatar data when component mounts
-    handleSetCurrentPage();
-  }, [currentPage]);
 
   const isLoggedIn = () => {
     return user && currentProfile;

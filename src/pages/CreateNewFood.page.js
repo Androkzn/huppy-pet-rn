@@ -15,7 +15,7 @@ import * as Enums from '../helpers/Enums.helper'
 import axios from 'axios';
 
 const CreateNewFood = () => {
-  const { user, setCurrentPage } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [mealId, setMealId] = useState(location.state?.mealId);
@@ -32,7 +32,6 @@ const CreateNewFood = () => {
 
   // Navigation
   const navigateTo = async (link, state = {}) => {
-    setCurrentPage(link);
     navigate('/' + link, { state });
   };
 

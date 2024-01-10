@@ -13,7 +13,7 @@ import { useUpdateFoodTemplate } from '../hooks/query.hooks';
 import FoodImage from '../components/FoodImage.components';
 
 const EditFood = () => {
-  const { user, setCurrentPage } = useContext(DataContext);
+  const { user } = useContext(DataContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { food } = location.state || {};
@@ -55,10 +55,8 @@ const EditFood = () => {
       if (userResponse) {
         editFood()
       } 
-      setCurrentPage(link);
       navigate('/' + link, { state });
     } else {
-      setCurrentPage(link);
       navigate('/' + link, { state });
     }
   };
@@ -115,7 +113,6 @@ const EditFood = () => {
       },
       {
         onSuccess: () => {
-          setCurrentPage('searchFood');
           navigate('/searchFood');
         },
       }

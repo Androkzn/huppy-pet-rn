@@ -6,7 +6,7 @@ import { ButtonImage } from './Buttons.components';
 import { ImageCircle } from './ImageCircle.components';
 import { Cropper, CircleStencil } from 'react-mobile-cropper';
 import Spiner from './Spinner.components';
-import axios from 'axios';
+import { getImageUrl } from '../hooks/query.hooks';
 
 const AddImageDialog = ({
   foodItem,
@@ -16,7 +16,6 @@ const AddImageDialog = ({
   setImage,
 }) => {
   const [imageSelected, setImageSelected] = useState(image);
-  const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
   const cropperRef = useRef(null);
   let croppedImage = null;
 
@@ -88,23 +87,6 @@ const AddImageDialog = ({
       } catch (error) {
         console.error('Error converting stream to blob:', error);
       }
-    }
-  };
-
-  // Function to fetch avatar data when the component mounts
-  const getImageUrl = async () => {
-    const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
-    try {
-      const type = 'url';
-      const result = await axios.get(
-        `${backendEndpoint}/food/${foodItem.userId}/${foodItem?._id}?type=${type}`
-      );
-      const data = result.data;
-
-      return data;
-    } catch (error) {
-      console.log('Error fetching image:', error);
-      return null;
     }
   };
 

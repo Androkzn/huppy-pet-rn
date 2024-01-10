@@ -22,7 +22,6 @@ import Divider from '@mui/material/Divider';
 import { styled, alpha } from '@mui/material/styles';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { BottomSheet } from 'react-spring-bottom-sheet';
-import 'react-spring-bottom-sheet/dist/style.css';
 import CustomDatePickerWithArrows from '../components/CustomDatePickerWithArrows.component';
 import CustomDatePicker from '../components/CustomDatePicker.component';
 import LoadingAndError from '../components/LoadingAndError.components';

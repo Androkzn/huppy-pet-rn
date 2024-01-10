@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { DataContext } from '../contexts/data.context';
 import { Image } from './Image.components';
 import { useDeleteTraining, useUpdateTraining } from '../hooks/query.hooks';
@@ -10,7 +10,6 @@ import * as Enums from '../helpers/Enums.helper';
 import CustomCheckbox from './Checkbox.component';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import * as Constants from '../helpers/Constants.helper';
-import '../components/styles/styles.css';
 import * as colors from '../components/styles/Colors';
 import Swipe from '../components/Swipe.components.tsx';
 

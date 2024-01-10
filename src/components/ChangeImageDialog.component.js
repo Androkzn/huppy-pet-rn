@@ -5,9 +5,6 @@ import * as styles from './styles/Profile.css';
 import { ButtonImage } from './Buttons.components';
 import { Image } from './Image.components';
 import { Cropper, RectangleStencil } from 'react-mobile-cropper';
-import 'react-mobile-cropper/dist/style.css';
-import Spiner from './Spinner.components';
-import '../components/styles/styles.css';
 import { uploadImage, deleteImage, getImageUrl } from '../hooks/query.hooks';
 
 const ChangeImageDialog = ({ 

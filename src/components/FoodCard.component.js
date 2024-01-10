@@ -8,8 +8,7 @@ import * as style from './styles/AddFoodCard.css';
 import { ButtonImage } from './Buttons.components';
 import Swipe from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
-import { useDeleteFoodTemplate, deleteImage } from '../hooks/query.hooks';
-import '../components/styles/styles.css';
+import { useDeleteFoodTemplate } from '../hooks/query.hooks';
 
 
 // Function is responsible for updating the training

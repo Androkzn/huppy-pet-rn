@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
 
-import { useState } from 'react';
-import { ButtonText } from './Buttons.components';
 import * as styles from '../components/styles/CreateNewFood.css';
 import {
   TitleAndDropdown,

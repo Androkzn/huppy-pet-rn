@@ -12,13 +12,13 @@ import CustomDatePickerWithArrows from '../components/CustomDatePickerWithArrows
 import { useUpdateProfile } from '../hooks/query.hooks';
 
 const NavBar = () => {
-  const matchLogin = useMatch('login')
-  const matchForgot = useMatch('forgot')
-  const matchSignup = useMatch('signup')
-  const matchRegister = useMatch('register')
-  const matchTraining = useMatch('training')
-  const matchHome = useMatch('')
- 
+  const matchLogin = useMatch('login');
+  const matchForgot = useMatch('forgot');
+  const matchSignup = useMatch('signup');
+  const matchRegister = useMatch('register');
+  const matchTraining = useMatch('training');
+  const matchHome = useMatch('');
+
   const [show, setShow] = useState(false);
   const {
     user,
@@ -57,11 +57,10 @@ const NavBar = () => {
   };
 
   const HeaderLogo = () => {
-
     const isDisplayed =
       !isSmallScreen ||
       matchLogin ||
-      matchForgot||
+      matchForgot ||
       matchRegister ||
       matchSignup;
     return (
@@ -75,7 +74,10 @@ const NavBar = () => {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ backgroundColor: colors.brown, height: "60px" }}>
+      <AppBar
+        position="fixed"
+        sx={{ backgroundColor: colors.brown, height: '60px' }}
+      >
         <Toolbar
           style={{
             display: 'flex',
@@ -83,10 +85,7 @@ const NavBar = () => {
             width: 'auto',
           }}
         >
-          {isSmallScreen &&
-            (matchHome || matchTraining) && (
-              <DatePicker />
-            )}
+          {isSmallScreen && (matchHome || matchTraining) && <DatePicker />}
           <HeaderLogo />
           {isLoggedIn() && (
             <div style={styles.userInfoContainerStyle(isSmallScreen)}>

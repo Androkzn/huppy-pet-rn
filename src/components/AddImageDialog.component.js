@@ -64,10 +64,10 @@ const AddImageDialog = ({
   };
 
   // Handles dialog submission
-  const deleteImage =  () => {
-      setFoodItem({ ...foodItem, image:'' });
-      setImage(null);
-      onClose();
+  const deleteImage = () => {
+    setFoodItem({ ...foodItem, image: '' });
+    setImage(null);
+    onClose();
   };
 
   useEffect(() => {

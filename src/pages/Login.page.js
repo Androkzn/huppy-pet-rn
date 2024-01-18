@@ -10,18 +10,20 @@ import Spiner from '../components/Spinner.components';
 const Login = () => {
   const navigate = useNavigate();
 
+  console.log(
+    '(min-width: 850px) and (max-width: 1249px)',
+    window.matchMedia('(min-width: 850px) and (max-width: 1249px)')
+  );
+  console.log(' (max-width: 849px)', window.matchMedia('(max-width: 849px)'));
+  console.log(' (min-width: 1250px)', window.matchMedia('(min-width: 1250px)'));
+
   // Retrieve saved credentials from localStorage
   const loginCredentials = JSON.parse(
     localStorage.getItem('loginCredentials')
   ) || { username: '', password: '' };
 
-  const {
-    user,
-    fetchUser,
-    emailPasswordLogin,
-    currentProfile,
-    profiles,
-  } = useContext(DataContext);
+  const { user, fetchUser, emailPasswordLogin, currentProfile, profiles } =
+    useContext(DataContext);
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {

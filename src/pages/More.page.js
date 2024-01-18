@@ -15,8 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 const More = () => {
   const navigate = useNavigate();
-  const { logOutUser, deleteUserAccount } =
-    useContext(DataContext);
+  const { logOutUser, deleteUserAccount } = useContext(DataContext);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('addTraining');
 

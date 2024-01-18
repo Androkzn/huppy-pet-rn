@@ -3,7 +3,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataContext } from '../contexts/data.context';
-import * as styles from '../components/styles/Login.css'; 
+import * as styles from '../components/styles/Login.css';
 import Spiner from '../components/Spinner.components';
 import { Image } from '../components/Image.components';
 import { ButtonText } from '../components/Buttons.components';
@@ -16,7 +16,7 @@ const placeholderStyle = {
 };
 
 const containerStyle = {
- marginTop: 100,
+  marginTop: 100,
 };
 
 const buttonContainerrStyle = {
@@ -24,7 +24,7 @@ const buttonContainerrStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   marginTop: 15,
- };
+};
 
 const NotFound = () => {
   const navigate = useNavigate();
@@ -36,11 +36,11 @@ const NotFound = () => {
     <div style={containerStyle}>
       <div style={placeholderStyle}>
         <h2>Sorry... nothing here.</h2>
-        <Image imageName={"general_error.png"} width="270" height="170" />
+        <Image imageName={'general_error.png'} width="270" height="170" />
         <div style={buttonContainerrStyle}>
           <ButtonText
             variant="login"
-            onClick={() => navigatedTo("")}
+            onClick={() => navigatedTo('')}
             width={100}
           >
             Go home

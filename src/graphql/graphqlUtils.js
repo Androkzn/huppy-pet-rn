@@ -2035,7 +2035,7 @@ const updateFoodTemplate = async ({ user, foodItem }) => {
       protein: foodItem.protein,
       carb: foodItem.carb,
       isCustom: foodItem.isCustom,
-      userId: foodItem.isCustom ? userId : "000000000000000000000000",
+      userId: foodItem.isCustom ? userId : '000000000000000000000000',
     },
   };
 

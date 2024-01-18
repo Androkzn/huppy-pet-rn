@@ -10,30 +10,29 @@ import Swipe from './Swipe.components.tsx';
 import * as colors from '../components/styles/Colors';
 import { useDeleteFoodTemplate } from '../hooks/query.hooks';
 
-
 // Function is responsible for updating the training
 function FoodCard({ food, openAddFoodPage }) {
-  const { user,isSmallScreen } = useContext(DataContext);
+  const { user, isSmallScreen } = useContext(DataContext);
   const navigate = useNavigate();
   const { mutate: deleteFoodTemplateMutation } = useDeleteFoodTemplate();
- 
 
   const deleteFoodTemplateHandler = async () => {
-    deleteFoodTemplateMutation({
-      user: user,
-      _id: food._id,
-    }, {
-      onSuccess: (data) => {
-        const destination = "food"
-        const key = `${food.userId}/${food?._id}`
-        deleteImage(destination, key)
-    }
-   });
+    deleteFoodTemplateMutation(
+      {
+        user: user,
+        _id: food._id,
+      },
+      {
+        onSuccess: (data) => {
+          const destination = 'food';
+          const key = `${food.userId}/${food?._id}`;
+          deleteImage(destination, key);
+        },
+      }
+    );
   };
 
-  const deleteImage = async () => {
-    
-  };
+  const deleteImage = async () => {};
 
   const editFoodHandler = async () => {
     navigate('/editFood', { state: { food } });
@@ -104,15 +103,14 @@ function FoodCard({ food, openAddFoodPage }) {
                       variant="iconButton"
                       imageName="delete_green.svg"
                       imageSize={25}
-                      onClick={() => 
-                        {const shouldDelete = window.confirm(
+                      onClick={() => {
+                        const shouldDelete = window.confirm(
                           'Are you sure you want to delete food template? This action cannot be undone.'
                         );
-                    
+
                         // Check if the user confirmed the action
-                        if (shouldDelete) deleteFoodTemplateHandler()
-                        }
-                      }
+                        if (shouldDelete) deleteFoodTemplateHandler();
+                      }}
                     />
                   </div>
                 )}
@@ -123,15 +121,14 @@ function FoodCard({ food, openAddFoodPage }) {
                       variant="iconButton"
                       imageName="edit_orange.svg"
                       imageSize={20}
-                      onClick={() => 
-                        {const shouldOpen = window.confirm(
+                      onClick={() => {
+                        const shouldOpen = window.confirm(
                           'Open edit food template page?'
                         );
-                    
+
                         // Check if the user confirmed the action
-                        if (shouldOpen) editFoodHandler()
-                        }
-                      }
+                        if (shouldOpen) editFoodHandler();
+                      }}
                     />
                   </div>
                 )}

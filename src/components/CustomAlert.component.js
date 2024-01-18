@@ -7,18 +7,25 @@ import * as colors from './styles/Colors';
 import Snackbar from '@mui/material/Snackbar';
 import { ButtonImage } from './Buttons.components';
 import Slide from '@mui/material/Slide';
-import * as Enums from '../helpers/Enums.helper'
+import * as Enums from '../helpers/Enums.helper';
 
-const CustomAlert = ({ message, type, style, show, setApperance, timeout = 3000 }) => {
+const CustomAlert = ({
+  message,
+  type,
+  style,
+  show,
+  setApperance,
+  timeout = 3000,
+}) => {
   const [open, setOpen] = useState(show);
-  const vertical= 'top'
-  const horizontal= 'center'
+  const vertical = 'top';
+  const horizontal = 'center';
 
-  const background=() => {
-    if(type === Enums.AlertType.SUCCESS) return colors.lightGreen2
-    if(type === Enums.AlertType.ERROR) return colors.orange 
-    if(type === Enums.AlertType.INFO) return colors.gray 
-  }
+  const background = () => {
+    if (type === Enums.AlertType.SUCCESS) return colors.lightGreen2;
+    if (type === Enums.AlertType.ERROR) return colors.orange;
+    if (type === Enums.AlertType.INFO) return colors.gray;
+  };
 
   // Update the 'open' state when the 'show' prop changes
   useEffect(() => {
@@ -60,26 +67,24 @@ const CustomAlert = ({ message, type, style, show, setApperance, timeout = 3000 
 
   return (
     <ThemeProvider theme={theme}>
-      <Snackbar 
-       anchorOrigin={{ vertical, horizontal }}
-       open={open} 
-       autoHideDuration={timeout} 
-       onClose={handleClose}
-       TransitionComponent={ TransitionDown}
-      > 
-      {
-        <div css={defaultStyles}>
-          <div css={{margin: "0px 15px" }}>
-            {message}
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={timeout}
+        onClose={handleClose}
+        TransitionComponent={TransitionDown}
+      >
+        {
+          <div css={defaultStyles}>
+            <div css={{ margin: '0px 15px' }}>{message}</div>
+            <ButtonImage
+              variant="iconButton"
+              imageName="close_round_white.svg"
+              imageSize={30}
+              onClick={handleClose}
+            />
           </div>
-          <ButtonImage
-            variant="iconButton"
-            imageName="close_round_white.svg"
-            imageSize={30}
-            onClick={handleClose}
-          />
-        </div>
-      }
+        }
       </Snackbar>
     </ThemeProvider>
   );

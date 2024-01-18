@@ -1,13 +1,13 @@
-import {QueryCache} from '@tanstack/react-query'
+import { QueryCache } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
 
 async function client(
-  endpoint, method, 
-  {data, accessToken, headers: customHeaders, ...customConfig} = {},
+  endpoint,
+  method,
+  { data, accessToken, headers: customHeaders, ...customConfig } = {}
 ) {
- 
   const config = {
     method: method,
     body: data ? JSON.stringify(data) : undefined,
@@ -17,23 +17,25 @@ async function client(
       ...customHeaders,
     },
     ...customConfig,
-  }
+  };
 
-  return window.fetch(`${backendEndpoint}/${endpoint}`, config).then(async response => {
-    if (response.status === 401) {
-      QueryCache.clear()
-      //await logOutUser()
-      // refresh the page for them
-      window.location.assign(window.location)
-      return Promise.reject({message: 'Please re-authenticate.'})
-    }
-    const data = await response.json()
-    if (response.ok) {
-      return data
-    } else {
-      return Promise.reject(data)
-    }
-  })
+  return window
+    .fetch(`${backendEndpoint}/${endpoint}`, config)
+    .then(async (response) => {
+      if (response.status === 401) {
+        QueryCache.clear();
+        //await logOutUser()
+        // refresh the page for them
+        window.location.assign(window.location);
+        return Promise.reject({ message: 'Please re-authenticate.' });
+      }
+      const data = await response.json();
+      if (response.ok) {
+        return data;
+      } else {
+        return Promise.reject(data);
+      }
+    });
 }
 
 function useClient() {
@@ -41,9 +43,8 @@ function useClient() {
   const token = user?._accessToken;
   return useCallback(
     (endpoint, config) => client(endpoint, { ...config, token }),
-    [user],
+    [user]
   );
 }
 
-
-export {useClient}
+export { useClient };

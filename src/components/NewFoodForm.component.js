@@ -20,7 +20,7 @@ const NewFoodForm = ({
   updateImage,
   image,
 }) => {
-  const [isValid, setIsValid] =useState(false)
+  const [isValid, setIsValid] = useState(false);
 
   const onInputChange = (name, value) => {
     if (name === 'type' && value !== 'food') {
@@ -49,17 +49,21 @@ const NewFoodForm = ({
 
   // Check validation when foodItem is changed
   useEffect(() => {
-    isValidForm()
+    isValidForm();
   }, [foodItem]);
 
   // Responsible for disable/enable add food buttons
-  const isValidForm=() => {
-    console.log("isValidForm foodItem", foodItem)
+  const isValidForm = () => {
+    console.log('isValidForm foodItem', foodItem);
     // New food must have name, calories and at least one macros that is more than 0
-    const isValid = foodItem !== undefined && foodItem?.name.length > 2 && foodItem?.calories > 0 && (foodItem?.protein > 0 || foodItem?.fat > 0 || foodItem?.carb > 0)
-    setIsValid(isValid)
-  }
-  
+    const isValid =
+      foodItem !== undefined &&
+      foodItem?.name.length > 2 &&
+      foodItem?.calories > 0 &&
+      (foodItem?.protein > 0 || foodItem?.fat > 0 || foodItem?.carb > 0);
+    setIsValid(isValid);
+  };
+
   return (
     <div css={styles.addFoodFormStyle}>
       <form>
@@ -138,18 +142,20 @@ const NewFoodForm = ({
           />
         ))}
         {/* Show meat and boans ratio slider if Food category selected */}
-        {(foodItem.type === 'food' && (foodItem.categoryType === 'meat' || foodItem.categoryType === 'bones'))  && (
-          <TitleAndSlider
-            title={'Meat / Bones ratio'}
-            firstValueTitle={'Meat'}
-            secondValueTitle={'Bones'}
-            firstValue={foodItem?.meatRatio}
-            secondValue={foodItem?.bonesRatio}
-            onChange={(newMeatRatio, newBonesRatio) => {
-              onSliderChange(newMeatRatio, newBonesRatio);
-            }}
-          />
-        )}
+        {foodItem.type === 'food' &&
+          (foodItem.categoryType === 'meat' ||
+            foodItem.categoryType === 'bones') && (
+            <TitleAndSlider
+              title={'Meat / Bones ratio'}
+              firstValueTitle={'Meat'}
+              secondValueTitle={'Bones'}
+              firstValue={foodItem?.meatRatio}
+              secondValue={foodItem?.bonesRatio}
+              onChange={(newMeatRatio, newBonesRatio) => {
+                onSliderChange(newMeatRatio, newBonesRatio);
+              }}
+            />
+          )}
 
         <DescriptionTextBox
           name={'desc'}

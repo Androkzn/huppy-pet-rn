@@ -7,16 +7,12 @@ import { Image } from './Image.components';
 import { Cropper, RectangleStencil } from 'react-mobile-cropper';
 import { uploadImage, deleteImage, getImageUrl } from '../hooks/query.hooks';
 
-const ChangeImageDialog = ({ 
-  foodItem, 
-  onClose, 
-  setFoodItem 
-}) => {
+const ChangeImageDialog = ({ foodItem, onClose, setFoodItem }) => {
   const [imageSelected, setImageSelected] = useState(null);
   const cropperRef = useRef(null);
   let croppedImage = null;
-  const destination = "food"
-  const key = `${foodItem.userId}/${foodItem?._id}`
+  const destination = 'food';
+  const key = `${foodItem.userId}/${foodItem?._id}`;
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -64,11 +60,10 @@ const ChangeImageDialog = ({
   const saveImage = async (file) => {
     if (file) {
       try {
-        const isUploaded = await uploadImage(file,destination, key )
+        const isUploaded = await uploadImage(file, destination, key);
         if (isUploaded) {
           await setFoodItem({ ...foodItem, image: new Date().toISOString() });
         }
-
       } catch (error) {
         console.log('Error uploading file:', error);
       }
@@ -79,11 +74,11 @@ const ChangeImageDialog = ({
   // Handles dialog submission
   const deleteFoodImage = async () => {
     try {
-      const isDeleted = await deleteImage(destination, key)
-        if (isDeleted) {
-          setFoodItem({ ...foodItem, image:"" });
-          onClose();
-        }
+      const isDeleted = await deleteImage(destination, key);
+      if (isDeleted) {
+        setFoodItem({ ...foodItem, image: '' });
+        onClose();
+      }
     } catch (error) {
       console.log('Error deleting image:', error);
     }
@@ -114,7 +109,7 @@ const ChangeImageDialog = ({
   const getUrl = async () => {
     if (!foodItem.userId || !foodItem._id) return;
     try {
-      const data = await getImageUrl(destination, key)
+      const data = await getImageUrl(destination, key);
       return data;
     } catch (error) {
       console.log('Error fetching image url:', error);
@@ -161,12 +156,12 @@ const ChangeImageDialog = ({
             />
           ) : (
             <div>
-                <Image
-                  imageName={'food_placeholder.png'}
-                  width="150px"
-                  height="150px"
-                  imageDataUrl={null}
-                />
+              <Image
+                imageName={'food_placeholder.png'}
+                width="150px"
+                height="150px"
+                imageDataUrl={null}
+              />
             </div>
           )}
         </div>

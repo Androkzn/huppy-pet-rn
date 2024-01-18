@@ -9,11 +9,10 @@ import { ButtonImage } from '../components/Buttons.components';
 import * as styles from '../components/styles/AddFood.css';
 import { useAddFood } from '../hooks/query.hooks';
 import CustomAlert from '../components/CustomAlert.component';
-import * as Enums from '../helpers/Enums.helper'
+import * as Enums from '../helpers/Enums.helper';
 
 const AddFood = ({}) => {
-  const { user, currentProfile, currentDate } =
-    useContext(DataContext);
+  const { user, currentProfile, currentDate } = useContext(DataContext);
   const location = useLocation();
   const navigate = useNavigate();
   let foodItem = location.state?.foodItem;
@@ -21,10 +20,10 @@ const AddFood = ({}) => {
 
   const { mutate: addFoodMutation } = useAddFood();
   // States for displaying alert
-  const [ showAlert, setShowAlert] = useState(false);
-  const [ message, setMessage] = useState('')
-  const [ alertType, setAlertType] = useState(Enums.AlertType.ERROR)
-  
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const [alertType, setAlertType] = useState(Enums.AlertType.ERROR);
+
   // Navigation
   const navigateTo = async (link, state = {}) => {
     navigate('/' + link, { state });
@@ -35,41 +34,39 @@ const AddFood = ({}) => {
     foodItem.units = units;
     foodItem.weight = weight;
 
-    addFoodMutation({
-      user: user,
-      mealId: mealId,
-      currentProfile: currentProfile,
-      foodItem: foodItem,
-      selectedDate: currentDate,
-    },
-    {
-      onSuccess: (data) => {
-        handleMutation(
-          " added to your meal.", 
-          Enums.AlertType.SUCCESS
-        )
+    addFoodMutation(
+      {
+        user: user,
+        mealId: mealId,
+        currentProfile: currentProfile,
+        foodItem: foodItem,
+        selectedDate: currentDate,
       },
-      onError: (error) => {
-        handleMutation(
-          " cannot be added . Try again.", 
-          Enums.AlertType.ERROR
-        )
-      },
-    },
-  )};
+      {
+        onSuccess: (data) => {
+          handleMutation(' added to your meal.', Enums.AlertType.SUCCESS);
+        },
+        onError: (error) => {
+          handleMutation(
+            ' cannot be added . Try again.',
+            Enums.AlertType.ERROR
+          );
+        },
+      }
+    );
+  };
 
-  const handleMutation=(messageNew, alertTypeNew) => {
-    setMessage(foodItem.name + messageNew)
-    setAlertType(alertTypeNew)
-    setShowAlert(true)
-  }
+  const handleMutation = (messageNew, alertTypeNew) => {
+    setMessage(foodItem.name + messageNew);
+    setAlertType(alertTypeNew);
+    setShowAlert(true);
+  };
 
   useEffect(() => {
     if (!showAlert && alertType === Enums.AlertType.SUCCESS) {
-      navigateTo('searchFood')  
+      navigateTo('searchFood');
     }
   }, [showAlert]);
-
 
   useEffect(() => {
     // Fetch or set foodItem if it's not available
@@ -86,7 +83,7 @@ const AddFood = ({}) => {
         <div style={styles.topButtonsContainerStyle}>
           <ButtonImage
             variant="backButton"
-            onClick={ () => navigateTo('searchFood') }
+            onClick={() => navigateTo('searchFood')}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
@@ -99,9 +96,14 @@ const AddFood = ({}) => {
 
       {/* Add food form */}
       <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} />
-      
+
       {/* Alert */}
-      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setApperance={setShowAlert}
+      />
     </PageContainer>
   );
 };

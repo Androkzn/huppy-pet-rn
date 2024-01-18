@@ -166,7 +166,7 @@ const Profile = () => {
   }, [currentProfile]);
 
   const navigateTo = async (link) => {
-    navigate('/'+ link);
+    navigate('/' + link);
   };
 
   return (

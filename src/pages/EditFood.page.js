@@ -53,8 +53,8 @@ const EditFood = () => {
       );
 
       if (userResponse) {
-        editFood()
-      } 
+        editFood();
+      }
       navigate('/' + link, { state });
     } else {
       navigate('/' + link, { state });
@@ -96,7 +96,7 @@ const EditFood = () => {
     weight: food?.weight,
     userId: food?.userId,
     image: food?.image,
-    isCustom: food?.isCustom
+    isCustom: food?.isCustom,
   });
 
   const [foodItem, setFoodItem] = useState(food || cachedFood);
@@ -140,12 +140,12 @@ const EditFood = () => {
   useEffect(() => {
     getFood();
   }, [food]);
-  
-  // Set isEdited flag 
+
+  // Set isEdited flag
   useEffect(() => {
     // Change the flag only ones
     if (!isEdited && food !== foodItem) {
-      setIsEdited(true)
+      setIsEdited(true);
     }
   }, [foodItem]);
 
@@ -155,7 +155,7 @@ const EditFood = () => {
         <div style={styles.topButtonsContainerStyle}>
           <ButtonImage
             variant="backButton"
-            onClick={ () => navigateTo('searchFood') }
+            onClick={() => navigateTo('searchFood')}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
@@ -164,7 +164,7 @@ const EditFood = () => {
           <div css={styles.addFoodTitleStyle}>{'Edit Food'}</div>
           <ButtonImage
             variant="actionNavigationButton"
-            onClick={ () => editFood() }
+            onClick={() => editFood()}
             imageName="checkmark_orange.svg"
             imageSize={15}
             disabled={!isEdited}
@@ -176,7 +176,12 @@ const EditFood = () => {
       <div style={styles.imageContainerStyle}>
         <FoodImage foodItem={foodItem} onClick={updateImage} />
       </div>
-      <EditFoodForm foodItem={foodItem}  setFoodItem={setFoodItem} isEdited={isEdited} setIsEdited={setIsEdited}/>
+      <EditFoodForm
+        foodItem={foodItem}
+        setFoodItem={setFoodItem}
+        isEdited={isEdited}
+        setIsEdited={setIsEdited}
+      />
 
       {/* Dialog */}
       {dialogOpen && (

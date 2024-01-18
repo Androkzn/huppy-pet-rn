@@ -24,12 +24,14 @@ const FoodImage = ({
     isError: isImageError,
   } = useFetchImage(url, foodItem?.image);
 
-  const placeholder =  isEditing ? 'add_food_placeholder_orange.png' : 'food_placeholder.png'
+  const placeholder = isEditing
+    ? 'add_food_placeholder_orange.png'
+    : 'food_placeholder.png';
 
   return (
     <div onClick={onClick}>
-      {(isImageLoading) && (foodItem?._id !== '' && foodItem?.image !== '') ? (
-        <LoadingAndError isLoading={isImageLoading} isError={isImageError}/>
+      {isImageLoading && foodItem?._id !== '' && foodItem?.image !== '' ? (
+        <LoadingAndError isLoading={isImageLoading} isError={isImageError} />
       ) : (
         <ImageCircle
           imageName={placeholder}

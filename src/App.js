@@ -1,4 +1,7 @@
-import { LocalErrorBoundary, GlobalErrorBoundary } from './helpers/Errors.helper';
+import {
+  LocalErrorBoundary,
+  GlobalErrorBoundary,
+} from './helpers/Errors.helper';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NavBar from './components/NavBar.component';
 import TabBar from './components/TabBar.component';
@@ -17,17 +20,21 @@ import Profile from './pages/Profile.page';
 import Register from './pages/Register.page';
 import Training from './pages/Training.page';
 import More from './pages/More.page';
-import NotFound from './pages/NotFound.page'
-import {ScrollToTop}  from './helpers/Navigation.helper';
+import NotFound from './pages/NotFound.page';
+import { ScrollToTop } from './helpers/Navigation.helper';
 
 function App() {
   return (
     <BrowserRouter>
-      <GlobalErrorBoundary> 
-        <ScrollToTop/>
+      <GlobalErrorBoundary>
+        <ScrollToTop />
         <DataProvider>
           <div
-            style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100vh',
+            }}
           >
             <NavBar />
             <div style={{ flex: 1, overflowY: 'visible' }}>
@@ -55,7 +62,7 @@ function App() {
             <TabBar />
           </div>
         </DataProvider>
-      </GlobalErrorBoundary> 
+      </GlobalErrorBoundary>
     </BrowserRouter>
   );
 }

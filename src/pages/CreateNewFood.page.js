@@ -11,7 +11,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import AddImageDialog from '../components/AddImageDialog.component';
 import { useAddFoodTemplate } from '../hooks/query.hooks';
 import CustomAlert from '../components/CustomAlert.component';
-import * as Enums from '../helpers/Enums.helper'
+import * as Enums from '../helpers/Enums.helper';
 import axios from 'axios';
 
 const CreateNewFood = () => {
@@ -24,10 +24,10 @@ const CreateNewFood = () => {
   const [image, setImage] = useState(null);
   const { mutate: addFoodTemplateMutation } = useAddFoodTemplate();
   // States for displaying alert
-  const [ showAlert, setShowAlert] = useState(false);
-  const [ message, setMessage] = useState('')
-  const [ alertType, setAlertType] = useState('error')
-  const [ state, setState] = useState(null)
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const [alertType, setAlertType] = useState('error');
+  const [state, setState] = useState(null);
   const backendEndpoint = process.env.REACT_APP_BACKEND_URL;
 
   // Navigation
@@ -58,7 +58,7 @@ const CreateNewFood = () => {
           setImage={setImage}
         />
       );
-    } 
+    }
   };
 
   // Some prefilled form state
@@ -109,22 +109,19 @@ const CreateNewFood = () => {
         onSuccess: (data) => {
           const templateId = data?.templateId;
           foodItem._id = templateId;
-          setFoodItem({ ...foodItem, "_id": templateId });
+          setFoodItem({ ...foodItem, _id: templateId });
           if (name === 'createAndAddFood') {
-            const state = { mealId, foodItem } 
-            setState(state)
+            const state = { mealId, foodItem };
+            setState(state);
           }
-          handleMutation(
-            "Food template created", 
-            Enums.AlertType.SUCCESS
-          )
-          saveImage(image, templateId)
+          handleMutation('Food template created', Enums.AlertType.SUCCESS);
+          saveImage(image, templateId);
         },
         onError: (error) => {
           handleMutation(
-            "Food template cannot be added. Try again.", 
+            'Food template cannot be added. Try again.',
             Enums.AlertType.ERROR
-          )
+          );
         },
       }
     );
@@ -132,20 +129,20 @@ const CreateNewFood = () => {
 
   useEffect(() => {
     if (!showAlert && alertType === Enums.AlertType.SUCCESS) {
-      if (state) { 
-        navigateTo('addFood', state)
+      if (state) {
+        navigateTo('addFood', state);
       } else {
-        navigateTo('searchFood')
+        navigateTo('searchFood');
       }
     }
   }, [showAlert]);
 
   // Function to open alert
-  const handleMutation=(messageNew, alertTypeNew) => {
-    setMessage(messageNew)
-    setAlertType(alertTypeNew)
-    setShowAlert(true)
-  }
+  const handleMutation = (messageNew, alertTypeNew) => {
+    setMessage(messageNew);
+    setAlertType(alertTypeNew);
+    setShowAlert(true);
+  };
 
   //Callback func that opens image dialog
   const updateImage = async () => {
@@ -193,7 +190,7 @@ const CreateNewFood = () => {
         const data = new FormData();
         // Append the compressed file as a Blob
         data.append('image', compressedFile);
-        
+
         // Use Axios to send the FormData to the server
         const result = await axios.post(
           `${backendEndpoint}/food/${foodItem.userId}/${templateId}`,
@@ -212,7 +209,7 @@ const CreateNewFood = () => {
         <div style={styles.topButtonsContainerStyle}>
           <ButtonImage
             variant="backButton"
-            onClick={ () => navigateTo('searchFood') }
+            onClick={() => navigateTo('searchFood')}
             imageName="arrow_left_green.svg"
             imageSize={20}
           >
@@ -240,7 +237,12 @@ const CreateNewFood = () => {
       )}
 
       {/* Alert */}
-      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setApperance={setShowAlert}
+      />
     </PageContainer>
   );
 };

@@ -10,8 +10,6 @@ import {
 import * as enums from '../helpers/Enums.helper';
 
 const EditFoodForm = ({ foodItem, setFoodItem }) => {
- 
-
   const onTextInputChange = (event) => {
     const { name, value } = event.target;
     setFoodItem({ ...foodItem, [name]: value });

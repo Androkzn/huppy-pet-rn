@@ -1,11 +1,10 @@
 import * as colors from '../components/styles/Colors';
 
-
 // Enum FilterFood definition
 export const AlertType = {
-  SUCCESS: "success",
-  ERROR: "error",
-  INFO: "info",
+  SUCCESS: 'success',
+  ERROR: 'error',
+  INFO: 'info',
 };
 
 // Enum FilterFood definition

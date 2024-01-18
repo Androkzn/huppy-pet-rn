@@ -21,17 +21,26 @@ import * as enums from '../helpers/Enums.helper';
 const reducer = (state, action) => {
   switch (action.type) {
     case 'INCREMENT':
-      return { count: (state.count + action.step) > (action.maxValue || 9999) ? (action.maxValue || 9999) : state.count + action.step };
+      return {
+        count:
+          state.count + action.step > (action.maxValue || 9999)
+            ? action.maxValue || 9999
+            : state.count + action.step,
+      };
     case 'DECREMENT':
-      return { count: (state.count - action.step) > 0  ? state.count - action.step :  (action.minValue || 0) };
+      return {
+        count:
+          state.count - action.step > 0
+            ? state.count - action.step
+            : action.minValue || 0,
+      };
     case 'SET_COUNT':
       return { count: action.payload };
     default:
-      console.error("Unsuported action type: ", action.type)
+      console.error('Unsuported action type: ', action.type);
       return state;
   }
 };
-
 
 const TitleAndDatePicker = ({ id, title, selectedDate, onChange }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
@@ -378,11 +387,11 @@ const TitleButtonsAndTextField = ({
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [state, dispatch] = useReducer(reducer, { count: initialValue || 0 });
-  const step = 1
+  const step = 1;
 
   const decrementCount = () => {
-      dispatch({ type: 'DECREMENT', step: step });
-      onChangeButton(name, state.count - step);
+    dispatch({ type: 'DECREMENT', step: step });
+    onChangeButton(name, state.count - step);
   };
 
   const incrementCount = () => {
@@ -537,12 +546,12 @@ const ButtonsAndTextField = ({
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [state, dispatch] = useReducer(reducer, { count: initialValue || 0 });
-  const step = 10
-  const minValue = 1 
+  const step = 10;
+  const minValue = 1;
 
   const decrementCount = () => {
-      dispatch({ type: 'DECREMENT', step: step, minValue: minValue });
-      onChangeButton(name, Math.max(state.count - step, minValue));
+    dispatch({ type: 'DECREMENT', step: step, minValue: minValue });
+    onChangeButton(name, Math.max(state.count - step, minValue));
   };
 
   const incrementCount = () => {
@@ -584,7 +593,7 @@ const ButtonsAndTextField = ({
     fontFamily: "'Balsamiq Sans', sans-serif",
   };
 
-  console.log("state.count", state.count)
+  console.log('state.count', state.count);
 
   return (
     <div style={containerStyle}>
@@ -693,8 +702,10 @@ const TitleToggleAndButtons = ({
 }) => {
   const isSmallScreen = useMediaQuery(Constants.smallScreen);
   const [checked, setChecked] = useState(toggleValue);
-  const [state, dispatch] = useReducer(reducer, { count: dailyRatioValue || 0 });
-  const step = 1
+  const [state, dispatch] = useReducer(reducer, {
+    count: dailyRatioValue || 0,
+  });
+  const step = 1;
 
   const decrementCount = () => {
     dispatch({ type: 'DECREMENT', step: step });
@@ -714,9 +725,9 @@ const TitleToggleAndButtons = ({
   const handleTextFieldChange = (event) => {
     const newValue =
       event.target.value === '' ? 0 : parseInt(event.target.value, 10);
-    const value = newValue <= maxCountValue ? newValue : maxCountValue
+    const value = newValue <= maxCountValue ? newValue : maxCountValue;
 
-    dispatch({ type: 'SET_COUNT', payload: value });  
+    dispatch({ type: 'SET_COUNT', payload: value });
     onChangeDailyRatioValue(value);
   };
 
@@ -1042,7 +1053,7 @@ const LoginTextInput = ({
   placeholder,
   borderColor,
   isPassword = false,
-  autoComplete 
+  autoComplete,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputValue, setInputValue] = useState(initialValue);

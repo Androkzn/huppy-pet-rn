@@ -7,14 +7,13 @@ import { ImageCircle } from './ImageCircle.components';
 import { Cropper, CircleStencil } from 'react-mobile-cropper';
 import Spiner from './Spinner.components';
 import { getImageUrl } from '../hooks/query.hooks';
- 
 
 const AddAvatarDialog = ({ onSave, onDelete, onClose, avatar, profileId }) => {
   const [imageSelected, setImageSelected] = useState(null);
   const cropperRef = useRef(null);
   let croppedImage = null;
-  const destination = "avatar"
-  const key = `${profileId}?type="url"`
+  const destination = 'avatar';
+  const key = `${profileId}?type="url"`;
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -84,7 +83,7 @@ const AddAvatarDialog = ({ onSave, onDelete, onClose, avatar, profileId }) => {
   // Function to fetch avatar data when the component mounts
   const getAvatarUrl = async () => {
     try {
-      const avatarData = await getImageUrl(destination, key)
+      const avatarData = await getImageUrl(destination, key);
       return avatarData;
     } catch (error) {
       console.log('Error fetching avatar:', error);

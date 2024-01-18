@@ -28,30 +28,28 @@ const useFetchImage = (url, key) => {
       enabled: !!key || key === '',
       refetchOnMount: false,
       retry: 1, // Set the number of retries
-      onSuccess: (data) => {
-
-      },
+      onSuccess: (data) => {},
     }
   );
 };
 
 // DELETE IMAGE
 const deleteImage = async (destination, key) => {
-  const url = `${backendEndpoint}/${destination}/${key}`
+  const url = `${backendEndpoint}/${destination}/${key}`;
   try {
-    console.log("deleteImage url", url)
+    console.log('deleteImage url', url);
     const result = await axios.delete(url);
-    console.log("deleteImage result", result)
-    return result
+    console.log('deleteImage result', result);
+    return result;
   } catch (error) {
     console.log('Error deleting image with url:', url);
-    return false
+    return false;
   }
 };
 
 // UPLOAD IMAGE
 const uploadImage = async (file, destination, key) => {
-  const url = `${backendEndpoint}/${destination}/${key}`
+  const url = `${backendEndpoint}/${destination}/${key}`;
   const compressedFile = await compressImage(file, {
     type: 'image/jpeg',
   });
@@ -61,29 +59,26 @@ const uploadImage = async (file, destination, key) => {
   data.append('image', compressedFile);
 
   try {
-    console.log("uploadImage url", url)
-    const result = await axios.post(
-      url,
-      data
-    );
-    console.log("uploadImage result", result)
-    return result
+    console.log('uploadImage url', url);
+    const result = await axios.post(url, data);
+    console.log('uploadImage result', result);
+    return result;
   } catch (error) {
     console.log('Error uploading image with url:', url);
-    return false
+    return false;
   }
-}
+};
 
-  // GET IMAGE URL
+// GET IMAGE URL
 const getImageUrl = async (destination, key) => {
   const type = 'url';
-  const url = `${backendEndpoint}/${destination}/${key}?type=${type}`
-  
+  const url = `${backendEndpoint}/${destination}/${key}?type=${type}`;
+
   try {
-    console.log("getImageUrl url", url)
+    console.log('getImageUrl url', url);
     const result = await axios.get(url);
     const data = result.data;
-    console.log("getImageUrl result", result)
+    console.log('getImageUrl result', result);
     return data;
   } catch (error) {
     console.log('Error fetching image:', error);

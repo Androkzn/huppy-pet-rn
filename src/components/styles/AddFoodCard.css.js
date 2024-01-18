@@ -62,7 +62,7 @@ const textCaloriesStyle = {
   fontSize: '13px',
   color: colors.orange,
   padding: '5px',
-  minWidth: "65px"
+  minWidth: '65px',
 };
 
 const iconContainerStyle = {

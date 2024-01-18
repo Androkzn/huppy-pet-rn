@@ -12,11 +12,10 @@ const placeholderStyle = {
 };
 
 const LoadingAndError = ({
-  isLoading, 
-  isError, 
-  placeholder = "general_error.png"
+  isLoading,
+  isError,
+  placeholder = 'general_error.png',
 }) => {
- 
   if (isLoading) {
     return (
       <div style={placeholderStyle}>

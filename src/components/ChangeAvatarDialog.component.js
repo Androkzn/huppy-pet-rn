@@ -12,8 +12,8 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   const [imageSelected, setImageSelected] = useState(null);
   const cropperRef = useRef(null);
   let croppedImage = null;
-  const destination = "avatar"
-  const key = `${profile?._id}`
+  const destination = 'avatar';
+  const key = `${profile?._id}`;
 
   // Updates the cropped image in the state
   const onChange = (cropper) => {
@@ -62,7 +62,7 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   const saveAvatar = async (file) => {
     if (file) {
       try {
-        const isUploaded = await uploadImage(file,destination, key)
+        const isUploaded = await uploadImage(file, destination, key);
       } catch (error) {
         console.log('Error uploading file:', error);
       }
@@ -73,7 +73,7 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   // Handles dialog submission
   const deleteAvatar = async () => {
     try {
-      const isDeleted = await deleteImage(destination, key)
+      const isDeleted = await deleteImage(destination, key);
       if (isDeleted) {
         updateCurrentProfile('avatar', '');
         onClose();
@@ -108,7 +108,7 @@ const ChangeAvatarDialog = ({ updateCurrentProfile, onClose, profile }) => {
   // Function to fetch avatar data when the component mounts
   const getAvatarUrl = async () => {
     try {
-      const avatarData = await getImageUrl(destination, key)
+      const avatarData = await getImageUrl(destination, key);
       return avatarData;
     } catch (error) {
       console.log('Error fetching avatar:', error);

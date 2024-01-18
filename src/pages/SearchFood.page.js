@@ -35,8 +35,7 @@ const SearchFood = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isSmallScreen, currentDate } =
-    useContext(DataContext);
+  const { user, isSmallScreen, currentDate } = useContext(DataContext);
 
   const [mealId, setMealId] = useState(
     location.state?.mealId || loadState('mealId', '')
@@ -63,9 +62,9 @@ const SearchFood = () => {
   );
   // States for displaying alert
   const [showAlert, setShowAlert] = useState(false);
-  const [ message, setMessage] = useState('')
-  const [ alertType, setAlertType] = useState(Enums.AlertType.SUCCESS)
-  
+  const [message, setMessage] = useState('');
+  const [alertType, setAlertType] = useState(Enums.AlertType.SUCCESS);
+
   // Navigation
   const navigateTo = async (link, state = {}) => {
     navigate('/' + link, { state });
@@ -73,16 +72,16 @@ const SearchFood = () => {
 
   // Function to open the AddFoodPage when a food item is clicked
   const openAddFoodPage = (foodItem) => {
-    const state = { mealId, foodItem}
-    navigateTo('addFood', state)
+    const state = { mealId, foodItem };
+    navigateTo('addFood', state);
     //navigate('/addFood', { state: { mealId, foodItem} });
   };
 
   // Function to open the NewFoodPage when a a button is clicked
   const openCeateNewFoodPage = () => {
-    const state = { mealId}
-    navigateTo('createNewFood', state)
-   //navigate('/createNewFood', { state: { mealId } });
+    const state = { mealId };
+    navigateTo('createNewFood', state);
+    //navigate('/createNewFood', { state: { mealId } });
   };
   // Function to clear search field
   const handleClearSearch = () => {
@@ -90,10 +89,10 @@ const SearchFood = () => {
   };
   // Function to open alert
   const handleAlert = (messageNew, alertTypeNew) => {
-      setMessage(messageNew)
-      setAlertType(alertTypeNew)
-      setShowAlert(true)
-  }
+    setMessage(messageNew);
+    setAlertType(alertTypeNew);
+    setShowAlert(true);
+  };
 
   // Function to save state to localStorage whenever it changes
   useEffect(() => {
@@ -326,7 +325,12 @@ const SearchFood = () => {
         searchResult={searchResult}
         openAddFoodPage={openAddFoodPage}
       />
-      <CustomAlert message={message} type={alertType} show={showAlert} setApperance={setShowAlert}/>
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setApperance={setShowAlert}
+      />
     </PageContainer>
   );
 };

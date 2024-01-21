@@ -195,6 +195,11 @@ function MealCard({ meal, index, mealsCount }) {
 
   // Function is responsible for deleting the Meal
   const deleteCurrentMeal = async () => {
+    if (food.length > 0 ) {  
+     const deleteMeal = window.confirm('Do you really want to delete this meal?')
+     if (!deleteMeal) return
+    }
+
     deleteMealMutation({
       user: user,
       _id: mealId,

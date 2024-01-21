@@ -41,7 +41,7 @@ const TabBar = () => {
         setValue(1);
         return navigate('/dashboard');
       case 2:
-        setValue(3);
+        setValue(2);
         return navigate('/training');
       case 3:
         setValue(3);

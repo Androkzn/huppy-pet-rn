@@ -95,7 +95,7 @@ const AddFood = ({}) => {
       </div>
 
       {/* Add food form */}
-      <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} />
+      <AddFoodForm foodItem={foodItem} addFoodToMeal={addFoodToMeal} showAlert={showAlert}/>
 
       {/* Alert */}
       <CustomAlert
@@ -103,6 +103,7 @@ const AddFood = ({}) => {
         type={alertType}
         show={showAlert}
         setApperance={setShowAlert}
+        timeout= {2000}
       />
     </PageContainer>
   );

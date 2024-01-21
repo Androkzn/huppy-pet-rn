@@ -8,7 +8,7 @@ import { Image } from './Image.components';
 import { useState } from 'react';
 import { ButtonText } from './Buttons.components';
 
-const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
+const AddFoodForm = ({ foodItem, addFoodToMeal, showAlert }) => {
   const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
   const [units, setUnits] = useState(foodItem?.units);
@@ -154,7 +154,7 @@ const AddFoodForm = ({ foodItem, addFoodToMeal }) => {
           width="200px"
           variant="rectangleTextButton"
           onClick={() => addFoodToMeal(units, weight)}
-          disabled={weight === 0}
+          disabled={weight === 0 || showAlert}
         >
           Add to Meal
         </ButtonText>

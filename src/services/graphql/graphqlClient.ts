@@ -3,7 +3,7 @@
  */
 
 import { GraphQLClient } from 'graphql-request';
-import { getAccessToken, getCurrentRealmUser } from '@services/auth/realm';
+import { getAccessToken, refreshAccessToken } from '@services/auth/authService';
 
 // Get GraphQL endpoint from environment
 const GRAPHQL_ENDPOINT = process.env.EXPO_PUBLIC_GRAPHQL_ENDPOINT || '';
@@ -41,9 +41,8 @@ export const executeQuery = async <T>(
     // Handle invalid session error
     if (error?.response?.errors?.[0]?.message === 'InvalidSession') {
       // Try to refresh token and retry
-      const user = getCurrentRealmUser();
-      if (user) {
-        await user.refreshAccessToken();
+      const token = await refreshAccessToken();
+      if (token) {
         const client = await createGraphQLClient();
         return await client.request<T>(query, variables);
       }

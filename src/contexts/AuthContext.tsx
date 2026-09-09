@@ -4,11 +4,11 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import * as realmAuth from '@services/auth/realm';
-import * as Realm from 'realm-web';
+import * as auth from '@services/auth/authService';
+import type { AuthUser } from '@services/auth/authService';
 
 interface AuthContextType {
-  user: Realm.User | null;
+  user: AuthUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -22,23 +22,34 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // TEMPORARY: preview mode for screenshotting while the backend is offline.
-  const [user, setUser] = useState<Realm.User | null>(
-    { id: 'preview-user' } as any
-  );
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (user) return;
-    // Check if user is already logged in
-    const currentUser = realmAuth.getCurrentRealmUser();
-    setUser(currentUser);
-    setIsLoading(false);
+    // Reading the saved session is async now, so the splash stays up until it
+    // resolves rather than flashing the login screen at an authenticated user.
+    let active = true;
+
+    auth
+      .restoreSession()
+      .then((restored) => {
+        if (active) setUser(restored);
+      })
+      .catch((error) => {
+        console.error('Session restore error:', error);
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const user = await realmAuth.loginEmailPassword(email, password);
+      const user = await auth.loginEmailPassword(email, password);
       setUser(user);
     } catch (error) {
       console.error('Login error:', error);
@@ -48,10 +59,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const register = async (email: string, password: string) => {
     try {
-      await realmAuth.registerEmailPassword(email, password);
-      // After registration, user needs to confirm email
-      // Automatically log in after registration
-      await login(email, password);
+      // Registering returns a session directly — no confirmation step, and no
+      // second login round trip the way Realm needed.
+      const user = await auth.registerEmailPassword(email, password);
+      setUser(user);
     } catch (error) {
       console.error('Registration error:', error);
       throw error;
@@ -60,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = async () => {
     try {
-      await realmAuth.logout();
+      await auth.logout();
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
@@ -70,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const sendPasswordReset = async (email: string) => {
     try {
-      await realmAuth.sendPasswordResetEmail(email);
+      await auth.sendPasswordResetEmail(email);
     } catch (error) {
       console.error('Password reset error:', error);
       throw error;

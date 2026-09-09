@@ -221,7 +221,10 @@ const styles = StyleSheet.create({
   logo: {
     flex: 1,
   },
+  // Web: userInfoContainerStyle pins the avatar to the right of the bar,
+  // whether or not the date picker or logo is showing.
   userInfo: {
+    marginLeft: 'auto',
     alignItems: 'center',
     justifyContent: 'flex-end',
   },

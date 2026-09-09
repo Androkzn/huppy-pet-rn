@@ -7,8 +7,6 @@
  */
 
 import React, { createContext, useContext, useState } from 'react';
-// TEMPORARY: preview fixtures while the backend is offline.
-import { PREVIEW_DATE } from '../dev/previewData';
 
 interface DateContextType {
   currentDate: Date;
@@ -20,7 +18,7 @@ const DateContext = createContext<DateContextType | undefined>(undefined);
 export const DateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [currentDate, setCurrentDate] = useState(PREVIEW_DATE);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   return (
     <DateContext.Provider value={{ currentDate, setCurrentDate }}>

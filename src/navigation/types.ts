@@ -11,6 +11,9 @@ export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
   Food: NavigatorScreenParams<FoodStackParamList>;
+  // Reached from the NavBar avatar drawer, as on the web.
+  Profile: undefined;
+  Register: undefined;
 };
 
 // Auth Stack Navigator
@@ -21,12 +24,11 @@ export type AuthStackParamList = {
   Register: undefined;
 };
 
-// Main Tab Navigator
+// Main Tab Navigator — the web's four tabs (Diary, Dashboard, Training, More)
 export type MainTabParamList = {
   Home: undefined;
   Dashboard: undefined;
   Training: undefined;
-  Profile: undefined;
   More: undefined;
 };
 

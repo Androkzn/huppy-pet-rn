@@ -6,7 +6,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackParamList } from './types';
-import Header from '@components/Header';
+import NavBar from '@components/NavBar';
 
 // Screens (to be implemented)
 import LoginScreen from '@screens/auth/LoginScreen';
@@ -22,7 +22,7 @@ export const AuthNavigator = () => {
       screenOptions={{
         // Web shows the logo AppBar on the auth pages too (login/signup/register/forgot).
         headerShown: true,
-        header: () => <Header />,
+        header: () => <NavBar showLogo />,
         animation: 'slide_from_right',
       }}
     >

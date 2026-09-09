@@ -1,73 +1,58 @@
 /**
- * Login Screen
+ * Login Screen — port of the web app's Login.page.js + LoginForm.components.js.
+ *
+ * A lightBrown page with the "WELCOME TO HUPPY!" heading, two white pill
+ * inputs, the olive Login button, and the forgot/signup row beneath it.
  */
 
 import React, { useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Alert,
+  Pressable,
 } from 'react-native';
 import { AuthStackScreenProps } from '@navigation/types';
-import { Button, TextInput, Container, Title, Body } from '@components/ui';
 import { useAuth } from '@contexts/AuthContext';
-import { isValidEmail } from '@utils/validation';
-import { ERROR_MESSAGES } from '@constants/index';
-import { useTheme, IconButton } from 'react-native-paper';
+import { LoginTextInput } from '@components/ui/LoginTextInput';
+import { HuppyButton } from '@components/ui/Buttons';
+import { Spinner } from '@components/ui/Asset';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type Props = AuthStackScreenProps<'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
-  const theme = useTheme();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
 
-  const validateForm = (): boolean => {
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!email.trim()) {
-      newErrors.email = ERROR_MESSAGES.REQUIRED_FIELD;
-    } else if (!isValidEmail(email)) {
-      newErrors.email = ERROR_MESSAGES.INVALID_EMAIL;
-    }
-
-    if (!password.trim()) {
-      newErrors.password = ERROR_MESSAGES.REQUIRED_FIELD;
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleLogin = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      await login(email.trim(), password);
+      await login(username.trim(), password);
       // Navigation happens automatically via RootNavigator
     } catch (error: any) {
-      console.error('Login error:', error);
-      Alert.alert(
-        'Login Failed',
-        error?.message || ERROR_MESSAGES.AUTH_FAILED
-      );
+      // The web surfaces login failures through a plain alert.
+      Alert.alert('', error?.message || 'An error occurred during login. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.loading]}>
+        <Spinner />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -78,93 +63,51 @@ export default function LoginScreen({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <Container style={styles.content}>
-          <View style={styles.header}>
-            <Title style={styles.title}>Welcome Back!</Title>
-            <Body style={styles.subtitle}>Sign in to continue</Body>
+        <View style={styles.loginContainer}>
+          <View style={styles.loginHeader}>
+            <Text style={styles.heading}>WELCOME TO HUPPY!</Text>
           </View>
 
           <View style={styles.form}>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                if (errors.email) {
-                  setErrors({ ...errors, email: undefined });
-                }
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              error={!!errors.email}
-              disabled={isLoading}
-              style={styles.input}
-            />
-            {errors.email && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {errors.email}
-              </Body>
-            )}
-
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                if (errors.password) {
-                  setErrors({ ...errors, password: undefined });
-                }
-              }}
-              secureTextEntry={!showPassword}
-              error={!!errors.password}
-              disabled={isLoading}
-              style={styles.input}
-              right={
-                <TextInput.Icon
-                  icon={showPassword ? 'eye-off' : 'eye'}
-                  onPress={() => setShowPassword(!showPassword)}
-                />
-              }
-            />
-            {errors.password && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {errors.password}
-              </Body>
-            )}
-
-            <Button
-              mode="text"
-              onPress={() => navigation.navigate('ForgotPassword')}
-              disabled={isLoading}
-              style={styles.forgotButton}
-            >
-              Forgot Password?
-            </Button>
-
-            <Button
-              mode="contained"
-              onPress={handleLogin}
-              loading={isLoading}
-              disabled={isLoading}
-              style={styles.loginButton}
-            >
-              Sign In
-            </Button>
-
-            <View style={styles.signupContainer}>
-              <Body>Don't have an account? </Body>
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate('Signup')}
-                disabled={isLoading}
-                compact
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Username"
+                autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={username}
+                onChangeText={setUsername}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Password"
+                autoComplete="current-password"
+                isPassword
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <HuppyButton
+                variant="login"
+                onPress={handleSubmit}
+                disabled={username.length === 0 || password.length === 0}
               >
-                Sign Up
-              </Button>
+                Login
+              </HuppyButton>
             </View>
           </View>
-        </Container>
+
+          <View style={styles.elementsInRow}>
+            <Pressable onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text style={styles.linkForgot}>Forgot password?</Text>
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate('Signup')}>
+              <Text style={styles.linkSignup}>Signup</Text>
+            </Pressable>
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -173,50 +116,61 @@ export default function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.lightBrown,
+  },
+  loading: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContent: {
     flexGrow: 1,
   },
-  content: {
-    flex: 1,
+  loginContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: 350,
+    minWidth: 300,
+    width: '100%',
+    alignSelf: 'center',
+    backgroundColor: colors.lightBrown,
+  },
+  // The web pushes the heading down the page before the form.
+  loginHeader: {
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    width: '100%',
+    marginTop: 120,
   },
-  header: {
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    opacity: 0.7,
+  heading: {
+    color: colors.green,
+    fontFamily: fontFamily.bold,
+    fontSize: 25,
+    width: 170,
+    textAlign: 'center',
   },
   form: {
-    width: '100%',
-  },
-  input: {
-    marginBottom: 8,
-  },
-  errorText: {
-    fontSize: 12,
-    marginBottom: 8,
-    marginLeft: 12,
-  },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    marginTop: 8,
-  },
-  loginButton: {
-    marginTop: 24,
-    paddingVertical: 8,
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  formGroup: {
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  elementsInRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  linkForgot: {
+    color: colors.black,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
+  },
+  linkSignup: {
+    color: colors.orange,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
+    marginLeft: 20,
   },
 });

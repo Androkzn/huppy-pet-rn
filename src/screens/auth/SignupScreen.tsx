@@ -1,97 +1,83 @@
 /**
- * Signup Screen
+ * Signup Screen — port of the web app's Signup.page.js.
+ *
+ * The same lightBrown page as Login, with the "CREATE ACCOUNT" heading, three
+ * white pill inputs (email, password, repeat password), the orange validation
+ * tip, the olive Continue button, and the "Have an account already?" row.
  */
 
 import React, { useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Alert,
+  Pressable,
 } from 'react-native';
 import { AuthStackScreenProps } from '@navigation/types';
-import { Button, TextInput, Container, Title, Body } from '@components/ui';
 import { useAuth } from '@contexts/AuthContext';
-import { isValidEmail, getPasswordStrengthMessage } from '@utils/validation';
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '@constants/index';
-import { useTheme } from 'react-native-paper';
+import { LoginTextInput } from '@components/ui/LoginTextInput';
+import { HuppyButton } from '@components/ui/Buttons';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type Props = AuthStackScreenProps<'Signup'>;
 
+const isEmailValid = (email: string): boolean =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+/** At least 8 characters, one special character and one number. */
+const isPasswordValid = (password: string): boolean => {
+  if (password.length < 8) return false;
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+  if (!/\d/.test(password)) return false;
+  return true;
+};
+
 export default function SignupScreen({ navigation }: Props) {
-  const theme = useTheme();
   const { register } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-  }>({});
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const validateForm = (): boolean => {
-    const newErrors: {
-      email?: string;
-      password?: string;
-      confirmPassword?: string;
-    } = {};
+  const isFormValid =
+    isEmailValid(email) &&
+    isPasswordValid(password) &&
+    isPasswordValid(passwordConfirmation) &&
+    password === passwordConfirmation;
 
-    if (!email.trim()) {
-      newErrors.email = ERROR_MESSAGES.REQUIRED_FIELD;
-    } else if (!isValidEmail(email)) {
-      newErrors.email = ERROR_MESSAGES.INVALID_EMAIL;
+  const getValidationTip = (): string => {
+    if (email.length > 5 && !isEmailValid(email)) {
+      return 'Email has invalid format';
     }
-
-    if (!password.trim()) {
-      newErrors.password = ERROR_MESSAGES.REQUIRED_FIELD;
-    } else {
-      const strengthMessage = getPasswordStrengthMessage(password);
-      if (strengthMessage !== 'Strong password') {
-        newErrors.password = strengthMessage;
-      }
+    if (
+      (password.length > 2 && !isPasswordValid(password)) ||
+      (passwordConfirmation.length > 2 && !isPasswordValid(passwordConfirmation))
+    ) {
+      return 'Password must contain at least 8 characters, one special character an one number';
     }
-
-    if (!confirmPassword.trim()) {
-      newErrors.confirmPassword = ERROR_MESSAGES.REQUIRED_FIELD;
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = ERROR_MESSAGES.PASSWORDS_DONT_MATCH;
+    if (
+      password.length > 7 &&
+      passwordConfirmation.length > 7 &&
+      password !== passwordConfirmation
+    ) {
+      return 'Passwords do not match';
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return '';
   };
 
-  const handleSignup = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
+  const handleSubmit = async () => {
     try {
       await register(email.trim(), password);
-      Alert.alert('Success', 'Account created! Please create your pet profile.');
-      // Navigate to Register screen to create profile
       navigation.navigate('Register');
     } catch (error: any) {
-      console.error('Signup error:', error);
-      Alert.alert(
-        'Signup Failed',
-        error?.message || 'Unable to create account. Please try again.'
-      );
-    } finally {
-      setIsLoading(false);
+      Alert.alert('', error?.message || 'An error occurred during sign up. Please try again.');
     }
   };
-
-  const passwordStrength = getPasswordStrengthMessage(password);
-  const showPasswordStrength = password.length > 0;
 
   return (
     <KeyboardAvoidingView
@@ -102,125 +88,59 @@ export default function SignupScreen({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <Container style={styles.content}>
-          <View style={styles.header}>
-            <Title style={styles.title}>Create Account</Title>
-            <Body style={styles.subtitle}>Sign up to get started</Body>
+        <View style={styles.loginContainer}>
+          <View style={styles.loginHeader}>
+            <Text style={styles.heading}>CREATE ACCOUNT</Text>
           </View>
 
           <View style={styles.form}>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                if (errors.email) {
-                  setErrors({ ...errors, email: undefined });
-                }
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              error={!!errors.email}
-              disabled={isLoading}
-              style={styles.input}
-            />
-            {errors.email && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {errors.email}
-              </Body>
-            )}
-
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                if (errors.password) {
-                  setErrors({ ...errors, password: undefined });
-                }
-              }}
-              secureTextEntry={!showPassword}
-              error={!!errors.password}
-              disabled={isLoading}
-              style={styles.input}
-              right={
-                <TextInput.Icon
-                  icon={showPassword ? 'eye-off' : 'eye'}
-                  onPress={() => setShowPassword(!showPassword)}
-                />
-              }
-            />
-            {showPasswordStrength && (
-              <Body
-                style={[
-                  styles.helperText,
-                  {
-                    color:
-                      passwordStrength === 'Strong password'
-                        ? theme.colors.primary
-                        : theme.colors.error,
-                  },
-                ]}
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Password"
+                isPassword
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Repeat password"
+                isPassword
+                value={passwordConfirmation}
+                onChangeText={setPasswordConfirmation}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <Text style={styles.validationTip}>{getValidationTip()}</Text>
+            </View>
+            <View style={styles.formGroup}>
+              <HuppyButton
+                variant="login"
+                onPress={handleSubmit}
+                disabled={!isFormValid}
               >
-                {passwordStrength}
-              </Body>
-            )}
-            {errors.password && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {errors.password}
-              </Body>
-            )}
-
-            <TextInput
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={(text) => {
-                setConfirmPassword(text);
-                if (errors.confirmPassword) {
-                  setErrors({ ...errors, confirmPassword: undefined });
-                }
-              }}
-              secureTextEntry={!showConfirmPassword}
-              error={!!errors.confirmPassword}
-              disabled={isLoading}
-              style={styles.input}
-              right={
-                <TextInput.Icon
-                  icon={showConfirmPassword ? 'eye-off' : 'eye'}
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                />
-              }
-            />
-            {errors.confirmPassword && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {errors.confirmPassword}
-              </Body>
-            )}
-
-            <Button
-              mode="contained"
-              onPress={handleSignup}
-              loading={isLoading}
-              disabled={isLoading}
-              style={styles.signupButton}
-            >
-              Create Account
-            </Button>
-
-            <View style={styles.loginContainer}>
-              <Body>Already have an account? </Body>
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate('Login')}
-                disabled={isLoading}
-                compact
-              >
-                Sign In
-              </Button>
+                Continue
+              </HuppyButton>
             </View>
           </View>
-        </Container>
+
+          <View style={styles.row}>
+            <Text style={styles.rowText}>Have an account already? </Text>
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.linkLogin}>Login</Text>
+            </Pressable>
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -229,51 +149,64 @@ export default function SignupScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.lightBrown,
   },
   scrollContent: {
     flexGrow: 1,
   },
-  content: {
-    flex: 1,
+  loginContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: 350,
+    minWidth: 300,
+    width: '100%',
+    alignSelf: 'center',
+    backgroundColor: colors.lightBrown,
+  },
+  loginHeader: {
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    width: '100%',
+    marginTop: 120,
   },
-  header: {
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    opacity: 0.7,
+  heading: {
+    color: colors.green,
+    fontFamily: fontFamily.bold,
+    fontSize: 25,
+    width: 170,
+    textAlign: 'center',
   },
   form: {
-    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
-  input: {
-    marginBottom: 8,
+  formGroup: {
+    alignItems: 'center',
+    marginVertical: 10,
   },
-  errorText: {
-    fontSize: 12,
-    marginBottom: 8,
-    marginLeft: 12,
+  validationTip: {
+    color: colors.orange,
+    fontSize: 14,
+    fontFamily: fontFamily.regular,
+    textAlign: 'center',
+    maxWidth: 300,
   },
-  helperText: {
-    fontSize: 12,
-    marginBottom: 8,
-    marginLeft: 12,
-  },
-  signupButton: {
-    marginTop: 24,
-    paddingVertical: 8,
-  },
-  loginContainer: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
+    width: '100%',
+  },
+  rowText: {
+    color: colors.black,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
+  },
+  linkLogin: {
+    color: colors.orange,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
+    marginLeft: 20,
   },
 });

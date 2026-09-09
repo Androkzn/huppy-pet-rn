@@ -1,186 +1,136 @@
 /**
  * Theme Configuration
- * Material Design 3 theme using React Native Paper
+ *
+ * Mirrors the web app's visual identity: the palette from
+ * src/components/styles/Colors.js and the 'Balsamiq Sans' body font declared in
+ * the web index.css. Material Design roles are mapped onto those colors so the
+ * React Native Paper primitives inherit the same look.
  */
 
-import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
+import { MD3LightTheme, configureFonts } from 'react-native-paper';
+import * as colors from './colors';
+
+/** The web sets `font-family: 'Balsamiq Sans', sans-serif` on <body>. */
+export const fontFamily = {
+  regular: 'BalsamiqSans_400Regular',
+  bold: 'BalsamiqSans_700Bold',
+  italic: 'BalsamiqSans_400Regular_Italic',
+  boldItalic: 'BalsamiqSans_700Bold_Italic',
+} as const;
+
+// Paper's MD3 variants, all re-pointed at Balsamiq Sans.
+const baseVariants = MD3LightTheme.fonts;
+const fontConfig = Object.fromEntries(
+  Object.entries(baseVariants).map(([variant, style]) => [
+    variant,
+    { ...(style as object), fontFamily: fontFamily.regular, fontWeight: undefined },
+  ])
+) as typeof baseVariants;
 
 const lightTheme = {
   ...MD3LightTheme,
+  fonts: configureFonts({ config: fontConfig as any }),
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#FF6B35',
-    primaryContainer: '#FFE5DC',
-    secondary: '#6C63FF',
-    secondaryContainer: '#E8E6FF',
-    tertiary: '#00B4D8',
-    tertiaryContainer: '#D9F3FA',
-    error: '#BA1A1A',
-    errorContainer: '#FFDAD6',
-    background: '#E9E4D7',
-    surface: '#E9E4D7',
-    surfaceVariant: '#F5F5F5',
-    onPrimary: '#FFFFFF',
-    onPrimaryContainer: '#3E0400',
-    onSecondary: '#FFFFFF',
-    onSecondaryContainer: '#1A0066',
-    onTertiary: '#FFFFFF',
-    onTertiaryContainer: '#001F24',
-    onError: '#FFFFFF',
-    onErrorContainer: '#410002',
-    onBackground: '#201A19',
-    onSurface: '#201A19',
-    onSurfaceVariant: '#53433F',
-    outline: '#857370',
-    outlineVariant: '#D8C2BE',
-    shadow: '#000000',
-    scrim: '#000000',
-    inverseSurface: '#362F2E',
-    inverseOnSurface: '#FBEEEC',
-    inversePrimary: '#FFB59B',
+    // Orange is the web's accent: selected tabs, pressed buttons, links.
+    primary: colors.orange,
+    primaryContainer: colors.lightOrange,
+    // Green carries headings and icon fills.
+    secondary: colors.green,
+    secondaryContainer: colors.lightGreen2,
+    tertiary: colors.lightGreen,
+    tertiaryContainer: colors.oliveLight,
+    error: colors.red,
+    errorContainer: colors.coffe,
+    // Pages sit on white; section bodies use grayBackground, headers use brown.
+    background: colors.white,
+    surface: colors.white,
+    surfaceVariant: colors.grayBackground,
+    onPrimary: colors.white,
+    onPrimaryContainer: colors.darkOrange,
+    onSecondary: colors.white,
+    onSecondaryContainer: colors.white,
+    onTertiary: colors.white,
+    onTertiaryContainer: colors.green,
+    onError: colors.white,
+    onErrorContainer: colors.darkOrange,
+    onBackground: colors.black,
+    onSurface: colors.black,
+    onSurfaceVariant: colors.gray,
+    outline: colors.gray,
+    outlineVariant: colors.lightBrown,
+    shadow: colors.black,
+    scrim: colors.black,
+    inverseSurface: colors.green,
+    inverseOnSurface: colors.white,
+    inversePrimary: colors.lightOrange,
     elevation: {
       level0: 'transparent',
-      level1: '#F9F9F9',
-      level2: '#F5F5F5',
-      level3: '#F0F0F0',
-      level4: '#EEEEEE',
-      level5: '#EBEBEB',
+      level1: colors.white,
+      level2: colors.lightBrown2,
+      level3: colors.grayBackground,
+      level4: colors.grayBackground,
+      level5: colors.lightBrown,
     },
-    surfaceDisabled: 'rgba(32, 26, 25, 0.12)',
-    onSurfaceDisabled: 'rgba(32, 26, 25, 0.38)',
-    backdrop: 'rgba(51, 30, 26, 0.4)',
+    surfaceDisabled: 'rgba(0, 0, 0, 0.12)',
+    onSurfaceDisabled: 'rgba(0, 0, 0, 0.38)',
+    backdrop: 'rgba(0, 0, 0, 0.4)',
   },
 };
 
-const darkTheme = {
-  ...MD3DarkTheme,
-  colors: {
-    ...MD3DarkTheme.colors,
-    primary: '#FFB59B',
-    primaryContainer: '#8C2800',
-    secondary: '#B9B0FF',
-    secondaryContainer: '#3E2F8A',
-    tertiary: '#56D6F5',
-    tertiaryContainer: '#004F58',
-    error: '#FFB4AB',
-    errorContainer: '#93000A',
-    background: '#201A19',
-    surface: '#201A19',
-    surfaceVariant: '#53433F',
-    onPrimary: '#561F00',
-    onPrimaryContainer: '#FFE5DC',
-    onSecondary: '#250066',
-    onSecondaryContainer: '#E8E6FF',
-    onTertiary: '#00363D',
-    onTertiaryContainer: '#D9F3FA',
-    onError: '#690005',
-    onErrorContainer: '#FFDAD6',
-    onBackground: '#ECE0DD',
-    onSurface: '#ECE0DD',
-    onSurfaceVariant: '#D8C2BE',
-    outline: '#A08C89',
-    outlineVariant: '#53433F',
-    shadow: '#000000',
-    scrim: '#000000',
-    inverseSurface: '#ECE0DD',
-    inverseOnSurface: '#362F2E',
-    inversePrimary: '#B33800',
-    elevation: {
-      level0: 'transparent',
-      level1: '#2B2321',
-      level2: '#322725',
-      level3: '#382B29',
-      level4: '#3A2C2A',
-      level5: '#3F2F2D',
-    },
-    surfaceDisabled: 'rgba(236, 224, 221, 0.12)',
-    onSurfaceDisabled: 'rgba(236, 224, 221, 0.38)',
-    backdrop: 'rgba(49, 36, 33, 0.4)',
-  },
-};
-
-// Export default light theme
+// The web app has no dark mode — it renders the same light palette everywhere.
 export const theme = lightTheme;
-export { darkTheme };
+export const darkTheme = lightTheme;
 
-// Typography
+/**
+ * Typography.
+ * The web styles text inline; these are the recurring combinations —
+ * section headings (16px bold green), card titles, labels and body copy.
+ */
 export const typography = {
-  displayLarge: {
-    fontSize: 57,
-    fontWeight: '400' as const,
-    lineHeight: 64,
-  },
-  displayMedium: {
-    fontSize: 45,
-    fontWeight: '400' as const,
-    lineHeight: 52,
-  },
-  displaySmall: {
-    fontSize: 36,
-    fontWeight: '400' as const,
-    lineHeight: 44,
-  },
-  headlineLarge: {
-    fontSize: 32,
-    fontWeight: '400' as const,
-    lineHeight: 40,
-  },
-  headlineMedium: {
-    fontSize: 28,
-    fontWeight: '400' as const,
-    lineHeight: 36,
-  },
-  headlineSmall: {
-    fontSize: 24,
-    fontWeight: '400' as const,
-    lineHeight: 32,
-  },
-  titleLarge: {
-    fontSize: 22,
-    fontWeight: '400' as const,
-    lineHeight: 28,
-  },
-  titleMedium: {
+  /** Section header text, e.g. STATS / DIET BALANCE / ACTIVITIES. */
+  heading: {
+    fontFamily: fontFamily.bold,
     fontSize: 16,
-    fontWeight: '500' as const,
-    lineHeight: 24,
+    color: colors.green,
   },
-  titleSmall: {
-    fontSize: 14,
-    fontWeight: '500' as const,
-    lineHeight: 20,
-  },
-  bodyLarge: {
+  cardTitle: {
+    fontFamily: fontFamily.bold,
     fontSize: 16,
-    fontWeight: '400' as const,
-    lineHeight: 24,
+    color: colors.green,
   },
-  bodyMedium: {
+  body: {
+    fontFamily: fontFamily.regular,
     fontSize: 14,
-    fontWeight: '400' as const,
-    lineHeight: 20,
+    color: colors.black,
   },
-  bodySmall: {
-    fontSize: 12,
-    fontWeight: '400' as const,
-    lineHeight: 16,
-  },
-  labelLarge: {
+  bodyBold: {
+    fontFamily: fontFamily.bold,
     fontSize: 14,
-    fontWeight: '500' as const,
-    lineHeight: 20,
+    color: colors.black,
   },
-  labelMedium: {
-    fontSize: 12,
-    fontWeight: '500' as const,
-    lineHeight: 16,
+  label: {
+    fontFamily: fontFamily.regular,
+    fontSize: 13,
+    color: colors.gray,
   },
-  labelSmall: {
+  tabLabel: {
+    fontFamily: fontFamily.regular,
     fontSize: 11,
-    fontWeight: '500' as const,
-    lineHeight: 16,
   },
-};
+} as const;
+
+/** Layout constants taken from the web chrome. */
+export const layout = {
+  /** AppBar height — NavBar.component.js sets 60px. */
+  navBarHeight: 60,
+  /** TabBar height — TabBar.component.js sets 65px. */
+  tabBarHeight: 65,
+  /** Section header strip — Home.css.js headerStyle. */
+  sectionHeaderHeight: 40,
+  /** Cards and section containers use a 10px radius throughout the web app. */
+  radius: 10,
+} as const;
 
 // Spacing
 export const spacing = {
@@ -196,8 +146,10 @@ export const spacing = {
 export const borderRadius = {
   xs: 4,
   sm: 8,
-  md: 12,
+  md: 10,
   lg: 16,
   xl: 24,
   full: 9999,
 };
+
+export { colors };

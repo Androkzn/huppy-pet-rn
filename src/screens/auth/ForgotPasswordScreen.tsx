@@ -1,71 +1,44 @@
 /**
- * Forgot Password Screen
+ * Forgot Password Screen — port of the web app's ForgotPassword.page.js.
+ *
+ * Same lightBrown page as Login and Signup: the "RESET PASSWORD" heading,
+ * email / password / repeat password pills, and the olive Reset Password
+ * button, which stays disabled until all three are filled in.
  */
 
 import React, { useState } from 'react';
 import {
   View,
+  Text,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Alert,
+  Pressable,
 } from 'react-native';
 import { AuthStackScreenProps } from '@navigation/types';
-import { Button, TextInput, Container, Title, Body } from '@components/ui';
 import { useAuth } from '@contexts/AuthContext';
-import { isValidEmail } from '@utils/validation';
-import { ERROR_MESSAGES } from '@constants/index';
-import { useTheme } from 'react-native-paper';
+import { LoginTextInput } from '@components/ui/LoginTextInput';
+import { HuppyButton } from '@components/ui/Buttons';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type Props = AuthStackScreenProps<'ForgotPassword'>;
 
 export default function ForgotPasswordScreen({ navigation }: Props) {
-  const theme = useTheme();
-  const { sendPasswordReset } = useAuth();
+  const { register } = useAuth();
 
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
-  const validateEmail = (): boolean => {
-    if (!email.trim()) {
-      setError(ERROR_MESSAGES.REQUIRED_FIELD);
-      return false;
-    }
-    if (!isValidEmail(email)) {
-      setError(ERROR_MESSAGES.INVALID_EMAIL);
-      return false;
-    }
-    return true;
-  };
-
-  const handleSendReset = async () => {
-    if (!validateEmail()) {
-      return;
-    }
-
-    setIsLoading(true);
+  const handleSubmit = async () => {
     try {
-      await sendPasswordReset(email.trim());
-      Alert.alert(
-        'Email Sent',
-        'Password reset link has been sent to your email.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]
-      );
+      await register(email.trim(), password);
+      navigation.navigate('Login');
     } catch (error: any) {
-      console.error('Password reset error:', error);
-      Alert.alert(
-        'Error',
-        error?.message || 'Unable to send reset email. Please try again.'
-      );
-    } finally {
-      setIsLoading(false);
+      Alert.alert('', error?.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -78,57 +51,60 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <Container style={styles.content}>
-          <View style={styles.header}>
-            <Title style={styles.title}>Reset Password</Title>
-            <Body style={styles.subtitle}>
-              Enter your email and we'll send you a link to reset your password
-            </Body>
+        <View style={styles.loginContainer}>
+          <View style={styles.loginHeader}>
+            <Text style={styles.heading}>RESET PASSWORD</Text>
           </View>
 
           <View style={styles.form}>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                if (error) {
-                  setError('');
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={email}
+                onChangeText={setEmail}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Password"
+                isPassword
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <LoginTextInput
+                placeholder="Repeat password"
+                isPassword
+                value={passwordConfirmation}
+                onChangeText={setPasswordConfirmation}
+              />
+            </View>
+            <View style={styles.formGroup}>
+              <HuppyButton
+                variant="login"
+                onPress={handleSubmit}
+                disabled={
+                  email.length === 0 ||
+                  password.length === 0 ||
+                  passwordConfirmation.length === 0
                 }
-              }}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-              error={!!error}
-              disabled={isLoading}
-              style={styles.input}
-            />
-            {error && (
-              <Body style={[styles.errorText, { color: theme.colors.error }]}>
-                {error}
-              </Body>
-            )}
-
-            <Button
-              mode="contained"
-              onPress={handleSendReset}
-              loading={isLoading}
-              disabled={isLoading}
-              style={styles.sendButton}
-            >
-              Send Reset Link
-            </Button>
-
-            <Button
-              mode="text"
-              onPress={() => navigation.navigate('Login')}
-              disabled={isLoading}
-              style={styles.backButton}
-            >
-              Back to Login
-            </Button>
+              >
+                Reset Password
+              </HuppyButton>
+            </View>
           </View>
-        </Container>
+
+          <View style={styles.row}>
+            <Text style={styles.rowText}>Have an account already? </Text>
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.linkLogin}>Login</Text>
+            </Pressable>
+          </View>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -137,43 +113,57 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.lightBrown,
   },
   scrollContent: {
     flexGrow: 1,
   },
-  content: {
-    flex: 1,
+  loginContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: 350,
+    minWidth: 300,
+    width: '100%',
+    alignSelf: 'center',
+    backgroundColor: colors.lightBrown,
+  },
+  loginHeader: {
+    alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
+    width: '100%',
+    marginTop: 120,
   },
-  header: {
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    opacity: 0.7,
+  heading: {
+    color: colors.green,
+    fontFamily: fontFamily.bold,
+    fontSize: 25,
+    width: 170,
+    textAlign: 'center',
   },
   form: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  formGroup: {
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
   },
-  input: {
-    marginBottom: 8,
+  rowText: {
+    color: colors.black,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
   },
-  errorText: {
-    fontSize: 12,
-    marginBottom: 8,
-    marginLeft: 12,
-  },
-  sendButton: {
-    marginTop: 24,
-    paddingVertical: 8,
-  },
-  backButton: {
-    marginTop: 16,
+  linkLogin: {
+    color: colors.orange,
+    fontFamily: fontFamily.regular,
+    fontSize: 16,
+    marginLeft: 20,
   },
 });

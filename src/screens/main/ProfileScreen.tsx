@@ -12,7 +12,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import { MainTabScreenProps } from '@navigation/types';
+import { RootStackScreenProps } from '@navigation/types';
 import {
   Title,
   Body,
@@ -29,7 +29,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { DOG_SIZES, ACTIVITY_LEVELS } from '@constants/index';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-type Props = MainTabScreenProps<'Profile'>;
+// Reached from the NavBar avatar drawer, as on the web.
+type Props = RootStackScreenProps<'Profile'>;
 
 const PRESET_OPTIONS = [
   { value: 'barfAdult', label: 'BARF Adult' },

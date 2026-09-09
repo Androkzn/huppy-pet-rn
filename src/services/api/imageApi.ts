@@ -76,6 +76,38 @@ export const uploadImage = async (
 };
 
 /**
+ * Upload an image picked on the device.
+ *
+ * The web path compresses through a canvas before posting; on native the image
+ * picker already returns a cropped, quality-reduced file, so the URI is posted
+ * directly.
+ */
+export const uploadImageFromUri = async (
+  uri: string,
+  destination: string,
+  key: string
+): Promise<boolean> => {
+  const url = `${BACKEND_ENDPOINT}/${destination}/${key}`;
+
+  try {
+    const formData = new FormData();
+    formData.append('image', {
+      uri,
+      name: 'image.jpg',
+      type: 'image/jpeg',
+    } as any);
+
+    await axios.post(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return true;
+  } catch (error) {
+    console.error('Error uploading image with url:', url, error);
+    return false;
+  }
+};
+
+/**
  * Get image URL from server
  */
 export const getImageUrl = async (

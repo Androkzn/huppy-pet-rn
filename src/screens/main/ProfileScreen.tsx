@@ -32,6 +32,8 @@ import {
 } from '@components/ui/FormRows';
 import Avatar from '@components/Avatar';
 import ChartPie from '@components/ChartPie';
+import { ImagePickerDialog } from '@components/dialogs';
+import { uploadImageFromUri, deleteImage } from '@services/api/imageApi';
 import {
   DogActivityType,
   getDogActivityTitle,
@@ -120,6 +122,7 @@ export default function ProfileScreen({ navigation }: Props) {
   const [profile, setProfile] = useState<Profile | null>(currentProfile);
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
+  const [isAvatarDialogOpen, setAvatarDialogOpen] = useState(false);
 
   useEffect(() => {
     if (currentProfile) setProfile(currentProfile);
@@ -227,9 +230,13 @@ export default function ProfileScreen({ navigation }: Props) {
         <View style={styles.topSpacer} />
       </View>
 
-      {/* Avatar */}
+      {/* Avatar — tapping it opens the edit dialog, as on the web */}
       <View style={styles.imageContainer}>
-        <Avatar profile={profile} width={150} />
+        <Avatar
+          profile={profile}
+          width={150}
+          onPress={() => setAvatarDialogOpen(true)}
+        />
       </View>
 
       <Text style={styles.name}>{profile.name}</Text>
@@ -542,6 +549,24 @@ export default function ProfileScreen({ navigation }: Props) {
           )}
         </View>
       </View>
+
+      <ImagePickerDialog
+        visible={isAvatarDialogOpen}
+        placeholderName="avatar_placeholder.png"
+        emptyTitle="Add avatar"
+        onSave={(uri) => {
+          // The web stamps `avatar` with the upload time so the URL re-fetches.
+          uploadImageFromUri(uri, 'avatar', profile._id);
+          updateProfile('avatar', new Date().toISOString());
+          setAvatarDialogOpen(false);
+        }}
+        onDelete={() => {
+          deleteImage('avatar', profile._id);
+          updateProfile('avatar', '');
+          setAvatarDialogOpen(false);
+        }}
+        onClose={() => setAvatarDialogOpen(false)}
+      />
     </PageContainer>
   );
 }
@@ -569,10 +594,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
+  // Web renders the name in an <h2> and the age in an <h3>.
   name: {
     textAlign: 'center',
     color: colors.lightGreen,
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: fontFamily.bold,
   },
   age: {
@@ -583,8 +609,8 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginVertical: 10,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
+    fontFamily: fontFamily.bold,
+    fontSize: 19,
     overflow: 'hidden',
   },
   form: {

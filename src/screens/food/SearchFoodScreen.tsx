@@ -18,8 +18,9 @@ import { PageContainer } from '@components/ui/PageContainer';
 import { Asset, LoadingAndError } from '@components/ui/Asset';
 import { HuppyButton } from '@components/ui/Buttons';
 import { Dropdown } from '@components/ui/Dropdown';
+import { CustomAlert } from '@components/ui/CustomAlert';
 import FoodCard from '@components/FoodCard';
-import { FilterFood, FoodCategoryType } from '@constants/enums';
+import { FilterFood, FoodCategoryType, AlertType } from '@constants/enums';
 import * as colors from '../../theme/colors';
 import { fontFamily } from '../../theme';
 import type { FoodTemplate } from '../../types';
@@ -44,6 +45,9 @@ export default function SearchFoodScreen({ navigation, route }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('meat');
   const [selectedFilter, setSelectedFilter] = useState<string>(FilterFood.ALL);
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const [alertType] = useState<string>(AlertType.SUCCESS);
 
   const isCategoryFilter = selectedFilter === FilterFood.CATEGORY;
   const isCustomFilter = selectedFilter === FilterFood.CUSTOM;
@@ -174,6 +178,13 @@ export default function SearchFoodScreen({ navigation, route }: Props) {
           )}
         </View>
       )}
+
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setAppearance={setShowAlert}
+      />
     </PageContainer>
   );
 }

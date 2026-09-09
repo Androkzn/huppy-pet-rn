@@ -17,6 +17,8 @@ import {
   TitleButtonsAndTextField,
 } from '@components/ui/FormRows';
 import FoodImage from '@components/FoodImage';
+import { ImagePickerDialog } from '@components/dialogs';
+import { uploadImageFromUri, deleteImage } from '@services/api/imageApi';
 import {
   FoodType,
   FoodUnits,
@@ -60,6 +62,8 @@ export default function EditFoodScreen({ navigation, route }: Props) {
 
   const [foodItem, setFoodItem] = useState<Partial<FoodTemplate>>({});
   const [isEdited, setIsEdited] = useState(false);
+  const [isImageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   useEffect(() => {
     if (food) setFoodItem(food);
@@ -105,7 +109,11 @@ export default function EditFoodScreen({ navigation, route }: Props) {
       </View>
 
       <View style={styles.imageContainer}>
-        <FoodImage foodItem={food} />
+        <FoodImage
+          foodItem={food}
+          imageDataUrl={imageUri}
+          onPress={() => setImageDialogOpen(true)}
+        />
       </View>
 
       <View style={styles.form}>
@@ -156,6 +164,26 @@ export default function EditFoodScreen({ navigation, route }: Props) {
           />
         </View>
       </View>
+
+      <ImagePickerDialog
+        visible={isImageDialogOpen}
+        imageUri={imageUri}
+        placeholderName="food_placeholder.png"
+        emptyTitle="Add image"
+        onSave={(uri) => {
+          setImageUri(uri);
+          uploadImageFromUri(uri, 'food', `${(food as any)?.userId}/${foodId}`);
+          onInputChange('image', new Date().toISOString());
+          setImageDialogOpen(false);
+        }}
+        onDelete={() => {
+          setImageUri(null);
+          deleteImage('food', `${(food as any)?.userId}/${foodId}`);
+          onInputChange('image', '');
+          setImageDialogOpen(false);
+        }}
+        onClose={() => setImageDialogOpen(false)}
+      />
     </PageContainer>
   );
 }

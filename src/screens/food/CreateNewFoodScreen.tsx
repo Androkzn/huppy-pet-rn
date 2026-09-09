@@ -8,7 +8,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAddFoodTemplate } from '@hooks/useGraphQL';
 import { useAuth } from '@contexts/AuthContext';
@@ -20,6 +20,9 @@ import {
   TitleButtonsAndTextField,
 } from '@components/ui/FormRows';
 import { TitleAndSlider } from '@components/ui/TitleAndSlider';
+import { CustomAlert } from '@components/ui/CustomAlert';
+import { ImagePickerDialog } from '@components/dialogs';
+import { uploadImageFromUri } from '@services/api/imageApi';
 import FoodImage from '@components/FoodImage';
 import {
   FoodType,
@@ -28,6 +31,7 @@ import {
   AddFoodRowType,
   getTitleForAddFoodRowType,
   getTitleUpercased,
+  AlertType,
 } from '@constants/enums';
 import * as colors from '../../theme/colors';
 import { fontFamily } from '../../theme';
@@ -60,6 +64,12 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
   const { mealId } = route.params;
   const { user } = useAuth();
   const { mutate: addFoodTemplate } = useAddFoodTemplate();
+
+  const [isImageDialogOpen, setImageDialogOpen] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const [alertType, setAlertType] = useState<string>(AlertType.ERROR);
 
   // Web's prefilled form state.
   const [foodItem, setFoodItem] = useState<any>({
@@ -109,6 +119,16 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
       {
         onSuccess: (data: any) => {
           const templateId = data?.templateId ?? data;
+
+          // Web: the picked image is uploaded once the template has an id.
+          if (imageUri && templateId) {
+            uploadImageFromUri(imageUri, 'food', `${foodItem.userId}/${templateId}`);
+          }
+
+          setMessage('Food template created');
+          setAlertType(AlertType.SUCCESS);
+          setShowAlert(true);
+
           if (alsoAddToMeal && templateId) {
             navigation.navigate('AddFood', {
               mealId,
@@ -119,7 +139,9 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
           }
         },
         onError: () => {
-          Alert.alert('', 'Food template cannot be added. Try again.');
+          setMessage('Food template cannot be added. Try again.');
+          setAlertType(AlertType.ERROR);
+          setShowAlert(true);
         },
       }
     );
@@ -143,7 +165,11 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
 
       <View style={styles.form}>
         <View style={styles.imageContainer}>
-          <FoodImage foodItem={foodItem} />
+          <FoodImage
+            foodItem={foodItem}
+            imageDataUrl={imageUri}
+            onPress={() => setImageDialogOpen(true)}
+          />
         </View>
 
         <TitleAndTextField
@@ -227,6 +253,29 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
           </HuppyButton>
         </View>
       </View>
+
+      <ImagePickerDialog
+        visible={isImageDialogOpen}
+        imageUri={imageUri}
+        placeholderName="food_placeholder.png"
+        emptyTitle="Add image"
+        onSave={(uri) => {
+          setImageUri(uri);
+          setImageDialogOpen(false);
+        }}
+        onDelete={() => {
+          setImageUri(null);
+          setImageDialogOpen(false);
+        }}
+        onClose={() => setImageDialogOpen(false)}
+      />
+
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setAppearance={setShowAlert}
+      />
     </PageContainer>
   );
 }

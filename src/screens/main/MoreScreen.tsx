@@ -91,13 +91,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
+  // More.css.js linkContainerStyle: margin 10px 10px 0 10px
   linkContainer: {
     flexDirection: 'row',
     height: 50,
     justifyContent: 'space-between',
-    width: '100%',
+    alignSelf: 'stretch',
     alignItems: 'center',
     marginTop: 10,
+    marginHorizontal: 10,
     borderWidth: 1,
     borderColor: colors.lightGreen,
     borderRadius: 10,

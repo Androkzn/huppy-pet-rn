@@ -14,6 +14,8 @@ export type RootStackParamList = {
   // Reached from the NavBar avatar drawer, as on the web.
   Profile: undefined;
   Register: undefined;
+  // The web router's catch-all route.
+  NotFound: undefined;
 };
 
 // Auth Stack Navigator

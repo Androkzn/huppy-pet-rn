@@ -7,7 +7,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAddFood, useGetFoodTemplateById } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
@@ -20,8 +20,9 @@ import {
   TitleAndDropdown,
   TitleButtonsAndTextField,
 } from '@components/ui/FormRows';
+import { CustomAlert } from '@components/ui/CustomAlert';
 import FoodImage from '@components/FoodImage';
-import { FoodUnits } from '@constants/enums';
+import { FoodUnits, AlertType } from '@constants/enums';
 import * as colors from '../../theme/colors';
 import { fontFamily } from '../../theme';
 
@@ -52,6 +53,9 @@ export default function AddFoodScreen({ navigation, route }: Props) {
   const [isNutritionExpanded, setNutritionExpanded] = useState(false);
   const [units, setUnits] = useState<string>(FoodUnits.GRAM);
   const [weight, setWeight] = useState(0);
+  const [showAlert, setShowAlert] = useState(false);
+  const [message, setMessage] = useState('');
+  const [alertType, setAlertType] = useState<string>(AlertType.ERROR);
 
   const addFoodToMeal = () => {
     if (!foodItem || !currentProfile || !user) return;
@@ -70,11 +74,15 @@ export default function AddFoodScreen({ navigation, route }: Props) {
       } as any,
       {
         onSuccess: () => {
-          Alert.alert('', `${foodItem.name} added to your meal.`);
+          setMessage(`${foodItem.name} added to your meal.`);
+          setAlertType(AlertType.SUCCESS);
+          setShowAlert(true);
           navigation.navigate('SearchFood', { mealId });
         },
         onError: () => {
-          Alert.alert('', `${foodItem.name} cannot be added . Try again.`);
+          setMessage(`${foodItem.name} cannot be added . Try again.`);
+          setAlertType(AlertType.ERROR);
+          setShowAlert(true);
         },
       }
     );
@@ -200,12 +208,20 @@ export default function AddFoodScreen({ navigation, route }: Props) {
             variant="rectangleTextButton"
             width={200}
             onPress={addFoodToMeal}
-            disabled={weight === 0}
+            disabled={weight === 0 || showAlert}
           >
             Add to Meal
           </HuppyButton>
         </View>
       </View>
+
+      <CustomAlert
+        message={message}
+        type={alertType}
+        show={showAlert}
+        setAppearance={setShowAlert}
+        timeout={2000}
+      />
     </PageContainer>
   );
 }

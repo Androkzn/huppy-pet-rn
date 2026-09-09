@@ -16,6 +16,7 @@ import NavBar from '@components/NavBar';
 import { Spinner } from '@components/ui/Asset';
 import ProfileScreen from '@screens/main/ProfileScreen';
 import RegisterScreen from '@screens/auth/RegisterScreen';
+import NotFoundScreen from '@screens/NotFoundScreen';
 import * as colors from '../theme/colors';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -60,6 +61,11 @@ export const RootNavigator = () => {
               name="Register"
               component={RegisterScreen}
               options={{ headerShown: true, header: () => <NavBar showLogo /> }}
+            />
+            <Stack.Screen
+              name="NotFound"
+              component={NotFoundScreen}
+              options={{ headerShown: true, header: () => <NavBar /> }}
             />
           </>
         ) : (

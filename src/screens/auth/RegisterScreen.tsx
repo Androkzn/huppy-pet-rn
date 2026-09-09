@@ -25,6 +25,8 @@ import {
   TitleToggleAndButtons,
 } from '@components/ui/FormRows';
 import ChartPie from '@components/ChartPie';
+import { ImagePickerDialog } from '@components/dialogs';
+import { uploadImageFromUri } from '@services/api/imageApi';
 import {
   DogActivityType,
   getDogActivityTitle,
@@ -93,6 +95,9 @@ export default function RegisterScreen() {
 
   const [isFoodRatioExpanded, setFoodRatioExpanded] = useState(true);
   const [isFoodCategoryExpanded, setFoodCategoryExpanded] = useState(false);
+  const [isAvatarDialogOpen, setAvatarDialogOpen] = useState(false);
+  // Picked before the profile exists; uploaded once it has an id.
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [customFoodCategories, setCustomFoodCategories] = useState<
     PresetCategory[]
   >([]);
@@ -170,6 +175,12 @@ export default function RegisterScreen() {
     addProfile(profile, {
       onSuccess: (data: any) => {
         const profileNew = data;
+
+        // Web: uploadAvatar runs once the new profile has an id.
+        if (avatarUri && profileNew?._id) {
+          uploadImageFromUri(avatarUri, 'avatar', profileNew._id);
+        }
+
         if (profileNew?.preset === RatioPresets.CUSTOM) {
           customFoodCategories.forEach((category) =>
             addFoodCategory({
@@ -215,7 +226,12 @@ export default function RegisterScreen() {
 
       {/* Avatar */}
       <View style={styles.imageContainer}>
-        <ImageCircle imageName="avatar_placeholder.png" width={150} />
+        <ImageCircle
+          imageName="avatar_placeholder.png"
+          width={150}
+          imageDataUrl={avatarUri}
+          onPress={() => setAvatarDialogOpen(true)}
+        />
       </View>
 
       <Text style={styles.name}>{profile.name}</Text>
@@ -531,6 +547,24 @@ export default function RegisterScreen() {
           SAVE
         </HuppyButton>
       </View>
+
+      <ImagePickerDialog
+        visible={isAvatarDialogOpen}
+        imageUri={avatarUri}
+        placeholderName="avatar_placeholder.png"
+        emptyTitle="Add avatar"
+        onSave={(uri) => {
+          setAvatarUri(uri);
+          setProfile({ ...profile, avatar: new Date().toISOString() });
+          setAvatarDialogOpen(false);
+        }}
+        onDelete={() => {
+          setAvatarUri(null);
+          setProfile({ ...profile, avatar: '' });
+          setAvatarDialogOpen(false);
+        }}
+        onClose={() => setAvatarDialogOpen(false)}
+      />
     </PageContainer>
   );
 }
@@ -558,10 +592,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
+  // Web renders the name in an <h2> and the age in an <h3>.
   name: {
     textAlign: 'center',
     color: colors.lightGreen,
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: fontFamily.bold,
   },
   age: {
@@ -572,8 +607,8 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginVertical: 10,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
+    fontFamily: fontFamily.bold,
+    fontSize: 19,
     overflow: 'hidden',
   },
   form: {

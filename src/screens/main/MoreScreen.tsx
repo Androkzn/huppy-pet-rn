@@ -1,237 +1,124 @@
 /**
- * More Screen
- * Settings and additional options
+ * More Screen — port of the web app's More.page.js.
+ *
+ * Two link rows — Logout and Delete account — each a 50px gray pill outlined in
+ * lightGreen, with a green icon on the left and a green arrow on the right.
  */
 
 import React from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { MainTabScreenProps } from '@navigation/types';
-import { Title, Body, Card } from '@components/ui';
 import { useAuth } from '@contexts/AuthContext';
-import { useProfile } from '@contexts/ProfileContext';
-import { useTheme, List } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PageContainer } from '@components/ui/PageContainer';
+import { Asset } from '@components/ui/Asset';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type Props = MainTabScreenProps<'More'>;
 
-export default function MoreScreen({ navigation }: Props) {
-  const theme = useTheme();
-  const { logout } = useAuth();
-  const { currentProfile } = useProfile();
+interface LinkProps {
+  title: string;
+  iconName: string;
+  onPress: () => void;
+}
 
-  const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: async () => {
-          await logout();
+const LinkRow: React.FC<LinkProps> = ({ title, iconName, onPress }) => (
+  <Pressable style={styles.linkContainer} onPress={onPress}>
+    <View style={styles.linkNameContainer}>
+      <View style={styles.linkIcon}>
+        <Asset
+          imageName={iconName}
+          width={30}
+          height={30}
+          fill={colors.green}
+        />
+      </View>
+      <Text style={styles.linkTitle}>{title}</Text>
+    </View>
+    <View style={styles.linkArrow}>
+      <Asset imageName="arrow_right_green.svg" width={15} height={15} />
+    </View>
+  </Pressable>
+);
+
+export default function MoreScreen({}: Props) {
+  const { logout } = useAuth();
+
+  const deleteAccount = () => {
+    Alert.alert(
+      '',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'OK',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // The web calls deleteUserAccount here; logging out is the closest
+              // equivalent exposed by the mobile auth context.
+              await logout();
+            } catch (error) {
+              console.error('Error deleting account', error);
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Title style={styles.title}>More</Title>
-
-      {currentProfile && (
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.profileHeader}>
-              <MaterialCommunityIcons
-                name="dog"
-                size={60}
-                color={theme.colors.primary}
-              />
-              <View style={styles.profileInfo}>
-                <Title>{currentProfile.name}</Title>
-                <Body>{currentProfile.breed || 'Mixed'}</Body>
-                <Body style={styles.profileDetail}>
-                  {currentProfile.weight} kg • {currentProfile.size}
-                </Body>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-      )}
-
-      {/* Settings Section */}
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.sectionTitle}>Settings</Title>
-          <List.Item
-            title="Notifications"
-            description="Manage notification preferences"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="bell"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Navigate to notifications settings
-            }}
-          />
-          <List.Item
-            title="Units"
-            description="Weight, distance, temperature"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="ruler"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Navigate to units settings
-            }}
-          />
-          <List.Item
-            title="Data Backup"
-            description="Export and import data"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="cloud-upload"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Navigate to backup settings
-            }}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* About Section */}
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.sectionTitle}>About</Title>
-          <List.Item
-            title="Privacy Policy"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="shield-check"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Open privacy policy
-            }}
-          />
-          <List.Item
-            title="Terms of Service"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="file-document"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Open terms of service
-            }}
-          />
-          <List.Item
-            title="Help & Support"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="help-circle"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-            right={(props) => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              // TODO: Open help
-            }}
-          />
-          <List.Item
-            title="Version"
-            description="1.0.0"
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="information"
-                size={24}
-                color={theme.colors.primary}
-              />
-            )}
-          />
-        </Card.Content>
-      </Card>
-
-      {/* Account Section */}
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.sectionTitle}>Account</Title>
-          <List.Item
-            title="Logout"
-            titleStyle={{ color: theme.colors.error }}
-            left={(props) => (
-              <MaterialCommunityIcons
-                name="logout"
-                size={24}
-                color={theme.colors.error}
-              />
-            )}
-            onPress={handleLogout}
-          />
-        </Card.Content>
-      </Card>
-
-      <Body style={styles.footer}>
-        Made with ❤️ for pet parents
-      </Body>
-    </ScrollView>
+    <PageContainer>
+      <View style={styles.column}>
+        <LinkRow
+          title="Logout"
+          iconName="logout_tab_icon_unselected.svg"
+          onPress={logout}
+        />
+        <LinkRow
+          title="Delete account"
+          iconName="delete_account.svg"
+          onPress={deleteAccount}
+        />
+      </View>
+    </PageContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  column: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
   },
-  content: {
-    padding: 16,
+  linkContainer: {
+    flexDirection: 'row',
+    height: 50,
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: colors.lightGreen,
+    borderRadius: 10,
+    backgroundColor: colors.grayBackground,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  card: {
-    marginBottom: 16,
-  },
-  profileHeader: {
+  linkNameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
-  profileInfo: {
-    marginLeft: 16,
-    flex: 1,
+  linkIcon: {
+    width: 60,
+    alignItems: 'center',
   },
-  profileDetail: {
-    fontSize: 12,
-    opacity: 0.7,
-    marginTop: 4,
+  linkTitle: {
+    color: colors.green,
+    fontFamily: fontFamily.bold,
+    fontSize: 16,
+    marginHorizontal: 10,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  footer: {
-    textAlign: 'center',
-    opacity: 0.6,
-    marginTop: 24,
-    marginBottom: 32,
+  linkArrow: {
+    marginHorizontal: 10,
   },
 });

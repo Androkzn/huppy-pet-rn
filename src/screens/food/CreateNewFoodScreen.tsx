@@ -1,14 +1,36 @@
 /**
- * Create New Food Screen
- * Create custom food template
+ * Create New Food Screen — port of the web app's CreateNewFood.page.js
+ * + NewFoodForm.
+ *
+ * The photo picker, Name / Food type / Units / Food category rows, the
+ * Nutrition Facts rows, the meat-bones ratio slider (meat and bones only), a
+ * description box, and the two create buttons.
  */
 
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Title, Body, Card, Button, TextInput } from '@components/ui';
 import { useAddFoodTemplate } from '@hooks/useGraphQL';
-import { useProfile } from '@contexts/ProfileContext';
+import { useAuth } from '@contexts/AuthContext';
+import { PageContainer } from '@components/ui/PageContainer';
+import { HuppyButton } from '@components/ui/Buttons';
+import {
+  TitleAndDropdown,
+  TitleAndTextField,
+  TitleButtonsAndTextField,
+} from '@components/ui/FormRows';
+import { TitleAndSlider } from '@components/ui/TitleAndSlider';
+import FoodImage from '@components/FoodImage';
+import {
+  FoodType,
+  FoodUnits,
+  FoodCategoryType,
+  AddFoodRowType,
+  getTitleForAddFoodRowType,
+  getTitleUpercased,
+} from '@constants/enums';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type FoodStackParamList = {
   SearchFood: { mealId: string };
@@ -19,148 +41,256 @@ type FoodStackParamList = {
 
 type Props = NativeStackScreenProps<FoodStackParamList, 'CreateNewFood'>;
 
+const typeOptions = Object.values(FoodType).map((type) => ({
+  rawValue: type,
+  title: getTitleUpercased(type),
+}));
+
+const unitOptions = Object.values(FoodUnits).map((type) => ({
+  rawValue: type,
+  title: type,
+}));
+
+const categoryOptions = Object.values(FoodCategoryType).map((type) => ({
+  rawValue: type,
+  title: getTitleUpercased(type),
+}));
+
 export default function CreateNewFoodScreen({ navigation, route }: Props) {
-  const { currentProfile } = useProfile();
   const { mealId } = route.params;
+  const { user } = useAuth();
+  const { mutate: addFoodTemplate } = useAddFoodTemplate();
 
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('meat');
-  const [calories, setCalories] = useState('');
-  const [protein, setProtein] = useState('');
-  const [fat, setFat] = useState('');
-  const [carbs, setCarbs] = useState('');
+  // Web's prefilled form state.
+  const [foodItem, setFoodItem] = useState<any>({
+    _id: '',
+    userId: user?.id ?? '',
+    name: '',
+    image: '',
+    type: 'food',
+    units: 'gram',
+    categoryType: 'meat',
+    protein: 0,
+    fat: 0,
+    fiber: 0,
+    ash: 0,
+    carb: 0,
+    calories: 0,
+    servings: 0,
+    caloriesServing: 0,
+    servingWeight: 0,
+    meatRatio: 100,
+    bonesRatio: 0,
+    desc: '',
+    weight: 0,
+  });
 
-  const { mutate: addFoodTemplate, isLoading } = useAddFoodTemplate();
+  const onInputChange = (name: string, value: string | number) => {
+    setFoodItem((prev: any) =>
+      // Anything that is not plain food is filed under "other".
+      name === 'type' && value !== 'food'
+        ? { ...prev, [name]: value, categoryType: FoodCategoryType.OTHER }
+        : { ...prev, [name]: value }
+    );
+  };
 
-  const handleCreateFood = () => {
-    if (!name.trim()) {
-      Alert.alert('Error', 'Please enter food name');
-      return;
-    }
+  // New food needs a name, calories, and at least one macro above zero.
+  const isValid =
+    foodItem.name.length > 2 &&
+    foodItem.calories > 0 &&
+    (foodItem.protein > 0 || foodItem.fat > 0 || foodItem.carb > 0);
 
-    const caloriesNum = parseFloat(calories) || 0;
-    const proteinNum = parseFloat(protein) || 0;
-    const fatNum = parseFloat(fat) || 0;
-    const carbsNum = parseFloat(carbs) || 0;
+  const addNewFood = (alsoAddToMeal: boolean) => {
+    if (foodItem.name.length === 0 || foodItem.calories === 0) return;
 
+    const { _id, ...rest } = foodItem;
     addFoodTemplate(
+      { ...rest, isCustom: true } as any,
       {
-        name: name.trim(),
-        categoryType: category,
-        calories: caloriesNum,
-        protein: proteinNum,
-        fat: fatNum,
-        carb: carbsNum,
-        isCustom: true,
-        userId: currentProfile?.userId || '',
-        type: category,
-        ash: 0,
-        bonesRatio: 0,
-        caloriesServing: caloriesNum,
-        desc: '',
-        fiber: 0,
-        image: '',
-        meatRatio: 0,
-        servingWeight: 100,
-        servings: 1,
-        units: 'g',
-        weight: 100,
-      },
-      {
-        onSuccess: () => {
-          Alert.alert('Success', 'Custom food created successfully', [
-            {
-              text: 'OK',
-              onPress: () => navigation.navigate('SearchFood', { mealId }),
-            },
-          ]);
+        onSuccess: (data: any) => {
+          const templateId = data?.templateId ?? data;
+          if (alsoAddToMeal && templateId) {
+            navigation.navigate('AddFood', {
+              mealId,
+              foodTemplateId: templateId,
+            });
+          } else {
+            navigation.navigate('SearchFood', { mealId });
+          }
         },
-        onError: (error: any) => {
-          Alert.alert('Error', error?.message || 'Failed to create food');
+        onError: () => {
+          Alert.alert('', 'Food template cannot be added. Try again.');
         },
       }
     );
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.title}>Basic Information</Title>
-            <TextInput
-              label="Food Name *"
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-            />
-            <TextInput
-              label="Category"
-              value={category}
-              onChangeText={setCategory}
-              style={styles.input}
-            />
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.title}>Nutrition (per 100g)</Title>
-            <TextInput
-              label="Calories (kcal)"
-              value={calories}
-              onChangeText={setCalories}
-              keyboardType="numeric"
-              style={styles.input}
-            />
-            <TextInput
-              label="Protein (g)"
-              value={protein}
-              onChangeText={setProtein}
-              keyboardType="numeric"
-              style={styles.input}
-            />
-            <TextInput
-              label="Fat (g)"
-              value={fat}
-              onChangeText={setFat}
-              keyboardType="numeric"
-              style={styles.input}
-            />
-            <TextInput
-              label="Carbs (g)"
-              value={carbs}
-              onChangeText={setCarbs}
-              keyboardType="numeric"
-              style={styles.input}
-            />
-          </Card.Content>
-        </Card>
-
-        <Button
-          mode="contained"
-          onPress={handleCreateFood}
-          loading={isLoading}
-          disabled={isLoading}
-          style={styles.createButton}
+    <PageContainer>
+      {/* Top navigation */}
+      <View style={styles.topButtonsContainer}>
+        <HuppyButton
+          variant="backButton"
+          imageName="arrow_left_green.svg"
+          imageSize={20}
+          onPress={() => navigation.goBack()}
         >
-          Create Food
-        </Button>
+          Back
+        </HuppyButton>
+        <Text style={styles.title}>Add New Food</Text>
+        <View style={styles.topSpacer} />
+      </View>
 
-        <Button mode="outlined" onPress={() => navigation.goBack()} disabled={isLoading}>
-          Cancel
-        </Button>
-      </ScrollView>
-    </View>
+      <View style={styles.form}>
+        <View style={styles.imageContainer}>
+          <FoodImage foodItem={foodItem} />
+        </View>
+
+        <TitleAndTextField
+          title="Name"
+          placeholder="Enter food name"
+          onChange={(value) => onInputChange('name', value)}
+        />
+        <TitleAndDropdown
+          title="Food type"
+          initialValue={foodItem.type}
+          dropdownOptions={typeOptions}
+          onChange={(value) => onInputChange('type', value)}
+        />
+        <TitleAndDropdown
+          title="Units"
+          initialValue={foodItem.units}
+          dropdownOptions={unitOptions}
+          onChange={(value) => onInputChange('units', value)}
+        />
+        <TitleAndDropdown
+          title="Food category"
+          initialValue={foodItem.categoryType}
+          dropdownOptions={categoryOptions}
+          onChange={(value) => onInputChange('categoryType', value)}
+          disabled={foodItem.type !== 'food'}
+        />
+
+        <Text style={styles.nutritionFactsTitle}>Nutrition Facts</Text>
+
+        {Object.values(AddFoodRowType).map((rowType) => (
+          <TitleButtonsAndTextField
+            key={rowType}
+            title={getTitleForAddFoodRowType(rowType)}
+            initialValue={foodItem[rowType]}
+            onChange={(value) => onInputChange(rowType, value)}
+            onChangeButton={(value) => onInputChange(rowType, value)}
+          />
+        ))}
+
+        {foodItem.type === 'food' &&
+          (foodItem.categoryType === 'meat' ||
+            foodItem.categoryType === 'bones') && (
+            <TitleAndSlider
+              title="Meat / Bones ratio"
+              firstValueTitle="Meat"
+              secondValueTitle="Bones"
+              firstValue={foodItem.meatRatio}
+              secondValue={foodItem.bonesRatio}
+              onChange={(meatRatio, bonesRatio) =>
+                setFoodItem((prev: any) => ({ ...prev, meatRatio, bonesRatio }))
+              }
+            />
+          )}
+
+        <View style={styles.descriptionBox}>
+          <Text style={styles.descriptionTitle}>Add Description</Text>
+          <TextInput
+            style={styles.descriptionInput}
+            multiline
+            value={foodItem.desc}
+            onChangeText={(value) => onInputChange('desc', value)}
+          />
+        </View>
+
+        <View style={styles.buttonRow}>
+          <HuppyButton
+            variant="rectangleTextButton"
+            width={130}
+            onPress={() => addNewFood(false)}
+            disabled={!isValid}
+          >
+            Create Food
+          </HuppyButton>
+          <HuppyButton
+            variant="rectangleTextButton"
+            width={200}
+            onPress={() => addNewFood(true)}
+            disabled={!isValid}
+          >
+            Create and Add to Meal
+          </HuppyButton>
+        </View>
+      </View>
+    </PageContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scrollView: { flex: 1 },
-  scrollContent: { padding: 16 },
-  card: { marginBottom: 16 },
-  title: { fontSize: 18, fontWeight: '600', marginBottom: 16 },
-  input: { marginBottom: 12 },
-  createButton: { marginBottom: 12, paddingVertical: 8 },
+  topButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 10,
+  },
+  topSpacer: {
+    width: 100,
+  },
+  title: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontSize: 17,
+    fontFamily: fontFamily.bold,
+  },
+  form: {
+    width: '100%',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  nutritionFactsTitle: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontFamily: fontFamily.bold,
+    fontSize: 17,
+    marginVertical: 10,
+  },
+  descriptionBox: {
+    borderRadius: 10,
+    backgroundColor: colors.lightBrown,
+    margin: 3,
+    padding: 10,
+  },
+  descriptionTitle: {
+    fontSize: 16,
+    fontFamily: fontFamily.bold,
+    color: colors.black,
+    marginBottom: 5,
+  },
+  descriptionInput: {
+    minHeight: 80,
+    borderRadius: 10,
+    backgroundColor: colors.white,
+    padding: 10,
+    fontSize: 16,
+    fontFamily: fontFamily.regular,
+    color: colors.black,
+    textAlignVertical: 'top',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+  },
 });

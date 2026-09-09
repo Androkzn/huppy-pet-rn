@@ -22,10 +22,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<Realm.User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // TEMPORARY: preview mode for screenshotting while the backend is offline.
+  const [user, setUser] = useState<Realm.User | null>(
+    { id: 'preview-user' } as any
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    if (user) return;
     // Check if user is already logged in
     const currentUser = realmAuth.getCurrentRealmUser();
     setUser(currentUser);

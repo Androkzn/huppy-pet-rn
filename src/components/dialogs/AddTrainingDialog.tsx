@@ -1,15 +1,27 @@
 /**
- * Add Training Dialog
- * Add training session with category and duration
+ * Add Training Dialog — port of the web app's NewTrainingForm.component.js.
+ *
+ * The close button, the "Add Training" title, a Category dropdown, then either
+ * the custom name/type fields or the Type dropdown for that category, a
+ * description box, and the Add Training button.
  */
 
 import React, { useState } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { Modal, Portal, useTheme } from 'react-native-paper';
-import { Title, Body, Button, TextInput, RadioButton } from '@components/ui';
+import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
 import { useAddTraining } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { useAuth } from '@contexts/AuthContext';
+import { HuppyButton } from '@components/ui/Buttons';
+import { TitleAndDropdown, TitleAndTextField } from '@components/ui/FormRows';
+import {
+  TrainingCategory,
+  TrainingType,
+  getTitleForTrainingCategory,
+  getTitleForTrainingType,
+  getTypesForTrainingCategory,
+} from '@constants/enums';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 interface AddTrainingDialogProps {
   visible: boolean;
@@ -17,160 +29,195 @@ interface AddTrainingDialogProps {
   selectedDate?: Date;
 }
 
-const TRAINING_CATEGORIES = [
-  { value: 'obedience', label: 'Obedience' },
-  { value: 'tricks', label: 'Tricks' },
-  { value: 'agility', label: 'Agility' },
-  { value: 'socialization', label: 'Socialization' },
-];
+const categoryOptions = Object.values(TrainingCategory).map((type) => ({
+  rawValue: type,
+  title: getTitleForTrainingCategory(type),
+}));
 
 export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
   visible,
   onDismiss,
   selectedDate = new Date(),
 }) => {
-  const theme = useTheme();
   const { currentProfile } = useProfile();
-  const { mutate: addTraining, isLoading } = useAddTraining();
+  const { user } = useAuth();
+  const { mutate: addTraining } = useAddTraining();
 
-  const [category, setCategory] = useState('obedience');
-  const [duration, setDuration] = useState('30');
-  const [notes, setNotes] = useState('');
-  const [date, setDate] = useState(selectedDate);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [form, setForm] = useState({
+    category: TrainingCategory.OBEDIENCE as string,
+    type: TrainingType.SIT as string,
+    customCategory: '',
+    customType: '',
+    description: '',
+  });
 
-  const handleAddTraining = () => {
-    if (!currentProfile) return;
+  const typeOptions = getTypesForTrainingCategory(form.category).map((type) => ({
+    rawValue: type,
+    title: getTitleForTrainingType(type),
+  }));
 
-    const durationNum = parseFloat(duration) || 0;
+  const handleCreate = () => {
+    if (!currentProfile || !user) return;
 
-    addTraining(
-      {
-        userId: currentProfile.userId,
-        profileId: currentProfile._id,
-        category,
-        desc: notes.trim(),
-        isCompleted: false,
-        type: category,
-        customCategory: '',
-        customType: '',
-        date,
-      },
-      {
-        onSuccess: () => {
-          onDismiss();
-          setCategory('obedience');
-          setDuration('30');
-          setNotes('');
-        },
-      }
-    );
+    // A custom type under a named category inherits that category's title.
+    let customCategory = form.customCategory;
+    if (
+      form.category !== TrainingCategory.CUSTOM &&
+      form.type === TrainingType.CUSTOM
+    ) {
+      customCategory = getTitleForTrainingCategory(form.category);
+    }
+
+    addTraining({
+      category: form.category,
+      type: form.type,
+      customCategory,
+      customType: form.customType,
+      desc: form.description,
+      date: selectedDate,
+      profileId: currentProfile._id,
+      userId: user.id,
+    } as any);
+    onDismiss();
   };
 
   return (
-    <Portal>
-      <Modal
-        visible={visible}
-        onDismiss={onDismiss}
-        contentContainerStyle={[
-          styles.modal,
-          { backgroundColor: theme.colors.surface },
-        ]}
-      >
-        <Title style={styles.title}>Add Training Session</Title>
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.backdrop}>
+        <View style={styles.dialog}>
+          <View style={styles.closeButtonContainer}>
+            <HuppyButton variant="circleTextButton" onPress={onDismiss}>
+              x
+            </HuppyButton>
+          </View>
 
-        <Body style={styles.label}>Category</Body>
-        <RadioButton.Group onValueChange={setCategory} value={category}>
-          {TRAINING_CATEGORIES.map((cat) => (
-            <RadioButton.Item
-              key={cat.value}
-              label={cat.label}
-              value={cat.value}
-              disabled={isLoading}
-            />
-          ))}
-        </RadioButton.Group>
+          <Text style={styles.title}>Add Training</Text>
 
-        <TextInput
-          label="Duration (minutes)"
-          value={duration}
-          onChangeText={setDuration}
-          keyboardType="numeric"
-          disabled={isLoading}
-          style={styles.input}
-        />
-
-        <TextInput
-          label="Notes (optional)"
-          value={notes}
-          onChangeText={setNotes}
-          multiline
-          numberOfLines={3}
-          disabled={isLoading}
-          style={styles.input}
-        />
-
-        <Button onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
-          {date.toLocaleDateString()}
-        </Button>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(Platform.OS === 'ios');
-              if (selectedDate) setDate(selectedDate);
-            }}
-            maximumDate={new Date()}
+          <TitleAndDropdown
+            title="Category"
+            initialValue={form.category}
+            dropdownOptions={categoryOptions}
+            onChange={(value) =>
+              setForm({
+                ...form,
+                category: value,
+                type: getTypesForTrainingCategory(value)[0],
+              })
+            }
           />
-        )}
 
-        <View style={styles.actions}>
-          <Button onPress={onDismiss} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button
-            mode="contained"
-            onPress={handleAddTraining}
-            loading={isLoading}
-            disabled={isLoading}
-          >
-            Add
-          </Button>
+          {form.category === TrainingCategory.CUSTOM ? (
+            <View>
+              <Text style={styles.subtitle}>Add your custom training:</Text>
+              <TitleAndTextField
+                title="Name"
+                onChange={(value) => setForm({ ...form, customCategory: value })}
+              />
+              <TitleAndTextField
+                title="Type"
+                onChange={(value) => setForm({ ...form, customType: value })}
+              />
+            </View>
+          ) : form.type === TrainingType.CUSTOM ? (
+            <View>
+              <TitleAndDropdown
+                title="Type"
+                initialValue={form.type}
+                dropdownOptions={typeOptions}
+                onChange={(value) => setForm({ ...form, type: value })}
+              />
+              <TitleAndTextField
+                title="Name"
+                onChange={(value) => setForm({ ...form, customType: value })}
+              />
+            </View>
+          ) : (
+            <TitleAndDropdown
+              title="Type"
+              initialValue={form.type}
+              dropdownOptions={typeOptions}
+              onChange={(value) => setForm({ ...form, type: value })}
+            />
+          )}
+
+          <View style={styles.descriptionBox}>
+            <Text style={styles.descriptionTitle}>Add Description</Text>
+            <TextInput
+              style={styles.descriptionInput}
+              multiline
+              value={form.description}
+              onChangeText={(value) => setForm({ ...form, description: value })}
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <HuppyButton variant="rectangleTextButton" onPress={handleCreate}>
+              Add Training
+            </HuppyButton>
+          </View>
         </View>
-      </Modal>
-    </Portal>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dialog: {
+    maxWidth: 450,
+    minWidth: 250,
+    width: '90%',
+    backgroundColor: colors.white,
+    borderRadius: 10,
     padding: 20,
-    margin: 20,
-    borderRadius: 12,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  input: {
-    marginBottom: 12,
-  },
-  dateButton: {
-    marginVertical: 12,
-  },
-  actions: {
+  closeButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 8,
-    marginTop: 16,
+  },
+  title: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontSize: 20,
+    fontFamily: fontFamily.bold,
+    marginVertical: 20,
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontSize: 16,
+    fontFamily: fontFamily.bold,
+    marginVertical: 10,
+  },
+  descriptionBox: {
+    borderRadius: 10,
+    backgroundColor: colors.lightBrown,
+    margin: 3,
+    padding: 10,
+  },
+  descriptionTitle: {
+    fontSize: 16,
+    fontFamily: fontFamily.bold,
+    color: colors.black,
+    marginBottom: 5,
+  },
+  descriptionInput: {
+    minHeight: 60,
+    borderRadius: 10,
+    backgroundColor: colors.white,
+    padding: 10,
+    fontSize: 16,
+    fontFamily: fontFamily.regular,
+    color: colors.black,
+    textAlignVertical: 'top',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
 });

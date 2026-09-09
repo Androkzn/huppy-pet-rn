@@ -1,20 +1,33 @@
 /**
- * Edit Food Screen
- * Edit existing food item portion
+ * Edit Food Screen — port of the web app's EditFood.page.js + EditFoodForm.
+ *
+ * A Back / "Edit Food" / Save header, the food photo, then Name, Food type,
+ * Units and Food category rows, the Nutrition Facts rows, and a description box.
  */
 
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Title, Body, Card, Button, TextInput } from '@components/ui';
-import { useUpdateFood, useDeleteFood, useGetFoodById, useGetFoodTemplateById } from '@hooks/useGraphQL';
-import { useTheme } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useGetFoodTemplateById, useUpdateFoodTemplate } from '@hooks/useGraphQL';
+import { PageContainer } from '@components/ui/PageContainer';
+import { HuppyButton } from '@components/ui/Buttons';
+import {
+  TitleAndDropdown,
+  TitleAndTextField,
+  TitleButtonsAndTextField,
+} from '@components/ui/FormRows';
+import FoodImage from '@components/FoodImage';
+import {
+  FoodType,
+  FoodUnits,
+  FoodCategoryType,
+  AddFoodRowType,
+  getTitleForAddFoodRowType,
+  getTitleUpercased,
+} from '@constants/enums';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
+import type { FoodTemplate } from '../../types';
 
 type FoodStackParamList = {
   SearchFood: { mealId: string };
@@ -25,312 +38,179 @@ type FoodStackParamList = {
 
 type Props = NativeStackScreenProps<FoodStackParamList, 'EditFood'>;
 
+const typeOptions = Object.values(FoodType).map((type) => ({
+  rawValue: type,
+  title: getTitleUpercased(type),
+}));
+
+const unitOptions = Object.values(FoodUnits).map((type) => ({
+  rawValue: type,
+  title: type,
+}));
+
+const categoryOptions = Object.values(FoodCategoryType).map((type) => ({
+  rawValue: type,
+  title: getTitleUpercased(type),
+}));
+
 export default function EditFoodScreen({ navigation, route }: Props) {
-  const theme = useTheme();
   const { foodId } = route.params;
+  const { data: food } = useGetFoodTemplateById(foodId);
+  const { mutate: updateFoodTemplate } = useUpdateFoodTemplate();
 
-  const [weight, setWeight] = useState('100');
+  const [foodItem, setFoodItem] = useState<Partial<FoodTemplate>>({});
+  const [isEdited, setIsEdited] = useState(false);
 
-  const { mutate: updateFood, isLoading: isUpdating } = useUpdateFood();
-  const { mutate: deleteFood, isLoading: isDeleting } = useDeleteFood();
-  const { data: foodItem, isLoading: isLoadingFood } = useGetFoodById(foodId);
-  const { data: foodTemplate, isLoading: isLoadingTemplate } = useGetFoodTemplateById(foodItem?.templateId || '');
-
-  const isLoading = isUpdating || isDeleting;
-
-  // Set initial weight when food item loads
   useEffect(() => {
-    if (foodItem?.weight) {
-      setWeight(String(foodItem.weight));
-    }
-  }, [foodItem]);
+    if (food) setFoodItem(food);
+  }, [food]);
 
-  const calculateNutrition = () => {
-    if (!foodTemplate || !weight) {
-      return { calories: 0, protein: 0, fat: 0, carbs: 0 };
-    }
-
-    const weightNum = parseFloat(weight) || 0;
-    const multiplier = weightNum / 100;
-
-    return {
-      calories: Math.round((foodTemplate.calories || 0) * multiplier),
-      protein: Math.round((foodTemplate.protein || 0) * multiplier * 10) / 10,
-      fat: Math.round((foodTemplate.fat || 0) * multiplier * 10) / 10,
-      carbs: Math.round((foodTemplate.carb || 0) * multiplier * 10) / 10,
-    };
+  const onInputChange = (name: string, value: string | number) => {
+    setFoodItem((prev) => ({ ...prev, [name]: value }));
+    setIsEdited(true);
   };
 
-  const nutrition = calculateNutrition();
-
-  const handleUpdateFood = () => {
-    const weightNum = parseFloat(weight);
-    if (!weightNum || weightNum <= 0) {
-      Alert.alert('Error', 'Please enter a valid portion size');
+  const saveFood = () => {
+    if (!foodItem.name || foodItem.name.length === 0 || !foodItem.calories) {
       return;
     }
-
-    updateFood(
-      {
-        foodId,
-        updateData: {
-          weight: weightNum,
-          calories: nutrition.calories,
-          servingWeight: weightNum,
-          caloriesServing: nutrition.calories,
-        },
-      },
-      {
-        onSuccess: () => {
-          Alert.alert('Success', 'Food updated successfully', [
-            {
-              text: 'OK',
-              onPress: () => navigation.goBack(),
-            },
-          ]);
-        },
-        onError: (error: any) => {
-          Alert.alert(
-            'Error',
-            error?.message || 'Failed to update food. Please try again.'
-          );
-        },
-      }
+    updateFoodTemplate(
+      { templateId: foodId, updateData: foodItem },
+      { onSuccess: () => navigation.goBack() }
     );
   };
-
-  const handleDeleteFood = () => {
-    Alert.alert(
-      'Delete Food',
-      `Are you sure you want to delete ${foodItem?.name}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            deleteFood(foodId, {
-              onSuccess: () => {
-                Alert.alert('Success', 'Food deleted successfully', [
-                  {
-                    text: 'OK',
-                    onPress: () => navigation.goBack(),
-                  },
-                ]);
-              },
-              onError: (error: any) => {
-                Alert.alert(
-                  'Error',
-                  error?.message || 'Failed to delete food. Please try again.'
-                );
-              },
-            });
-          },
-        },
-      ]
-    );
-  };
-
-  if (isLoadingFood || isLoadingTemplate || !foodItem || !foodTemplate) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Body>Loading food details...</Body>
-      </View>
-    );
-  }
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Food Info Card */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.headerRow}>
-              <MaterialCommunityIcons
-                name="food"
-                size={32}
-                color={theme.colors.primary}
-              />
-              <View style={styles.headerInfo}>
-                <Title style={styles.foodName}>{foodItem.name}</Title>
-                <Body style={styles.category}>{foodItem.categoryType || foodItem.type || 'Other'}</Body>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Portion Size Input */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.sectionTitle}>Portion Size</Title>
-            <View style={styles.portionInput}>
-              <TextInput
-                label="Weight (grams)"
-                value={weight}
-                onChangeText={setWeight}
-                keyboardType="numeric"
-                style={styles.input}
-              />
-              <Body style={styles.unit}>g</Body>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Nutrition Info */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.sectionTitle}>Nutrition ({weight}g)</Title>
-            <View style={styles.nutritionGrid}>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Calories</Body>
-                <Title style={styles.nutritionValue}>{nutrition.calories}</Title>
-                <Body style={styles.nutritionUnit}>kcal</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Protein</Body>
-                <Title style={styles.nutritionValue}>{nutrition.protein}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Fat</Body>
-                <Title style={styles.nutritionValue}>{nutrition.fat}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Carbs</Body>
-                <Title style={styles.nutritionValue}>{nutrition.carbs}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Update Button */}
-        <Button
-          mode="contained"
-          onPress={handleUpdateFood}
-          loading={isUpdating}
-          disabled={isLoading}
-          style={styles.updateButton}
-        >
-          Update Food
-        </Button>
-
-        {/* Delete Button */}
-        <Button
-          mode="outlined"
-          onPress={handleDeleteFood}
-          disabled={isLoading}
-          style={styles.deleteButton}
-        >
-          Delete Food
-        </Button>
-
-        {/* Cancel Button */}
-        <Button
-          mode="text"
+    <PageContainer>
+      {/* Top navigation */}
+      <View style={styles.topButtonsContainer}>
+        <HuppyButton
+          variant="backButton"
+          imageName="arrow_left_green.svg"
+          imageSize={20}
           onPress={() => navigation.goBack()}
-          disabled={isLoading}
-          style={styles.cancelButton}
         >
-          Cancel
-        </Button>
-      </ScrollView>
-    </View>
+          Back
+        </HuppyButton>
+        <Text style={styles.title}>Edit Food</Text>
+        <HuppyButton
+          variant="actionNavigationButton"
+          imageName="checkmark_orange.svg"
+          imageSize={15}
+          onPress={saveFood}
+          disabled={!isEdited}
+        >
+          Save
+        </HuppyButton>
+      </View>
+
+      <View style={styles.imageContainer}>
+        <FoodImage foodItem={food} />
+      </View>
+
+      <View style={styles.form}>
+        <TitleAndTextField
+          title="Name"
+          initialValue={foodItem.name ?? ''}
+          placeholder="Enter food name"
+          onChange={(value) => onInputChange('name', value)}
+        />
+        <TitleAndDropdown
+          title="Food type"
+          initialValue={foodItem.type}
+          dropdownOptions={typeOptions}
+          onChange={(value) => onInputChange('type', value)}
+        />
+        <TitleAndDropdown
+          title="Units"
+          initialValue={foodItem.units}
+          dropdownOptions={unitOptions}
+          onChange={(value) => onInputChange('units', value)}
+        />
+        <TitleAndDropdown
+          title="Food category"
+          initialValue={foodItem.categoryType}
+          dropdownOptions={categoryOptions}
+          onChange={(value) => onInputChange('categoryType', value)}
+        />
+
+        <Text style={styles.nutritionFactsTitle}>Nutrition Facts</Text>
+
+        {Object.values(AddFoodRowType).map((rowType) => (
+          <TitleButtonsAndTextField
+            key={rowType}
+            title={getTitleForAddFoodRowType(rowType)}
+            initialValue={(foodItem as any)?.[rowType] ?? 0}
+            onChange={(value) => onInputChange(rowType, value)}
+            onChangeButton={(value) => onInputChange(rowType, value)}
+          />
+        ))}
+
+        <View style={styles.descriptionBox}>
+          <Text style={styles.descriptionTitle}>Add Description</Text>
+          <TextInput
+            style={styles.descriptionInput}
+            multiline
+            value={(foodItem as any)?.desc ?? ''}
+            onChangeText={(value) => onInputChange('desc', value)}
+          />
+        </View>
+      </View>
+    </PageContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  topButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 10,
   },
-  loadingContainer: {
-    flex: 1,
+  title: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontSize: 17,
+    fontFamily: fontFamily.bold,
+  },
+  imageContainer: {
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
+    marginVertical: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
-  scrollView: {
-    flex: 1,
+  form: {
+    width: '100%',
   },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 32,
+  nutritionFactsTitle: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontFamily: fontFamily.bold,
+    fontSize: 17,
+    marginVertical: 10,
   },
-  card: {
-    marginBottom: 16,
+  descriptionBox: {
+    borderRadius: 10,
+    backgroundColor: colors.lightBrown,
+    margin: 3,
+    padding: 10,
   },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  headerInfo: {
-    flex: 1,
-  },
-  foodName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  category: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  sectionTitle: {
+  descriptionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 16,
+    fontFamily: fontFamily.bold,
+    color: colors.black,
+    marginBottom: 5,
   },
-  portionInput: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  input: {
-    flex: 1,
-  },
-  unit: {
+  descriptionInput: {
+    minHeight: 80,
+    borderRadius: 10,
+    backgroundColor: colors.white,
+    padding: 10,
     fontSize: 16,
-    fontWeight: '500',
-  },
-  nutritionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  nutritionItem: {
-    flex: 1,
-    minWidth: '45%',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: 'rgba(0,0,0,0.02)',
-    borderRadius: 8,
-  },
-  nutritionLabel: {
-    fontSize: 12,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  nutritionValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  nutritionUnit: {
-    fontSize: 12,
-    opacity: 0.7,
-    marginTop: 2,
-  },
-  updateButton: {
-    marginBottom: 12,
-    paddingVertical: 8,
-  },
-  deleteButton: {
-    marginBottom: 12,
-  },
-  cancelButton: {
-    marginBottom: 16,
+    fontFamily: fontFamily.regular,
+    color: colors.black,
+    textAlignVertical: 'top',
   },
 });

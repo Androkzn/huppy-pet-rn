@@ -1,21 +1,29 @@
 /**
- * Add Food Screen
- * Add food item to a meal with portion size
+ * Add Food Screen — port of the web app's AddFood.page.js + AddFoodForm.
+ *
+ * A Back / "Add to meal" header, the food photo and name, the Units and Select
+ * weight rows, the collapsible Description and Nutrition Facts panels, and the
+ * Add to Meal button.
  */
 
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Title, Body, Card, Button, TextInput } from '@components/ui';
 import { useAddFood, useGetFoodTemplateById } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
-import { useTheme } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth } from '@contexts/AuthContext';
+import { useCurrentDate } from '@contexts/DateContext';
+import { PageContainer } from '@components/ui/PageContainer';
+import { Asset } from '@components/ui/Asset';
+import { HuppyButton } from '@components/ui/Buttons';
+import {
+  TitleAndDropdown,
+  TitleButtonsAndTextField,
+} from '@components/ui/FormRows';
+import FoodImage from '@components/FoodImage';
+import { FoodUnits } from '@constants/enums';
+import * as colors from '../../theme/colors';
+import { fontFamily } from '../../theme';
 
 type FoodStackParamList = {
   SearchFood: { mealId: string };
@@ -26,281 +34,257 @@ type FoodStackParamList = {
 
 type Props = NativeStackScreenProps<FoodStackParamList, 'AddFood'>;
 
+const unitOptions = Object.values(FoodUnits).map((type) => ({
+  rawValue: type,
+  title: type,
+}));
+
 export default function AddFoodScreen({ navigation, route }: Props) {
-  const theme = useTheme();
-  const { currentProfile } = useProfile();
   const { mealId, foodTemplateId } = route.params;
+  const { currentProfile } = useProfile();
+  const { user } = useAuth();
+  const { currentDate } = useCurrentDate();
 
-  const [weight, setWeight] = useState('100');
+  const { data: foodItem } = useGetFoodTemplateById(foodTemplateId);
+  const { mutate: addFood } = useAddFood();
 
-  const { mutate: addFood, isLoading } = useAddFood();
-  const { data: foodTemplate, isLoading: isLoadingTemplate } = useGetFoodTemplateById(foodTemplateId);
+  const [isDescriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [isNutritionExpanded, setNutritionExpanded] = useState(false);
+  const [units, setUnits] = useState<string>(FoodUnits.GRAM);
+  const [weight, setWeight] = useState(0);
 
-  const calculateNutrition = () => {
-    if (!foodTemplate || !weight) {
-      return { calories: 0, protein: 0, fat: 0, carbs: 0 };
-    }
-
-    const weightNum = parseFloat(weight) || 0;
-    const multiplier = weightNum / 100;
-
-    return {
-      calories: Math.round((foodTemplate.calories || 0) * multiplier),
-      protein: Math.round((foodTemplate.protein || 0) * multiplier * 10) / 10,
-      fat: Math.round((foodTemplate.fat || 0) * multiplier * 10) / 10,
-      carbs: Math.round((foodTemplate.carb || 0) * multiplier * 10) / 10,
-    };
-  };
-
-  const nutrition = calculateNutrition();
-
-  const handleAddFood = () => {
-    if (!currentProfile) {
-      Alert.alert('Error', 'No profile selected');
-      return;
-    }
-
-    if (!foodTemplate) {
-      Alert.alert('Error', 'Food template not loaded');
-      return;
-    }
-
-    const weightNum = parseFloat(weight);
-    if (!weightNum || weightNum <= 0) {
-      Alert.alert('Error', 'Please enter a valid portion size');
-      return;
-    }
+  const addFoodToMeal = () => {
+    if (!foodItem || !currentProfile || !user) return;
+    const { _id, ...rest } = foodItem as any;
 
     addFood(
       {
+        ...rest,
+        units,
+        weight,
         mealId,
+        templateId: _id,
         profileId: currentProfile._id,
-        userId: currentProfile.userId,
-        name: foodTemplate.name,
-        categoryType: foodTemplate.categoryType || foodTemplate.type || 'other',
-        weight: weightNum,
-        calories: nutrition.calories,
-        templateId: foodTemplateId,
-        bonesRatio: foodTemplate.bonesRatio || 0,
-        meatRatio: foodTemplate.meatRatio || 0,
-        servingWeight: weightNum,
-        servings: 1,
-        units: foodTemplate.units || 'g',
-        type: foodTemplate.type || foodTemplate.categoryType || 'other',
-        caloriesServing: nutrition.calories,
-        image: foodTemplate.image || '',
-        date: new Date(),
-      },
+        userId: user.id,
+        date: currentDate,
+      } as any,
       {
         onSuccess: () => {
-          Alert.alert(
-            'Success',
-            `${foodTemplate.name} added to your meal`,
-            [
-              {
-                text: 'OK',
-                onPress: () => navigation.goBack(),
-              },
-            ]
-          );
+          Alert.alert('', `${foodItem.name} added to your meal.`);
+          navigation.navigate('SearchFood', { mealId });
         },
-        onError: (error: any) => {
-          Alert.alert(
-            'Error',
-            error?.message || 'Failed to add food. Please try again.'
-          );
+        onError: () => {
+          Alert.alert('', `${foodItem.name} cannot be added . Try again.`);
         },
       }
     );
   };
 
-  if (isLoadingTemplate || !foodTemplate) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Body>Loading food details...</Body>
-      </View>
-    );
-  }
+  const NutritionRow = ({ label, value }: { label: string; value?: number }) => (
+    <View style={styles.nutritionRow}>
+      <Text style={styles.nutritionText}>{label}</Text>
+      <Text style={styles.nutritionText}>{value}</Text>
+    </View>
+  );
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* Food Info Card */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.headerRow}>
-              <MaterialCommunityIcons
-                name="food"
-                size={32}
-                color={theme.colors.primary}
-              />
-              <View style={styles.headerInfo}>
-                <Title style={styles.foodName}>{foodTemplate.name}</Title>
-                <Body style={styles.category}>{foodTemplate.categoryType || foodTemplate.type || 'Other'}</Body>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Portion Size Input */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.sectionTitle}>Portion Size</Title>
-            <View style={styles.portionInput}>
-              <TextInput
-                label="Weight (grams)"
-                value={weight}
-                onChangeText={setWeight}
-                keyboardType="numeric"
-                style={styles.input}
-              />
-              <Body style={styles.unit}>g</Body>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Nutrition Info */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.sectionTitle}>Nutrition ({weight}g)</Title>
-            <View style={styles.nutritionGrid}>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Calories</Body>
-                <Title style={styles.nutritionValue}>{nutrition.calories}</Title>
-                <Body style={styles.nutritionUnit}>kcal</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Protein</Body>
-                <Title style={styles.nutritionValue}>{nutrition.protein}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Fat</Body>
-                <Title style={styles.nutritionValue}>{nutrition.fat}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-              <View style={styles.nutritionItem}>
-                <Body style={styles.nutritionLabel}>Carbs</Body>
-                <Title style={styles.nutritionValue}>{nutrition.carbs}</Title>
-                <Body style={styles.nutritionUnit}>g</Body>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Add Button */}
-        <Button
-          mode="contained"
-          onPress={handleAddFood}
-          loading={isLoading}
-          disabled={isLoading}
-          style={styles.addButton}
-        >
-          Add to Meal
-        </Button>
-
-        {/* Cancel Button */}
-        <Button
-          mode="outlined"
+    <PageContainer>
+      {/* Top navigation */}
+      <View style={styles.topButtonsContainer}>
+        <HuppyButton
+          variant="backButton"
+          imageName="arrow_left_green.svg"
+          imageSize={20}
           onPress={() => navigation.goBack()}
-          disabled={isLoading}
-          style={styles.cancelButton}
         >
-          Cancel
-        </Button>
-      </ScrollView>
-    </View>
+          Back
+        </HuppyButton>
+        <Text style={styles.addFoodTitle}>Add to meal</Text>
+        <View style={styles.topSpacer} />
+      </View>
+
+      <View style={styles.form}>
+        <View style={styles.imageContainer}>
+          <FoodImage foodItem={foodItem} isEditing={false} />
+        </View>
+
+        <Text style={styles.addFoodTitle}>{foodItem?.name}</Text>
+
+        <TitleAndDropdown
+          title="Units"
+          dropdownOptions={unitOptions}
+          onChange={setUnits}
+        />
+        <TitleButtonsAndTextField
+          title="Select weight"
+          initialValue={0}
+          onChange={setWeight}
+          onChangeButton={setWeight}
+        />
+
+        {/* Description */}
+        {!!(foodItem as any)?.desc && (
+          <View style={styles.panel}>
+            <View style={styles.panelHeader}>
+              <Text
+                style={styles.panelTitle}
+                onPress={() => setDescriptionExpanded(!isDescriptionExpanded)}
+              >
+                Description
+              </Text>
+              <Asset
+                imageName={
+                  isDescriptionExpanded
+                    ? 'arrow_down_green.svg'
+                    : 'arrow_right_green.svg'
+                }
+                width={20}
+                height={20}
+                onPress={() => setDescriptionExpanded(!isDescriptionExpanded)}
+              />
+            </View>
+            {isDescriptionExpanded && (
+              <View style={styles.panelBody}>
+                <Text style={styles.nutritionText}>
+                  {(foodItem as any)?.desc}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
+        {/* Nutrition facts */}
+        <View style={styles.panel}>
+          <View style={styles.panelHeader}>
+            <Text
+              style={styles.panelTitle}
+              onPress={() => setNutritionExpanded(!isNutritionExpanded)}
+            >
+              Nutrition Facts
+            </Text>
+            <Asset
+              imageName={
+                isNutritionExpanded
+                  ? 'arrow_down_green.svg'
+                  : 'arrow_right_green.svg'
+              }
+              width={20}
+              height={20}
+              onPress={() => setNutritionExpanded(!isNutritionExpanded)}
+            />
+          </View>
+          {isNutritionExpanded && (
+            <View style={styles.panelBody}>
+              <NutritionRow label="Protein, %" value={(foodItem as any)?.protein} />
+              <NutritionRow label="Fat, %" value={(foodItem as any)?.fat} />
+              <NutritionRow
+                label="Carbohydrates, %"
+                value={(foodItem as any)?.carb}
+              />
+              <NutritionRow label="Fiber, %" value={(foodItem as any)?.fiber} />
+              <NutritionRow label="Ash, %" value={(foodItem as any)?.ash} />
+              <NutritionRow
+                label="Calories in 100g, kcal"
+                value={foodItem?.calories}
+              />
+              <NutritionRow
+                label="Calories in serving, kcal"
+                value={(foodItem as any)?.caloriesServing}
+              />
+            </View>
+          )}
+        </View>
+
+        <View style={styles.row}>
+          <HuppyButton
+            variant="rectangleTextButton"
+            width={200}
+            onPress={addFoodToMeal}
+            disabled={weight === 0}
+          >
+            Add to Meal
+          </HuppyButton>
+        </View>
+      </View>
+    </PageContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  topButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 10,
   },
-  loadingContainer: {
-    flex: 1,
+  topSpacer: {
+    width: 100,
+  },
+  form: {
+    maxWidth: 450,
+    minWidth: 250,
+    width: '100%',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  addFoodTitle: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    fontSize: 17,
+    fontFamily: fontFamily.bold,
+    margin: 10,
+  },
+  panel: {
+    flexDirection: 'column',
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+    margin: 3,
+    marginTop: 10,
+    backgroundColor: colors.lightBrown,
+  },
+  panelHeader: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
-  scrollView: {
-    flex: 1,
+  panelTitle: {
+    textAlign: 'center',
+    color: colors.lightGreen,
+    margin: 10,
+    fontSize: 17,
+    fontFamily: fontFamily.bold,
+    padding: 5,
   },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 32,
+  panelBody: {
+    width: '90%',
+    margin: 10,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: colors.white,
   },
-  card: {
-    marginBottom: 16,
-  },
-  headerRow: {
+  nutritionRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
+    justifyContent: 'space-between',
+    width: '80%',
+    margin: 5,
   },
-  headerInfo: {
-    flex: 1,
-  },
-  foodName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  category: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  sectionTitle: {
+  nutritionText: {
+    fontFamily: fontFamily.regular,
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 16,
+    color: colors.black,
   },
-  portionInput: {
+  row: {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
-  },
-  input: {
-    flex: 1,
-  },
-  unit: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  nutritionGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  nutritionItem: {
-    flex: 1,
-    minWidth: '45%',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: 'rgba(0,0,0,0.02)',
-    borderRadius: 8,
-  },
-  nutritionLabel: {
-    fontSize: 12,
-    opacity: 0.7,
-    marginBottom: 4,
-  },
-  nutritionValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  nutritionUnit: {
-    fontSize: 12,
-    opacity: 0.7,
-    marginTop: 2,
-  },
-  addButton: {
-    marginBottom: 12,
-    paddingVertical: 8,
-  },
-  cancelButton: {
-    marginBottom: 16,
+    width: '100%',
   },
 });

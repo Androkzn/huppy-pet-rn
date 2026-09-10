@@ -1,39 +1,96 @@
 /**
- * Checkbox — port of the web app's Checkbox.component.js:
- * a white box that shows an orange checkmark when selected.
+ * Checkbox — a selection mark.
+ *
+ * iOS states selection with a filled tinted circle carrying a checkmark, and
+ * an empty ring when unselected. The mark springs in rather than appearing.
  */
 
-import React from 'react';
-import { StyleSheet, Pressable, View } from 'react-native';
-import * as colors from '../../theme/colors';
-import { Asset } from './Asset';
+import React, { useEffect } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { motion, radius } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
+import { Icon } from '@components/ios/Icon';
 
 interface CheckboxProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  size?: number;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange }) => (
-  <Pressable style={styles.box} onPress={() => onChange(!checked)}>
-    {checked ? (
-      <Asset imageName="checkmark_orange.svg" width={18} height={18} />
-    ) : (
-      <View />
-    )}
-  </Pressable>
-);
+export const Checkbox: React.FC<CheckboxProps> = ({
+  checked,
+  onChange,
+  disabled = false,
+  size = 26,
+}) => {
+  const { colors } = useAppTheme();
+  const mark = useSharedValue(checked ? 1 : 0);
+
+  useEffect(() => {
+    mark.value = withSpring(checked ? 1 : 0, motion.bouncy);
+  }, [checked, mark]);
+
+  const markStyle = useAnimatedStyle(() => ({
+    opacity: mark.value,
+    transform: [{ scale: 0.6 + mark.value * 0.4 }],
+  }));
+
+  return (
+    <Pressable
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked, disabled }}
+      hitSlop={8}
+      disabled={disabled}
+      onPress={() => {
+        haptics.selection();
+        onChange(!checked);
+      }}
+      style={({ pressed }) => [pressed && styles.pressed, disabled && styles.disabled]}
+    >
+      <View
+        style={[
+          styles.box,
+          {
+            width: size,
+            height: size,
+            borderRadius: radius.capsule,
+            borderColor: checked ? 'transparent' : colors.tertiaryLabel,
+            backgroundColor: checked ? colors.tint : 'transparent',
+          },
+        ]}
+      >
+        <Animated.View style={markStyle}>
+          <Icon
+            name="checkmark"
+            size={size * 0.56}
+            weight="bold"
+            color={colors.onTint}
+            fallbackAsset="checkmark_white.svg"
+          />
+        </Animated.View>
+      </View>
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   box: {
-    width: 24,
-    height: 24,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: colors.gray,
-    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 6,
+    borderWidth: 1.5,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  disabled: {
+    opacity: 0.4,
   },
 });
 

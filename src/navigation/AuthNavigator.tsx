@@ -1,6 +1,8 @@
 /**
- * Auth Stack Navigator
- * Handles authentication flow screens
+ * Auth Stack Navigator — login, sign-up, password reset and the first profile.
+ *
+ * The auth screens carry the wordmark in a transparent glass bar, so the
+ * artwork behind them runs to the top edge.
  */
 
 import React from 'react';
@@ -8,7 +10,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackParamList } from './types';
 import NavBar from '@components/NavBar';
 
-// Screens (to be implemented)
 import LoginScreen from '@screens/auth/LoginScreen';
 import SignupScreen from '@screens/auth/SignupScreen';
 import ForgotPasswordScreen from '@screens/auth/ForgotPasswordScreen';
@@ -20,10 +21,11 @@ export const AuthNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        // Web shows the logo AppBar on the auth pages too (login/signup/register/forgot).
         headerShown: true,
-        header: () => <NavBar showLogo />,
+        headerTransparent: true,
+        header: ({ route }) => <NavBar showLogo scrollKey={route.key} />,
         animation: 'slide_from_right',
+        fullScreenGestureEnabled: true,
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />

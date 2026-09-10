@@ -1,89 +1,66 @@
 /**
- * Custom Text Input Component
+ * TextInput — text entry.
+ *
+ * The iOS field, exposed under the props the earlier code used.
  */
 
 import React from 'react';
-import { TextInput as PaperTextInput, useTheme } from 'react-native-paper';
-import { StyleSheet, ViewStyle } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
+import { TextField } from '@components/ios/TextField';
 
 interface TextInputProps {
   value: string;
   onChangeText: (text: string) => void;
   label?: string;
   placeholder?: string;
+  /** Accepted for compatibility; iOS fields have one filled presentation. */
   mode?: 'flat' | 'outlined';
   secureTextEntry?: boolean;
   disabled?: boolean;
   error?: boolean;
+  errorText?: string;
   multiline?: boolean;
   numberOfLines?: number;
-  left?: React.ReactNode;
   right?: React.ReactNode;
-  style?: ViewStyle;
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  style?: StyleProp<ViewStyle>;
+  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad' | 'decimal-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   autoCorrect?: boolean;
 }
 
-interface TextInputComponent extends React.FC<TextInputProps> {
-  Icon: typeof PaperTextInput.Icon;
-  Affix: typeof PaperTextInput.Affix;
-}
-
-const TextInputComponent: TextInputComponent = ({
+export const TextInput: React.FC<TextInputProps> = ({
   value,
   onChangeText,
   label,
   placeholder,
-  mode = 'outlined',
   secureTextEntry = false,
   disabled = false,
   error = false,
+  errorText,
   multiline = false,
   numberOfLines,
-  left,
   right,
   style,
   keyboardType = 'default',
   autoCapitalize = 'sentences',
   autoCorrect = true,
-}) => {
-  const theme = useTheme();
+}) => (
+  <TextField
+    value={value}
+    onChangeText={onChangeText}
+    label={label}
+    placeholder={placeholder}
+    password={secureTextEntry}
+    editable={!disabled}
+    error={error ? (errorText ?? ' ') : null}
+    multiline={multiline}
+    numberOfLines={numberOfLines}
+    trailing={right}
+    containerStyle={style}
+    keyboardType={keyboardType}
+    autoCapitalize={autoCapitalize}
+    autoCorrect={autoCorrect}
+  />
+);
 
-  return (
-    <PaperTextInput
-      value={value}
-      onChangeText={onChangeText}
-      label={label}
-      placeholder={placeholder}
-      mode={mode}
-      secureTextEntry={secureTextEntry}
-      disabled={disabled}
-      error={error}
-      multiline={multiline}
-      numberOfLines={numberOfLines}
-      left={left}
-      right={right}
-      style={[styles.input, style]}
-      keyboardType={keyboardType}
-      autoCapitalize={autoCapitalize}
-      autoCorrect={autoCorrect}
-      outlineStyle={styles.outline}
-    />
-  );
-};
-
-// Add Icon and Affix components
-TextInputComponent.Icon = PaperTextInput.Icon;
-TextInputComponent.Affix = PaperTextInput.Affix;
-
-export const TextInput = TextInputComponent as TextInputComponent;
-
-const styles = StyleSheet.create({
-  input: {
-    backgroundColor: 'transparent',
-  },
-  outline: {
-    borderRadius: 8,
-  },
-});
+export default TextInput;

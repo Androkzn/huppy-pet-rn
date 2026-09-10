@@ -18,8 +18,7 @@ import {
   BalsamiqSans_700Bold_Italic,
 } from '@expo-google-fonts/balsamiq-sans';
 
-import { theme } from './src/theme';
-import * as colors from './src/theme/colors';
+import { ThemeProvider, useAppTheme, usePaperTheme } from './src/theme/ThemeProvider';
 import { AuthProvider } from './src/contexts/AuthContext';
 import { ProfileProvider } from './src/contexts/ProfileContext';
 import { DateProvider } from './src/contexts/DateContext';
@@ -36,8 +35,34 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Everything below the theme provider, so the Paper theme and the status bar
+ * follow the appearance the provider resolved.
+ */
+const ThemedApp = () => {
+  const paperTheme = usePaperTheme();
+  const { colors, isDark } = useAppTheme();
+
+  return (
+    <PaperProvider theme={paperTheme}>
+      <View style={{ flex: 1, backgroundColor: colors.groupedBackground }}>
+        <AuthProvider>
+          <ProfileProvider>
+            <DateProvider>
+              <RootNavigator />
+              {/* Glass chrome is translucent, so the status bar follows the
+                  appearance rather than being pinned dark. */}
+              <StatusBar style={isDark ? 'light' : 'dark'} />
+            </DateProvider>
+          </ProfileProvider>
+        </AuthProvider>
+      </View>
+    </PaperProvider>
+  );
+};
+
 export default function App() {
-  // The web loads Balsamiq Sans from Google Fonts in index.html.
+  // Balsamiq Sans is the brand display face; the system face carries the UI.
   const [fontsLoaded] = useFonts({
     BalsamiqSans_400Regular,
     BalsamiqSans_400Regular_Italic,
@@ -46,23 +71,16 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: colors.white }} />;
+    return <View style={{ flex: 1 }} />;
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1, width: '100%' }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <PaperProvider theme={theme}>
-            <AuthProvider>
-              <ProfileProvider>
-                <DateProvider>
-                  <RootNavigator />
-                  <StatusBar style="dark" />
-                </DateProvider>
-              </ProfileProvider>
-            </AuthProvider>
-          </PaperProvider>
+          <ThemeProvider>
+            <ThemedApp />
+          </ThemeProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -1,10 +1,12 @@
 /**
- * Custom Button Component
+ * Button — the general-purpose button.
+ *
+ * Maps the Material `mode` the earlier code used onto the iOS 26 button styles.
  */
 
 import React from 'react';
-import { Button as PaperButton, useTheme } from 'react-native-paper';
-import { StyleSheet, ViewStyle } from 'react-native';
+import type { StyleProp, ViewStyle } from 'react-native';
+import { IOSButton, type ButtonVariant } from '@components/ios/Button';
 
 interface ButtonProps {
   mode?: 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
@@ -12,13 +14,21 @@ interface ButtonProps {
   children: React.ReactNode;
   disabled?: boolean;
   loading?: boolean;
-  icon?: string;
-  style?: ViewStyle;
-  contentStyle?: ViewStyle;
-  labelStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: unknown;
+  contentStyle?: unknown;
   uppercase?: boolean;
   compact?: boolean;
+  fullWidth?: boolean;
 }
+
+const MODES: Record<NonNullable<ButtonProps['mode']>, ButtonVariant> = {
+  contained: 'prominent',
+  elevated: 'glass',
+  'contained-tonal': 'tinted',
+  outlined: 'bordered',
+  text: 'plain',
+};
 
 export const Button: React.FC<ButtonProps> = ({
   mode = 'contained',
@@ -26,42 +36,20 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   disabled = false,
   loading = false,
-  icon,
   style,
-  contentStyle,
-  labelStyle,
-  uppercase = false,
   compact = false,
-}) => {
-  const theme = useTheme();
-
-  return (
-    <PaperButton
-      mode={mode}
-      onPress={onPress}
-      disabled={disabled}
-      loading={loading}
-      icon={icon}
-      style={[styles.button, style]}
-      contentStyle={[styles.content, contentStyle]}
-      labelStyle={[styles.label, labelStyle]}
-      uppercase={uppercase}
-      compact={compact}
-    >
-      {children}
-    </PaperButton>
-  );
-};
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 8,
-  },
-  content: {
-    paddingVertical: 8,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+  fullWidth = false,
+}) => (
+  <IOSButton
+    variant={MODES[mode]}
+    size={compact ? 'sm' : 'md'}
+    title={typeof children === 'string' ? children : undefined}
+    onPress={onPress}
+    disabled={disabled}
+    loading={loading}
+    fullWidth={fullWidth}
+    style={style}
+  >
+    {typeof children === 'string' ? undefined : children}
+  </IOSButton>
+);

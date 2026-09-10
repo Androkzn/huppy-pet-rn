@@ -1,62 +1,57 @@
 /**
- * More Screen — port of the web app's More.page.js.
+ * More Screen — account actions.
  *
- * Two link rows — Logout and Delete account — each a 50px gray pill outlined in
- * lightGreen, with a green icon on the left and a green arrow on the right.
+ * An inset grouped list, the way iOS presents settings: each action in a
+ * labelled group, destructive ones stated in red and confirmed in an alert that
+ * names what will happen.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { Alert, Linking, View } from 'react-native';
 import { MainTabScreenProps } from '@navigation/types';
 import { useAuth } from '@contexts/AuthContext';
+import { useProfile } from '@contexts/ProfileContext';
 import { PageContainer } from '@components/ui/PageContainer';
-import { Asset } from '@components/ui/Asset';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { ListRow, ListSection } from '@components/ios/List';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 
 type Props = MainTabScreenProps<'More'>;
 
-interface LinkProps {
-  title: string;
-  iconName: string;
-  onPress: () => void;
-}
-
-const LinkRow: React.FC<LinkProps> = ({ title, iconName, onPress }) => (
-  <Pressable style={styles.linkContainer} onPress={onPress}>
-    <View style={styles.linkNameContainer}>
-      <View style={styles.linkIcon}>
-        <Asset
-          imageName={iconName}
-          width={30}
-          height={30}
-          fill={colors.green}
-        />
-      </View>
-      <Text style={styles.linkTitle}>{title}</Text>
-    </View>
-    <View style={styles.linkArrow}>
-      <Asset imageName="arrow_right_green.svg" width={15} height={15} />
-    </View>
-  </Pressable>
-);
-
-export default function MoreScreen({}: Props) {
+export default function MoreScreen({ navigation }: Props) {
   const { logout } = useAuth();
+  const { currentProfile } = useProfile();
+  const { colors } = useAppTheme();
 
-  const deleteAccount = () => {
+  const confirmLogout = () => {
+    Alert.alert('Sign out?', 'You can sign back in at any time.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign out',
+        style: 'destructive',
+        onPress: () => {
+          haptics.medium();
+          logout();
+        },
+      },
+    ]);
+  };
+
+  const confirmDeleteAccount = () => {
     Alert.alert(
-      '',
-      'Are you sure you want to delete your account? This action cannot be undone.',
+      'Delete account?',
+      'This removes your profiles, meals and training history. It cannot be undone.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'OK',
+          text: 'Delete',
           style: 'destructive',
           onPress: async () => {
             try {
-              // The web calls deleteUserAccount here; logging out is the closest
-              // equivalent exposed by the mobile auth context.
+              haptics.warning();
+              // Account deletion is served by the same session teardown the
+              // backend exposes to the app.
               await logout();
             } catch (error) {
               console.error('Error deleting account', error);
@@ -68,59 +63,54 @@ export default function MoreScreen({}: Props) {
   };
 
   return (
-    <PageContainer>
-      <View style={styles.column}>
-        <LinkRow
-          title="Logout"
-          iconName="logout_tab_icon_unselected.svg"
-          onPress={logout}
-        />
-        <LinkRow
-          title="Delete account"
-          iconName="delete_account.svg"
-          onPress={deleteAccount}
-        />
+    <PageContainer title="More">
+      <View style={{ gap: spacing.xl }}>
+        <ListSection header="Profile">
+          <ListRow
+            title={currentProfile?.name ?? 'Profile'}
+            subtitle="Weight, activity and daily goals"
+            symbol="pawprint.fill"
+            onPress={() => navigation.getParent()?.navigate('Profile')}
+          />
+          <ListRow
+            title="Add profile"
+            symbol="person.badge.plus"
+            fallbackAsset="add_profile.svg"
+            onPress={() => navigation.getParent()?.navigate('Register')}
+          />
+        </ListSection>
+
+        <ListSection header="Support">
+          <ListRow
+            title="Help and feedback"
+            symbol="questionmark.circle"
+            onPress={() => Linking.openURL('mailto:support@huppy.app')}
+          />
+        </ListSection>
+
+        <ListSection
+          header="Account"
+          footer="Deleting your account removes every profile and its history."
+        >
+          <ListRow
+            title="Sign out"
+            symbol="rectangle.portrait.and.arrow.right"
+            symbolColor={colors.tint}
+            fallbackAsset="logout_tab_icon_unselected.svg"
+            chevron={false}
+            onPress={confirmLogout}
+          />
+          <ListRow
+            title="Delete account"
+            symbol="person.crop.circle.badge.xmark"
+            symbolBackground={colors.red + '1F'}
+            fallbackAsset="delete_account.svg"
+            destructive
+            chevron={false}
+            onPress={confirmDeleteAccount}
+          />
+        </ListSection>
       </View>
     </PageContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  column: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  // More.css.js linkContainerStyle: margin 10px 10px 0 10px
-  linkContainer: {
-    flexDirection: 'row',
-    height: 50,
-    justifyContent: 'space-between',
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    marginTop: 10,
-    marginHorizontal: 10,
-    borderWidth: 1,
-    borderColor: colors.lightGreen,
-    borderRadius: 10,
-    backgroundColor: colors.grayBackground,
-  },
-  linkNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  linkIcon: {
-    width: 60,
-    alignItems: 'center',
-  },
-  linkTitle: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    marginHorizontal: 10,
-  },
-  linkArrow: {
-    marginHorizontal: 10,
-  },
-});

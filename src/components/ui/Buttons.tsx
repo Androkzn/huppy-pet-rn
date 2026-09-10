@@ -1,22 +1,34 @@
 /**
- * Buttons — port of the web app's Buttons.components.js.
+ * HuppyButton — the app's button, in the iOS 26 styles.
  *
- * Same variant names, same geometry, same colors, and the same orange
- * pressed state (the web used `&:active`).
+ * The screens keep asking for the same variant names they always did; each one
+ * now resolves to a platform treatment: prominent tint for primary actions,
+ * a soft tinted fill for secondary ones, glass for controls that float over
+ * content, and circular tinted buttons for the steppers. Shapes are capsules
+ * with continuous corners, presses shrink on a spring, and each one answers
+ * with a haptic.
  */
 
 import React from 'react';
 import {
-  Text,
-  StyleSheet,
   Pressable,
+  StyleSheet,
   View,
   ViewStyle,
   TextStyle,
   StyleProp,
 } from 'react-native';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { motion, pressScale, radius, textStyles } from '@theme/tokens';
+import type { Palette } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
+import { Glass } from '@components/ios/Glass';
+import { Label } from '@components/ios/Text';
 import { Asset } from './Asset';
 
 export type ButtonVariant =
@@ -32,180 +44,165 @@ export type ButtonVariant =
   | 'backButton'
   | 'actionNavigationButton';
 
+type Fill = 'prominent' | 'tinted' | 'destructive' | 'glass' | 'plain' | 'bordered';
+
 interface VariantSpec {
-  container: ViewStyle;
-  text: TextStyle;
-  /** Background applied while pressed — the web's `&:active`. */
-  pressedBackground?: string;
-  /** SVG tint, and its pressed counterpart. */
-  fill?: string;
-  pressedFill?: string;
+  fill: Fill;
+  height: number;
+  /** Fixed width, for the circular and pill-shaped variants. */
+  width?: number;
+  minWidth?: number;
+  paddingHorizontal: number;
+  text: keyof typeof textStyles;
+  /** Capsule unless the variant wants the softer card radius. */
+  cornerRadius?: number;
+  iconSize: number;
 }
 
-// 0px 4px 4px rgba(0,0,0,0.25), the web's recurring button shadow.
-const buttonShadow: ViewStyle = {
-  shadowColor: colors.black,
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,
-  elevation: 4,
-};
-
-export const buttonVariants: Record<ButtonVariant, VariantSpec> = {
+const SPECS: Record<ButtonVariant, VariantSpec> = {
   addButton: {
-    container: {
-      backgroundColor: colors.gray,
-      borderRadius: 10,
-      width: 130,
-      height: 35,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 10,
-      ...buttonShadow,
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 14 },
-    pressedBackground: colors.orange,
-    fill: colors.white,
+    fill: 'tinted',
+    height: 36,
+    minWidth: 120,
+    paddingHorizontal: 14,
+    text: 'subheadline',
+    iconSize: 16,
   },
-
   deleteButton: {
-    container: {
-      backgroundColor: colors.gray,
-      borderRadius: 10,
-      width: 130,
-      height: 35,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 10,
-      ...buttonShadow,
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 14 },
-    pressedBackground: colors.orange,
-    fill: colors.white,
+    fill: 'destructive',
+    height: 36,
+    minWidth: 120,
+    paddingHorizontal: 14,
+    text: 'subheadline',
+    iconSize: 16,
   },
-
   iconButton: {
-    container: {
-      backgroundColor: 'transparent',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    text: { color: colors.green, fontFamily: fontFamily.bold, fontSize: 14 },
-    fill: colors.green,
-    pressedFill: colors.orange,
+    fill: 'plain',
+    height: 32,
+    paddingHorizontal: 6,
+    text: 'subheadline',
+    iconSize: 18,
   },
-
   circleTextButton: {
-    container: {
-      backgroundColor: colors.lightGreen,
-      width: 35,
-      height: 35,
-      borderRadius: 17.5,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 20 },
-    pressedBackground: colors.orange,
+    fill: 'tinted',
+    height: 36,
+    width: 36,
+    paddingHorizontal: 0,
+    text: 'title3',
+    iconSize: 18,
   },
-
   circleTextTransparentButton: {
-    container: {
-      backgroundColor: 'transparent',
-      width: 20,
-      height: 20,
-      borderRadius: 10,
-      borderWidth: 2,
-      borderColor: colors.lightGreen,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.lightGreen, fontFamily: fontFamily.bold, fontSize: 18 },
+    fill: 'bordered',
+    height: 24,
+    width: 24,
+    paddingHorizontal: 0,
+    text: 'footnote',
+    iconSize: 12,
   },
-
   circleTextButtonSmall: {
-    container: {
-      backgroundColor: colors.lightGreen,
-      width: 25,
-      height: 25,
-      borderRadius: 10,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 18 },
-    pressedBackground: colors.orange,
+    fill: 'tinted',
+    height: 28,
+    width: 28,
+    paddingHorizontal: 0,
+    text: 'callout',
+    iconSize: 14,
   },
-
   rectangleTextButton: {
-    container: {
-      backgroundColor: colors.lightGreen,
-      borderRadius: 10,
-      width: 150,
-      height: 40,
-      marginVertical: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 14 },
-    pressedBackground: colors.orange,
+    fill: 'prominent',
+    height: 46,
+    minWidth: 160,
+    paddingHorizontal: 22,
+    text: 'headline',
+    iconSize: 17,
   },
-
   chartTextButton: {
-    container: {
-      backgroundColor: colors.olive,
-      borderRadius: 10,
-      width: 100,
-      height: 20,
-      marginVertical: 5,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 13 },
-    pressedBackground: colors.orange,
+    fill: 'tinted',
+    height: 28,
+    minWidth: 100,
+    paddingHorizontal: 14,
+    text: 'footnote',
+    iconSize: 13,
   },
-
   login: {
-    container: {
-      backgroundColor: colors.olive,
-      borderRadius: 10,
-      width: 150,
-      height: 50,
-      marginVertical: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 18 },
-    pressedBackground: colors.lightGreen,
+    fill: 'prominent',
+    height: 50,
+    minWidth: 220,
+    paddingHorizontal: 24,
+    text: 'headline',
+    iconSize: 18,
   },
-
   backButton: {
-    container: {
-      backgroundColor: colors.brown,
-      borderRadius: 10,
-      height: 35,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingRight: 10,
-      ...buttonShadow,
-    },
-    text: { color: colors.green, fontFamily: fontFamily.bold, fontSize: 14 },
-    pressedBackground: colors.orange,
-    fill: colors.green,
+    fill: 'glass',
+    height: 36,
+    paddingHorizontal: 14,
+    text: 'subheadline',
+    iconSize: 15,
   },
-
   actionNavigationButton: {
-    container: {
-      backgroundColor: colors.lightGreen,
-      borderRadius: 10,
-      height: 35,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingRight: 10,
-      ...buttonShadow,
-    },
-    text: { color: colors.white, fontFamily: fontFamily.bold, fontSize: 14 },
-    pressedBackground: colors.orange,
+    fill: 'tinted',
+    height: 36,
+    paddingHorizontal: 14,
+    text: 'subheadline',
+    iconSize: 15,
   },
 };
+
+/** Surface and content colours for a fill, in the current appearance. */
+const resolveFill = (
+  fill: Fill,
+  colors: Palette
+): { container: ViewStyle; content: string } => {
+  switch (fill) {
+    case 'prominent':
+      return { container: { backgroundColor: colors.tint }, content: colors.onTint };
+    case 'destructive':
+      return {
+        container: { backgroundColor: colors.red + '1F' },
+        content: colors.red,
+      };
+    case 'tinted':
+      return { container: { backgroundColor: colors.tintSoft }, content: colors.tint };
+    case 'bordered':
+      return {
+        container: {
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderColor: colors.tint,
+        },
+        content: colors.tint,
+      };
+    case 'plain':
+      return { container: { backgroundColor: 'transparent' }, content: colors.tint };
+    default:
+      return { container: {}, content: colors.tint };
+  }
+};
+
+/**
+ * Legacy style map, kept for callers that inspect a variant's geometry.
+ * The rendered look comes from the specs above.
+ */
+export const buttonVariants: Record<
+  ButtonVariant,
+  { container: ViewStyle; text: TextStyle }
+> = Object.fromEntries(
+  (Object.keys(SPECS) as ButtonVariant[]).map((variant) => {
+    const spec = SPECS[variant];
+    return [
+      variant,
+      {
+        container: {
+          height: spec.height,
+          width: spec.width,
+          minWidth: spec.minWidth,
+          paddingHorizontal: spec.paddingHorizontal,
+          borderRadius: spec.cornerRadius ?? radius.capsule,
+        },
+        text: textStyles[spec.text] as TextStyle,
+      },
+    ];
+  })
+) as Record<ButtonVariant, { container: ViewStyle; text: TextStyle }>;
 
 interface HuppyButtonProps {
   variant: ButtonVariant;
@@ -216,17 +213,15 @@ interface HuppyButtonProps {
   height?: number;
   background?: string;
   style?: StyleProp<ViewStyle>;
-  /** Leading icon, as the web's ButtonImage/ButtonLink `imageName`. */
+  /** Leading icon, by asset name — resolved to an SF Symbol where there is one. */
   imageName?: string;
   imageSize?: number;
-  /** Web default: `margin: 0 10px`. */
   imageMargin?: number;
+  accessibilityLabel?: string;
 }
 
-/**
- * Web: ButtonText / ButtonImage / ButtonLink — one component here, since
- * navigation is handled by the caller in React Navigation.
- */
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export const HuppyButton: React.FC<HuppyButtonProps> = ({
   variant,
   children,
@@ -237,52 +232,103 @@ export const HuppyButton: React.FC<HuppyButtonProps> = ({
   background,
   style,
   imageName,
-  imageSize = 20,
-  imageMargin = 10,
+  imageSize,
+  imageMargin,
+  accessibilityLabel,
 }) => {
-  const spec = buttonVariants[variant];
+  const { colors } = useAppTheme();
+  const spec = SPECS[variant];
+  const { container, content } = resolveFill(spec.fill, colors);
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const shell: StyleProp<ViewStyle> = [
+    styles.shell,
+    {
+      height: height ?? spec.height,
+      width: width ?? spec.width,
+      minWidth: spec.minWidth,
+      paddingHorizontal: spec.paddingHorizontal,
+      borderRadius: spec.cornerRadius ?? radius.capsule,
+      gap: imageName ? (imageMargin !== undefined ? imageMargin : 7) : 0,
+    },
+    container,
+    background !== undefined ? { backgroundColor: background } : null,
+    disabled ? styles.disabled : null,
+    style,
+  ];
+
+  const body = (
+    <>
+      {imageName ? (
+        <Asset
+          imageName={imageName}
+          width={imageSize ?? spec.iconSize}
+          height={imageSize ?? spec.iconSize}
+          fill={content}
+        />
+      ) : null}
+      {typeof children === 'string' ? (
+        <Label variant={spec.text} color={content} weight="600" numberOfLines={1}>
+          {children}
+        </Label>
+      ) : (
+        children
+      )}
+    </>
+  );
 
   return (
-    <Pressable
-      onPress={onPress}
+    <AnimatedPressable
+      accessibilityRole="button"
+      accessibilityLabel={
+        accessibilityLabel ?? (typeof children === 'string' ? children : undefined)
+      }
+      accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
-      style={({ pressed }) => [
-        spec.container,
-        width !== undefined && { width },
-        height !== undefined && { height },
-        background !== undefined && { backgroundColor: background },
-        pressed && spec.pressedBackground
-          ? { backgroundColor: spec.pressedBackground }
-          : null,
-        disabled ? styles.disabled : null,
-        style,
-      ]}
+      onPressIn={() => {
+        scale.value = withSpring(pressScale.control, motion.snappy);
+      }}
+      onPressOut={() => {
+        scale.value = withSpring(1, motion.snappy);
+      }}
+      onPress={() => {
+        haptics.light();
+        onPress?.();
+      }}
+      style={animatedStyle}
     >
-      {({ pressed }: { pressed: boolean }) => (
-        <>
-          {imageName && (
-            <View style={{ marginHorizontal: imageMargin }}>
-              <Asset
-                imageName={imageName}
-                width={imageSize}
-                height={imageSize}
-                fill={pressed ? spec.pressedFill ?? spec.fill : spec.fill}
-              />
-            </View>
-          )}
-          {typeof children === 'string' ? (
-            <Text style={spec.text}>{children}</Text>
-          ) : (
-            children
-          )}
-        </>
+      {spec.fill === 'glass' ? (
+        <Glass
+          variant="regular"
+          radius={spec.cornerRadius ?? radius.capsule}
+          bordered
+          interactive
+          style={shell}
+        >
+          {body}
+        </Glass>
+      ) : (
+        <View style={shell}>{body}</View>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
 const styles = StyleSheet.create({
+  shell: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+  },
   disabled: {
     opacity: 0.4,
   },
 });
+
+export default HuppyButton;

@@ -1,28 +1,37 @@
 /**
- * Section — port of the repeated section chrome in the web app
- * (Home.css.js: childConteinerStyle + headerStyle + headingStyle).
+ * Section — a collapsible group of content.
  *
- * A rounded gray panel under a 40px brown header strip that carries a
- * disclosure arrow, a title, an optional right-hand title, and an optional
- * round "+" button.
+ * The iOS grouped-list shape: a quiet uppercase header outside the surface, the
+ * content on a rounded card below it, and a chevron that rotates as the section
+ * opens. The add control is a small tinted circular button on the header row,
+ * where iOS puts a section's action.
  */
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import * as colors from '../../theme/colors';
-import { fontFamily, layout } from '../../theme';
-import { Asset } from './Asset';
+import React, { useEffect } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, motion, radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
+import { Icon } from '@components/ios/Icon';
+import { Label } from '@components/ios/Text';
 
 interface SectionProps {
   title: string;
-  /** Second heading pinned to the right of the strip, e.g. 'Today / Goal'. */
+  /** Second heading pinned to the right of the header, e.g. 'Today / Goal'. */
   titleRight?: string;
-  /** Renders the arrow as down (expanded) or right (collapsed). */
+  /** Rotates the chevron and, with `onToggle`, hides the content. */
   expanded?: boolean;
   onToggle?: () => void;
-  /** Shows the round add button on the right of the header. */
+  /** Shows the add button on the right of the header. */
   onAdd?: () => void;
   addDisabled?: boolean;
+  /** Drops the card surface, for sections whose children are cards already. */
+  plain?: boolean;
   children?: React.ReactNode;
   style?: object;
 }
@@ -34,105 +43,155 @@ export const Section: React.FC<SectionProps> = ({
   onToggle,
   onAdd,
   addDisabled,
+  plain = false,
   children,
   style,
 }) => {
+  const { colors } = useAppTheme();
+  const rotation = useSharedValue(expanded ? 0 : -90);
+
+  useEffect(() => {
+    rotation.value = withSpring(expanded ? 0 : -90, motion.smooth);
+  }, [expanded, rotation]);
+
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
+          accessibilityRole={onToggle ? 'button' : 'header'}
+          accessibilityLabel={title}
+          accessibilityState={onToggle ? { expanded } : undefined}
           style={styles.headerTitle}
-          onPress={onToggle}
+          onPress={
+            onToggle
+              ? () => {
+                  haptics.light();
+                  onToggle();
+                }
+              : undefined
+          }
           disabled={!onToggle}
-          activeOpacity={onToggle ? 0.6 : 1}
+          hitSlop={6}
         >
-          <View style={styles.headerArrow}>
-            <Asset
-              imageName={
-                expanded ? 'arrow_down_green.svg' : 'arrow_right_green.svg'
-              }
-              width={20}
-              height={20}
-            />
-          </View>
-          {titleRight ? (
-            <View style={styles.headerText}>
-              <Text style={styles.heading}>{title}</Text>
-              <Text style={styles.heading}>{titleRight}</Text>
-            </View>
-          ) : (
-            <Text style={styles.heading}>{title}</Text>
-          )}
-        </TouchableOpacity>
+          {onToggle ? (
+            <Animated.View style={chevronStyle}>
+              <Icon
+                name="chevron.down"
+                size={12}
+                weight="bold"
+                color={colors.tertiaryLabel}
+                fallbackAsset="arrow_down_green.svg"
+              />
+            </Animated.View>
+          ) : null}
 
-        {onAdd && (
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={onAdd}
+          <Label variant="footnote" role="secondary" sectionHeader numberOfLines={1}>
+            {title}
+          </Label>
+
+          {titleRight ? (
+            <Label
+              variant="footnote"
+              role="tertiary"
+              numberOfLines={1}
+              style={styles.titleRight}
+            >
+              {titleRight}
+            </Label>
+          ) : null}
+        </Pressable>
+
+        {onAdd ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Add to ${title}`}
             disabled={addDisabled}
+            hitSlop={8}
+            onPress={() => {
+              haptics.light();
+              onAdd();
+            }}
+            style={({ pressed }) => [
+              styles.addButton,
+              { backgroundColor: colors.tintSoft },
+              pressed && styles.pressed,
+              addDisabled && styles.disabled,
+            ]}
           >
-            <Asset
-              imageName="plus_round_fill_button.svg"
-              width={30}
-              height={30}
+            <Icon
+              name="plus"
+              size={14}
+              weight="bold"
+              color={colors.tint}
+              fallbackAsset="plus_round_fill_button.svg"
             />
-          </TouchableOpacity>
-        )}
+          </Pressable>
+        ) : null}
       </View>
 
-      {children}
+      {expanded || !onToggle ? (
+        <View
+          style={
+            plain
+              ? styles.plainBody
+              : [styles.body, { backgroundColor: colors.groupedSurface }]
+          }
+        >
+          {children}
+        </View>
+      ) : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // Home.css.js childConteinerStyle
   container: {
-    flexDirection: 'column',
-    alignItems: 'center',
     width: '100%',
-    borderRadius: layout.radius,
-    backgroundColor: colors.grayBackground,
-    overflow: 'hidden',
+    gap: 7,
   },
-  // Home.css.js headerStyle
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%',
-    backgroundColor: colors.brown,
-    height: layout.sectionHeaderHeight,
-    borderTopLeftRadius: layout.radius,
-    borderTopRightRadius: layout.radius,
+    gap: spacing.sm,
+    paddingHorizontal: layout.screenPadding + 4,
+    minHeight: 24,
   },
   headerTitle: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
   },
-  // headerArrowStyle: margin '3px 20px 0px 30px'
-  headerArrow: {
-    marginTop: 3,
-    marginRight: 20,
-    marginLeft: 30,
+  titleRight: {
+    marginLeft: 'auto',
   },
-  // headerTextStyle: space-between across 80% of the strip
-  headerText: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginRight: 30,
-  },
-  // headingStyle
-  heading: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    marginRight: 30,
-  },
-  // headerAddButtonStyle
   addButton: {
-    marginRight: 20,
+    width: 26,
+    height: 26,
+    borderRadius: radius.capsule,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  body: {
+    marginHorizontal: layout.screenPadding,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+  },
+  plainBody: {
+    gap: spacing.md,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  disabled: {
+    opacity: 0.4,
   },
 });
+
+export default Section;

@@ -1,23 +1,27 @@
 /**
- * Dropdown — stands in for the web app's styled <select>.
+ * Dropdown — choosing one value from a list.
  *
- * Matches the web's dropdownStyle: a 150px white field, 35px tall, 10px radius,
- * green 15px label. Tapping it opens the option list.
+ * The field is the iOS pop-up-button shape: a tinted capsule showing the
+ * current value next to up/down chevrons. Choosing happens in a sheet, where
+ * the selected row carries a checkmark — the platform's pattern for a list of
+ * options that is too long for a segmented control.
  */
 
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Pressable,
-  Modal,
-  FlatList,
-  ViewStyle,
-  StyleProp,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
+import { Icon } from '@components/ios/Icon';
+import { Label } from '@components/ios/Text';
+import { ListRow, ListSection } from '@components/ios/List';
+import { Sheet } from '@components/ios/Sheet';
 
 export interface DropdownOption {
   rawValue: string;
@@ -29,6 +33,8 @@ interface DropdownProps {
   options: DropdownOption[];
   onChange: (value: string) => void;
   disabled?: boolean;
+  /** Sheet heading, so the choice has a name. */
+  label?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -37,103 +43,92 @@ export const Dropdown: React.FC<DropdownProps> = ({
   options,
   onChange,
   disabled,
+  label,
   style,
 }) => {
+  const { colors } = useAppTheme();
   const [open, setOpen] = useState(false);
   const selected = options.find((option) => option.rawValue === value);
 
   return (
     <>
       <Pressable
-        style={[styles.field, style]}
-        onPress={() => !disabled && setOpen(true)}
+        accessibilityRole="button"
+        accessibilityLabel={`${label ?? 'Selection'}: ${selected?.title ?? value}`}
+        disabled={disabled}
+        onPress={() => {
+          haptics.light();
+          setOpen(true);
+        }}
+        style={({ pressed }) => [
+          styles.field,
+          { backgroundColor: colors.tertiaryFill },
+          pressed && styles.pressed,
+          disabled && styles.disabled,
+          style,
+        ]}
       >
-        <Text style={styles.fieldText} numberOfLines={1}>
+        <Label variant="subheadline" weight="600" numberOfLines={1} style={styles.fieldText}>
           {selected?.title ?? value}
-        </Text>
-        <Text style={styles.caret}>▾</Text>
+        </Label>
+        <Icon name="chevron.up.chevron.down" size={12} weight="semibold" color={colors.tertiaryLabel} />
       </Pressable>
 
-      <Modal visible={open} transparent animationType="fade">
-        <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-          <View style={styles.sheet}>
-            <FlatList
-              data={options}
-              keyExtractor={(item) => item.rawValue}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={styles.option}
-                  onPress={() => {
-                    onChange(item.rawValue);
-                    setOpen(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      item.rawValue === value && styles.optionTextSelected,
-                    ]}
-                  >
-                    {item.title}
-                  </Text>
-                </Pressable>
-              )}
-            />
-          </View>
-        </Pressable>
-      </Modal>
+      <Sheet
+        open={open}
+        onDismiss={() => setOpen(false)}
+        title={label ?? 'Select'}
+        detent="medium"
+      >
+        <View style={styles.sheetBody}>
+          <ListSection>
+            {options.map((option) => (
+              <ListRow
+                key={option.rawValue}
+                title={option.title}
+                chevron={false}
+                trailing={
+                  option.rawValue === value ? (
+                    <Icon name="checkmark" size={15} weight="semibold" color={colors.tint} />
+                  ) : undefined
+                }
+                onPress={() => {
+                  haptics.selection();
+                  onChange(option.rawValue);
+                  setOpen(false);
+                }}
+              />
+            ))}
+          </ListSection>
+        </View>
+      </Sheet>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   field: {
-    width: 150,
-    maxWidth: 150,
-    height: 35,
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    backgroundColor: colors.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: spacing.sm,
+    minWidth: 140,
+    height: 34,
+    paddingHorizontal: 14,
+    borderRadius: radius.capsule,
+    borderCurve: 'continuous',
   },
   fieldText: {
-    fontFamily: fontFamily.regular,
-    color: colors.green,
-    fontSize: 15,
     flexShrink: 1,
   },
-  caret: {
-    color: colors.green,
-    fontSize: 12,
-    marginLeft: 6,
+  pressed: {
+    opacity: 0.6,
   },
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  disabled: {
+    opacity: 0.4,
   },
-  sheet: {
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    minWidth: 220,
-    maxHeight: '60%',
-    paddingVertical: 8,
-  },
-  option: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-  },
-  optionText: {
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-    color: colors.green,
-  },
-  optionTextSelected: {
-    fontFamily: fontFamily.bold,
-    color: colors.orange,
+  sheetBody: {
+    paddingBottom: spacing.base,
   },
 });
 

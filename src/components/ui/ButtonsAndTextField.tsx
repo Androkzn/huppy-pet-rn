@@ -1,23 +1,21 @@
 /**
- * ButtonsAndTextField — port of the control of the same name in the web app's
- * Form.components.js: a circle minus, a 50px numeric field, and a circle plus.
- * Steps by 10, floors at 1 on the minus side.
+ * ButtonsAndTextField — the portion stepper.
+ *
+ * The iOS stepper, stepping by 10 and floored at 1, as the meal editor expects.
  */
 
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
-import { HuppyButton } from './Buttons';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Stepper } from '@components/ios/Stepper';
 
 const STEP = 10;
 const MIN_VALUE = 1;
 
 interface Props {
   initialValue?: number;
-  /** Fires on typing, as the web's `onChange`. */
+  /** Fires while typing. */
   onChange?: (value: number) => void;
-  /** Fires on the +/- buttons, as the web's `onChangeButton`. */
+  /** Fires on the − / + buttons. */
   onChangeButton?: (value: number) => void;
 }
 
@@ -32,40 +30,18 @@ export const ButtonsAndTextField: React.FC<Props> = ({
     setCount(initialValue);
   }, [initialValue]);
 
-  const decrement = () => {
-    const next = Math.max(count - STEP, MIN_VALUE);
-    setCount(next);
-    onChangeButton?.(next);
-  };
-
-  const increment = () => {
-    const next = count + STEP;
-    setCount(next);
-    onChangeButton?.(next);
-  };
-
   return (
     <View style={styles.container}>
-      <HuppyButton
-        variant="circleTextButton"
-        onPress={decrement}
-        disabled={count === 0}
-      >
-        -
-      </HuppyButton>
-      <TextInput
-        style={styles.textField}
-        keyboardType="number-pad"
-        value={String(count)}
-        onChangeText={(text) => {
-          const value = text === '' ? 0 : parseInt(text, 10) || 0;
-          setCount(value);
-          onChange?.(value);
+      <Stepper
+        value={count}
+        step={STEP}
+        min={MIN_VALUE}
+        onChange={(next) => {
+          setCount(next);
+          onChange?.(next);
         }}
+        onStep={(next) => onChangeButton?.(next)}
       />
-      <HuppyButton variant="circleTextButton" onPress={increment}>
-        +
-      </HuppyButton>
     </View>
   );
 };
@@ -75,20 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 15,
-    margin: 3,
-  },
-  textField: {
-    borderWidth: 2,
-    borderColor: colors.gray,
-    width: 50,
-    textAlign: 'center',
-    marginHorizontal: 15,
-    borderRadius: 10,
-    height: 30,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
   },
 });
 

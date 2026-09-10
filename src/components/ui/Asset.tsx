@@ -11,12 +11,16 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Image as RNImage,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   ViewStyle,
   StyleProp,
 } from 'react-native';
+import { SymbolView } from 'expo-symbols';
 import { svgAssets, imageAssets } from '../assets';
+import { symbolFor, toneColor } from '../ios/symbolMap';
+import { useAppTheme } from '@theme/ThemeProvider';
 import * as colors from '../../theme/colors';
 
 const spinnerFrames = [
@@ -42,6 +46,12 @@ interface AssetProps {
 
 /**
  * Web: <Image imageName="x.svg" width="20" height="20" />
+ *
+ * Icon names that have an SF Symbol equivalent render as that symbol on iOS —
+ * which is how the whole app picked up the system icon set without every call
+ * site changing. Artwork (placeholders, the wordmark, the spinner) keeps its
+ * own asset. The symbol path is iOS-only, so `Icon`'s own fallback to this
+ * component cannot loop back into it.
  */
 export const Asset: React.FC<AssetProps> = ({
   imageName,
@@ -52,11 +62,26 @@ export const Asset: React.FC<AssetProps> = ({
   style,
   block = false,
 }) => {
+  const { colors: palette } = useAppTheme();
   const Svg = svgAssets[imageName];
   const bitmap = imageAssets[imageName];
+  const mapping = Platform.OS === 'ios' ? symbolFor(imageName) : null;
 
   let content: React.ReactNode = null;
-  if (Svg) {
+  if (mapping) {
+    const size = Math.min(width, height);
+    content = (
+      <SymbolView
+        name={mapping.symbol}
+        size={size}
+        tintColor={fill ?? toneColor(mapping.tone, palette)}
+        weight="semibold"
+        resizeMode="scaleAspectFit"
+        style={{ width: size, height: size }}
+        fallback={Svg ? <Svg width={width} height={height} fill={fill} /> : null}
+      />
+    );
+  } else if (Svg) {
     content = <Svg width={width} height={height} fill={fill} />;
   } else if (bitmap) {
     content = <RNImage source={bitmap} style={{ width, height }} resizeMode="contain" />;
@@ -90,10 +115,14 @@ export const ImageCircle: React.FC<ImageCircleProps> = ({
   imageDataUrl,
   width = 50,
   borderWidth = 2,
-  borderColor = colors.white,
+  borderColor,
   onPress,
 }) => {
+  const { colors: palette } = useAppTheme();
   const [failed, setFailed] = useState(false);
+  // The ring separates the picture from whatever it sits on, so it follows the
+  // surface colour rather than being pinned white.
+  const ring = borderColor ?? palette.groupedSurface;
 
   useEffect(() => {
     setFailed(false);
@@ -111,7 +140,8 @@ export const ImageCircle: React.FC<ImageCircleProps> = ({
         height: width,
         borderRadius: width / 2,
         borderWidth,
-        borderColor,
+        borderColor: ring,
+        backgroundColor: palette.tertiaryFill,
       }}
     />
   );

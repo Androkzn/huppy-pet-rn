@@ -1,9 +1,13 @@
 /**
- * Main Tab Navigator
+ * Main Tab Navigator — Diary, Dashboard, Training, More.
  *
- * Mirrors the web app's TabBar: four tabs — Diary, Dashboard, Training, More.
- * Profile is not a tab on the web either; it is reached from the avatar drawer
- * in the NavBar, so it lives in the root stack.
+ * Both bars are Liquid Glass and float over the page, so the header is
+ * transparent and the tab bar draws itself absolutely: screens run full height
+ * and their content passes under the chrome, which is what gives iOS 26 its
+ * sense of depth. `Screen` adds the matching top and bottom clearance.
+ *
+ * Profile is not a tab — it is reached from the avatar in the navigation bar —
+ * so it lives in the root stack.
  */
 
 import React from 'react';
@@ -22,17 +26,29 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 export const MainNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        // Web renders a fixed AppBar above every page.
+      screenOptions={{
         headerShown: true,
-        header: () => <NavBar routeName={route.name} />,
-      })}
+        headerTransparent: true,
+        header: ({ route }) => <NavBar routeName={route.name} scrollKey={route.key} />,
+        sceneStyle: { backgroundColor: 'transparent' },
+        // Tabs cross-fade rather than slide, as they do on iOS.
+        animation: 'fade',
+        freezeOnBlur: true,
+      }}
       tabBar={(props) => <TabBar {...props} />}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Training" component={TrainingScreen} />
-      <Tab.Screen name="More" component={MoreScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Diary' }} />
+      <Tab.Screen
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{ title: 'Dashboard' }}
+      />
+      <Tab.Screen
+        name="Training"
+        component={TrainingScreen}
+        options={{ title: 'Training' }}
+      />
+      <Tab.Screen name="More" component={MoreScreen} options={{ title: 'More' }} />
     </Tab.Navigator>
   );
 };

@@ -1,15 +1,19 @@
 /**
- * Statistic — port of the web app's Statistic.components.js.
+ * Statistic — the progress rows on the Diary screen.
  *
- * The progress rows on the Diary screen: one calories row and one row per food
- * category, plus the Today / This Week toggle and the diet-balance legend row.
- * The arithmetic is carried over unchanged so the numbers match the web.
+ * One calories row, one row per food category, the Today / This week picker and
+ * the diet-balance legend. The arithmetic is the web app's, unchanged, so the
+ * numbers still match; the presentation is the iOS one — a name, the figure it
+ * has reached, and a capsule progress track that fills toward the goal.
  */
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch } from 'react-native';
-import * as colors from '../theme/colors';
-import { fontFamily } from '../theme';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing } from '@theme/tokens';
+import { Label } from './ios/Text';
+import { ProgressBar as IOSProgressBar } from './ios/Feedback';
+import { SegmentedControl } from './ios/SegmentedControl';
 import { Asset } from './ui/Asset';
 import type { Food, Profile, Activity, FoodCategory } from '../types';
 
@@ -170,12 +174,25 @@ export function getCaloriesGoal(
   );
 }
 
+
+/**
+ * Progress colours: on track, then warning as the goal is passed.
+ * These are fixed rather than semantic, since the scale itself carries meaning
+ * and has to read the same in both appearances.
+ */
+const PROGRESS_COLORS = {
+  onTrack: '#34A853',
+  near: '#E8B02A',
+  over: '#E27B2E',
+  far: '#D6402C',
+} as const;
+
 /** Green under goal, then yellow, orange and red as it is exceeded. */
 export function progressBarColor(value: number): string {
-  if (value <= 100) return colors.green;
-  if (value <= 125) return colors.yellow;
-  if (value <= 150) return colors.orange;
-  return colors.red;
+  if (value <= 100) return PROGRESS_COLORS.onTrack;
+  if (value <= 125) return PROGRESS_COLORS.near;
+  if (value <= 150) return PROGRESS_COLORS.over;
+  return PROGRESS_COLORS.far;
 }
 
 interface ProgressBarProps {
@@ -183,39 +200,60 @@ interface ProgressBarProps {
   style?: object;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, style }) => {
-  const fillWidth =
-    percentage < 5 && percentage > 0 ? 5 : percentage <= 100 ? percentage : 100;
+/** A capsule track that fills toward the goal, coloured by how close it is. */
+export const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, style }) => (
+  <IOSProgressBar
+    value={percentage / 100}
+    color={progressBarColor(percentage)}
+    height={6}
+    style={style}
+  />
+);
 
-  return (
-    <View style={[styles.progressContainer, style]}>
-      <View
-        style={[
-          styles.progressFiller,
-          {
-            width: `${fillWidth}%`,
-            backgroundColor: progressBarColor(percentage),
-            // The web squares off the right edge until the bar is nearly full.
-            borderTopRightRadius: percentage < 95 ? 0 : 10,
-            borderBottomRightRadius: percentage < 95 ? 0 : 10,
-          },
-        ]}
+interface StatRowProps {
+  name: string;
+  /** Left-hand artwork: the category or calories icon. */
+  imageName?: string;
+  value: string;
+  percentage: number;
+  /** Rows without a goal (the 'other' category) state a figure only. */
+  showProgress?: boolean;
+  prominent?: boolean;
+}
+
+/**
+ * One statistic: what it is, where it stands, and how far along that is.
+ * The figure sits on the same line as the name, as iOS does in Health.
+ */
+const StatRow: React.FC<StatRowProps> = ({
+  name,
+  imageName,
+  value,
+  percentage,
+  showProgress = true,
+  prominent = false,
+}) => (
+  <View style={styles.statRow}>
+    <View style={styles.statHeader}>
+      {imageName ? (
+        <Asset imageName={imageName} width={prominent ? 26 : 22} height={prominent ? 26 : 22} />
+      ) : null}
+      <Label variant={prominent ? 'headline' : 'subheadline'} numberOfLines={1} style={styles.statName}>
+        {name}
+      </Label>
+      <Label
+        variant={prominent ? 'headline' : 'subheadline'}
+        weight="600"
+        color={showProgress ? progressBarColor(percentage) : undefined}
+        role={showProgress ? undefined : 'secondary'}
+        numberOfLines={1}
       >
-        <Text
-          style={[
-            styles.progressLabel,
-            {
-              color: percentage <= 20 ? colors.black : colors.white,
-              marginLeft: percentage <= 20 ? percentage + 10 : 0,
-            },
-          ]}
-        >
-          {`${percentage}%`}
-        </Text>
-      </View>
+        {value}
+      </Label>
     </View>
-  );
-};
+    {showProgress ? <ProgressBar percentage={percentage} /> : null}
+  </View>
+);
 
 interface CaloriesSectionProps {
   foodData?: Food[];
@@ -242,15 +280,13 @@ export const CaloriesStatisticSection: React.FC<CaloriesSectionProps> = ({
   const percentage = calculatePercentage(calories, totalCalories);
 
   return (
-    <View style={styles.caloriesSection}>
-      <View style={styles.caloriesImage}>
-        <Asset imageName="calories.png" width={40} height={40} />
-      </View>
-      <ProgressBar percentage={percentage} />
-      <Text style={[styles.values, { color: progressBarColor(percentage) }]}>
-        {calories} / {totalCalories} kcal
-      </Text>
-    </View>
+    <StatRow
+      name="Calories"
+      imageName="calories.png"
+      value={`${calories} / ${totalCalories} kcal`}
+      percentage={percentage}
+      prominent
+    />
   );
 };
 
@@ -275,11 +311,7 @@ export const CategoriesStatisticSection: React.FC<CategorySectionProps> = ({
     foodData,
     categories
   );
-  const total = calculateGoalForCategory(
-    category,
-    currentProfile,
-    isStatisticToday
-  );
+  const total = calculateGoalForCategory(category, currentProfile, isStatisticToday);
   const percentage = calculatePercentage(weight, total);
   const caloriesOther = calculateTotalDataForCategory(
     'calories',
@@ -288,30 +320,17 @@ export const CategoriesStatisticSection: React.FC<CategorySectionProps> = ({
     categories
   );
 
-  // 'Other' has no weight goal, so the web hides its bar and shows calories.
+  // 'Other' has no weight goal, so it states its figures without a bar.
   const isOther = category.type === FOOD_CATEGORY_OTHER;
 
   return (
-    <View style={styles.categorySection}>
-      <Asset
-        imageName={`${category.type.toLowerCase()}.png`}
-        width={30}
-        height={30}
-      />
-      <Text style={styles.categoryName}>{category.name}</Text>
-      <ProgressBar
-        percentage={isOther ? 0 : percentage}
-        style={isOther ? { opacity: 0 } : undefined}
-      />
-      <Text
-        style={[
-          styles.values,
-          { color: progressBarColor(isOther ? 0 : percentage) },
-        ]}
-      >
-        {isOther ? `${weight} g / ${caloriesOther} kcal` : `${weight} / ${total} g`}
-      </Text>
-    </View>
+    <StatRow
+      name={category.name}
+      imageName={`${category.type.toLowerCase()}.png`}
+      value={isOther ? `${weight} g · ${caloriesOther} kcal` : `${weight} / ${total} g`}
+      percentage={isOther ? 0 : percentage}
+      showProgress={!isOther}
+    />
   );
 };
 
@@ -320,28 +339,22 @@ interface ToggleProps {
   onChange: () => void;
 }
 
+/** Today / This week — a segmented control, the iOS way to switch a range. */
 export const ToggleStatisticSection: React.FC<ToggleProps> = ({
   initialValue,
   onChange,
-}) => {
-  const [checked, setChecked] = useState(initialValue);
-
-  return (
-    <View style={styles.toggleSection}>
-      <Text style={styles.toggleLabel}>Today</Text>
-      <Switch
-        value={checked}
-        onValueChange={(value) => {
-          setChecked(value);
-          onChange();
-        }}
-        trackColor={{ false: colors.olive, true: colors.orange }}
-        thumbColor={colors.white}
-      />
-      <Text style={styles.toggleLabel}>This Week</Text>
-    </View>
-  );
-};
+}) => (
+  <SegmentedControl
+    segments={[
+      { label: 'Today', value: 'today' },
+      { label: 'This week', value: 'week' },
+    ]}
+    value={initialValue ? 'week' : 'today'}
+    onChange={onChange}
+    size="sm"
+    style={styles.rangePicker}
+  />
+);
 
 interface FoodCategoryRowProps {
   name: string;
@@ -356,112 +369,66 @@ export const FoodCategoryRow: React.FC<FoodCategoryRowProps> = ({
   value,
   color,
   weight,
-}) => (
-  <View style={styles.legendRow}>
-    <Text style={[styles.legendName, { backgroundColor: color }]}>{name}</Text>
-    <Text style={styles.legendWeight}>{weight} g</Text>
-    <Text style={styles.legendValue}>{value}%</Text>
-  </View>
-);
+}) => {
+  const { colors } = useAppTheme();
+
+  return (
+    <View style={styles.legendRow}>
+      <View style={[styles.legendDot, { backgroundColor: color }]} />
+      <Label variant="subheadline" numberOfLines={1} style={styles.legendName}>
+        {name}
+      </Label>
+      <Label variant="subheadline" role="secondary">
+        {weight} g
+      </Label>
+      <Label
+        variant="subheadline"
+        weight="600"
+        color={colors.label}
+        style={styles.legendValue}
+      >
+        {value}%
+      </Label>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  progressContainer: {
+  statRow: {
+    gap: 6,
+    paddingVertical: spacing.md,
+    paddingHorizontal: layout.screenPadding,
+  },
+  statHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  statName: {
     flex: 1,
-    height: 20,
-    backgroundColor: '#e0e0de',
-    borderRadius: 10,
-    marginRight: 5,
-    maxWidth: 350,
-    overflow: 'hidden',
-    justifyContent: 'center',
   },
-  progressFiller: {
-    height: '100%',
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  progressLabel: {
-    padding: 5,
-    fontSize: 14,
-    fontFamily: fontFamily.bold,
-  },
-  caloriesSection: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 45,
-    marginVertical: 5,
-  },
-  caloriesImage: {
-    marginRight: 15,
-  },
-  categorySection: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 35,
-  },
-  categoryName: {
-    textAlign: 'left',
-    minWidth: 50,
-    fontFamily: fontFamily.bold,
-    fontSize: 13,
-    color: colors.green,
-    paddingLeft: 5,
-  },
-  values: {
-    minWidth: 110,
-    textAlign: 'center',
-    fontFamily: fontFamily.bold,
-    fontSize: 13,
-  },
-  toggleSection: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  toggleLabel: {
-    margin: 5,
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    color: colors.green,
+  rangePicker: {
+    marginHorizontal: layout.screenPadding,
+    marginTop: spacing.sm,
+    marginBottom: spacing.md,
   },
   legendRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 10,
-    height: 30,
-    marginRight: 10,
-    width: '100%',
+    gap: spacing.sm,
+    paddingVertical: 9,
+    paddingHorizontal: layout.screenPadding,
+  },
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: radius.capsule,
   },
   legendName: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    minWidth: 100,
-    borderRadius: 5,
-    padding: 3,
-    color: colors.white,
-    textAlign: 'center',
-    overflow: 'hidden',
-  },
-  legendWeight: {
-    padding: 5,
-    minWidth: 70,
-    textAlign: 'center',
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
+    flex: 1,
   },
   legendValue: {
-    padding: 5,
-    minWidth: 40,
-    textAlign: 'center',
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
+    minWidth: 44,
+    textAlign: 'right',
   },
 });

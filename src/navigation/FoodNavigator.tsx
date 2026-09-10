@@ -1,10 +1,13 @@
 /**
- * Food Stack Navigator
- * Nested navigation for food search and management
+ * Food Stack Navigator — the meal-building flow.
+ *
+ * Presented as a sheet from the diary, so it keeps its own glass bar with a
+ * back control and the title of the step in progress.
  */
 
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import NavBar from '@components/NavBar';
 import SearchFoodScreen from '@screens/food/SearchFoodScreen';
 import AddFoodScreen from '@screens/food/AddFoodScreen';
 import EditFoodScreen from '@screens/food/EditFoodScreen';
@@ -21,26 +24,52 @@ const Stack = createNativeStackNavigator<FoodStackParamList>();
 
 export const FoodNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerTransparent: true,
+        fullScreenGestureEnabled: true,
+      }}
+    >
       <Stack.Screen
         name="SearchFood"
         component={SearchFoodScreen}
-        options={{ title: 'Search Food' }}
+        options={{
+          title: 'Add food',
+          header: ({ route, options }) => (
+            <NavBar title={options.title} scrollKey={route.key} />
+          ),
+        }}
       />
       <Stack.Screen
         name="AddFood"
         component={AddFoodScreen}
-        options={{ title: 'Add Food to Meal' }}
+        options={{
+          title: 'Portion',
+          header: ({ route, options }) => (
+            <NavBar title={options.title} scrollKey={route.key} />
+          ),
+        }}
       />
       <Stack.Screen
         name="EditFood"
         component={EditFoodScreen}
-        options={{ title: 'Edit Food' }}
+        options={{
+          title: 'Edit food',
+          header: ({ route, options }) => (
+            <NavBar title={options.title} scrollKey={route.key} />
+          ),
+        }}
       />
       <Stack.Screen
         name="CreateNewFood"
         component={CreateNewFoodScreen}
-        options={{ title: 'Create Custom Food' }}
+        options={{
+          title: 'New food',
+          header: ({ route, options }) => (
+            <NavBar title={options.title} scrollKey={route.key} />
+          ),
+        }}
       />
     </Stack.Navigator>
   );

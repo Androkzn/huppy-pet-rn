@@ -1,9 +1,9 @@
 /**
- * Home Screen (Diary) — port of the web app's Home.page.js.
+ * Home Screen (Diary) — the day's nutrition, meals and activities.
  *
- * The small-screen layout: the STATS section, the meal cards, and the
- * ACTIVITIES section. The date picker lives in the NavBar and the DIET BALANCE
- * chart is hidden below the web's `smallScreen` breakpoint, exactly as there.
+ * A large title over three groups: the nutrition summary, the meals of the day,
+ * and the day's activities. The day itself is steered from the stepper in the
+ * navigation bar, so the content only has to state what happened on it.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -18,11 +18,12 @@ import {
   useGetActivitiesForDate,
   useGetAllFoodCategories,
   useAddMeal,
-  useAddActivity,
 } from '@hooks/useGraphQL';
 import { PageContainer } from '@components/ui/PageContainer';
 import { Section } from '@components/ui/Section';
-import { Asset, LoadingAndError } from '@components/ui/Asset';
+import { LoadingAndError } from '@components/ui/Asset';
+import { EmptyState } from '@components/ios/Feedback';
+import { Asset } from '@components/ui/Asset';
 import MealCard from '@components/MealCard';
 import ActivityCard from '@components/ActivityCard';
 import {
@@ -31,7 +32,7 @@ import {
   ToggleStatisticSection,
 } from '@components/Statistic';
 import { AddActivityDialog } from '@components/dialogs';
-import * as colors from '../../theme/colors';
+import { spacing } from '@theme/tokens';
 import type { Meal, FoodCategory, Activity } from '../../types';
 
 type Props = MainTabScreenProps<'Home'>;
@@ -44,7 +45,7 @@ export default function HomeScreen({}: Props) {
   const profileId = currentProfile?._id || '';
   const userId = user?.id || '';
 
-  // Web: on a small screen the stats start collapsed.
+  // The nutrition detail starts collapsed; the headline figure is always shown.
   const [isStatisticExpanded, setStatisticExpanded] = useState(false);
   const [isStatisticToday, setStatisticToday] = useState(true);
   const [isActivitiesExpanded, setActivitiesExpanded] = useState(true);
@@ -75,9 +76,8 @@ export default function HomeScreen({}: Props) {
   } = useGetActivitiesForDate(userId, currentDate);
 
   const { mutate: addMeal } = useAddMeal();
-  const { mutate: addActivity } = useAddActivity();
 
-  // Web: a day with no meal gets an empty one created for it.
+  // A day with no meal gets an empty one created for it.
   useEffect(() => {
     if (!isLoadingMeals && !isErrorMeals && (!meals || meals.length === 0)) {
       if (currentProfile && user) {
@@ -99,118 +99,106 @@ export default function HomeScreen({}: Props) {
   const isStatisticError = isErrorFood || isErrorCategories || isErrorActivities;
 
   return (
-    <PageContainer>
-      {/* STATS */}
-      <Section
-        title="STATS"
-        titleRight={isStatisticToday ? 'Today / Goal' : 'This week / Goal'}
-        expanded={isStatisticExpanded}
-        onToggle={() => setStatisticExpanded(!isStatisticExpanded)}
-        style={styles.statisticSection}
-      >
-        {isStatisticLoading || isStatisticError ? (
-          <View style={styles.statisticContainer}>
+    <PageContainer title="Diary" subtitle={currentProfile?.name}>
+      <View style={styles.stack}>
+        {/* Nutrition */}
+        <Section
+          title="Nutrition"
+          titleRight={isStatisticToday ? 'Today / Goal' : 'This week / Goal'}
+          expanded={isStatisticExpanded}
+          onToggle={() => setStatisticExpanded(!isStatisticExpanded)}
+        >
+          {isStatisticLoading || isStatisticError ? (
             <View style={styles.placeholder}>
               <LoadingAndError
                 isLoading={isStatisticLoading}
                 isError={isStatisticError}
               />
             </View>
-          </View>
-        ) : (
-          <View style={styles.statisticContainer}>
-            <CaloriesStatisticSection
-              foodData={food}
-              categories={categoryList}
-              activities={activityList}
-              currentProfile={currentProfile}
-              isStatisticToday={isStatisticToday}
-            />
-            {isStatisticExpanded && (
-              <View style={styles.fullWidth}>
-                {categoryList.map((category) => (
-                  <CategoriesStatisticSection
-                    key={category.name}
-                    category={category}
-                    categories={categoryList}
-                    currentProfile={currentProfile}
-                    foodData={food}
-                    isStatisticToday={isStatisticToday}
-                  />
-                ))}
-              </View>
-            )}
-            <ToggleStatisticSection
-              initialValue={!isStatisticToday}
-              onChange={() => setStatisticToday(!isStatisticToday)}
-            />
-          </View>
-        )}
-      </Section>
+          ) : (
+            <View>
+              <CaloriesStatisticSection
+                foodData={food}
+                categories={categoryList}
+                activities={activityList}
+                currentProfile={currentProfile}
+                isStatisticToday={isStatisticToday}
+              />
+              {categoryList.map((category) => (
+                <CategoriesStatisticSection
+                  key={category.name}
+                  category={category}
+                  categories={categoryList}
+                  currentProfile={currentProfile}
+                  foodData={food}
+                  isStatisticToday={isStatisticToday}
+                />
+              ))}
+              <ToggleStatisticSection
+                initialValue={!isStatisticToday}
+                onChange={() => setStatisticToday(!isStatisticToday)}
+              />
+            </View>
+          )}
+        </Section>
 
-      {/* MEALS */}
-      {isLoadingMeals || isErrorMeals ? (
-        <View style={styles.placeholder}>
-          <LoadingAndError isLoading={isLoadingMeals} isError={isErrorMeals} />
-        </View>
-      ) : (
-        <View style={styles.fullWidth}>
-          {mealList.map((meal, index) => (
-            <View key={meal._id} style={styles.mealSpacing}>
+        {/* Meals */}
+        <Section title="Meals" plain>
+          {isLoadingMeals || isErrorMeals ? (
+            <View style={styles.placeholder}>
+              <LoadingAndError isLoading={isLoadingMeals} isError={isErrorMeals} />
+            </View>
+          ) : (
+            mealList.map((meal, index) => (
               <MealCard
+                key={meal._id}
                 meal={meal}
                 index={index + 1}
                 mealsCount={mealList.length}
               />
-            </View>
-          ))}
-        </View>
-      )}
+            ))
+          )}
+        </Section>
 
-      {/* ACTIVITIES */}
-      <Section
-        title="ACTIVITIES"
-        expanded={isActivitiesExpanded}
-        onToggle={() => setActivitiesExpanded(!isActivitiesExpanded)}
-        onAdd={() => {
-          if (isActivitiesExpanded) {
-            setShowActivityDialog(true);
-          } else {
+        {/* Activities */}
+        <Section
+          title="Activities"
+          expanded={isActivitiesExpanded}
+          onToggle={() => setActivitiesExpanded(!isActivitiesExpanded)}
+          onAdd={() => {
             setActivitiesExpanded(true);
-          }
-        }}
-      >
-        {isLoadingActivities || isErrorActivities ? (
-          <View style={styles.fullWidth}>
+            setShowActivityDialog(true);
+          }}
+        >
+          {isLoadingActivities || isErrorActivities ? (
             <View style={styles.placeholder}>
               <LoadingAndError
                 isLoading={isLoadingActivities}
                 isError={isErrorActivities}
               />
             </View>
-          </View>
-        ) : (
-          <View style={styles.fullWidth}>
-            {isActivitiesExpanded && activityList.length > 0 ? (
-              activityList.map((activity) => (
-                <ActivityCard key={activity._id} activity={activity} />
-              ))
-            ) : (
-              <View style={styles.placeholder}>
+          ) : activityList.length > 0 ? (
+            activityList.map((activity) => (
+              <ActivityCard key={activity._id} activity={activity} />
+            ))
+          ) : (
+            <EmptyState
+              symbol="figure.walk"
+              title="No activities yet"
+              message="Add a walk, a run or a swim to count it toward the day."
+              actionLabel="Add activity"
+              onAction={() => setShowActivityDialog(true)}
+              illustration={
                 <Asset
-                  imageName={
-                    isActivitiesExpanded
-                      ? 'no_activities_placeholder.png'
-                      : 'more_green.svg'
-                  }
-                  width={isActivitiesExpanded ? 200 : 30}
-                  height={isActivitiesExpanded ? 170 : 10}
+                  imageName="no_activities_placeholder.png"
+                  width={180}
+                  height={150}
                 />
-              </View>
-            )}
-          </View>
-        )}
-      </Section>
+              }
+            />
+          )}
+        </Section>
+      </View>
 
       <AddActivityDialog
         visible={showActivityDialog}
@@ -222,25 +210,11 @@ export default function HomeScreen({}: Props) {
 }
 
 const styles = StyleSheet.create({
-  statisticSection: {
-    marginTop: 15,
-    marginBottom: 10,
-  },
-  // Home.css.js statisticContainerStyle
-  statisticContainer: {
-    flexDirection: 'column',
-    width: '90%',
-    alignItems: 'center',
-  },
-  fullWidth: {
-    width: '100%',
+  stack: {
+    gap: spacing.xl,
   },
   placeholder: {
-    flexDirection: 'column',
     alignItems: 'center',
-    margin: 10,
-  },
-  mealSpacing: {
-    marginBottom: 10,
+    paddingVertical: spacing.lg,
   },
 });

@@ -1,38 +1,127 @@
 /**
- * Form rows — ports of the labelled controls in the web app's
- * Form.components.js. Each is a lightBrown pill with the title on the left and
- * the control on the right (dropdown, stepper, toggle, text field or date).
+ * Form rows — labelled controls, in the iOS grouped-list shape.
+ *
+ * A row is transparent and 44pt tall, with its title on the leading edge and
+ * its control on the trailing edge; `FormGroup` supplies the rounded surface
+ * and the hairlines between rows. That is how iOS lays out a form, and it lets
+ * a screen group related settings simply by wrapping them.
  */
 
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
+  Pressable,
   StyleSheet,
   Switch,
+  TextInput,
+  View,
   ViewStyle,
   StyleProp,
 } from 'react-native';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
-import { HuppyButton } from './Buttons';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing, textStyles } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
+import { Icon } from '@components/ios/Icon';
+import { Label } from '@components/ios/Text';
+import { Stepper } from '@components/ios/Stepper';
 import { Dropdown, DropdownOption } from './Dropdown';
 import CustomDatePicker from '../CustomDatePicker';
 
 const upperFirst = (value: string) =>
   String(value).charAt(0).toUpperCase() + String(value).slice(1);
 
-interface RowProps {
-  title: string;
+interface GroupProps {
+  header?: string;
+  footer?: string;
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  /** Groups inside a card or sheet supply their own margins. */
+  inset?: boolean;
 }
 
-/** The shared lightBrown row. */
-export const FormRow: React.FC<RowProps> = ({ title, children, style }) => (
-  <View style={[styles.container, style]}>
-    <Text style={styles.title}>{title}</Text>
+/** The rounded surface a run of rows sits on. */
+export const FormGroup: React.FC<GroupProps> = ({
+  header,
+  footer,
+  children,
+  style,
+  inset = true,
+}) => {
+  const { colors } = useAppTheme();
+  const rows = React.Children.toArray(children).filter(Boolean);
+
+  return (
+    <View style={[styles.group, style]}>
+      {header ? (
+        <Label
+          variant="footnote"
+          role="secondary"
+          sectionHeader
+          style={styles.groupHeader}
+        >
+          {header}
+        </Label>
+      ) : null}
+
+      <View
+        style={[
+          styles.groupSurface,
+          { backgroundColor: colors.groupedSurface },
+          inset && { marginHorizontal: layout.screenPadding },
+        ]}
+      >
+        {rows.map((row, index) => (
+          <React.Fragment key={index}>
+            {index > 0 ? (
+              <View
+                style={[
+                  styles.separator,
+                  { backgroundColor: colors.separator, height: layout.hairline },
+                ]}
+              />
+            ) : null}
+            {row}
+          </React.Fragment>
+        ))}
+      </View>
+
+      {footer ? (
+        <Label variant="footnote" role="secondary" style={styles.groupFooter}>
+          {footer}
+        </Label>
+      ) : null}
+    </View>
+  );
+};
+
+interface RowProps {
+  title: string;
+  /** Second line under the title. */
+  subtitle?: string;
+  children?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  /** Stacks the control under the title, for controls that need the width. */
+  stacked?: boolean;
+}
+
+export const FormRow: React.FC<RowProps> = ({
+  title,
+  subtitle,
+  children,
+  style,
+  stacked = false,
+}) => (
+  <View style={[stacked ? styles.rowStacked : styles.row, style]}>
+    <View style={styles.rowLabel}>
+      <Label variant="body" numberOfLines={stacked ? 1 : 2}>
+        {title}
+      </Label>
+      {subtitle ? (
+        <Label variant="footnote" role="secondary">
+          {subtitle}
+        </Label>
+      ) : null}
+    </View>
     {children}
   </View>
 );
@@ -63,10 +152,13 @@ export const TitleAndDropdown: React.FC<TitleAndDropdownProps> = ({
   return (
     <FormRow title={title}>
       {disabled ? (
-        <Text style={styles.disabledValue}>{upperFirst(value)}</Text>
+        <Label variant="body" role="secondary" numberOfLines={1}>
+          {upperFirst(value)}
+        </Label>
       ) : (
         <Dropdown
           value={value}
+          label={title}
           options={dropdownOptions}
           onChange={(newValue) => {
             setValue(newValue);
@@ -82,15 +174,18 @@ export const TitleAndDropdown: React.FC<TitleAndDropdownProps> = ({
 interface TitleButtonsAndTextFieldProps {
   title: string;
   initialValue?: number;
-  /** Web steps this control by 1. */
   step?: number;
   onChange: (value: number) => void;
   onChangeButton: (value: number) => void;
 }
 
-export const TitleButtonsAndTextField: React.FC<
-  TitleButtonsAndTextFieldProps
-> = ({ title, initialValue = 0, step = 1, onChange, onChangeButton }) => {
+export const TitleButtonsAndTextField: React.FC<TitleButtonsAndTextFieldProps> = ({
+  title,
+  initialValue = 0,
+  step = 1,
+  onChange,
+  onChangeButton,
+}) => {
   const [count, setCount] = useState(initialValue);
 
   useEffect(() => {
@@ -99,39 +194,15 @@ export const TitleButtonsAndTextField: React.FC<
 
   return (
     <FormRow title={title}>
-      <View style={styles.controlGroup}>
-        <HuppyButton
-          variant="circleTextButton"
-          disabled={count === 0}
-          onPress={() => {
-            const next = count - step;
-            setCount(next);
-            onChangeButton(next);
-          }}
-        >
-          -
-        </HuppyButton>
-        <TextInput
-          style={styles.textField}
-          keyboardType="number-pad"
-          value={String(count)}
-          onChangeText={(text) => {
-            const value = text === '' ? 0 : parseInt(text, 10) || 0;
-            setCount(value);
-            onChange(value);
-          }}
-        />
-        <HuppyButton
-          variant="circleTextButton"
-          onPress={() => {
-            const next = count + step;
-            setCount(next);
-            onChangeButton(next);
-          }}
-        >
-          +
-        </HuppyButton>
-      </View>
+      <Stepper
+        value={count}
+        step={step}
+        onChange={(next) => {
+          setCount(next);
+          onChange(next);
+        }}
+        onStep={onChangeButton}
+      />
     </FormRow>
   );
 };
@@ -147,6 +218,7 @@ export const TitleAndToggle: React.FC<TitleAndToggleProps> = ({
   initialValue = false,
   onChange,
 }) => {
+  const { colors } = useAppTheme();
   const [checked, setChecked] = useState(initialValue);
 
   useEffect(() => {
@@ -158,11 +230,12 @@ export const TitleAndToggle: React.FC<TitleAndToggleProps> = ({
       <Switch
         value={checked}
         onValueChange={(value) => {
+          haptics.soft();
           setChecked(value);
           onChange(value);
         }}
-        trackColor={{ false: colors.olive, true: colors.orange }}
-        thumbColor={colors.white}
+        trackColor={{ false: colors.fill, true: colors.tint }}
+        ios_backgroundColor={colors.fill}
       />
     </FormRow>
   );
@@ -183,6 +256,7 @@ export const TitleAndTextField: React.FC<TitleAndTextFieldProps> = ({
   onChange,
   keyboardType = 'default',
 }) => {
+  const { colors } = useAppTheme();
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
@@ -191,10 +265,12 @@ export const TitleAndTextField: React.FC<TitleAndTextFieldProps> = ({
 
   return (
     <FormRow title={title}>
+      {/* iOS puts the editable value flush right in a form row, without a box. */}
       <TextInput
-        style={styles.wideTextField}
+        style={[styles.inlineField, { color: colors.label }]}
         placeholder={placeholder}
-        placeholderTextColor={colors.gray}
+        placeholderTextColor={colors.tertiaryLabel}
+        selectionColor={colors.tint}
         keyboardType={keyboardType}
         value={value}
         onChangeText={(text) => {
@@ -212,34 +288,55 @@ interface TitleTooltipAndValueProps {
   tipText: string;
 }
 
-/**
- * Web: TitleTooltipAndValue — a read-only row whose "?" badge explains the
- * number beside it.
- */
+/** A read-only row whose info button explains the number beside it. */
 export const TitleTooltipAndValue: React.FC<TitleTooltipAndValueProps> = ({
   title,
   value,
   tipText,
 }) => {
+  const { colors } = useAppTheme();
   const [showTip, setShowTip] = useState(false);
 
   return (
-    <View style={styles.plainRow}>
-      <View style={styles.tooltipTitleRow}>
-        <Text style={styles.plainTitle}> {title} </Text>
-        <HuppyButton
-          variant="circleTextButtonSmall"
-          onPress={() => setShowTip(!showTip)}
-        >
-          ?
-        </HuppyButton>
-      </View>
-      <Text style={styles.plainTitle}>{value}</Text>
-      {showTip && (
-        <View style={styles.tooltip}>
-          <Text style={styles.tooltipText}>{tipText}</Text>
+    <View style={styles.tooltipRow}>
+      <View style={styles.row}>
+        <View style={styles.tooltipTitle}>
+          <Label variant="body" numberOfLines={1}>
+            {title}
+          </Label>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`About ${title}`}
+            accessibilityState={{ expanded: showTip }}
+            hitSlop={8}
+            onPress={() => {
+              haptics.light();
+              setShowTip((current) => !current);
+            }}
+          >
+            <Icon
+              name="info.circle"
+              size={16}
+              color={showTip ? colors.tint : colors.tertiaryLabel}
+            />
+          </Pressable>
         </View>
-      )}
+        <Label variant="body" role="secondary" weight="600">
+          {value}
+        </Label>
+      </View>
+
+      {showTip ? (
+        <Animated.View
+          entering={FadeIn.duration(160)}
+          exiting={FadeOut.duration(120)}
+          style={[styles.tooltip, { backgroundColor: colors.tintSoft }]}
+        >
+          <Label variant="footnote" role="secondary">
+            {tipText}
+          </Label>
+        </Animated.View>
+      ) : null}
     </View>
   );
 };
@@ -253,10 +350,7 @@ interface TitleToggleAndButtonsProps {
   maxCountValue?: number;
 }
 
-/**
- * Web: TitleToggleAndButtons — a toggle that reveals a stepper, used for the
- * daily ratio. Stacks vertically on a small screen, as it does on the web.
- */
+/** A toggle that reveals a stepper, used for the daily ratio. */
 export const TitleToggleAndButtons: React.FC<TitleToggleAndButtonsProps> = ({
   title,
   toggleValue,
@@ -265,6 +359,7 @@ export const TitleToggleAndButtons: React.FC<TitleToggleAndButtonsProps> = ({
   onChangeValue,
   maxCountValue = 9999,
 }) => {
+  const { colors } = useAppTheme();
   const [checked, setChecked] = useState(toggleValue);
   const [count, setCount] = useState(value);
 
@@ -272,51 +367,38 @@ export const TitleToggleAndButtons: React.FC<TitleToggleAndButtonsProps> = ({
   useEffect(() => setCount(value), [value]);
 
   const commit = (next: number) => {
-    const clamped = Math.min(Math.max(next, 0), maxCountValue);
-    setCount(clamped);
-    onChangeValue(clamped);
+    setCount(next);
+    onChangeValue(next);
   };
 
   return (
-    <View style={styles.stackedContainer}>
-      <View style={styles.controlGroup}>
-        <Text style={styles.title}>{title}</Text>
+    <View>
+      <FormRow title={title}>
         <Switch
           value={checked}
           onValueChange={(next) => {
+            haptics.soft();
             setChecked(next);
             onChangeToggle(next);
           }}
-          trackColor={{ false: colors.olive, true: colors.orange }}
-          thumbColor={colors.white}
+          trackColor={{ false: colors.fill, true: colors.tint }}
+          ios_backgroundColor={colors.fill}
         />
-      </View>
+      </FormRow>
 
-      {checked && (
-        <View style={styles.controlGroup}>
-          <HuppyButton
-            variant="circleTextButton"
-            disabled={count === 0}
-            onPress={() => commit(count - 1)}
-          >
-            -
-          </HuppyButton>
-          <TextInput
-            style={styles.textField}
-            keyboardType="number-pad"
-            value={String(count)}
-            onChangeText={(text) =>
-              commit(text === '' ? 0 : parseInt(text, 10) || 0)
-            }
+      {checked ? (
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+          <View
+            style={[
+              styles.separator,
+              { backgroundColor: colors.separator, height: layout.hairline },
+            ]}
           />
-          <HuppyButton
-            variant="circleTextButton"
-            onPress={() => commit(count + 1)}
-          >
-            +
-          </HuppyButton>
-        </View>
-      )}
+          <FormRow title="Amount">
+            <Stepper value={count} max={maxCountValue} onChange={commit} />
+          </FormRow>
+        </Animated.View>
+      ) : null}
     </View>
   );
 };
@@ -332,106 +414,75 @@ export const TitleAndDatePicker: React.FC<TitleAndDatePickerProps> = ({
   value,
   onChange,
 }) => (
-  <FormRow title={title}>
-    <CustomDatePicker value={value} onChange={onChange} />
-  </FormRow>
+  <View style={styles.row}>
+    <CustomDatePicker label={title} value={value} onChange={onChange} style={styles.fullWidth} />
+  </View>
 );
 
 const styles = StyleSheet.create({
-  container: {
+  group: {
+    width: '100%',
+    gap: 7,
+  },
+  groupHeader: {
+    paddingHorizontal: layout.screenPadding + 4,
+  },
+  groupFooter: {
+    paddingHorizontal: layout.screenPadding + 4,
+  },
+  groupSurface: {
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
+    overflow: 'hidden',
+  },
+  separator: {
+    marginLeft: layout.screenPadding,
+  },
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 10,
-    margin: 3,
-    backgroundColor: colors.lightBrown,
-    paddingHorizontal: 15,
+    gap: spacing.md,
+    minHeight: 46,
+    paddingHorizontal: layout.screenPadding,
     paddingVertical: 8,
   },
-  title: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    marginRight: 10,
-    color: colors.black,
+  rowStacked: {
+    gap: spacing.sm,
+    paddingHorizontal: layout.screenPadding,
+    paddingVertical: 12,
   },
-  disabledValue: {
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
-    marginRight: '30%',
+  rowLabel: {
+    flexShrink: 1,
+    gap: 1,
+  },
+  fullWidth: {
+    flex: 1,
   },
   dropdown: {
-    maxWidth: 210,
-    backgroundColor: colors.oliveLight,
+    maxWidth: 220,
   },
-  controlGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textField: {
-    width: 50,
-    textAlign: 'center',
-    marginHorizontal: 15,
-    borderRadius: 10,
-    height: 30,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
-    backgroundColor: colors.white,
-  },
-  wideTextField: {
+  inlineField: {
     flex: 1,
-    maxWidth: 210,
+    maxWidth: 220,
     textAlign: 'right',
-    borderRadius: 10,
-    height: 35,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
-    backgroundColor: colors.white,
-  },
-  // TitleTooltipAndValue sits directly on the page, without the pill.
-  plainRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 10,
-    paddingLeft: 15,
-    paddingRight: 5,
     paddingVertical: 6,
-    flexWrap: 'wrap',
+    ...textStyles.body,
   },
-  tooltipTitleRow: {
-    flex: 1,
+  tooltipRow: {
+    paddingBottom: 2,
+  },
+  tooltipTitle: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  plainTitle: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    color: colors.black,
+    gap: 6,
+    flexShrink: 1,
   },
   tooltip: {
-    width: '100%',
-    backgroundColor: colors.green,
-    borderRadius: 10,
-    padding: 10,
-    marginTop: 6,
-  },
-  tooltipText: {
-    color: colors.white,
-    fontFamily: fontFamily.regular,
-    fontSize: 14,
-  },
-  stackedContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 10,
-    backgroundColor: colors.lightBrown,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    margin: 3,
+    marginHorizontal: layout.screenPadding,
+    marginBottom: spacing.md,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderCurve: 'continuous',
   },
 });

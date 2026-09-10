@@ -1,22 +1,14 @@
 /**
- * PageContainer — port of the web app's PageContainer.component.js:
- * a centered column, 95% wide, capped at 900px, clear of the fixed chrome.
+ * PageContainer — the page scaffold the screens are written against.
  *
- * The web reserved 60px at the top for the AppBar and 100px at the bottom for
- * the TabBar; in React Native both are supplied by the navigators, so only the
- * bottom breathing room is kept.
+ * It delegates to `Screen`, which places content under the floating glass
+ * chrome, publishes the scroll offset the navigation bar reacts to, and clears
+ * the tab bar at the bottom.
  */
 
 import React from 'react';
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  RefreshControl,
-  ViewStyle,
-  StyleProp,
-} from 'react-native';
-import * as colors from '../../theme/colors';
+import type { StyleProp, ViewStyle } from 'react-native';
+import { Screen } from '@components/ios/Screen';
 
 interface PageContainerProps {
   children?: React.ReactNode;
@@ -26,6 +18,13 @@ interface PageContainerProps {
   scroll?: boolean;
   refreshing?: boolean;
   onRefresh?: () => void;
+  /** Large title shown at the top of the content. */
+  title?: string;
+  subtitle?: string;
+  /** Trailing control on the large-title row. */
+  titleAccessory?: React.ReactNode;
+  /** `plain` drops the grouped background, for full-bleed screens. */
+  background?: 'grouped' | 'plain';
 }
 
 export const PageContainer: React.FC<PageContainerProps> = ({
@@ -35,44 +34,24 @@ export const PageContainer: React.FC<PageContainerProps> = ({
   scroll = true,
   refreshing,
   onRefresh,
-}) => {
-  const inner = <View style={[styles.page, contentStyle]}>{children}</View>;
-
-  if (!scroll) {
-    return <View style={[styles.root, style]}>{inner}</View>;
-  }
-
-  return (
-    <ScrollView
-      style={[styles.root, style]}
-      contentContainerStyle={styles.scrollContent}
-      refreshControl={
-        onRefresh ? (
-          <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} />
-        ) : undefined
-      }
-    >
-      {inner}
-    </ScrollView>
-  );
-};
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  scrollContent: {
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  page: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '95%',
-    maxWidth: 900,
-    alignSelf: 'center',
-  },
-});
+  title,
+  subtitle,
+  titleAccessory,
+  background = 'grouped',
+}) => (
+  <Screen
+    title={title}
+    subtitle={subtitle}
+    titleAccessory={titleAccessory}
+    scroll={scroll}
+    refreshing={refreshing}
+    onRefresh={onRefresh}
+    background={background}
+    style={style}
+    contentStyle={contentStyle}
+  >
+    {children}
+  </Screen>
+);
 
 export default PageContainer;

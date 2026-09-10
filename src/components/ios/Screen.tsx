@@ -7,7 +7,7 @@
  * scroll offset is published so the bar can react to it.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   RefreshControl,
   StyleSheet,
@@ -23,7 +23,7 @@ import { useAppTheme } from '@theme/ThemeProvider';
 import { layout, spacing } from '@theme/tokens';
 import { LargeTitle } from './NavigationBar';
 import { tabBarClearance } from './LiquidTabBar';
-import { useScrollOffset } from './scrollRegistry';
+import { useLargeTitleFlag, useScrollOffset } from './scrollRegistry';
 
 export interface ScreenProps {
   /** Large title shown at the top of the content. */
@@ -68,6 +68,12 @@ export const Screen: React.FC<ScreenProps> = ({
   const { colors } = useAppTheme();
   const route = useRoute();
   const scrollY = useScrollOffset(route.key);
+  // Published for the navigation bar: with a large title the bar fades in as
+  // the title scrolls away; without one it has to be opaque from the start.
+  const hasLargeTitle = useLargeTitleFlag(route.key);
+  useEffect(() => {
+    hasLargeTitle.value = title ? 1 : 0;
+  }, [title, hasLargeTitle]);
   // Present only inside the tab navigator; the floating bar needs clearance
   // exactly there and nowhere else.
   const hasTabBar = useContext(BottomTabBarHeightContext) !== undefined;

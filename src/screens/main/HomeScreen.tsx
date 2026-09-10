@@ -37,8 +37,8 @@ import type { Meal, FoodCategory, Activity } from '../../types';
 
 type Props = MainTabScreenProps<'Home'>;
 
-export default function HomeScreen({}: Props) {
-  const { currentProfile } = useProfile();
+export default function HomeScreen({ navigation }: Props) {
+  const { currentProfile, isLoading: isLoadingProfile } = useProfile();
   const { user } = useAuth();
   const { currentDate } = useCurrentDate();
 
@@ -97,6 +97,26 @@ export default function HomeScreen({}: Props) {
   const isStatisticLoading =
     isLoadingFood || isLoadingCategories || isLoadingActivities;
   const isStatisticError = isErrorFood || isErrorCategories || isErrorActivities;
+
+  // A new account has no pet yet. Without one there is nothing to log against,
+  // so the diary asks for the pet rather than showing empty sections whose
+  // controls would do nothing.
+  if (!isLoadingProfile && !currentProfile) {
+    return (
+      <PageContainer title="Diary">
+        <EmptyState
+          symbol="pawprint.fill"
+          title="Add your pet"
+          message="Create a profile to start tracking meals, activities and training."
+          actionLabel="Add pet"
+          onAction={() => navigation.getParent()?.navigate('Register')}
+          illustration={
+            <Asset imageName="add_avatar_placeholder_orange.png" width={180} height={150} />
+          }
+        />
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer title="Diary" subtitle={currentProfile?.name}>

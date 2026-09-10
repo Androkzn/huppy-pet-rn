@@ -1,8 +1,8 @@
 # The profile screen opens from More and shows the pet's details.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Profile
 ---
-- launchApp
+- runFlow: shared/ensure-pet.yaml
 - tapOn: "More"
 - assertVisible: "Profile"
 - tapOn: ${PET_NAME}

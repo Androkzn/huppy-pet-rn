@@ -7,6 +7,11 @@
 
 /* eslint-env jest */
 
+// The service warns when it has no API URL; tests stub `fetch`, so give it one
+// and keep the warning meaningful in real runs.
+process.env.EXPO_PUBLIC_API_URL = 'https://backend.test';
+process.env.EXPO_PUBLIC_BACKEND_URL = 'https://backend.test';
+
 // The real module returns promises; callers chain `.catch` on them.
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn(() => Promise.resolve()),

@@ -130,7 +130,9 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
             </Pressable>
           ) : null}
 
-          {password && hasValue ? (
+          {/* The reveal control is offered from the start, as Safari does, so a
+              password can be checked before there is anything to hide. */}
+          {password ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={revealed ? 'Hide password' : 'Show password'}

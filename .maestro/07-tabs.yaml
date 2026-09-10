@@ -1,8 +1,8 @@
 # Every tab opens its screen.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Tabs
 ---
-- launchApp
+- runFlow: shared/ensure-pet.yaml
 - tapOn: "Dashboard"
 - assertVisible: "Dashboard"
 - assertVisible: "Range"

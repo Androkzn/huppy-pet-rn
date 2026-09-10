@@ -1,5 +1,5 @@
 # The app opens on the sign-in screen and offers the ways off it.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Launch
 ---
 - launchApp:

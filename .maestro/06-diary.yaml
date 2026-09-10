@@ -1,8 +1,8 @@
 # The diary shows the day's sections and can log an activity.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Diary
 ---
-- launchApp
+- runFlow: shared/ensure-pet.yaml
 - assertVisible: "Diary"
 - assertVisible: "Nutrition"
 - assertVisible: "Meals"

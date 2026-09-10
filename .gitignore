@@ -138,3 +138,6 @@ build
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Maestro run artifacts
+.maestro-results/

@@ -219,5 +219,3 @@ export const imageAssets: Record<string, ImageSourcePropType> = {
   'veggie.png': require('./veggie.png'),
   'wetFood.png': require('./wetFood.png'),
 };
-
-export const isSvgAsset = (name: string): boolean => name.endsWith('.svg');

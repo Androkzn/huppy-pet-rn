@@ -51,8 +51,13 @@ export const Toast: React.FC<ToastProps> = ({
   const opacity = useSharedValue(0);
 
   // Held in a ref so a parent re-render cannot restart the dismissal timer.
+  // The ref is updated in an effect rather than during render: writing to a ref
+  // while rendering is not safe under concurrent rendering, where a render can
+  // be thrown away.
   const hide = useRef(onHide);
-  hide.current = onHide;
+  useEffect(() => {
+    hide.current = onHide;
+  }, [onHide]);
 
   useEffect(() => {
     if (visible) {

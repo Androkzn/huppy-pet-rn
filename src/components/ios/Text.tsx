@@ -30,7 +30,7 @@ export interface LabelProps extends Omit<TextProps, 'role'> {
   role?: LabelRole;
   color?: string;
   weight?: TextStyle['fontWeight'];
-  /** Renders in Balsamiq Sans — reserved for display titles. */
+  /** Renders in the rounded system face — reserved for display titles. */
   brand?: boolean;
   /** Section-header treatment: uppercase, tracked out, secondary. */
   sectionHeader?: boolean;

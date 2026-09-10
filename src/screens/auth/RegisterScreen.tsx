@@ -7,7 +7,7 @@
  */
 
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useProfile } from '@contexts/ProfileContext';
 import { useAuth } from '@contexts/AuthContext';
@@ -199,6 +199,16 @@ export default function RegisterScreen() {
           );
         }
         navigation.navigate('Main');
+      },
+      // Without this a failed save is silent: the button appears to do nothing
+      // and the pet never arrives, with no way to tell a rejected request from
+      // a dead tap.
+      onError: (error: any) => {
+        console.error('Save profile error:', error);
+        Alert.alert(
+          'Could not save the pet',
+          error?.message || 'Please check your connection and try again.'
+        );
       },
     });
   };

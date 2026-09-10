@@ -1,20 +1,44 @@
-# A signed-in account with no pet is asked for one, and saving it opens the diary.
-appId: ${APP_ID}
+# An account with no pet is asked for one, and saving it turns the diary on.
+#
+# The diary is where a signed-in user lands, so that is where the app asks for
+# the pet; the profile form is reached from there rather than by routing the
+# user somewhere they did not ask to go.
+appId: com.huppy.pet
 name: Create profile
 ---
 - launchApp
+- extendedWaitUntil:
+    visible: "Diary"
+    timeout: 25000
 - runFlow:
     when:
-      visible: "New pet"
+      visible: "Add your pet"
     commands:
-      - tapOn:
-          text: "Name"
-          index: 0
+      - tapOn: "Add pet"
+      - assertVisible: "New pet"
+      # "Name" is the row's title, sitting beside the field rather than in it;
+      # tapping it focuses nothing and the typing goes nowhere. The placeholder
+      # addresses the input itself.
+      - tapOn: "Enter name"
+      # The field needs the keyboard up before it takes input, and a name that
+      # silently fails to land only shows up two steps later as a disabled save
+      # button — so it is asserted here.
+      - waitForAnimationToEnd
       - inputText: ${PET_NAME}
+      - assertVisible: ${PET_NAME}
       - hideKeyboard
-      - assertVisible: "Save profile"
+      # The form runs about three screens deep — name, details, food ratio —
+      # so the save button starts well below the fold.
+      - scrollUntilVisible:
+          element:
+            text: "Save profile"
+          direction: DOWN
+          timeout: 20000
       - tapOn: "Save profile"
       - extendedWaitUntil:
-          visible: "Diary"
-          timeout: 20000
-- assertVisible: "Diary"
+          visible: "Nutrition"
+          timeout: 25000
+# Either way the diary now shows its sections for a pet.
+- assertVisible: "Nutrition"
+- assertVisible: "Meals"
+- assertVisible: "Activities"

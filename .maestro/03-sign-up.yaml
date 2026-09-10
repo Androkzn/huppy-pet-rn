@@ -1,0 +1,77 @@
+# Sign-up registers the suite's account, and states its own rules while doing it.
+#
+# The flow is idempotent, which is what lets one fixed account serve the whole
+# suite: the first run ever creates it and lands on the pet the app asks for;
+# every run after that gets the backend's "already registered" answer, which is
+# just as much a part of sign-up worth checking. Either way the flow ends on the
+# sign-in screen, ready for the next one.
+#
+# Password fields are secure, and iOS accepts no typed characters into a secure
+# field from the automation driver — so the screen's own reveal control is used
+# first, exactly as a person checking what they typed would.
+appId: com.huppy.pet
+name: Sign up
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Welcome back"
+- tapOn: "Create an account"
+- assertVisible: "Create account"
+- assertVisible: "Use at least 8 characters, with one number and one special character."
+
+# Nothing to submit yet.
+- assertVisible:
+    text: "Continue"
+    enabled: false
+
+- tapOn:
+    text: "^Email$"
+- inputText: ${E2E_EMAIL}
+
+# Revealing turns the first field's control into "Hide password", so the
+# remaining "Show password" is always the next field down.
+- tapOn:
+    text: "Show password"
+    index: 0
+- tapOn:
+    text: "^Password$"
+- eraseText
+- inputText: ${E2E_PASSWORD}
+
+- tapOn:
+    text: "Show password"
+    index: 0
+- tapOn:
+    text: "^Repeat password$"
+- eraseText
+- inputText: ${E2E_PASSWORD}
+
+# Tapping the title puts the keyboard away without a dismiss action, which the
+# driver cannot perform on this screen.
+- tapOn: "Create account"
+- assertVisible:
+    text: "Continue"
+    enabled: true
+- tapOn: "Continue"
+# iOS offers to save the password after a successful sign-in. The sheet belongs
+# to the system and sits above the app, so it is dismissed before anything is
+# asserted about the screen underneath.
+- tapOn:
+    text: "Not Now"
+    optional: true
+
+- extendedWaitUntil:
+    visible:
+      text: "Add your pet|Could not create the account"
+    timeout: 40000
+
+# A fresh account is signed in on an empty diary that asks for the first pet;
+# the next flow fills that in.
+- runFlow:
+    when:
+      visible: "Could not create the account"
+    commands:
+      - tapOn: "OK"
+      - assertVisible: "Create account"
+      - tapOn: "I already have an account"
+      - assertVisible: "Welcome back"

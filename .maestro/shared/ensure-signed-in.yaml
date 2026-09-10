@@ -1,0 +1,33 @@
+# Puts the app in the state the calling flow needs: signed in, on the diary.
+#
+# Each flow establishes this for itself rather than inheriting it from the flow
+# before, so one flaky run does not cascade into every flow after it — and so a
+# single flow can be run on its own while working on it.
+appId: com.huppy.pet
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "Welcome back"
+    commands:
+      - tapOn:
+          text: "^Username$"
+      - inputText: ${E2E_EMAIL}
+      - tapOn:
+          text: "Show password"
+          index: 0
+      - tapOn:
+          text: "^Password$"
+      - eraseText
+      - inputText: ${E2E_PASSWORD}
+      - tapOn: "Welcome back"
+      - tapOn:
+          text: "^Sign in$"
+      # iOS offers to save the password; the sheet is the system's and sits
+      # above the app, so it is dismissed before the diary is looked for.
+      - tapOn:
+          text: "Not Now"
+          optional: true
+- extendedWaitUntil:
+    visible: "Diary"
+    timeout: 30000

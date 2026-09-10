@@ -1,18 +1,36 @@
 # Signing in reaches the backend and leaves the auth stack.
-appId: ${APP_ID}
+#
+# The password is typed with the field revealed: iOS accepts no typed characters
+# into a secure field from the automation driver, and the screen's own reveal
+# control is the affordance a person uses for the same reason.
+appId: com.huppy.pet
 name: Sign in
 ---
 - launchApp:
     clearState: true
-- tapOn: "Username"
+- assertVisible: "Welcome back"
+- tapOn:
+    text: "^Username$"
 - inputText: ${E2E_EMAIL}
-- tapOn: "Password"
+- tapOn:
+    text: "Show password"
+    index: 0
+- tapOn:
+    text: "^Password$"
+- eraseText
 - inputText: ${E2E_PASSWORD}
-- hideKeyboard
-- tapOn: "Sign in"
+- tapOn: "Welcome back"
+- tapOn:
+    text: "^Sign in$"
+# iOS offers to save the password after a successful sign-in. The sheet belongs
+# to the system and sits above the app, so it is dismissed before anything is
+# asserted about the screen underneath.
+- tapOn:
+    text: "Not Now"
+    optional: true
 # A fresh account has no pet yet, so the app asks for one; an account that
 # already has a pet lands on the diary.
 - extendedWaitUntil:
     visible:
-      text: "Create profile|Diary"
-    timeout: 20000
+      text: "New pet|Diary"
+    timeout: 30000

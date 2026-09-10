@@ -7,9 +7,9 @@
  * spring curves the system uses for interactive feedback.
  *
  * Brand identity is preserved as the *tint*: Huppy's orange is the accent that
- * paints selection, and the deep teal-green stays the secondary voice. Chrome,
- * labels and controls use the system face so the app reads as a native iOS app;
- * `fontFamily.brand` (Balsamiq Sans) is reserved for display titles.
+ * paints selection, and the deep teal-green stays the secondary voice. Type is
+ * the system face throughout, with the rounded design reserved for display
+ * titles, so the app reads as a native iOS app.
  */
 
 import { Platform, TextStyle, ViewStyle } from 'react-native';

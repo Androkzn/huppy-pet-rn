@@ -5,7 +5,7 @@
  * thumb. The two shares are named above the track and update live as it moves.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -65,18 +65,26 @@ export const TitleAndSlider: React.FC<Props> = ({
     }
   };
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: (event) => setFromPosition(event.nativeEvent.locationX),
-      onPanResponderMove: (event) => setFromPosition(event.nativeEvent.locationX),
-      onPanResponderRelease: () => {
-        const settled = Math.floor(100 - valueRef.current);
-        onChange(settled, 100 - settled);
-      },
-    })
-  ).current;
+  // Built once and read during render to spread its handlers onto the track.
+  // A ref would have to be read during render to do that, which React forbids;
+  // a memo is the same "create once" with none of that.
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: (event) => setFromPosition(event.nativeEvent.locationX),
+        onPanResponderMove: (event) => setFromPosition(event.nativeEvent.locationX),
+        onPanResponderRelease: () => {
+          const settled = Math.floor(100 - valueRef.current);
+          onChange(settled, 100 - settled);
+        },
+      }),
+    // The handlers only read refs and the latest `onChange`, so this is built
+    // once for the life of the control.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const onLayout = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width;

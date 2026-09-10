@@ -1,8 +1,8 @@
 # Food can be searched for and added to the day's meal.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Add food
 ---
-- launchApp
+- runFlow: shared/ensure-pet.yaml
 - assertVisible: "Diary"
 - tapOn:
     text: "Add food"

@@ -1,8 +1,8 @@
 # Signing out returns to the sign-in screen.
-appId: ${APP_ID}
+appId: com.huppy.pet
 name: Sign out
 ---
-- launchApp
+- runFlow: shared/ensure-signed-in.yaml
 - tapOn: "More"
 - tapOn: "Sign out"
 - assertVisible: "Sign out?"

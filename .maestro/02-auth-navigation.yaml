@@ -1,14 +1,22 @@
-# Every route off the sign-in screen leads somewhere and comes back.
-appId: ${APP_ID}
+# Every route off the sign-in screen leads somewhere and offers a way back.
+#
+# The way back is the on-screen control, not a system gesture: that is what a
+# person taps, and it is the only affordance the transparent auth bar provides.
+appId: com.huppy.pet
 name: Auth navigation
 ---
 - launchApp:
     clearState: true
+- assertVisible: "Welcome back"
+
 - tapOn: "Create an account"
 - assertVisible: "Create account"
-- back
+- assertVisible: "One account covers every pet in the household."
+- tapOn: "I already have an account"
 - assertVisible: "Welcome back"
+
 - tapOn: "Forgot password?"
 - assertVisible: "Reset password"
-- back
+- assertVisible: "Confirm your email and choose a new password."
+- tapOn: "Back to sign in"
 - assertVisible: "Welcome back"

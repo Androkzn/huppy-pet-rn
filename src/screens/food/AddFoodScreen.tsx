@@ -37,6 +37,17 @@ type FoodStackParamList = {
 
 type Props = NativeStackScreenProps<FoodStackParamList, 'AddFood'>;
 
+/**
+ * One nutrition figure, stated as a value row.
+ *
+ * Declared here rather than inside the screen: a component created during
+ * render is a new type on every render, so React unmounts and remounts it each
+ * time instead of updating it.
+ */
+const NutritionRow = ({ label, value }: { label: string; value?: number }) => (
+  <ListRow title={label} value={value === undefined ? '—' : String(value)} chevron={false} />
+);
+
 const unitOptions = Object.values(FoodUnits).map((type) => ({
   rawValue: type,
   title: type,
@@ -89,11 +100,6 @@ export default function AddFoodScreen({ navigation, route }: Props) {
       }
     );
   };
-
-  /** One nutrition figure, stated as a value row. */
-  const NutritionRow = ({ label, value }: { label: string; value?: number }) => (
-    <ListRow title={label} value={value === undefined ? '—' : String(value)} chevron={false} />
-  );
 
   const description = (foodItem as any)?.desc as string | undefined;
 

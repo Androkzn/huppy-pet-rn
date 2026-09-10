@@ -69,11 +69,10 @@ export const Label: React.FC<LabelProps> = ({
       style={[
         base,
         { color: color ?? roleColor[role] },
-        // Balsamiq has no semibold face; asking for one makes iOS synthesise a
-        // smeared weight, so the brand face is always used at its own weights.
-        brand
-          ? { fontFamily: fontFamily.brand, fontWeight: undefined, letterSpacing: 0 }
-          : null,
+        // The rounded system design carries every weight, so the variant's own
+        // weight is kept; only the tracking is relaxed, as rounded faces are
+        // drawn wider than the upright one.
+        brand ? { fontFamily: fontFamily.brand, letterSpacing: 0 } : null,
         weight ? { fontWeight: weight } : null,
         sectionHeader
           ? {

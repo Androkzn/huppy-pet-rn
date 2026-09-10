@@ -18,16 +18,14 @@ import {
   spacing,
   textStyles,
 } from './tokens';
-import { buildAppTheme, buildPaperTheme } from './ThemeProvider';
+import { buildAppTheme } from './ThemeProvider';
 
 export * from './tokens';
 export {
   ThemeProvider,
   useAppTheme,
   useColors,
-  usePaperTheme,
   buildAppTheme,
-  buildPaperTheme,
 } from './ThemeProvider';
 export type { AppTheme, ColorSchemeName } from './ThemeProvider';
 
@@ -101,9 +99,5 @@ export const borderRadius = {
 } as const;
 
 export { spacing };
-
-/** Static Paper themes, for consumers outside the provider. */
-export const theme = buildPaperTheme(buildAppTheme('light').colors, false);
-export const darkTheme = buildPaperTheme(buildAppTheme('dark').colors, true);
 
 export { colors };

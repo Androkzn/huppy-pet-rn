@@ -1,0 +1,22 @@
+# The diary shows the day's sections and can log an activity.
+appId: ${APP_ID}
+name: Diary
+---
+- launchApp
+- assertVisible: "Diary"
+- assertVisible: "Nutrition"
+- assertVisible: "Meals"
+- assertVisible: "Activities"
+
+# Nutrition collapses and reopens.
+- tapOn: "Nutrition"
+- tapOn: "Nutrition"
+
+# Log a walk from the activities section.
+- tapOn:
+    text: "Add to Activities|Add activity"
+- assertVisible: "Add activity"
+- assertVisible: "Activity"
+- assertVisible: "Measured in"
+- tapOn: "Add"
+- assertVisible: "Diary"

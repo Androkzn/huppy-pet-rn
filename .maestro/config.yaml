@@ -1,0 +1,12 @@
+# Maestro suite configuration.
+#
+# Flows run in file order and share the credentials below, so the whole suite
+# exercises one account rather than leaving a trail of new ones behind.
+flows:
+  - "*.yaml"
+
+env:
+  APP_ID: com.huppy.pet
+  E2E_EMAIL: maestro-e2e@huppy.test
+  E2E_PASSWORD: "Huppy!e2e2026"
+  PET_NAME: Maestro

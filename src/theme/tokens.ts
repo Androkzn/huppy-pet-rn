@@ -176,12 +176,21 @@ export const palettes = { light: lightPalette, dark: darkPalette } as const;
  * ------------------------------------------------------------------ */
 
 /**
- * Balsamiq Sans is the brand display face; the system face carries every
- * control, label and list row so the chrome matches the platform.
+ * Type is the system face throughout.
+ *
+ * Display titles and large figures use the *rounded* system design — the face
+ * Apple itself uses where an app should feel approachable (Fitness, Health,
+ * Home). It ships with the OS, so there is no font to download and no loading
+ * gate at launch, it carries every weight, and it tracks Dynamic Type. The
+ * upright system face carries controls, labels and list rows.
  */
 export const fontFamily = {
-  brand: 'BalsamiqSans_700Bold',
-  brandRegular: 'BalsamiqSans_400Regular',
+  brand: Platform.select({ ios: 'SF Pro Rounded', default: undefined }) as
+    | string
+    | undefined,
+  brandRegular: Platform.select({ ios: 'SF Pro Rounded', default: undefined }) as
+    | string
+    | undefined,
   system: Platform.select({ ios: undefined, default: undefined }) as
     | string
     | undefined,

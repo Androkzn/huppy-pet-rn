@@ -39,8 +39,12 @@ export const DIET_PRESETS = {
     giblets: 8,
     veggie: 10,
   },
+  // Muscle meat absorbs whatever the other components do not take, as in every
+  // other preset: the traditional split is 80/10/5/5, so adding 7% fiber takes
+  // the meat share to 73. It read 78 here, which totalled 105% — every category
+  // goal came out 5% high, and the "unused" figure went negative.
   PMR_ADULT: {
-    meat: 78,
+    meat: 73,
     bones: 10,
     liver: 5,
     giblets: 5,

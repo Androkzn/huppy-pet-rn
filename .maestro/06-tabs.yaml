@@ -1,0 +1,16 @@
+# Every tab opens its screen.
+appId: ${APP_ID}
+name: Tabs
+---
+- launchApp
+- tapOn: "Dashboard"
+- assertVisible: "Dashboard"
+- assertVisible: "Range"
+- tapOn: "Training"
+- assertVisible: "Training"
+- assertVisible: "Sessions"
+- tapOn: "More"
+- assertVisible: "More"
+- assertVisible: "Sign out"
+- tapOn: "Diary"
+- assertVisible: "Diary"

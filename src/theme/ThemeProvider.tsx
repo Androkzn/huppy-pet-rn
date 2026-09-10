@@ -3,19 +3,11 @@
  *
  * Resolves the iOS 26 semantic palette against the device color scheme, so a
  * screen asks for `colors.groupedSurface` and gets the right value in either
- * appearance. `useAppTheme` is the single entry point components use; the Paper
- * theme is derived from the same palette so the remaining Paper primitives
- * inherit it.
+ * appearance. `useAppTheme` is the single entry point components use.
  */
 
 import React, { createContext, useContext, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
-import {
-  MD3DarkTheme,
-  MD3LightTheme,
-  configureFonts,
-  type MD3Theme,
-} from 'react-native-paper';
 import {
   darkPalette,
   fontFamily,
@@ -49,54 +41,6 @@ export interface AppTheme {
 }
 
 const ThemeContext = createContext<AppTheme | null>(null);
-
-const buildPaperTheme = (palette: Palette, isDark: boolean): MD3Theme => {
-  const base = isDark ? MD3DarkTheme : MD3LightTheme;
-  const fontConfig = Object.fromEntries(
-    Object.entries(base.fonts).map(([variant, style]) => [
-      variant,
-      { ...(style as object), fontFamily: fontFamily.system, letterSpacing: 0 },
-    ])
-  ) as typeof base.fonts;
-
-  return {
-    ...base,
-    fonts: configureFonts({ config: fontConfig as any }),
-    colors: {
-      ...base.colors,
-      primary: palette.tint,
-      onPrimary: palette.onTint,
-      primaryContainer: palette.tintSoft,
-      onPrimaryContainer: palette.tint,
-      secondary: palette.accentSecondary,
-      onSecondary: palette.onTint,
-      secondaryContainer: palette.secondaryFill,
-      onSecondaryContainer: palette.label,
-      tertiary: palette.accentSecondary,
-      error: palette.red,
-      onError: palette.onTint,
-      background: palette.groupedBackground,
-      onBackground: palette.label,
-      surface: palette.groupedSurface,
-      onSurface: palette.label,
-      surfaceVariant: palette.secondarySystemBackground,
-      onSurfaceVariant: palette.secondaryLabel,
-      outline: palette.separator,
-      outlineVariant: palette.opaqueSeparator,
-      shadow: palette.shadow,
-      scrim: palette.scrim,
-      backdrop: palette.scrim,
-      elevation: {
-        level0: 'transparent',
-        level1: palette.groupedSurface,
-        level2: palette.groupedSurfaceElevated,
-        level3: palette.secondarySystemBackground,
-        level4: palette.secondarySystemBackground,
-        level5: palette.tertiarySystemBackground,
-      },
-    },
-  };
-};
 
 export const buildAppTheme = (scheme: ColorSchemeName): AppTheme => {
   const isDark = scheme === 'dark';
@@ -139,10 +83,3 @@ export const useAppTheme = (): AppTheme => {
 /** Convenience for the very common `const { colors } = useAppTheme()`. */
 export const useColors = (): Palette => useAppTheme().colors;
 
-/** Paper theme derived from the same palette. */
-export const usePaperTheme = (): MD3Theme => {
-  const { colors, isDark } = useAppTheme();
-  return useMemo(() => buildPaperTheme(colors, isDark), [colors, isDark]);
-};
-
-export { buildPaperTheme };

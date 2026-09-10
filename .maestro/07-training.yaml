@@ -1,0 +1,15 @@
+# A training session can be planned and then marked done.
+appId: ${APP_ID}
+name: Training
+---
+- launchApp
+- tapOn: "Training"
+- assertVisible: "Sessions"
+- tapOn:
+    text: "Add to Sessions|Add training"
+- assertVisible: "Add training"
+- assertVisible: "Category"
+- tapOn: "Add"
+- assertVisible: "Sessions"
+# The new session is listed and reports whether it is done.
+- assertVisible: "Obedience"

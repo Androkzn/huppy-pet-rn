@@ -1,0 +1,20 @@
+# A signed-in account with no pet is asked for one, and saving it opens the diary.
+appId: ${APP_ID}
+name: Create profile
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "New pet"
+    commands:
+      - tapOn:
+          text: "Name"
+          index: 0
+      - inputText: ${PET_NAME}
+      - hideKeyboard
+      - assertVisible: "Save profile"
+      - tapOn: "Save profile"
+      - extendedWaitUntil:
+          visible: "Diary"
+          timeout: 20000
+- assertVisible: "Diary"

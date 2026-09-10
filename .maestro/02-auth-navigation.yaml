@@ -1,0 +1,14 @@
+# Every route off the sign-in screen leads somewhere and comes back.
+appId: ${APP_ID}
+name: Auth navigation
+---
+- launchApp:
+    clearState: true
+- tapOn: "Create an account"
+- assertVisible: "Create account"
+- back
+- assertVisible: "Welcome back"
+- tapOn: "Forgot password?"
+- assertVisible: "Reset password"
+- back
+- assertVisible: "Welcome back"

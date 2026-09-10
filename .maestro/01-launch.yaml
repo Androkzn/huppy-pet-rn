@@ -1,0 +1,13 @@
+# The app opens on the sign-in screen and offers the ways off it.
+appId: ${APP_ID}
+name: Launch
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Welcome back"
+- assertVisible: "Sign in to keep track of your pet's day."
+- assertVisible: "Username"
+- assertVisible: "Password"
+- assertVisible: "Sign in"
+- assertVisible: "Forgot password?"
+- assertVisible: "Create an account"

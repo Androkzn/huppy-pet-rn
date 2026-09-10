@@ -1,0 +1,15 @@
+# Food can be searched for and added to the day's meal.
+appId: ${APP_ID}
+name: Add food
+---
+- launchApp
+- assertVisible: "Diary"
+- tapOn:
+    text: "Add food"
+- assertVisible: "Add food"
+- assertVisible: "Search food"
+- tapOn: "Search food"
+- inputText: "chicken"
+- hideKeyboard
+- back
+- assertVisible: "Diary"

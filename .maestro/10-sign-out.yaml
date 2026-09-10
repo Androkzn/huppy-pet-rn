@@ -1,0 +1,12 @@
+# Signing out returns to the sign-in screen.
+appId: ${APP_ID}
+name: Sign out
+---
+- launchApp
+- tapOn: "More"
+- tapOn: "Sign out"
+- assertVisible: "Sign out?"
+- tapOn: "Sign out"
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 15000

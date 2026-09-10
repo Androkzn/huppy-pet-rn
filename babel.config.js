@@ -22,7 +22,7 @@ module.exports = function(api) {
           },
         },
       ],
-      '@emotion/babel-plugin',
+      // Must stay last — Reanimated's plugin rewrites worklets.
       'react-native-reanimated/plugin',
     ],
   };

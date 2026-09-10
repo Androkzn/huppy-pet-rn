@@ -1,18 +1,25 @@
 /**
- * Add Training Dialog — port of the web app's NewTrainingForm.component.js.
+ * Add Training — a sheet for planning a training session.
  *
- * The close button, the "Add Training" title, a Category dropdown, then either
- * the custom name/type fields or the Type dropdown for that category, a
- * description box, and the Add Training button.
+ * Category and type in a grouped list, with the custom-name fields appearing
+ * only where they apply, and a free-text note at the end. Cancel and Add sit in
+ * the sheet's toolbar, as iOS puts them.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { useAddTraining } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
 import { useAuth } from '@contexts/AuthContext';
-import { HuppyButton } from '@components/ui/Buttons';
-import { TitleAndDropdown, TitleAndTextField } from '@components/ui/FormRows';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing, textStyles } from '@theme/tokens';
+import { Sheet } from '@components/ios/Sheet';
+import { Label } from '@components/ios/Text';
+import {
+  FormGroup,
+  TitleAndDropdown,
+  TitleAndTextField,
+} from '@components/ui/FormRows';
 import {
   TrainingCategory,
   TrainingType,
@@ -20,8 +27,6 @@ import {
   getTitleForTrainingType,
   getTypesForTrainingCategory,
 } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
 
 interface AddTrainingDialogProps {
   visible: boolean;
@@ -41,6 +46,7 @@ export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
 }) => {
   const { currentProfile } = useProfile();
   const { user } = useAuth();
+  const { colors } = useAppTheme();
   const { mutate: addTraining } = useAddTraining();
 
   const [form, setForm] = useState({
@@ -56,15 +62,15 @@ export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
     title: getTitleForTrainingType(type),
   }));
 
+  const isCustomCategory = form.category === TrainingCategory.CUSTOM;
+  const isCustomType = form.type === TrainingType.CUSTOM;
+
   const handleCreate = () => {
     if (!currentProfile || !user) return;
 
     // A custom type under a named category inherits that category's title.
     let customCategory = form.customCategory;
-    if (
-      form.category !== TrainingCategory.CUSTOM &&
-      form.type === TrainingType.CUSTOM
-    ) {
+    if (!isCustomCategory && isCustomType) {
       customCategory = getTitleForTrainingCategory(form.category);
     }
 
@@ -82,17 +88,15 @@ export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.backdrop}>
-        <View style={styles.dialog}>
-          <View style={styles.closeButtonContainer}>
-            <HuppyButton variant="circleTextButton" onPress={onDismiss}>
-              x
-            </HuppyButton>
-          </View>
-
-          <Text style={styles.title}>Add Training</Text>
-
+    <Sheet
+      open={visible}
+      onDismiss={onDismiss}
+      title="Add training"
+      confirmLabel="Add"
+      onConfirm={handleCreate}
+    >
+      <View style={styles.body}>
+        <FormGroup>
           <TitleAndDropdown
             title="Category"
             initialValue={form.category}
@@ -106,31 +110,12 @@ export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
             }
           />
 
-          {form.category === TrainingCategory.CUSTOM ? (
-            <View>
-              <Text style={styles.subtitle}>Add your custom training:</Text>
-              <TitleAndTextField
-                title="Name"
-                onChange={(value) => setForm({ ...form, customCategory: value })}
-              />
-              <TitleAndTextField
-                title="Type"
-                onChange={(value) => setForm({ ...form, customType: value })}
-              />
-            </View>
-          ) : form.type === TrainingType.CUSTOM ? (
-            <View>
-              <TitleAndDropdown
-                title="Type"
-                initialValue={form.type}
-                dropdownOptions={typeOptions}
-                onChange={(value) => setForm({ ...form, type: value })}
-              />
-              <TitleAndTextField
-                title="Name"
-                onChange={(value) => setForm({ ...form, customType: value })}
-              />
-            </View>
+          {isCustomCategory ? (
+            <TitleAndTextField
+              title="Name"
+              placeholder="What are you training?"
+              onChange={(value) => setForm({ ...form, customCategory: value })}
+            />
           ) : (
             <TitleAndDropdown
               title="Type"
@@ -140,84 +125,55 @@ export const AddTrainingDialog: React.FC<AddTrainingDialogProps> = ({
             />
           )}
 
-          <View style={styles.descriptionBox}>
-            <Text style={styles.descriptionTitle}>Add Description</Text>
-            <TextInput
-              style={styles.descriptionInput}
-              multiline
-              value={form.description}
-              onChangeText={(value) => setForm({ ...form, description: value })}
+          {isCustomCategory || isCustomType ? (
+            <TitleAndTextField
+              title={isCustomCategory ? 'Type' : 'Name'}
+              placeholder="Add a name"
+              onChange={(value) => setForm({ ...form, customType: value })}
             />
-          </View>
+          ) : null}
+        </FormGroup>
 
-          <View style={styles.buttonContainer}>
-            <HuppyButton variant="rectangleTextButton" onPress={handleCreate}>
-              Add Training
-            </HuppyButton>
-          </View>
+        <View style={styles.noteGroup}>
+          <Label variant="footnote" role="secondary" sectionHeader style={styles.noteHeader}>
+            Note
+          </Label>
+          <TextInput
+            style={[
+              styles.note,
+              { backgroundColor: colors.groupedSurface, color: colors.label },
+            ]}
+            multiline
+            placeholder="What to work on, how it went…"
+            placeholderTextColor={colors.tertiaryLabel}
+            selectionColor={colors.tint}
+            value={form.description}
+            onChangeText={(value) => setForm({ ...form, description: value })}
+          />
         </View>
       </View>
-    </Modal>
+    </Sheet>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  body: {
+    gap: spacing.xl,
+    paddingBottom: spacing.base,
   },
-  dialog: {
-    maxWidth: 450,
-    minWidth: 250,
-    width: '90%',
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    padding: 20,
+  noteGroup: {
+    gap: 7,
   },
-  closeButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+  noteHeader: {
+    paddingHorizontal: layout.screenPadding + 4,
   },
-  title: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 20,
-    fontFamily: fontFamily.bold,
-    marginVertical: 20,
-  },
-  subtitle: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    marginVertical: 10,
-  },
-  descriptionBox: {
-    borderRadius: 10,
-    backgroundColor: colors.lightBrown,
-    margin: 3,
-    padding: 10,
-  },
-  descriptionTitle: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    color: colors.black,
-    marginBottom: 5,
-  },
-  descriptionInput: {
-    minHeight: 60,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-    padding: 10,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
+  note: {
+    marginHorizontal: layout.screenPadding,
+    minHeight: 92,
+    padding: spacing.md,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
     textAlignVertical: 'top',
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    marginTop: 20,
+    ...textStyles.body,
   },
 });

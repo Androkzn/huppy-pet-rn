@@ -1,19 +1,20 @@
 /**
- * ImagePickerDialog — port of the web app's four image dialogs
- * (AddAvatarDialog, ChangeAvatarDialog, AddImageDialog, ChangeImageDialog),
- * which share one layout and differ only in placeholder and title.
+ * ImagePickerDialog — choosing the picture for a pet or a food.
  *
- * The web crops with react-mobile-cropper and a circular 1:1 stencil; here the
- * system picker's own editor does the 1:1 crop and the round preview matches.
+ * A sheet showing the picture as it will appear, with the ways to change it
+ * listed beneath: the photo library, the camera, and removing what is there.
+ * The system picker does the 1:1 crop, so the round preview matches the result.
  */
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageCircle } from '@components/ui/Asset';
-import { Asset } from '@components/ui/Asset';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { ListRow, ListSection } from '@components/ios/List';
+import { Sheet } from '@components/ios/Sheet';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 
 interface ImagePickerDialogProps {
   visible: boolean;
@@ -21,7 +22,7 @@ interface ImagePickerDialogProps {
   imageUri?: string | null;
   /** Placeholder asset shown when there is no image. */
   placeholderName: string;
-  /** Title when empty; the web keeps "Edit avatar" for the filled state. */
+  /** Title when empty; the filled state keeps its own wording. */
   emptyTitle: string;
   filledTitle?: string;
   onSave: (uri: string) => void;
@@ -34,11 +35,12 @@ export const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
   imageUri,
   placeholderName,
   emptyTitle,
-  filledTitle = 'Edit avatar',
+  filledTitle = 'Edit photo',
   onSave,
   onDelete,
   onClose,
 }) => {
+  const { colors } = useAppTheme();
   const [selected, setSelected] = useState<string | null>(imageUri ?? null);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
 
   const isEmpty = !selected;
 
-  const handleSelect = async () => {
+  const pickFromLibrary = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) return;
 
@@ -59,113 +61,91 @@ export const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
     });
 
     if (!result.canceled && result.assets?.[0]?.uri) {
+      haptics.light();
+      setSelected(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) return;
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.2,
+    });
+
+    if (!result.canceled && result.assets?.[0]?.uri) {
+      haptics.light();
       setSelected(result.assets[0].uri);
     }
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.backdrop}>
-        <View style={styles.dialog}>
-          <View style={styles.closeButtonContainer}>
-            <Asset
-              imageName="close_round_orange.svg"
-              width={30}
-              height={30}
-              onPress={onClose}
-            />
-          </View>
-
-          <Text style={styles.title}>{isEmpty ? emptyTitle : filledTitle}</Text>
-
-          <View style={styles.avatarContainer}>
-            <ImageCircle
-              imageName={placeholderName}
-              width={150}
-              imageDataUrl={selected}
-              borderColor={colors.lightOrange}
-            />
-          </View>
-
-          <View
-            style={[
-              styles.buttonContainer,
-              // Web: a single button is centered, otherwise space-between.
-              { justifyContent: isEmpty ? 'center' : 'space-between' },
-            ]}
-          >
-            {!isEmpty && (
-              <Asset
-                imageName="save_green.svg"
-                width={25}
-                height={25}
-                onPress={() => selected && onSave(selected)}
-              />
-            )}
-            <Asset
-              imageName="add_green.svg"
-              width={25}
-              height={25}
-              onPress={handleSelect}
-            />
-            {!isEmpty && (
-              <Asset
-                imageName="delete_orange.svg"
-                width={30}
-                height={30}
-                onPress={() => {
-                  setSelected(null);
-                  onDelete();
-                }}
-              />
-            )}
-          </View>
+    <Sheet
+      open={visible}
+      onDismiss={onClose}
+      title={isEmpty ? emptyTitle : filledTitle}
+      confirmLabel="Save"
+      confirmDisabled={isEmpty}
+      onConfirm={() => selected && onSave(selected)}
+      detent="medium"
+    >
+      <View style={styles.body}>
+        <View style={styles.preview}>
+          <ImageCircle
+            imageName={placeholderName}
+            width={148}
+            imageDataUrl={selected}
+            borderColor={colors.tintSoft}
+            borderWidth={4}
+          />
         </View>
+
+        <ListSection>
+          <ListRow
+            title="Choose from library"
+            symbol="photo.on.rectangle"
+            chevron={false}
+            onPress={pickFromLibrary}
+          />
+          <ListRow
+            title="Take a photo"
+            symbol="camera.fill"
+            chevron={false}
+            onPress={takePhoto}
+          />
+        </ListSection>
+
+        {!isEmpty ? (
+          <ListSection>
+            <ListRow
+              title="Remove photo"
+              symbol="trash"
+              symbolBackground={colors.red + '1F'}
+              destructive
+              chevron={false}
+              onPress={() => {
+                haptics.warning();
+                setSelected(null);
+                onDelete();
+              }}
+            />
+          </ListSection>
+        ) : null}
       </View>
-    </Modal>
+    </Sheet>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
+  body: {
+    gap: spacing.lg,
+    paddingBottom: spacing.base,
+  },
+  preview: {
     alignItems: 'center',
-  },
-  // Profile.css.js dialogLargeContainerStyle
-  dialog: {
-    maxWidth: 450,
-    minWidth: 250,
-    width: '90%',
-    maxHeight: 550,
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    padding: 20,
-  },
-  closeButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  title: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 22,
-    fontFamily: fontFamily.bold,
-    marginVertical: 10,
-  },
-  // avatarContainerStyle: 250px wide, centered
-  avatarContainer: {
-    maxWidth: 250,
-    minWidth: 250,
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: 20,
   },
 });
 

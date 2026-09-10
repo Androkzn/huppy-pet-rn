@@ -33,6 +33,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>The app uses the camera so you can photograph your pet and its meals.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The app accesses your photos to let you add pictures of your pet's meals.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

@@ -37,7 +37,12 @@ export const FoodNavigator = () => {
         options={{
           title: 'Add food',
           header: ({ route, options }) => (
-            <NavBar title={options.title} scrollKey={route.key} />
+            <NavBar
+              title={options.title}
+              scrollKey={route.key}
+              // A screen with a bar action publishes it as `headerRight`.
+              trailing={options.headerRight?.({ canGoBack: true, tintColor: undefined })}
+            />
           ),
         }}
       />
@@ -47,7 +52,12 @@ export const FoodNavigator = () => {
         options={{
           title: 'Portion',
           header: ({ route, options }) => (
-            <NavBar title={options.title} scrollKey={route.key} />
+            <NavBar
+              title={options.title}
+              scrollKey={route.key}
+              // A screen with a bar action publishes it as `headerRight`.
+              trailing={options.headerRight?.({ canGoBack: true, tintColor: undefined })}
+            />
           ),
         }}
       />
@@ -57,7 +67,12 @@ export const FoodNavigator = () => {
         options={{
           title: 'Edit food',
           header: ({ route, options }) => (
-            <NavBar title={options.title} scrollKey={route.key} />
+            <NavBar
+              title={options.title}
+              scrollKey={route.key}
+              // A screen with a bar action publishes it as `headerRight`.
+              trailing={options.headerRight?.({ canGoBack: true, tintColor: undefined })}
+            />
           ),
         }}
       />
@@ -67,7 +82,12 @@ export const FoodNavigator = () => {
         options={{
           title: 'New food',
           header: ({ route, options }) => (
-            <NavBar title={options.title} scrollKey={route.key} />
+            <NavBar
+              title={options.title}
+              scrollKey={route.key}
+              // A screen with a bar action publishes it as `headerRight`.
+              trailing={options.headerRight?.({ canGoBack: true, tintColor: undefined })}
+            />
           ),
         }}
       />

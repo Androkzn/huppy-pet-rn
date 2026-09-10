@@ -29,7 +29,9 @@ export const MainNavigator = () => {
       screenOptions={{
         headerShown: true,
         headerTransparent: true,
-        header: ({ route }) => <NavBar routeName={route.name} scrollKey={route.key} />,
+        header: ({ route }) => (
+          <NavBar routeName={route.name} scrollKey={route.key} showBack={false} />
+        ),
         sceneStyle: { backgroundColor: 'transparent' },
         // Tabs cross-fade rather than slide, as they do on iOS.
         animation: 'fade',

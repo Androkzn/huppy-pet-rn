@@ -21,7 +21,6 @@ import { SymbolView } from 'expo-symbols';
 import { svgAssets, imageAssets } from '../assets';
 import { symbolFor, toneColor } from '../ios/symbolMap';
 import { useAppTheme } from '@theme/ThemeProvider';
-import * as colors from '../../theme/colors';
 
 const spinnerFrames = [
   require('../assets/spinner/activity_indicator1.png'),

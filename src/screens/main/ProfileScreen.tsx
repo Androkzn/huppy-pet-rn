@@ -1,14 +1,14 @@
 /**
- * Profile Screen — port of the web app's Profile.page.js + ProfileForm.
+ * Profile Screen — the pet, and how its diet is worked out.
  *
- * The avatar, name and age badge, the pet's details (name, breed, activity
- * level, weight, birthday, breed size, deduct-calories), and the Food Ratio
- * panel with the recommended-calorie rows, the preset picker, the daily ratio
- * and portion, the diet pie chart and the category rows.
+ * A portrait header naming the pet, then its details in grouped lists, then the
+ * food ratio: the calorie figures, the preset, the daily portion, the balance
+ * ring and one row per food category. The heavy part is collapsed by default,
+ * so the screen opens on who the pet is rather than on arithmetic.
  */
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { RootStackScreenProps } from '@navigation/types';
 import { useProfile } from '@contexts/ProfileContext';
 import {
@@ -20,8 +20,15 @@ import {
 } from '@hooks/useGraphQL';
 import { PageContainer } from '@components/ui/PageContainer';
 import { Asset, LoadingAndError } from '@components/ui/Asset';
-import { HuppyButton } from '@components/ui/Buttons';
+import { Card } from '@components/ios/Card';
+import { Icon } from '@components/ios/Icon';
+import { IOSButton } from '@components/ios/Button';
+import { Label } from '@components/ios/Text';
+import { ListRow, ListSection } from '@components/ios/List';
+import { Stepper } from '@components/ios/Stepper';
+import { Section } from '@components/ui/Section';
 import {
+  FormGroup,
   TitleAndDropdown,
   TitleAndTextField,
   TitleAndToggle,
@@ -46,8 +53,9 @@ import {
   calculateBaseRER,
   calculateRER,
 } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 import type { FoodCategory, Profile } from '../../types';
 
 // Reached from the NavBar avatar drawer, as on the web.
@@ -113,6 +121,7 @@ const getAge = (dob?: Date | string): string => {
 };
 
 export default function ProfileScreen({ navigation }: Props) {
+  const { colors } = useAppTheme();
   const { currentProfile } = useProfile();
   const { mutate: updateProfileMutation } = useUpdateProfile();
   const { mutate: addFoodCategory } = useAddFoodCategory();
@@ -214,131 +223,120 @@ export default function ProfileScreen({ navigation }: Props) {
     );
   }
 
+  const isCustomPreset = profile.preset === RatioPresets.CUSTOM;
+
   return (
     <PageContainer>
-      {/* Top navigation */}
-      <View style={styles.backButtonContainer}>
-        <HuppyButton
-          variant="backButton"
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-          onPress={() => navigation.goBack()}
-        >
-          Back
-        </HuppyButton>
-        <Text style={styles.profileTitle}>Profile</Text>
-        <View style={styles.topSpacer} />
-      </View>
-
-      {/* Avatar — tapping it opens the edit dialog, as on the web */}
-      <View style={styles.imageContainer}>
-        <Avatar
-          profile={profile}
-          width={150}
-          onPress={() => setAvatarDialogOpen(true)}
-        />
-      </View>
-
-      <Text style={styles.name}>{profile.name}</Text>
-      <Text style={styles.age}>{getAge(profile.dob)}</Text>
-
-      <View style={styles.form}>
-        <TitleAndTextField
-          title="Name"
-          initialValue={profile.name}
-          placeholder="Enter name"
-          onChange={(value) => updateProfile('name', value)}
-        />
-        <TitleAndTextField
-          title="Breed"
-          initialValue={profile.breed}
-          placeholder="Enter breed"
-          onChange={(value) => updateProfile('breed', value)}
-        />
-
-        {isAdultDog() && (
-          <TitleAndDropdown
-            title="Activity level"
-            initialValue={profile.activityType}
-            dropdownOptions={activityOptions}
-            onChange={(value) => updateProfile('activityType', value)}
+      <View style={styles.stack}>
+        {/* Who the pet is */}
+        <View style={styles.portrait}>
+          <Avatar
+            profile={profile}
+            width={116}
+            onPress={() => setAvatarDialogOpen(true)}
           />
-        )}
+          <View style={styles.portraitText}>
+            <Label variant="title1" brand numberOfLines={1}>
+              {profile.name}
+            </Label>
+            <Label variant="subheadline" role="secondary">
+              {[getAge(profile.dob), profile.breed].filter(Boolean).join(' · ')}
+            </Label>
+          </View>
+          <IOSButton
+            title="Change photo"
+            variant="tinted"
+            size="sm"
+            icon="camera"
+            onPress={() => setAvatarDialogOpen(true)}
+          />
+        </View>
 
-        <TitleButtonsAndTextField
-          title="Weight, kg"
-          initialValue={profile.weight}
-          onChange={(value) => updateProfile('weight', value)}
-          onChangeButton={(value) =>
-            // Changing weight recomputes the daily portion.
-            updateProfile('', '', {
-              weight: value,
-              dailyPortion: getPortionWeight(profile.dailyRatio, value),
-            })
-          }
-        />
+        {/* Details */}
+        <FormGroup header="Details">
+          <TitleAndTextField
+            title="Name"
+            initialValue={profile.name}
+            placeholder="Enter name"
+            onChange={(value) => updateProfile('name', value)}
+          />
+          <TitleAndTextField
+            title="Breed"
+            initialValue={profile.breed}
+            placeholder="Enter breed"
+            onChange={(value) => updateProfile('breed', value)}
+          />
+          <TitleAndDatePicker
+            title="Birthday"
+            value={new Date(profile.dob)}
+            onChange={(date) => updateProfile('dob', date)}
+          />
+          <TitleAndDropdown
+            title="Breed size"
+            initialValue={profile.size}
+            dropdownOptions={sizeOptions}
+            onChange={(value) => updateProfile('size', value)}
+          />
+          {isAdultDog() ? (
+            <TitleAndDropdown
+              title="Activity level"
+              initialValue={profile.activityType}
+              dropdownOptions={activityOptions}
+              onChange={(value) => updateProfile('activityType', value)}
+            />
+          ) : null}
+          <TitleButtonsAndTextField
+            title="Weight, kg"
+            initialValue={profile.weight}
+            onChange={(value) => updateProfile('weight', value)}
+            onChangeButton={(value) =>
+              // Changing weight recomputes the daily portion.
+              updateProfile('', '', {
+                weight: value,
+                dailyPortion: getPortionWeight(profile.dailyRatio, value),
+              })
+            }
+          />
+        </FormGroup>
 
-        <TitleAndDatePicker
-          title="Birthday"
-          value={new Date(profile.dob)}
-          onChange={(date) => updateProfile('dob', date)}
-        />
-
-        <TitleAndDropdown
-          title="Breed size"
-          initialValue={profile.size}
-          dropdownOptions={sizeOptions}
-          onChange={(value) => updateProfile('size', value)}
-        />
-
-        <TitleAndToggle
-          title="Deduct calories from activities"
-          initialValue={profile.deductCalories}
-          onChange={(value) => updateProfile('deductCalories', value)}
-        />
+        <FormGroup
+          header="Calories"
+          footer="Activities can offset the day's calorie target."
+        >
+          <TitleAndToggle
+            title="Deduct calories from activities"
+            initialValue={profile.deductCalories}
+            onChange={(value) => updateProfile('deductCalories', value)}
+          />
+        </FormGroup>
 
         {/* Food ratio */}
-        <View style={styles.foodRatioContainer}>
-          <Pressable
-            style={styles.sectionHeader}
-            onPress={() => setFoodRatioExpanded(!isFoodRatioExpanded)}
-          >
-            <Text style={styles.sectionTitle}>Food Ratio</Text>
-            <Asset
-              imageName={
-                isFoodRatioExpanded
-                  ? 'arrow_down_green.svg'
-                  : 'arrow_right_green.svg'
-              }
-              width={20}
-              height={20}
-              style={styles.sectionImage}
-            />
-          </Pressable>
-
-          {isFoodRatioExpanded && (
-            <View style={styles.foodRatioExpanded}>
+        <Section
+          title="Food ratio"
+          expanded={isFoodRatioExpanded}
+          onToggle={() => setFoodRatioExpanded(!isFoodRatioExpanded)}
+          plain
+        >
+          <View style={styles.ratioStack}>
+            <FormGroup>
               <TitleTooltipAndValue
                 title="Recommended calories, kcal"
                 tipText={RECOMMENDED_TIP}
                 value={calculateRecommendedCalories()}
               />
-
-              {profile.isRatioSelected && (
+              {profile.isRatioSelected ? (
                 <TitleTooltipAndValue
                   title="Estimated daily calories, kcal"
                   tipText="Estimated daily calories is calculated based on pet's weight and selected daily ratio"
                   value={getEstCalories()}
                 />
-              )}
-
+              ) : null}
               <TitleAndDropdown
                 title="Ratio preset"
                 initialValue={profile.preset}
                 dropdownOptions={presetOptions}
                 onChange={(value) => updateProfile('preset', value)}
               />
-
               <TitleToggleAndButtons
                 title="Daily ratio from body weight"
                 toggleValue={profile.isRatioSelected}
@@ -364,7 +362,6 @@ export default function ProfileScreen({ navigation }: Props) {
                     : updateProfile('dailyRatio', value)
                 }
               />
-
               {profile.isRatioSelected ? (
                 <TitleTooltipAndValue
                   title="Daily portion, g"
@@ -376,178 +373,147 @@ export default function ProfileScreen({ navigation }: Props) {
                   title="Daily portion, g"
                   initialValue={profile.dailyPortion}
                   onChange={(value) => updateProfile('dailyPortion', value)}
-                  onChangeButton={(value) =>
-                    updateProfile('dailyPortion', value)
-                  }
+                  onChangeButton={(value) => updateProfile('dailyPortion', value)}
                 />
               )}
+            </FormGroup>
 
-              {/* Categories */}
-              {isLoadingCategories || isErrorCategories ? (
+            {isLoadingCategories || isErrorCategories ? (
+              <View style={styles.centered}>
                 <LoadingAndError
                   isLoading={isLoadingCategories}
                   isError={isErrorCategories}
                 />
-              ) : (
-                <View>
-                  <View style={styles.chartContainer}>
-                    {isChartDataAvailable ? (
-                      <View>
-                        {unusedCategoryPercentage > 0 && (
-                          <Text style={styles.unusedCaloriesReminder}>
-                            You have {unusedCategoryPercentage}% unused!
-                          </Text>
-                        )}
-                        <ChartPie data={getChartData()} />
-                      </View>
-                    ) : (
+              </View>
+            ) : (
+              <>
+                {/* The balance, as a ring */}
+                <Card title="Balance" contentStyle={styles.chartCard}>
+                  {isChartDataAvailable ? (
+                    <View style={styles.chartBody}>
+                      <ChartPie data={getChartData()} size={168} />
+                      {unusedCategoryPercentage > 0 ? (
+                        <Label variant="footnote" role="tint" weight="600">
+                          {`${unusedCategoryPercentage}% of the ratio is unassigned`}
+                        </Label>
+                      ) : null}
+                    </View>
+                  ) : (
+                    <View style={styles.chartBody}>
                       <Asset
                         imageName={
                           getChartData().length > 0
                             ? 'no_percentage_placeholder.png'
                             : 'no_chart_placeholder.png'
                         }
-                        width={190}
-                        height={200}
-                        onPress={() =>
-                          setFoodRatioExpanded(!isFoodRatioExpanded)
-                        }
+                        width={170}
+                        height={180}
                       />
-                    )}
-                  </View>
-
-                  {/* Selected categories */}
-                  <View style={styles.selectedCategoriesContainer}>
-                    {categoryList.map((category) => {
-                      const weight = Math.floor(
-                        (profile.dailyPortion * category.percentage) / 100
-                      );
-                      const isCustom = profile.preset === RatioPresets.CUSTOM;
-
-                      return (
-                        <View key={category.type} style={styles.categoryRow}>
-                          <Text
-                            style={[
-                              styles.categoryName,
-                              { backgroundColor: category.color },
-                            ]}
-                          >
-                            {category.name}
-                          </Text>
-                          <Text style={styles.categoryValue}>{weight} g</Text>
-                          {isCustom ? (
-                            <View style={styles.categoryControls}>
-                              <HuppyButton
-                                variant="circleTextButtonSmall"
-                                onPress={() =>
-                                  updateFoodCategory({
-                                    categoryId: category._id,
-                                    updateData: {
-                                      percentage: Math.max(
-                                        category.percentage - 1,
-                                        0
-                                      ),
-                                      weight,
-                                    },
-                                  })
-                                }
-                              >
-                                -
-                              </HuppyButton>
-                              <Text style={styles.categoryValue}>
-                                {category.percentage}%
-                              </Text>
-                              <HuppyButton
-                                variant="circleTextButtonSmall"
-                                onPress={() =>
-                                  updateFoodCategory({
-                                    categoryId: category._id,
-                                    updateData: {
-                                      percentage: category.percentage + 1,
-                                      weight,
-                                    },
-                                  })
-                                }
-                              >
-                                +
-                              </HuppyButton>
-                              <Asset
-                                imageName="delete_green.svg"
-                                width={20}
-                                height={20}
-                                onPress={() => deleteFoodCategory(category._id)}
-                              />
-                            </View>
-                          ) : (
-                            <Text style={styles.categoryValue}>
-                              {category.percentage}%
-                            </Text>
-                          )}
-                        </View>
-                      );
-                    })}
-                  </View>
-
-                  {/* Add more categories */}
-                  {categoriesCanBeAdded.length > 0 && (
-                    <View style={styles.foodRatioContainer}>
-                      <Pressable
-                        style={styles.sectionHeader}
-                        onPress={() =>
-                          setFoodCategoryExpanded(!isFoodCategoryExpanded)
-                        }
-                      >
-                        <Text style={styles.sectionTitle}>
-                          {isFoodCategoryExpanded
-                            ? 'Hide categoties'
-                            : 'Add more food categories'}
-                        </Text>
-                        <Asset
-                          imageName={
-                            isFoodCategoryExpanded
-                              ? 'arrow_down_green.svg'
-                              : 'arrow_right_green.svg'
-                          }
-                          width={20}
-                          height={20}
-                          style={styles.sectionImage}
-                        />
-                      </Pressable>
-
-                      {isFoodCategoryExpanded && (
-                        <View style={styles.unselectedCategoriesContainer}>
-                          <View style={styles.unselectedFoodCategory}>
-                            {categoriesCanBeAdded.map((category) => (
-                              <Pressable
-                                key={category.name}
-                                style={styles.unselectedRow}
-                                onPress={() =>
-                                  addFoodCategory({
-                                    ...category,
-                                    profileId: profile._id,
-                                  } as any)
-                                }
-                              >
-                                <Text
-                                  style={[
-                                    styles.categoryName,
-                                    { backgroundColor: category.color },
-                                  ]}
-                                >
-                                  {category.name}
-                                </Text>
-                              </Pressable>
-                            ))}
-                          </View>
-                        </View>
-                      )}
+                      <Label variant="footnote" role="secondary">
+                        Give the categories a share to see the balance.
+                      </Label>
                     </View>
                   )}
-                </View>
-              )}
-            </View>
-          )}
-        </View>
+                </Card>
+
+                {/* One row per category */}
+                <ListSection header="Categories">
+                  {categoryList.map((category) => {
+                    const weight = Math.floor(
+                      (profile.dailyPortion * category.percentage) / 100
+                    );
+
+                    return (
+                      <ListRow
+                        key={category.type}
+                        title={category.name}
+                        subtitle={`${weight} g · ${category.percentage}%`}
+                        chevron={false}
+                        leading={
+                          <View
+                            style={[
+                              styles.categoryDot,
+                              { backgroundColor: category.color },
+                            ]}
+                          />
+                        }
+                        trailing={
+                          isCustomPreset ? (
+                            <View style={styles.categoryControls}>
+                              <Stepper
+                                value={category.percentage}
+                                min={0}
+                                max={100}
+                                compact
+                                onChange={(percentage) =>
+                                  updateFoodCategory({
+                                    categoryId: category._id,
+                                    updateData: { percentage, weight },
+                                  })
+                                }
+                              />
+                              <IOSButton
+                                variant="plain"
+                                size="sm"
+                                icon="trash"
+                                accessibilityLabel={`Remove ${category.name}`}
+                                onPress={() => {
+                                  haptics.warning();
+                                  deleteFoodCategory(category._id);
+                                }}
+                              />
+                            </View>
+                          ) : undefined
+                        }
+                      />
+                    );
+                  })}
+                </ListSection>
+
+                {/* Categories that can still be added */}
+                {categoriesCanBeAdded.length > 0 ? (
+                  <Section
+                    title="Add a category"
+                    expanded={isFoodCategoryExpanded}
+                    onToggle={() =>
+                      setFoodCategoryExpanded(!isFoodCategoryExpanded)
+                    }
+                  >
+                    {categoriesCanBeAdded.map((category) => (
+                      <ListRow
+                        key={category.name}
+                        title={category.name}
+                        leading={
+                          <View
+                            style={[
+                              styles.categoryDot,
+                              { backgroundColor: category.color },
+                            ]}
+                          />
+                        }
+                        trailing={
+                          <Icon
+                            name="plus.circle.fill"
+                            size={20}
+                            color={colors.tint}
+                          />
+                        }
+                        chevron={false}
+                        onPress={() => {
+                          haptics.light();
+                          addFoodCategory({
+                            ...category,
+                            profileId: profile._id,
+                          } as any);
+                        }}
+                      />
+                    ))}
+                  </Section>
+                ) : null}
+              </>
+            )}
+          </View>
+        </Section>
       </View>
 
       <ImagePickerDialog
@@ -555,7 +521,7 @@ export default function ProfileScreen({ navigation }: Props) {
         placeholderName="avatar_placeholder.png"
         emptyTitle="Add avatar"
         onSave={(uri) => {
-          // The web stamps `avatar` with the upload time so the URL re-fetches.
+          // `avatar` is stamped with the upload time so the URL re-fetches.
           uploadImageFromUri(uri, 'avatar', profile._id);
           updateProfile('avatar', new Date().toISOString());
           setAvatarDialogOpen(false);
@@ -572,136 +538,40 @@ export default function ProfileScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  backButtonContainer: {
-    flexDirection: 'row',
+  stack: {
+    gap: spacing.xl,
+  },
+  portrait: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
+    gap: spacing.md,
+    paddingHorizontal: layout.screenPadding,
   },
-  topSpacer: {
-    width: 100,
-  },
-  profileTitle: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 17,
-    fontFamily: fontFamily.bold,
-  },
-  imageContainer: {
+  portraitText: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    width: '100%',
+    gap: 2,
   },
-  // Web renders the name in an <h2> and the age in an <h3>.
-  name: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 24,
-    fontFamily: fontFamily.bold,
+  ratioStack: {
+    gap: spacing.lg,
   },
-  age: {
-    textAlign: 'center',
-    color: colors.black,
-    backgroundColor: colors.blueLight,
-    borderRadius: 10,
-    padding: 5,
-    width: '50%',
-    marginVertical: 10,
-    fontFamily: fontFamily.bold,
-    fontSize: 19,
-    overflow: 'hidden',
-  },
-  form: {
-    width: '100%',
-  },
-  foodRatioContainer: {
-    flexDirection: 'column',
-    borderRadius: 10,
+  centered: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-    marginHorizontal: 3,
-    backgroundColor: colors.lightBrown,
+    paddingVertical: spacing.lg,
   },
-  sectionHeader: {
-    flexDirection: 'row',
+  chartCard: {
     alignItems: 'center',
-    width: '100%',
   },
-  sectionTitle: {
-    flex: 1,
-    margin: 15,
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontFamily: fontFamily.bold,
-    fontSize: 18,
-  },
-  sectionImage: {
-    marginRight: 15,
-  },
-  foodRatioExpanded: {
-    width: '90%',
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  chartContainer: {
+  chartBody: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+    gap: spacing.sm,
   },
-  unusedCaloriesReminder: {
-    textAlign: 'center',
-    borderRadius: 10,
-    fontFamily: fontFamily.bold,
-    fontSize: 22,
-    color: colors.orange,
-  },
-  selectedCategoriesContainer: {
-    margin: 10,
-  },
-  categoryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 10,
-    height: 35,
-  },
-  categoryName: {
-    width: 100,
-    borderRadius: 5,
-    padding: 5,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.white,
-    textAlign: 'center',
-    overflow: 'hidden',
-  },
-  categoryValue: {
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
-    marginHorizontal: 5,
+  categoryDot: {
+    width: 12,
+    height: 12,
+    borderRadius: radius.capsule,
   },
   categoryControls: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  unselectedCategoriesContainer: {
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  unselectedFoodCategory: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  },
-  unselectedRow: {
-    margin: 3,
+    gap: 2,
   },
 });

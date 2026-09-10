@@ -146,8 +146,16 @@ export const LiquidTabBar: React.FC<BottomTabBarProps> = ({
   state,
   navigation,
   descriptors,
+  insets: navigatorInsets,
 }) => {
-  const insets = useSafeAreaInsets();
+  // React Navigation zeroes the safe-area context around the bar's own slot, so
+  // the insets it hands down are the authoritative ones for clearing the home
+  // indicator; the hook is only a fallback for rendering outside a navigator.
+  const contextInsets = useSafeAreaInsets();
+  const bottomInset = Math.max(
+    navigatorInsets?.bottom ?? 0,
+    contextInsets.bottom
+  );
   const { colors, isDark } = useAppTheme();
   const [barWidth, setBarWidth] = useState(0);
 
@@ -184,7 +192,7 @@ export const LiquidTabBar: React.FC<BottomTabBarProps> = ({
       style={[
         styles.host,
         {
-          paddingBottom: Math.max(insets.bottom, 10),
+          paddingBottom: Math.max(bottomInset, 14),
           paddingHorizontal: SIDE_INSET,
         },
       ]}

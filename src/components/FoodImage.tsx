@@ -6,8 +6,8 @@
 
 import React from 'react';
 import { useFetchImage } from '@hooks/useImage';
+import { useAppTheme } from '@theme/ThemeProvider';
 import { ImageCircle, LoadingAndError } from './ui/Asset';
-import * as colors from '../theme/colors';
 import type { Food, FoodTemplate } from '../types';
 
 const BACKEND_ENDPOINT = process.env.EXPO_PUBLIC_BACKEND_URL || '';
@@ -27,6 +27,7 @@ export const FoodImage: React.FC<FoodImageProps> = ({
   onPress,
   isEditing = true,
 }) => {
+  const { colors } = useAppTheme();
   const url = `${BACKEND_ENDPOINT}/food/${(foodItem as any)?.userId}/${foodItem?._id}?type=url`;
   const {
     data: image,
@@ -47,7 +48,8 @@ export const FoodImage: React.FC<FoodImageProps> = ({
       imageName={placeholder}
       width={width}
       imageDataUrl={imageDataUrl ?? (image as string)}
-      borderColor={colors.lightOrange}
+      borderColor={colors.tintSoft}
+      borderWidth={4}
       onPress={onPress}
     />
   );

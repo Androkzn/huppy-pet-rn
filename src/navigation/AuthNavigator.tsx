@@ -1,8 +1,9 @@
 /**
  * Auth Stack Navigator — login, sign-up, password reset and the first profile.
  *
- * The auth screens carry the wordmark in a transparent glass bar, so the
- * artwork behind them runs to the top edge.
+ * The bar is empty and transparent here: each screen already leads with the
+ * wordmark, so the chrome stays out of the way and the page runs to the top
+ * edge.
  */
 
 import React from 'react';
@@ -23,7 +24,7 @@ export const AuthNavigator = () => {
       screenOptions={{
         headerShown: true,
         headerTransparent: true,
-        header: ({ route }) => <NavBar showLogo scrollKey={route.key} />,
+        header: ({ route }) => <NavBar scrollKey={route.key} />,
         animation: 'slide_from_right',
         fullScreenGestureEnabled: true,
       }}

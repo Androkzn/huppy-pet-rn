@@ -1,21 +1,27 @@
 /**
- * ActivityCard — port of the web app's ActivityCard.component.js.
+ * ActivityCard — one logged activity in the day's diary.
  *
- * An 80px header (icon, activity-type dropdown, burned calories) over a 60px
- * body (metric dropdown, minus / value / plus), both on lightBrown2, wrapped in
- * a left-swipe-to-delete container.
+ * Two rows on a grouped surface: what the activity was and what it burned, then
+ * the metric and its amount on a stepper. Swiping left removes it, the way Mail
+ * and Reminders delete a row.
+ *
+ * The calorie arithmetic and the mutations are the ones the app already used;
+ * only the presentation is the system's.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useDeleteActivity, useUpdateActivity } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
-import * as colors from '../theme/colors';
-import { fontFamily } from '../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 import { Asset } from './ui/Asset';
-import { HuppyButton } from './ui/Buttons';
 import { Dropdown } from './ui/Dropdown';
+import { Icon } from './ios/Icon';
+import { Label } from './ios/Text';
+import { Stepper } from './ios/Stepper';
 import {
   ActivityType,
   ActivityMetric,
@@ -40,22 +46,20 @@ interface ActivityCardProps {
 
 export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   const { currentProfile } = useProfile();
+  const { colors } = useAppTheme();
   const { mutate: deleteActivity } = useDeleteActivity();
   const { mutate: updateActivity } = useUpdateActivity();
 
-  const getActivityValue = () =>
-    activity.metric === ActivityMetric.DISTANCE
-      ? activity.distance
-      : activity.duration;
+  const isDistance = activity.metric === ActivityMetric.DISTANCE;
+  const value = isDistance ? activity.distance : activity.duration;
+  // Distance steps by 1km, duration by 10min.
+  const step = isDistance ? 1 : 10;
 
-  // Distance steps by 1km, duration by 10min — as on the web.
-  const changeStep = activity.metric === ActivityMetric.DISTANCE ? 1 : 10;
-
-  const getCaloriesBurnedFor = (value: number) => {
+  const getCaloriesBurnedFor = (amount: number) => {
     const weight = currentProfile?.weight ?? 0;
-    return activity.metric === ActivityMetric.DISTANCE
-      ? Math.floor(weight * value * 0.8)
-      : Math.floor(value * 2);
+    return isDistance
+      ? Math.floor(weight * amount * 0.8)
+      : Math.floor(amount * 2);
   };
 
   const updateCurrentActivity = (newValue: number) => {
@@ -63,101 +67,100 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
       activityId: activity._id,
       updateData: {
         burnedCalories: getCaloriesBurnedFor(newValue),
-        [activity.metric === ActivityMetric.DISTANCE ? 'distance' : 'duration']:
-          newValue,
+        [isDistance ? 'distance' : 'duration']: newValue,
       },
     });
   };
 
   const confirmDelete = () => {
-    Alert.alert('', 'Do you really want to delete this item ?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'OK', onPress: () => deleteActivity(activity._id) },
-    ]);
+    haptics.warning();
+    Alert.alert(
+      `Remove this ${getTitleForActivityType(activity.type).toLowerCase()}?`,
+      undefined,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () => deleteActivity(activity._id),
+        },
+      ]
+    );
   };
 
   return (
     <Swipeable
       containerStyle={styles.swipeContainer}
+      friction={1.6}
+      overshootLeft={false}
       renderLeftActions={() => (
-        <View style={styles.deleteAction}>
-          <Asset imageName="delete_white.svg" width={25} height={25} />
+        <View style={[styles.swipeAction, { backgroundColor: colors.red }]}>
+          <Icon name="trash" size={20} color={colors.onTint} />
         </View>
       )}
       onSwipeableOpen={(direction) => {
         if (direction === 'left') confirmDelete();
       }}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Asset
-            imageName={`activity_${activity.type}.svg`}
-            width={40}
-            height={40}
-          />
-        </View>
-        <View style={styles.headerColumn}>
-          <View style={styles.topRow}>
+      <View style={[styles.card, { backgroundColor: colors.groupedSurface }]}>
+        {/* What it was, and what it burned. */}
+        <View style={styles.row}>
+          <View style={[styles.iconTile, { backgroundColor: colors.tintSoft }]}>
+            <Asset
+              imageName={`activity_${activity.type}.svg`}
+              width={24}
+              height={24}
+            />
+          </View>
+
+          <View style={styles.rowLabel}>
             <Dropdown
               value={activity.type}
+              label="Activity"
               options={activityTypeOptions}
-              onChange={(value) =>
+              onChange={(newValue) =>
                 updateActivity({
                   activityId: activity._id,
-                  updateData: { type: value.toLowerCase() },
+                  updateData: { type: newValue.toLowerCase() },
                 })
               }
+              style={styles.typeDropdown}
             />
-          </View>
-          <View style={styles.bottomRow}>
-            <Text style={styles.burned}>
-              Burned calories: {getCaloriesBurnedFor(getActivityValue())} kcal
-            </Text>
+            <Label variant="footnote" role="secondary">
+              {`${getCaloriesBurnedFor(value)} kcal burned`}
+            </Label>
           </View>
         </View>
-      </View>
 
-      {/* Body */}
-      <View style={styles.body}>
-        <View style={styles.bodyRow}>
+        <View
+          style={[
+            styles.separator,
+            { backgroundColor: colors.separator, height: layout.hairline },
+          ]}
+        />
+
+        {/* How it is measured, and how much of it. */}
+        <View style={styles.row}>
           <Dropdown
             value={activity.metric}
+            label="Metric"
             options={activityMetricOptions}
-            onChange={(value) =>
+            onChange={(newValue) =>
               updateActivity({
                 activityId: activity._id,
-                updateData: { metric: value },
+                updateData: { metric: newValue },
               })
             }
+            style={styles.metricDropdown}
           />
-
-          <View style={styles.stepper}>
-            <HuppyButton
-              variant="circleTextButton"
-              onPress={() =>
-                updateCurrentActivity(Math.max(0, getActivityValue() - changeStep))
-              }
-            >
-              -
-            </HuppyButton>
-            <TextInput
-              style={styles.inputField}
-              value={String(getActivityValue())}
-              keyboardType="number-pad"
-              onChangeText={(text) =>
-                updateCurrentActivity(text === '' ? 0 : parseInt(text, 10) || 0)
-              }
-            />
-            <HuppyButton
-              variant="circleTextButton"
-              onPress={() =>
-                updateCurrentActivity(getActivityValue() + changeStep)
-              }
-            >
-              +
-            </HuppyButton>
-          </View>
+          <Stepper
+            value={value}
+            step={step}
+            min={0}
+            onChange={updateCurrentActivity}
+            onStep={updateCurrentActivity}
+            style={styles.stepper}
+          />
         </View>
       </View>
     </Swipeable>
@@ -165,83 +168,52 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
 };
 
 const styles = StyleSheet.create({
-  // .swiper-activity: 10px radius, 5px margins
   swipeContainer: {
-    borderRadius: 10,
-    margin: 5,
+    // Each activity is its own card in the list, inset like a grouped section.
+    marginHorizontal: layout.screenPadding,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
     overflow: 'hidden',
   },
-  deleteAction: {
-    backgroundColor: colors.orange,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: '100%',
+  card: {
+    width: '100%',
   },
-  header: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    height: 80,
-    backgroundColor: colors.lightBrown2,
+    gap: spacing.md,
+    paddingHorizontal: layout.screenPadding,
+    paddingVertical: spacing.md,
+    minHeight: 56,
   },
-  iconContainer: {
-    width: '20%',
+  iconTile: {
+    width: 38,
+    height: 38,
+    borderRadius: radius.sm,
+    borderCurve: 'continuous',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  headerColumn: {
+  rowLabel: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    marginLeft: 10,
+    gap: 2,
   },
-  topRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: 10,
+  typeDropdown: {
+    alignSelf: 'flex-start',
   },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-  },
-  burned: {
-    color: colors.orange,
-    fontFamily: fontFamily.bold,
-    fontSize: 14,
-  },
-  body: {
-    width: '100%',
-    height: 60,
-    justifyContent: 'center',
-    backgroundColor: colors.lightBrown2,
-  },
-  bodyRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginLeft: 10,
-    paddingRight: 10,
+  metricDropdown: {
+    flex: 1,
   },
   stepper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginLeft: 'auto',
   },
-  inputField: {
-    borderWidth: 2,
-    borderColor: colors.grayDark,
-    width: 40,
-    textAlign: 'center',
-    marginHorizontal: 15,
-    borderRadius: 10,
-    height: 30,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
+  separator: {
+    marginLeft: layout.screenPadding,
+  },
+  swipeAction: {
+    width: 76,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

@@ -1,23 +1,23 @@
 /**
- * MealCard — port of the web app's MealCard.component.js.
+ * MealCard — one meal in the day's diary.
  *
- * A brown header strip (arrow, MEAL, meal number, add-meal button) over a gray
- * body listing the meal's food: a units row, a totals row, then one swipeable
- * white row per item. Beneath sit the Add Food button and the "more" menu with
- * copy-from / copy-to / delete-meal.
+ * A grouped card: a header naming the meal and its totals, a row per food item,
+ * and an "Add food" row at the end — the shape iOS uses for an editable list.
+ * Rows swipe to delete or edit, the way Mail and Reminders do; the meal's own
+ * actions (copy from, copy to, delete) live behind the ellipsis in a sheet.
+ *
+ * All of the meal arithmetic and the mutations are the ones the app already
+ * used; only the presentation is new.
  */
 
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-  Pressable,
-  Modal,
-  Platform,
-} from 'react-native';
+import { View, StyleSheet, Alert, Pressable } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -32,19 +32,23 @@ import {
 import { useProfile } from '@contexts/ProfileContext';
 import { useAuth } from '@contexts/AuthContext';
 import { useCurrentDate } from '@contexts/DateContext';
-import * as colors from '../theme/colors';
-import { fontFamily, layout } from '../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, motion, radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 import { Asset, LoadingAndError } from './ui/Asset';
-import { HuppyButton } from './ui/Buttons';
-import { BottomSheet } from './ui/BottomSheet';
 import { Checkbox } from './ui/Checkbox';
-import { ButtonsAndTextField } from './ui/ButtonsAndTextField';
-import CustomDatePickerWithArrows from './CustomDatePickerWithArrows';
+import { Icon } from './ios/Icon';
+import { Label } from './ios/Text';
+import { Sheet } from './ios/Sheet';
+import { ListRow, ListSection } from './ios/List';
+import { Stepper } from './ios/Stepper';
+import { IOSButton } from './ios/Button';
+import { EmptyState } from './ios/Feedback';
 import type { Food, Meal } from '../types';
 
 interface MealCardProps {
   meal: Meal;
-  /** 1-based position, shown in the header badge. */
+  /** 1-based position, shown in the header. */
   index: number;
   mealsCount: number;
 }
@@ -54,6 +58,7 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
   const { currentProfile } = useProfile();
   const { user } = useAuth();
   const { currentDate } = useCurrentDate();
+  const { colors } = useAppTheme();
 
   const mealId = meal._id;
   const [isMealsExpanded, setMealsExpanded] = useState(true);
@@ -61,21 +66,20 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
   const [isCopyFromMealExpanded, setCopyFromMealExpanded] = useState(false);
   const [copyFromDate, setCopyFromDate] = useState(new Date());
   const [showCopyDatePicker, setShowCopyDatePicker] = useState(false);
+  const [copyDateDraft, setCopyDateDraft] = useState(new Date());
   const [isCopyTo, setIsCopyTo] = useState(false);
   const [checkedMealsIds, setCheckedMeals] = useState<string[]>([]);
   const [checkedFoodsIds, setCheckedFoods] = useState<string[]>([]);
   const [editingFood, setEditingFood] = useState<Food | null>(null);
+  // The portion being edited in the sheet, committed on save.
+  const [editingWeight, setEditingWeight] = useState(0);
 
   const { data: food } = useGetAllFoodForMeal(mealId, currentProfile?._id || '');
   const {
     data: foodForDate,
     isLoading: isLoadingFoodForDate,
     isError: isErrorFoodForDate,
-  } = useGetFoodForDate(
-    user?.id || '',
-    currentProfile?._id || '',
-    copyFromDate
-  );
+  } = useGetFoodForDate(user?.id || '', currentProfile?._id || '', copyFromDate);
 
   const { mutate: addMeal } = useAddMeal();
   const { mutate: deleteMeal } = useDeleteMeal();
@@ -85,7 +89,15 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
 
   const foodItems: Food[] = food ?? [];
 
-  // The web clears the selection whenever the copy-from date changes.
+  const chevron = useSharedValue(isMealsExpanded ? 0 : -90);
+  useEffect(() => {
+    chevron.value = withSpring(isMealsExpanded ? 0 : -90, motion.smooth);
+  }, [isMealsExpanded, chevron]);
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${chevron.value}deg` }],
+  }));
+
+  // The selection is cleared whenever the copy-from date changes.
   useEffect(() => {
     setCheckedMeals([]);
     setCheckedFoods([]);
@@ -93,11 +105,7 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
 
   const addMealForDate = () => {
     if (!currentProfile || !user) return;
-    addMeal({
-      date: currentDate,
-      profileId: currentProfile._id,
-      userId: user.id,
-    });
+    addMeal({ date: currentDate, profileId: currentProfile._id, userId: user.id });
   };
 
   const deleteCurrentMeal = () => {
@@ -107,10 +115,14 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
     };
 
     if (foodItems.length > 0) {
-      Alert.alert('', 'Do you really want to delete this meal?', [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'OK', onPress: doDelete },
-      ]);
+      Alert.alert(
+        `Delete meal ${index}?`,
+        'Its food will be removed from the day.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Delete', style: 'destructive', onPress: doDelete },
+        ]
+      );
       return;
     }
     doDelete();
@@ -137,13 +149,11 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
   const getCaloriesForFood = (item: Food) =>
     Math.floor((item.calories / 100) * item.weight);
 
-  /** Groups the copy-source day's food by meal, as the web's getGroopedFood. */
+  /** Groups the copy-source day's food by meal. */
   const getGroupedFood = (): Food[][] => {
     if (!foodForDate || foodForDate.length === 0) return [];
     return foodForDate.reduce((result: Food[][], item: Food) => {
-      const groupIndex = result.findIndex(
-        (group) => group[0]?.mealId === item.mealId
-      );
+      const groupIndex = result.findIndex((group) => group[0]?.mealId === item.mealId);
       if (groupIndex !== -1) {
         result[groupIndex].push(item);
       } else {
@@ -181,6 +191,7 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
     } else {
       addAllTo(mealId);
     }
+    haptics.success();
   };
 
   const handleMealCheckboxChange = (checked: boolean, checkedMealId: string) => {
@@ -205,355 +216,408 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, index, mealsCount }) =
     );
   };
 
-  const FoodItem: React.FC<{ foodItem: Food }> = ({ foodItem }) => (
+  /** A food row: name, then its weight and calories, swipeable both ways. */
+  const FoodItem: React.FC<{ foodItem: Food; last: boolean }> = ({
+    foodItem,
+    last,
+  }) => (
     <Swipeable
-      containerStyle={styles.foodSwipeContainer}
+      containerStyle={styles.swipeContainer}
+      friction={1.6}
+      overshootLeft={false}
+      overshootRight={false}
       renderLeftActions={() => (
-        <View style={styles.deleteAction}>
-          <Asset imageName="delete_white.svg" width={25} height={25} />
+        <View style={[styles.swipeAction, { backgroundColor: colors.red }]}>
+          <Icon name="trash" size={20} color={colors.onTint} />
         </View>
       )}
       renderRightActions={() => (
-        <View style={styles.editAction}>
-          <Asset imageName="edit_white.svg" width={20} height={20} />
+        <View style={[styles.swipeAction, { backgroundColor: colors.tint }]}>
+          <Icon name="pencil" size={20} color={colors.onTint} />
         </View>
       )}
       onSwipeableOpen={(direction) => {
         if (direction === 'left') {
-          Alert.alert('', 'Do you really want to delete this item ?', [
+          haptics.warning();
+          Alert.alert(`Remove ${foodItem.name}?`, undefined, [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'OK', onPress: () => deleteFood(foodItem._id) },
+            {
+              text: 'Remove',
+              style: 'destructive',
+              onPress: () => deleteFood(foodItem._id),
+            },
           ]);
         } else {
+          haptics.light();
+          setEditingWeight(foodItem.weight);
           setEditingFood(foodItem);
         }
       }}
     >
-      <View style={styles.foodListRow}>
-        <View style={styles.headerText}>
-          <Text style={styles.headingFood}>{foodItem.name}</Text>
-          <View style={styles.caloriesAndWeight}>
-            <Text style={styles.caloriesValue}>
-              {getCaloriesForFood(foodItem)}
-            </Text>
-            <Text style={styles.weightValue}>{foodItem.weight}</Text>
-          </View>
-        </View>
+      <View style={[styles.foodRow, { backgroundColor: colors.groupedSurface }]}>
+        <Label variant="body" numberOfLines={1} style={styles.foodName}>
+          {foodItem.name}
+        </Label>
+        <Label variant="subheadline" role="secondary">
+          {foodItem.weight} g
+        </Label>
+        <Label variant="subheadline" role="secondary" style={styles.foodCalories}>
+          {getCaloriesForFood(foodItem)} kcal
+        </Label>
       </View>
+      {last ? null : (
+        <View
+          style={[
+            styles.separator,
+            { backgroundColor: colors.separator, height: layout.hairline },
+          ]}
+        />
+      )}
     </Swipeable>
   );
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header: the meal, its totals, and its actions. */}
       <View style={styles.header}>
         <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isMealsExpanded }}
+          accessibilityLabel={`Meal ${index}`}
           style={styles.headerTitle}
-          onPress={() => setMealsExpanded(!isMealsExpanded)}
+          hitSlop={6}
+          onPress={() => {
+            haptics.light();
+            setMealsExpanded(!isMealsExpanded);
+          }}
         >
-          <View style={styles.headerArrow}>
-            <Asset
-              imageName={
-                isMealsExpanded ? 'arrow_down_green.svg' : 'arrow_right_green.svg'
-              }
-              width={20}
-              height={20}
-            />
-          </View>
-          <Text style={styles.heading}>MEAL</Text>
-          <HuppyButton variant="circleTextTransparentButton">
-            {String(index)}
-          </HuppyButton>
+          <Animated.View style={chevronStyle}>
+            <Icon name="chevron.down" size={12} weight="bold" color={colors.tertiaryLabel} />
+          </Animated.View>
+          <Label variant="footnote" role="secondary" sectionHeader>
+            {`Meal ${index}`}
+          </Label>
+          {foodItems.length > 0 ? (
+            <Label variant="footnote" role="tertiary">
+              {`${calculateTotalWeight(foodItems)} g · ${calculateTotalCalories(
+                foodItems
+              )} kcal`}
+            </Label>
+          ) : null}
         </Pressable>
 
-        <View style={styles.headerAddButton}>
-          <Asset
-            imageName="add_round_orange.svg"
-            width={30}
-            height={30}
+        <View style={styles.headerActions}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Meal ${index} options`}
+            hitSlop={8}
             onPress={() => {
+              haptics.light();
+              setMoreOpen(true);
+            }}
+            style={({ pressed }) => [
+              styles.headerButton,
+              { backgroundColor: colors.tintSoft },
+              pressed && styles.pressed,
+            ]}
+          >
+            <Icon name="ellipsis" size={14} weight="bold" color={colors.tint} />
+          </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add meal"
+            hitSlop={8}
+            onPress={() => {
+              haptics.light();
               if (isMealsExpanded) {
                 addMealForDate();
               } else {
                 setMealsExpanded(true);
               }
             }}
-          />
+            style={({ pressed }) => [
+              styles.headerButton,
+              { backgroundColor: colors.tintSoft },
+              pressed && styles.pressed,
+            ]}
+          >
+            <Icon name="plus" size={14} weight="bold" color={colors.tint} />
+          </Pressable>
         </View>
       </View>
 
       {/* Body */}
-      <View style={styles.bodyMeal}>
-        {isMealsExpanded && foodItems.length > 0 ? (
-          <View style={styles.column}>
-            <View style={styles.totalWeightContainer}>
-              <Text style={styles.weightLabel} />
-              <View style={styles.caloriesAndWeight}>
-                <Text style={styles.unitCalories}>kcal</Text>
-                <Text style={styles.unitWeight}>g</Text>
-              </View>
-            </View>
-            <View style={styles.totalWeightContainer}>
-              <Text style={styles.weightLabel}>Total</Text>
-              <View style={styles.caloriesAndWeight}>
-                <Text style={styles.caloriesTotal}>
-                  {calculateTotalCalories(foodItems)}
-                </Text>
-                <Text style={styles.weightTotal}>
-                  {calculateTotalWeight(foodItems)}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.foodList}>
-              {foodItems.map((foodItem) => (
-                <FoodItem foodItem={foodItem} key={foodItem._id} />
-              ))}
-            </View>
-          </View>
-        ) : (
-          <View style={styles.placeholder}>
-            <Asset
-              imageName={
-                isMealsExpanded ? 'no_food_placeholder.png' : 'more_green.svg'
+      {isMealsExpanded ? (
+        <View style={[styles.body, { backgroundColor: colors.groupedSurface }]}>
+          {foodItems.length > 0 ? (
+            foodItems.map((foodItem, foodIndex) => (
+              <FoodItem
+                key={foodItem._id}
+                foodItem={foodItem}
+                last={foodIndex === foodItems.length - 1}
+              />
+            ))
+          ) : (
+            <EmptyState
+              symbol="fork.knife"
+              title="Nothing in this meal yet"
+              illustration={
+                <Asset imageName="no_food_placeholder.png" width={170} height={120} />
               }
-              width={isMealsExpanded ? 200 : 30}
-              height={isMealsExpanded ? 140 : 10}
+              style={styles.emptyState}
             />
-          </View>
-        )}
+          )}
 
-        {isMealsExpanded && (
-          <View style={styles.addButtonRow}>
-            <HuppyButton
-              variant="addButton"
-              width={140}
-              height={30}
-              imageName="add_round_orange.svg"
-              imageSize={20}
-              onPress={openAddFoodPage}
-            >
-              Add Food
-            </HuppyButton>
+          <View
+            style={[
+              styles.separator,
+              { backgroundColor: colors.separator, height: layout.hairline },
+            ]}
+          />
 
-            <HuppyButton
-              variant="addButton"
-              width={60}
-              height={30}
-              imageName="more_white.svg"
-              imageSize={20}
-              imageMargin={0}
-              onPress={() => setMoreOpen(true)}
-            />
-          </View>
-        )}
-      </View>
+          {/* The trailing "add" row, as iOS ends an editable list. */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add food"
+            onPress={openAddFoodPage}
+            style={({ pressed }) => [
+              styles.addRow,
+              pressed && { backgroundColor: colors.quaternaryFill },
+            ]}
+          >
+            <Icon name="plus.circle.fill" size={20} color={colors.tint} />
+            <Label variant="body" role="tint">
+              Add food
+            </Label>
+          </Pressable>
+        </View>
+      ) : null}
 
-      {/* "More" menu */}
-      <Modal visible={isMoreOpen} transparent animationType="fade">
-        <Pressable style={styles.menuBackdrop} onPress={() => setMoreOpen(false)}>
-          <View style={styles.menu}>
-            <Pressable
-              style={styles.menuItem}
+      {/* Meal actions */}
+      <Sheet
+        open={isMoreOpen}
+        onDismiss={() => setMoreOpen(false)}
+        title={`Meal ${index}`}
+        detent="medium"
+      >
+        <View style={styles.sheetBody}>
+          <ListSection>
+            <ListRow
+              title="Copy food from another day"
+              symbol="square.and.arrow.down"
+              chevron={false}
               onPress={() => {
                 setIsCopyTo(false);
                 setMoreOpen(false);
+                setCopyDateDraft(copyFromDate);
                 setShowCopyDatePicker(true);
               }}
-            >
-              <Asset imageName="copy_green.svg" width={15} height={15} />
-              <Text style={styles.menuItemText}>Copy from</Text>
-            </Pressable>
-
-            {foodItems.length > 0 && (
-              <Pressable
-                style={styles.menuItem}
+            />
+            {foodItems.length > 0 ? (
+              <ListRow
+                title="Copy this meal to another day"
+                symbol="doc.on.doc"
+                chevron={false}
                 onPress={() => {
                   setIsCopyTo(true);
                   setMoreOpen(false);
+                  setCopyDateDraft(copyFromDate);
                   setShowCopyDatePicker(true);
                 }}
-              >
-                <Asset imageName="copy_green.svg" width={15} height={15} />
-                <Text style={styles.menuItemText}>Copy to</Text>
-              </Pressable>
-            )}
+              />
+            ) : null}
+          </ListSection>
 
-            {mealsCount > 1 && (
-              <>
-                <View style={styles.menuDivider} />
-                <Pressable
-                  style={styles.menuItem}
-                  onPress={() => {
-                    setMoreOpen(false);
-                    deleteCurrentMeal();
-                  }}
-                >
-                  <Asset imageName="delete_orange.svg" width={17} height={17} />
-                  <Text style={[styles.menuItemText, { color: colors.orange }]}>
-                    Delete meal
-                  </Text>
-                </Pressable>
-              </>
-            )}
-          </View>
-        </Pressable>
-      </Modal>
+          {mealsCount > 1 ? (
+            <ListSection>
+              <ListRow
+                title="Delete meal"
+                symbol="trash"
+                symbolBackground={colors.red + '1F'}
+                destructive
+                chevron={false}
+                onPress={() => {
+                  setMoreOpen(false);
+                  deleteCurrentMeal();
+                }}
+              />
+            </ListSection>
+          ) : null}
+        </View>
+      </Sheet>
 
-      {showCopyDatePicker && (
-        <DateTimePicker
-          value={copyFromDate}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          onChange={(_event, selected) => {
-            setShowCopyDatePicker(false);
-            if (selected) {
-              setCopyFromDate(selected);
-              setCopyFromMealExpanded(true);
-            }
-          }}
-        />
-      )}
+      {/* Which day to copy from */}
+      <Sheet
+        open={showCopyDatePicker}
+        onDismiss={() => setShowCopyDatePicker(false)}
+        title={isCopyTo ? 'Copy to' : 'Copy from'}
+        confirmLabel="Next"
+        onConfirm={() => {
+          setCopyFromDate(copyDateDraft);
+          setShowCopyDatePicker(false);
+          setCopyFromMealExpanded(true);
+        }}
+        scrollable={false}
+      >
+        <View style={styles.pickerBody}>
+          <DateTimePicker
+            value={copyDateDraft}
+            mode="date"
+            display="inline"
+            accentColor={colors.tint}
+            onChange={(_event, selected) => {
+              if (selected) setCopyDateDraft(selected);
+            }}
+            style={styles.picker}
+          />
+        </View>
+      </Sheet>
 
-      {/* Edit food weight */}
-      <BottomSheet
+      {/* Adjust a portion */}
+      <Sheet
         open={!!editingFood}
         onDismiss={() => setEditingFood(null)}
+        title={editingFood?.name}
+        confirmLabel="Save"
+        onConfirm={() => {
+          if (editingFood) {
+            updateFood({
+              foodId: editingFood._id,
+              updateData: { weight: editingWeight },
+            });
+          }
+          setEditingFood(null);
+        }}
+        scrollable={false}
       >
         <EditFoodSheet
           food={editingFood}
-          onClose={() => setEditingFood(null)}
-          onSave={(weight) => {
-            if (editingFood) {
-              updateFood({ foodId: editingFood._id, updateData: { weight } });
-            }
-            setEditingFood(null);
-          }}
+          value={editingWeight}
+          onChange={setEditingWeight}
         />
-      </BottomSheet>
+      </Sheet>
 
-      {/* Copy meal */}
-      <BottomSheet
+      {/* Choose what to copy */}
+      <Sheet
         open={isCopyFromMealExpanded}
-        onDismiss={() => setCopyFromMealExpanded(false)}
+        onDismiss={() => {
+          setCopyFromMealExpanded(false);
+          setCheckedMeals([]);
+          setCheckedFoods([]);
+        }}
+        title={copyFromDate.toLocaleDateString(undefined, {
+          day: 'numeric',
+          month: 'short',
+        })}
+        confirmLabel="Copy"
+        confirmDisabled={checkedFoodsIds.length === 0}
+        onConfirm={() => {
+          copyMeal();
+          setCopyFromMealExpanded(false);
+        }}
       >
-        <View style={styles.sheetRow}>
-          <Asset
-            imageName="close_round_green.svg"
-            width={30}
-            height={30}
-            onPress={() => {
-              setCopyFromMealExpanded(false);
-              setCheckedMeals([]);
-              setCheckedFoods([]);
-            }}
-          />
-          <CustomDatePickerWithArrows
-            value={copyFromDate}
-            onChange={setCopyFromDate}
-            backgroundColor={colors.white}
-            disabled
-          />
-          <Asset
-            imageName="add_round_orange.svg"
-            width={30}
-            height={30}
-            onPress={
-              checkedFoodsIds.length === 0
-                ? undefined
-                : () => {
-                    copyMeal();
-                    setCopyFromMealExpanded(false);
-                  }
-            }
-          />
-        </View>
-
-        {isLoadingFoodForDate || isErrorFoodForDate ? (
-          <View style={styles.placeholder}>
-            <LoadingAndError
-              isLoading={isLoadingFoodForDate}
-              isError={isErrorFoodForDate}
-            />
-          </View>
-        ) : getGroupedFood().length > 0 ? (
-          <View>
-            {getGroupedFood().map((group, groupIndex) => (
-              <View key={group[0].mealId} style={styles.mealContainer}>
-                <View style={styles.checkRow}>
+        <View style={styles.sheetBody}>
+          {isLoadingFoodForDate || isErrorFoodForDate ? (
+            <View style={styles.centered}>
+              <LoadingAndError
+                isLoading={isLoadingFoodForDate}
+                isError={isErrorFoodForDate}
+              />
+            </View>
+          ) : getGroupedFood().length > 0 ? (
+            getGroupedFood().map((group, groupIndex) => (
+              <ListSection key={group[0].mealId} header={`Meal ${groupIndex + 1}`}
+                headerAccessory={
                   <Checkbox
                     checked={checkedMealsIds.includes(group[0].mealId)}
+                    size={22}
                     onChange={(checked) =>
                       handleMealCheckboxChange(checked, group[0].mealId)
                     }
                   />
-                  <Text style={styles.mealTitle}>{`Meal ${groupIndex + 1}`}</Text>
-                </View>
+                }
+              >
                 {group.map((item) => (
-                  <View key={item._id} style={[styles.checkRow, styles.foodCheckRow]}>
-                    <Checkbox
-                      checked={checkedFoodsIds.includes(item._id)}
-                      onChange={(checked) =>
-                        handleFoodCheckboxChange(checked, item._id)
-                      }
-                    />
-                    <Text style={styles.mealTitle}>{item.name}</Text>
-                  </View>
+                  <ListRow
+                    key={item._id}
+                    title={item.name}
+                    value={`${item.weight} g`}
+                    chevron={false}
+                    leading={
+                      <Checkbox
+                        checked={checkedFoodsIds.includes(item._id)}
+                        size={22}
+                        onChange={(checked) =>
+                          handleFoodCheckboxChange(checked, item._id)
+                        }
+                      />
+                    }
+                    onPress={() =>
+                      handleFoodCheckboxChange(
+                        !checkedFoodsIds.includes(item._id),
+                        item._id
+                      )
+                    }
+                  />
                 ))}
-              </View>
-            ))}
-          </View>
-        ) : (
-          <View style={styles.placeholder}>
-            <Asset
-              imageName="no_food_placeholder.png"
-              width={200}
-              height={140}
+              </ListSection>
+            ))
+          ) : (
+            <EmptyState
+              symbol="fork.knife"
+              title="Nothing was logged that day"
+              message="Pick another day to copy from."
+              illustration={
+                <Asset imageName="no_food_placeholder.png" width={170} height={120} />
+              }
             />
-          </View>
-        )}
-      </BottomSheet>
+          )}
+        </View>
+      </Sheet>
     </View>
   );
 };
 
-/** The web's ButtonSheetCopyMeal body: name, live calories, and a stepper. */
+/** The portion editor: the food, the calories it comes to, and a stepper. */
 const EditFoodSheet: React.FC<{
   food: Food | null;
-  onClose: () => void;
-  onSave: (weight: number) => void;
-}> = ({ food, onClose, onSave }) => {
-  const [value, setValue] = useState(food?.weight ?? 0);
-
-  useEffect(() => {
-    setValue(food?.weight ?? 0);
-  }, [food]);
-
+  value: number;
+  onChange: (weight: number) => void;
+}> = ({ food, value, onChange }) => {
   return (
-    <View>
-      <View style={styles.sheetSelection}>
-        <Asset
-          imageName="close_round_green.svg"
-          width={30}
-          height={30}
-          onPress={onClose}
-        />
-        <Asset
-          imageName="checkmark_orange.svg"
-          width={25}
-          height={25}
-          onPress={() => onSave(value)}
-        />
+    <View style={styles.editSheet}>
+      <View style={styles.editSummary}>
+        <Label variant="largeTitle" brand>
+          {value}
+          <Label variant="title3" role="secondary">
+            {' g'}
+          </Label>
+        </Label>
+        <Label variant="subheadline" role="secondary">
+          {`${Math.floor(((food?.calories ?? 0) / 100) * value)} kcal`}
+        </Label>
       </View>
-      <Text style={styles.editFoodTitle}>{food?.name}</Text>
-      <Text style={styles.editFoodCalories}>
-        {`${Math.floor(((food?.calories ?? 0) / 100) * value)}, kcal`}
-      </Text>
-      <View style={styles.editTextFieldAndButtons}>
-        <ButtonsAndTextField
-          initialValue={value}
-          onChange={setValue}
-          onChangeButton={setValue}
-        />
+
+      <Stepper
+        value={value}
+        step={10}
+        min={1}
+        onChange={onChange}
+        style={styles.editStepper}
+      />
+
+      {/* Common portions, so a typical amount is one tap away. */}
+      <View style={styles.quickAmounts}>
+        {[25, 50, 100, 200].map((amount) => (
+          <IOSButton
+            key={amount}
+            title={`${amount} g`}
+            variant="tinted"
+            size="sm"
+            onPress={() => onChange(amount)}
+          />
+        ))}
       </View>
     </View>
   );
@@ -561,246 +625,114 @@ const EditFoodSheet: React.FC<{
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    borderRadius: layout.radius,
-    minWidth: 300,
     width: '100%',
+    gap: 7,
   },
-  // Meals.css.js headerStyle
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    backgroundColor: colors.brown,
-    height: layout.sectionHeaderHeight,
-    borderTopLeftRadius: layout.radius,
-    borderTopRightRadius: layout.radius,
+    justifyContent: 'space-between',
+    gap: spacing.sm,
+    paddingHorizontal: layout.screenPadding + 4,
+    minHeight: 26,
   },
   headerTitle: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6,
   },
-  headerArrow: {
-    marginTop: 3,
-    marginRight: 20,
-    marginLeft: 30,
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
-  heading: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    marginRight: 10,
-  },
-  headerAddButton: {
-    marginRight: 10,
-  },
-  bodyMeal: {
-    flexDirection: 'column',
-    width: '100%',
-    backgroundColor: colors.grayBackground,
-    borderBottomLeftRadius: layout.radius,
-    borderBottomRightRadius: layout.radius,
-  },
-  column: {
+  headerButton: {
+    width: 26,
+    height: 26,
+    borderRadius: radius.capsule,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  totalWeightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '90%',
-  },
-  weightLabel: {
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    color: colors.black,
-  },
-  caloriesAndWeight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  unitCalories: {
-    marginVertical: 5,
-    fontFamily: fontFamily.bold,
-    width: 50,
-    fontSize: 12,
-    color: colors.green,
-    textAlign: 'center',
-  },
-  unitWeight: {
-    marginVertical: 5,
-    marginRight: 5,
-    fontFamily: fontFamily.bold,
-    width: 50,
-    fontSize: 12,
-    color: colors.green,
-    textAlign: 'center',
-  },
-  caloriesTotal: {
-    color: colors.orange,
-    fontFamily: fontFamily.bold,
-    width: 50,
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  weightTotal: {
-    marginRight: 5,
-    fontFamily: fontFamily.bold,
-    width: 50,
-    fontSize: 15,
-    color: colors.black,
-    textAlign: 'center',
-  },
-  foodList: {
-    width: '100%',
-    flexDirection: 'column',
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  // .swiper: 10px radius, 5px margin
-  foodSwipeContainer: {
-    borderRadius: layout.radius,
-    marginHorizontal: 5,
-    marginTop: 5,
+  body: {
+    marginHorizontal: layout.screenPadding,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
     overflow: 'hidden',
   },
-  foodListRow: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: colors.white,
+  swipeContainer: {
+    width: '100%',
   },
-  headerText: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    alignItems: 'center',
-    height: 50,
-  },
-  headingFood: {
-    color: colors.green,
+  swipeAction: {
     flex: 1,
-    textAlign: 'left',
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-  },
-  caloriesValue: {
-    color: colors.orange,
-    textAlign: 'center',
-    fontSize: 15,
-    width: 50,
-    fontFamily: fontFamily.regular,
-  },
-  weightValue: {
-    color: colors.green,
-    textAlign: 'center',
-    fontSize: 15,
-    width: 50,
-    fontFamily: fontFamily.regular,
-  },
-  deleteAction: {
-    width: 80,
+    width: 78,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.orange,
   },
-  editAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.lightGreen2,
-  },
-  placeholder: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    margin: 10,
-  },
-  addButtonRow: {
-    marginBottom: 10,
+  foodRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    gap: spacing.sm,
+    minHeight: 46,
+    paddingHorizontal: layout.screenPadding,
+    paddingVertical: 10,
   },
-  menuBackdrop: {
+  foodName: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
+  foodCalories: {
+    minWidth: 66,
+    textAlign: 'right',
+  },
+  separator: {
+    marginLeft: layout.screenPadding,
+  },
+  addRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    minHeight: 46,
+    paddingHorizontal: layout.screenPadding,
+  },
+  emptyState: {
+    paddingVertical: spacing.lg,
+  },
+  sheetBody: {
+    gap: spacing.lg,
+    paddingBottom: spacing.base,
+  },
+  centered: {
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+  },
+  pickerBody: {
+    paddingHorizontal: spacing.base,
+    paddingBottom: spacing.base,
+  },
+  picker: {
+    alignSelf: 'stretch',
+  },
+  editSheet: {
+    alignItems: 'center',
+    gap: spacing.lg,
+    paddingHorizontal: spacing.base,
+    paddingBottom: spacing.lg,
+  },
+  editSummary: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  editStepper: {
+    height: 44,
+  },
+  quickAmounts: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-    alignItems: 'center',
+    gap: spacing.sm,
   },
-  menu: {
-    backgroundColor: colors.grayBackground,
-    borderRadius: 10,
-    minWidth: 180,
-    paddingVertical: 4,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  menuItemText: {
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-    color: colors.green,
-    marginLeft: 10,
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: colors.lightBrown,
-  },
-  sheetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-  },
-  sheetSelection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 15,
-  },
-  editFoodTitle: {
-    textAlign: 'center',
-    margin: 10,
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 18,
-  },
-  editFoodCalories: {
-    textAlign: 'center',
-    margin: 10,
-    color: colors.orange,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-  },
-  editTextFieldAndButtons: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  mealContainer: {
-    borderWidth: 2,
-    borderColor: colors.green,
-    marginVertical: 10,
-    marginHorizontal: 20,
-    borderRadius: 10,
-    padding: 5,
-  },
-  checkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  foodCheckRow: {
-    marginLeft: 20,
-  },
-  mealTitle: {
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    color: colors.green,
+  pressed: {
+    opacity: 0.6,
   },
 });
 

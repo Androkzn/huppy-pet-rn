@@ -1,28 +1,17 @@
 /**
- * Signup Screen — port of the web app's Signup.page.js.
+ * Signup Screen — creating an account.
  *
- * The same lightBrown page as Login, with the "CREATE ACCOUNT" heading, three
- * white pill inputs (email, password, repeat password), the orange validation
- * tip, the olive Continue button, and the "Have an account already?" row.
+ * The password rules are stated up front as a hint rather than only on failure,
+ * and the field itself turns red only once what is typed actually breaks them.
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-  Pressable,
-} from 'react-native';
+import { Alert } from 'react-native';
 import { AuthStackScreenProps } from '@navigation/types';
 import { useAuth } from '@contexts/AuthContext';
-import { LoginTextInput } from '@components/ui/LoginTextInput';
-import { HuppyButton } from '@components/ui/Buttons';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { TextField } from '@components/ios/TextField';
+import { IOSButton } from '@components/ios/Button';
+import { AuthLayout } from './AuthLayout';
 
 type Props = AuthStackScreenProps<'Signup'>;
 
@@ -50,163 +39,74 @@ export default function SignupScreen({ navigation }: Props) {
     isPasswordValid(passwordConfirmation) &&
     password === passwordConfirmation;
 
-  const getValidationTip = (): string => {
-    if (email.length > 5 && !isEmailValid(email)) {
-      return 'Email has invalid format';
-    }
-    if (
-      (password.length > 2 && !isPasswordValid(password)) ||
-      (passwordConfirmation.length > 2 && !isPasswordValid(passwordConfirmation))
-    ) {
-      return 'Password must contain at least 8 characters, one special character an one number';
-    }
-    if (
-      password.length > 7 &&
-      passwordConfirmation.length > 7 &&
-      password !== passwordConfirmation
-    ) {
-      return 'Passwords do not match';
-    }
-    return '';
-  };
+  const emailError =
+    email.length > 5 && !isEmailValid(email) ? 'Check this address' : null;
+  const passwordError =
+    password.length > 2 && !isPasswordValid(password) ? ' ' : null;
+  const confirmationError =
+    passwordConfirmation.length > 7 && password !== passwordConfirmation
+      ? 'Passwords do not match'
+      : null;
 
   const handleSubmit = async () => {
     try {
       await register(email.trim(), password);
       navigation.navigate('Register');
     } catch (error: any) {
-      Alert.alert('', error?.message || 'An error occurred during sign up. Please try again.');
+      Alert.alert(
+        'Could not create the account',
+        error?.message || 'Please try again.'
+      );
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <AuthLayout
+      title="Create account"
+      subtitle="One account covers every pet in the household."
+      actionLabel="Continue"
+      onAction={handleSubmit}
+      actionDisabled={!isFormValid}
+      hint="Use at least 8 characters, with one number and one special character."
+      footer={
+        <IOSButton
+          title="I already have an account"
+          variant="plain"
+          size="sm"
+          onPress={() => navigation.navigate('Login')}
+        />
+      }
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.loginContainer}>
-          <View style={styles.loginHeader}>
-            <Text style={styles.heading}>CREATE ACCOUNT</Text>
-          </View>
-
-          <View style={styles.form}>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Password"
-                isPassword
-                value={password}
-                onChangeText={setPassword}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Repeat password"
-                isPassword
-                value={passwordConfirmation}
-                onChangeText={setPasswordConfirmation}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <Text style={styles.validationTip}>{getValidationTip()}</Text>
-            </View>
-            <View style={styles.formGroup}>
-              <HuppyButton
-                variant="login"
-                onPress={handleSubmit}
-                disabled={!isFormValid}
-              >
-                Continue
-              </HuppyButton>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.rowText}>Have an account already? </Text>
-            <Pressable onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.linkLogin}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <TextField
+        placeholder="Email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        autoComplete="email"
+        autoCapitalize="none"
+        autoCorrect={false}
+        symbol="envelope"
+        error={emailError}
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextField
+        placeholder="Password"
+        textContentType="newPassword"
+        password
+        symbol="lock"
+        error={passwordError}
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TextField
+        placeholder="Repeat password"
+        textContentType="newPassword"
+        password
+        symbol="lock.rotation"
+        error={confirmationError}
+        value={passwordConfirmation}
+        onChangeText={setPasswordConfirmation}
+      />
+    </AuthLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.lightBrown,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  loginContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    maxWidth: 350,
-    minWidth: 300,
-    width: '100%',
-    alignSelf: 'center',
-    backgroundColor: colors.lightBrown,
-  },
-  loginHeader: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    marginTop: 200,
-  },
-  heading: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 25,
-    width: 170,
-    textAlign: 'center',
-  },
-  form: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  formGroup: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  validationTip: {
-    color: colors.orange,
-    fontSize: 14,
-    fontFamily: fontFamily.regular,
-    textAlign: 'center',
-    maxWidth: 300,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  rowText: {
-    color: colors.black,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-  },
-  linkLogin: {
-    color: colors.orange,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-    marginLeft: 20,
-  },
-});

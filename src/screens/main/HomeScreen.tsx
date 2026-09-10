@@ -163,6 +163,7 @@ export default function HomeScreen({}: Props) {
         {/* Activities */}
         <Section
           title="Activities"
+          plain
           expanded={isActivitiesExpanded}
           onToggle={() => setActivitiesExpanded(!isActivitiesExpanded)}
           onAdd={() => {

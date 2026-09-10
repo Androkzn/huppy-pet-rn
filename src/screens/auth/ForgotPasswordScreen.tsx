@@ -1,28 +1,14 @@
 /**
- * Forgot Password Screen — port of the web app's ForgotPassword.page.js.
- *
- * Same lightBrown page as Login and Signup: the "RESET PASSWORD" heading,
- * email / password / repeat password pills, and the olive Reset Password
- * button, which stays disabled until all three are filled in.
+ * Forgot Password Screen — setting a new password.
  */
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-  Pressable,
-} from 'react-native';
+import { Alert } from 'react-native';
 import { AuthStackScreenProps } from '@navigation/types';
 import { useAuth } from '@contexts/AuthContext';
-import { LoginTextInput } from '@components/ui/LoginTextInput';
-import { HuppyButton } from '@components/ui/Buttons';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { TextField } from '@components/ios/TextField';
+import { IOSButton } from '@components/ios/Button';
+import { AuthLayout } from './AuthLayout';
 
 type Props = AuthStackScreenProps<'ForgotPassword'>;
 
@@ -33,137 +19,70 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
+  const mismatch =
+    passwordConfirmation.length > 0 && password !== passwordConfirmation;
+
   const handleSubmit = async () => {
     try {
       await register(email.trim(), password);
       navigation.navigate('Login');
     } catch (error: any) {
-      Alert.alert('', error?.message || 'An error occurred. Please try again.');
+      Alert.alert(
+        'Could not reset the password',
+        error?.message || 'Please try again.'
+      );
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    <AuthLayout
+      title="Reset password"
+      subtitle="Confirm your email and choose a new password."
+      actionLabel="Reset password"
+      onAction={handleSubmit}
+      actionDisabled={
+        email.length === 0 ||
+        password.length === 0 ||
+        passwordConfirmation.length === 0 ||
+        mismatch
+      }
+      footer={
+        <IOSButton
+          title="Back to sign in"
+          variant="plain"
+          size="sm"
+          onPress={() => navigation.navigate('Login')}
+        />
+      }
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View style={styles.loginContainer}>
-          <View style={styles.loginHeader}>
-            <Text style={styles.heading}>RESET PASSWORD</Text>
-          </View>
-
-          <View style={styles.form}>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Password"
-                isPassword
-                value={password}
-                onChangeText={setPassword}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <LoginTextInput
-                placeholder="Repeat password"
-                isPassword
-                value={passwordConfirmation}
-                onChangeText={setPasswordConfirmation}
-              />
-            </View>
-            <View style={styles.formGroup}>
-              <HuppyButton
-                variant="login"
-                onPress={handleSubmit}
-                disabled={
-                  email.length === 0 ||
-                  password.length === 0 ||
-                  passwordConfirmation.length === 0
-                }
-              >
-                Reset Password
-              </HuppyButton>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <Text style={styles.rowText}>Have an account already? </Text>
-            <Pressable onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.linkLogin}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <TextField
+        placeholder="Email"
+        keyboardType="email-address"
+        textContentType="emailAddress"
+        autoComplete="email"
+        autoCapitalize="none"
+        autoCorrect={false}
+        symbol="envelope"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextField
+        placeholder="New password"
+        textContentType="newPassword"
+        password
+        symbol="lock"
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TextField
+        placeholder="Repeat password"
+        textContentType="newPassword"
+        password
+        symbol="lock.rotation"
+        error={mismatch ? 'Passwords do not match' : null}
+        value={passwordConfirmation}
+        onChangeText={setPasswordConfirmation}
+      />
+    </AuthLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.lightBrown,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  loginContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    maxWidth: 350,
-    minWidth: 300,
-    width: '100%',
-    alignSelf: 'center',
-    backgroundColor: colors.lightBrown,
-  },
-  loginHeader: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    marginTop: 200,
-  },
-  heading: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 25,
-    width: 170,
-    textAlign: 'center',
-  },
-  form: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  formGroup: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  rowText: {
-    color: colors.black,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-  },
-  linkLogin: {
-    color: colors.orange,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-    marginLeft: 20,
-  },
-});

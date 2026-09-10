@@ -1,26 +1,28 @@
 /**
- * Add Activity Dialog — port of the web app's NewActivityForm.component.js.
+ * Add Activity — a sheet for logging a walk, run, swim or game of fetch.
  *
- * The close button, the "Add Activity" title, the Activity and Metric
- * dropdowns, the stepper for the chosen metric, the Add Activity button, and
- * the burned-calories strip once there is a value.
+ * Presented the way iOS presents a short creation task: a sheet with Cancel on
+ * the left and Add on the right, the choices in a grouped list, and the figure
+ * being entered stated large above its stepper so it stays readable while the
+ * value changes.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useAddActivity } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
 import { useAuth } from '@contexts/AuthContext';
-import { HuppyButton } from '@components/ui/Buttons';
-import { TitleAndDropdown } from '@components/ui/FormRows';
+import { Sheet } from '@components/ios/Sheet';
+import { Label } from '@components/ios/Text';
+import { Stepper } from '@components/ios/Stepper';
+import { FormGroup, TitleAndDropdown } from '@components/ui/FormRows';
 import {
   ActivityType,
   ActivityMetric,
   getTitleForActivityType,
   getTitleForActivityMetric,
 } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { spacing } from '@theme/tokens';
 
 interface AddActivityDialogProps {
   visible: boolean;
@@ -56,11 +58,11 @@ export const AddActivityDialog: React.FC<AddActivityDialogProps> = ({
     burnedCalories: 0,
   });
 
+  const isDistance = form.metric === ActivityMetric.DISTANCE;
+
   const getCaloriesBurnedFor = (amount: number) => {
     const weight = currentProfile?.weight ?? 0;
-    return form.metric === ActivityMetric.DISTANCE
-      ? Math.floor(weight * amount * 0.8)
-      : Math.floor(amount * 2);
+    return isDistance ? Math.floor(weight * amount * 0.8) : Math.floor(amount * 2);
   };
 
   const setAmount = (amount: number) => {
@@ -72,8 +74,9 @@ export const AddActivityDialog: React.FC<AddActivityDialogProps> = ({
     }));
   };
 
-  // Distance steps by 1, duration by 10 — as on the web.
-  const step = form.metric === ActivityMetric.DISTANCE ? 1 : 10;
+  // Distance steps by 1, duration by 10.
+  const step = isDistance ? 1 : 10;
+  const unit = isDistance ? 'km' : 'min';
 
   const handleCreate = () => {
     if (!currentProfile || !user) return;
@@ -91,17 +94,16 @@ export const AddActivityDialog: React.FC<AddActivityDialogProps> = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.backdrop}>
-        <View style={styles.dialog}>
-          <View style={styles.closeButtonContainer}>
-            <HuppyButton variant="circleTextButton" onPress={onDismiss}>
-              x
-            </HuppyButton>
-          </View>
-
-          <Text style={styles.title}>Add Activity</Text>
-
+    <Sheet
+      open={visible}
+      onDismiss={onDismiss}
+      title="Add activity"
+      confirmLabel="Add"
+      confirmDisabled={value === 0}
+      onConfirm={handleCreate}
+    >
+      <View style={styles.body}>
+        <FormGroup>
           <TitleAndDropdown
             title="Activity"
             initialValue={form.type}
@@ -109,145 +111,51 @@ export const AddActivityDialog: React.FC<AddActivityDialogProps> = ({
             onChange={(newValue) => setForm({ ...form, type: newValue })}
           />
           <TitleAndDropdown
-            title="Metric"
+            title="Measured in"
             initialValue={form.metric}
             dropdownOptions={metricOptions}
             onChange={(newValue) => {
               setForm({ ...form, metric: newValue });
               setValue(
-                newValue === ActivityMetric.DISTANCE
-                  ? form.distance
-                  : form.duration
+                newValue === ActivityMetric.DISTANCE ? form.distance : form.duration
               );
             }}
           />
+        </FormGroup>
 
-          <View style={styles.column}>
-            <Text style={styles.metricTitle}>
-              {getTitleForActivityMetric(form.metric)}
-            </Text>
-            <View style={styles.circleButtonsGroup}>
-              <HuppyButton
-                variant="circleTextButton"
-                onPress={() => setAmount(Math.max(0, value - step))}
-              >
-                -
-              </HuppyButton>
-              <TextInput
-                style={styles.textField}
-                keyboardType="number-pad"
-                value={String(value)}
-                onChangeText={(text) =>
-                  setAmount(text === '' ? 0 : parseInt(text, 10) || 0)
-                }
-              />
-              <HuppyButton
-                variant="circleTextButton"
-                onPress={() => setAmount(value + step)}
-              >
-                +
-              </HuppyButton>
-            </View>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <HuppyButton
-              variant="rectangleTextButton"
-              onPress={handleCreate}
-              disabled={value === 0}
-            >
-              Add Activity
-            </HuppyButton>
-          </View>
-
-          {form.burnedCalories > 0 && (
-            <View style={styles.estimatedCaloriesContainer}>
-              <Text style={styles.burnedCalories}>Burned calories:</Text>
-              <Text style={styles.burnedCaloriesValue}>
-                {form.burnedCalories} kcal
-              </Text>
-            </View>
+        <View style={styles.amount}>
+          <Label variant="largeTitle" brand>
+            {value}
+            <Label variant="title3" role="secondary">
+              {` ${unit}`}
+            </Label>
+          </Label>
+          <Stepper value={value} step={step} onChange={setAmount} style={styles.stepper} />
+          {form.burnedCalories > 0 ? (
+            <Label variant="subheadline" role="tint" weight="600">
+              {`${form.burnedCalories} kcal burned`}
+            </Label>
+          ) : (
+            <Label variant="subheadline" role="tertiary">
+              Set an amount to log the activity
+            </Label>
           )}
         </View>
       </View>
-    </Modal>
+    </Sheet>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
+  body: {
+    gap: spacing.xl,
+    paddingBottom: spacing.base,
+  },
+  amount: {
     alignItems: 'center',
+    gap: spacing.md,
   },
-  dialog: {
-    maxWidth: 450,
-    minWidth: 250,
-    width: '90%',
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    padding: 20,
-  },
-  closeButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  title: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 20,
-    fontFamily: fontFamily.bold,
-    marginVertical: 20,
-  },
-  column: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
-  },
-  metricTitle: {
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    color: colors.black,
-    marginBottom: 8,
-  },
-  circleButtonsGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textField: {
-    borderWidth: 2,
-    borderColor: colors.green,
-    width: 50,
-    textAlign: 'center',
-    marginHorizontal: 15,
-    borderRadius: 10,
-    height: 30,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  estimatedCaloriesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: 10,
-    backgroundColor: colors.lightBrown2,
-    padding: 8,
-  },
-  burnedCalories: {
-    marginRight: 5,
-    color: colors.orange,
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-  },
-  burnedCaloriesValue: {
-    color: colors.orange,
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
+  stepper: {
+    height: 44,
   },
 });

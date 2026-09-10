@@ -1,15 +1,15 @@
 /**
- * ChartPie — port of the web app's ChartPie.components.js.
+ * ChartPie — the diet balance, as a ring.
  *
- * The web draws a Chart.js doughnut with a 60% cutout, one arc per food
- * category, sized by weight and filled with the category colour; the same
- * figure is drawn here with react-native-svg.
+ * One arc per food category, sized by weight and filled with the category's
+ * colour, around a 60% cutout. The ring reads as a single figure, so the empty
+ * state is a quiet track in the system fill rather than a coloured circle.
  */
 
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
-import * as colors from '../theme/colors';
+import { useAppTheme } from '@theme/ThemeProvider';
 
 export interface PieDatum {
   name: string;
@@ -24,6 +24,7 @@ interface Props {
 }
 
 export const ChartPie: React.FC<Props> = ({ data, size = 200 }) => {
+  const { colors } = useAppTheme();
   const total = data.reduce((sum, item) => sum + item.weight, 0);
 
   // cutout: '60%' — the ring is the outer 40% of the radius.
@@ -44,7 +45,7 @@ export const ChartPie: React.FC<Props> = ({ data, size = 200 }) => {
               cx={size / 2}
               cy={size / 2}
               r={radius}
-              stroke={colors.grayBackground}
+              stroke={colors.tertiaryFill}
               strokeWidth={strokeWidth}
               fill="none"
             />

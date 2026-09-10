@@ -1,17 +1,20 @@
 /**
- * Edit Food Screen — port of the web app's EditFood.page.js + EditFoodForm.
+ * Edit Food Screen — changing one of the user's own foods.
  *
- * A Back / "Edit Food" / Save header, the food photo, then Name, Food type,
- * Units and Food category rows, the Nutrition Facts rows, and a description box.
+ * The photo leads, then the food's identity and its nutrition in grouped lists,
+ * and a free-text description at the end. Save sits in the navigation bar and
+ * only lights up once something has actually changed, as iOS edit screens do.
  */
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetFoodTemplateById, useUpdateFoodTemplate } from '@hooks/useGraphQL';
 import { PageContainer } from '@components/ui/PageContainer';
-import { HuppyButton } from '@components/ui/Buttons';
+import { IOSButton } from '@components/ios/Button';
+import { Label } from '@components/ios/Text';
 import {
+  FormGroup,
   TitleAndDropdown,
   TitleAndTextField,
   TitleButtonsAndTextField,
@@ -27,8 +30,8 @@ import {
   getTitleForAddFoodRowType,
   getTitleUpercased,
 } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing, textStyles } from '@theme/tokens';
 import type { FoodTemplate } from '../../types';
 
 type FoodStackParamList = {
@@ -56,6 +59,7 @@ const categoryOptions = Object.values(FoodCategoryType).map((type) => ({
 }));
 
 export default function EditFoodScreen({ navigation, route }: Props) {
+  const { colors } = useAppTheme();
   const { foodId } = route.params;
   const { data: food } = useGetFoodTemplateById(foodId);
   const { mutate: updateFoodTemplate } = useUpdateFoodTemplate();
@@ -84,81 +88,98 @@ export default function EditFoodScreen({ navigation, route }: Props) {
     );
   };
 
+  // Save belongs in the navigation bar, and stays inert until there is an edit.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IOSButton
+          title="Save"
+          variant="glassProminent"
+          size="sm"
+          haptic="medium"
+          disabled={!isEdited}
+          onPress={saveFood}
+        />
+      ),
+    });
+  }, [navigation, isEdited, foodItem]);
+
   return (
     <PageContainer>
-      {/* Top navigation */}
-      <View style={styles.topButtonsContainer}>
-        <HuppyButton
-          variant="backButton"
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-          onPress={() => navigation.goBack()}
-        >
-          Back
-        </HuppyButton>
-        <Text style={styles.title}>Edit Food</Text>
-        <HuppyButton
-          variant="actionNavigationButton"
-          imageName="checkmark_orange.svg"
-          imageSize={15}
-          onPress={saveFood}
-          disabled={!isEdited}
-        >
-          Save
-        </HuppyButton>
-      </View>
-
-      <View style={styles.imageContainer}>
-        <FoodImage
-          foodItem={food}
-          imageDataUrl={imageUri}
-          onPress={() => setImageDialogOpen(true)}
-        />
-      </View>
-
-      <View style={styles.form}>
-        <TitleAndTextField
-          title="Name"
-          initialValue={foodItem.name ?? ''}
-          placeholder="Enter food name"
-          onChange={(value) => onInputChange('name', value)}
-        />
-        <TitleAndDropdown
-          title="Food type"
-          initialValue={foodItem.type}
-          dropdownOptions={typeOptions}
-          onChange={(value) => onInputChange('type', value)}
-        />
-        <TitleAndDropdown
-          title="Units"
-          initialValue={foodItem.units}
-          dropdownOptions={unitOptions}
-          onChange={(value) => onInputChange('units', value)}
-        />
-        <TitleAndDropdown
-          title="Food category"
-          initialValue={foodItem.categoryType}
-          dropdownOptions={categoryOptions}
-          onChange={(value) => onInputChange('categoryType', value)}
-        />
-
-        <Text style={styles.nutritionFactsTitle}>Nutrition Facts</Text>
-
-        {Object.values(AddFoodRowType).map((rowType) => (
-          <TitleButtonsAndTextField
-            key={rowType}
-            title={getTitleForAddFoodRowType(rowType)}
-            initialValue={(foodItem as any)?.[rowType] ?? 0}
-            onChange={(value) => onInputChange(rowType, value)}
-            onChangeButton={(value) => onInputChange(rowType, value)}
+      <View style={styles.stack}>
+        <View style={styles.hero}>
+          <FoodImage
+            foodItem={food}
+            imageDataUrl={imageUri}
+            width={128}
+            onPress={() => setImageDialogOpen(true)}
           />
-        ))}
+          <IOSButton
+            title="Change photo"
+            variant="tinted"
+            size="sm"
+            icon="camera"
+            onPress={() => setImageDialogOpen(true)}
+          />
+        </View>
 
-        <View style={styles.descriptionBox}>
-          <Text style={styles.descriptionTitle}>Add Description</Text>
+        <FormGroup header="Food">
+          <TitleAndTextField
+            title="Name"
+            initialValue={foodItem.name ?? ''}
+            placeholder="Enter food name"
+            onChange={(value) => onInputChange('name', value)}
+          />
+          <TitleAndDropdown
+            title="Food type"
+            initialValue={foodItem.type}
+            dropdownOptions={typeOptions}
+            onChange={(value) => onInputChange('type', value)}
+          />
+          <TitleAndDropdown
+            title="Units"
+            initialValue={foodItem.units}
+            dropdownOptions={unitOptions}
+            onChange={(value) => onInputChange('units', value)}
+          />
+          <TitleAndDropdown
+            title="Food category"
+            initialValue={foodItem.categoryType}
+            dropdownOptions={categoryOptions}
+            onChange={(value) => onInputChange('categoryType', value)}
+          />
+        </FormGroup>
+
+        <FormGroup header="Nutrition facts">
+          {Object.values(AddFoodRowType).map((rowType) => (
+            <TitleButtonsAndTextField
+              key={rowType}
+              title={getTitleForAddFoodRowType(rowType)}
+              initialValue={(foodItem as any)?.[rowType] ?? 0}
+              onChange={(value) => onInputChange(rowType, value)}
+              onChangeButton={(value) => onInputChange(rowType, value)}
+            />
+          ))}
+        </FormGroup>
+
+        <View style={styles.noteGroup}>
+          <Label
+            variant="footnote"
+            role="secondary"
+            sectionHeader
+            style={styles.noteHeader}
+          >
+            Description
+          </Label>
           <TextInput
-            style={styles.descriptionInput}
+            style={[
+              styles.note,
+              { backgroundColor: colors.groupedSurface, color: colors.label },
+            ]}
             multiline
+            placeholder="What is in it, how it is served…"
+            placeholderTextColor={colors.tertiaryLabel}
+            selectionColor={colors.tint}
             value={(foodItem as any)?.desc ?? ''}
             onChangeText={(value) => onInputChange('desc', value)}
           />
@@ -189,56 +210,27 @@ export default function EditFoodScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  topButtonsContainer: {
-    flexDirection: 'row',
+  stack: {
+    gap: spacing.xl,
+  },
+  hero: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
+    gap: spacing.md,
+    paddingTop: spacing.sm,
   },
-  title: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 17,
-    fontFamily: fontFamily.bold,
+  noteGroup: {
+    gap: 7,
   },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
+  noteHeader: {
+    paddingHorizontal: layout.screenPadding + 4,
   },
-  form: {
-    width: '100%',
-  },
-  nutritionFactsTitle: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontFamily: fontFamily.bold,
-    fontSize: 17,
-    marginVertical: 10,
-  },
-  descriptionBox: {
-    borderRadius: 10,
-    backgroundColor: colors.lightBrown,
-    margin: 3,
-    padding: 10,
-  },
-  descriptionTitle: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    color: colors.black,
-    marginBottom: 5,
-  },
-  descriptionInput: {
-    minHeight: 80,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-    padding: 10,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
+  note: {
+    marginHorizontal: layout.screenPadding,
+    minHeight: 96,
+    padding: spacing.md,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
     textAlignVertical: 'top',
+    ...textStyles.body,
   },
 });

@@ -33,7 +33,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you add pictures of your pet's meals."
+          "photosPermission": "The app accesses your photos to let you add pictures of your pet's meals.",
+          "cameraPermission": "The app uses the camera so you can photograph your pet and its meals."
         }
       ],
       "@react-native-community/datetimepicker"

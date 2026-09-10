@@ -1,13 +1,14 @@
 /**
- * Search Food Screen — port of the web app's SearchFood.page.js.
+ * Search Food Screen — finding what to add to a meal.
  *
- * A Back / Create Food button row, the All | Category | My food | Recipe tabs,
- * the search field (replaced by a category dropdown under the Category tab),
- * and the result list — or the start-typing / no-results artwork.
+ * A search field under a segmented filter, and the results as a grouped list.
+ * Under the Category filter the field gives way to a category picker, since
+ * there is nothing to type. Empty states say which of the two situations the
+ * screen is in: nothing searched for yet, or nothing found.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   useSearchForFood,
@@ -16,13 +17,16 @@ import {
 } from '@hooks/useGraphQL';
 import { PageContainer } from '@components/ui/PageContainer';
 import { Asset, LoadingAndError } from '@components/ui/Asset';
-import { HuppyButton } from '@components/ui/Buttons';
 import { Dropdown } from '@components/ui/Dropdown';
 import { CustomAlert } from '@components/ui/CustomAlert';
+import { EmptyState } from '@components/ios/Feedback';
+import { IOSButton } from '@components/ios/Button';
+import { ListSection } from '@components/ios/List';
+import { SegmentedControl } from '@components/ios/SegmentedControl';
+import { TextField } from '@components/ios/TextField';
 import FoodCard from '@components/FoodCard';
 import { FilterFood, FoodCategoryType, AlertType } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { layout, spacing } from '@theme/tokens';
 import type { FoodTemplate } from '../../types';
 
 type FoodStackParamList = {
@@ -72,112 +76,100 @@ export default function SearchFoodScreen({ navigation, route }: Props) {
   const openAddFoodPage = (foodItem: FoodTemplate) =>
     navigation.navigate('AddFood', { mealId, foodTemplateId: foodItem._id });
 
+  const filterSegments = Object.values(FilterFood).map((filter) => ({
+    label: filter,
+    value: filter,
+  }));
+
+  const hasSearched = searchQuery.length > 0 || selectedFilter !== FilterFood.ALL;
+
   return (
-    <PageContainer>
-      {/* Back / Create Food */}
-      <View style={styles.buttonsContainer}>
-        <HuppyButton
-          variant="backButton"
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-          onPress={() => navigation.goBack()}
-        >
-          Back
-        </HuppyButton>
-        <HuppyButton
-          variant="addButton"
-          width={150}
-          imageName="add_round_orange.svg"
-          imageSize={20}
+    <PageContainer
+      title="Add food"
+      titleAccessory={
+        <IOSButton
+          title="New food"
+          variant="tinted"
+          size="sm"
+          icon="plus"
           onPress={() => navigation.navigate('CreateNewFood', { mealId })}
-        >
-          Create Food
-        </HuppyButton>
-      </View>
+        />
+      }
+    >
+      <View style={styles.stack}>
+        <SegmentedControl
+          segments={filterSegments}
+          value={selectedFilter}
+          onChange={setSelectedFilter}
+          size="sm"
+          style={styles.filter}
+        />
 
-      {/* Filter tabs */}
-      <View style={styles.tabs}>
-        {Object.values(FilterFood).map((filter) => {
-          const isSelected = filter === selectedFilter;
-          return (
-            <Text
-              key={filter}
-              onPress={() => setSelectedFilter(filter)}
-              style={[
-                styles.tab,
-                styles.tabLabel,
-                isSelected && styles.tabSelected,
-                isSelected && styles.tabLabelSelected,
-              ]}
-            >
-              {filter}
-            </Text>
-          );
-        })}
-      </View>
-
-      {/* Search field / category dropdown */}
-      <View style={styles.searchRow}>
-        <Text style={styles.labelTextField}>Search:</Text>
-        {isCategoryFilter ? (
-          <Dropdown
-            value={selectedCategory}
-            options={categoryOptions}
-            onChange={setSelectedCategory}
-            style={styles.dropdown}
-          />
-        ) : (
-          <View style={styles.textFieldContainer}>
-            <TextInput
-              style={styles.textField}
-              placeholder="Enter food name"
-              placeholderTextColor={colors.gray}
+        <View style={styles.searchRow}>
+          {isCategoryFilter ? (
+            <Dropdown
+              value={selectedCategory}
+              label="Category"
+              options={categoryOptions}
+              onChange={setSelectedCategory}
+              style={styles.dropdown}
+            />
+          ) : (
+            <TextField
+              search
+              placeholder="Search food"
+              autoCorrect={false}
+              returnKeyType="search"
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
-            <Asset
-              imageName={
-                searchQuery ? 'close_round_green.svg' : 'more_green.svg'
-              }
-              width={20}
-              height={20}
-              onPress={searchQuery ? () => setSearchQuery('') : undefined}
-            />
-          </View>
-        )}
-      </View>
-
-      {/* Results */}
-      {!searchResult || searchResult.length === 0 ? (
-        <View style={styles.placeholder}>
-          <Asset
-            imageName={
-              selectedFilter === FilterFood.ALL && searchQuery.length === 0
-                ? 'start_typing_placeholder.png'
-                : 'no_results_placeholder.png'
-            }
-            width={200}
-            height={250}
-          />
+          )}
         </View>
-      ) : (
-        <View style={styles.column}>
-          {isLoadingSearch || isErrorSearch ? (
-            <LoadingAndError
-              isLoading={isLoadingSearch}
-              isError={isErrorSearch}
-            />
-          ) : (
-            searchResult.map((foodItem) => (
+
+        {isLoadingSearch || isErrorSearch ? (
+          <View style={styles.centered}>
+            <LoadingAndError isLoading={isLoadingSearch} isError={isErrorSearch} />
+          </View>
+        ) : !searchResult || searchResult.length === 0 ? (
+          <EmptyState
+            symbol={hasSearched ? 'magnifyingglass' : 'fork.knife'}
+            title={hasSearched ? 'No matches' : 'Search for a food'}
+            message={
+              hasSearched
+                ? 'Try another name, or create the food yourself.'
+                : 'Type a name, or browse by category.'
+            }
+            actionLabel={hasSearched ? 'Create food' : undefined}
+            onAction={
+              hasSearched
+                ? () => navigation.navigate('CreateNewFood', { mealId })
+                : undefined
+            }
+            illustration={
+              <Asset
+                imageName={
+                  hasSearched
+                    ? 'no_results_placeholder.png'
+                    : 'start_typing_placeholder.png'
+                }
+                width={190}
+                height={200}
+              />
+            }
+          />
+        ) : (
+          <ListSection header={`${searchResult.length} results`}>
+            {searchResult.map((foodItem, index) => (
               <FoodCard
                 key={foodItem._id}
                 food={foodItem}
                 openAddFoodPage={openAddFoodPage}
+                last={index === searchResult.length - 1}
               />
-            ))
-          )}
-        </View>
-      )}
+            ))}
+          </ListSection>
+        )}
+      </View>
 
       <CustomAlert
         message={message}
@@ -190,81 +182,20 @@ export default function SearchFoodScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginVertical: 10,
+  stack: {
+    gap: spacing.base,
   },
-  tabs: {
-    flexDirection: 'row',
-    width: '100%',
-    marginVertical: 5,
-  },
-  tab: {
-    flex: 1,
-    minWidth: 85,
-    textAlign: 'center',
-    paddingVertical: 4,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  tabSelected: {
-    backgroundColor: 'rgba(43, 99, 98, 0.1)',
-  },
-  tabLabel: {
-    color: colors.green,
-    fontFamily: fontFamily.bold,
-    fontSize: 14,
-  },
-  tabLabelSelected: {
-    color: colors.orange,
+  filter: {
+    marginHorizontal: layout.screenPadding,
   },
   searchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  labelTextField: {
-    padding: 10,
-    textAlign: 'left',
-    fontSize: 18,
-    fontFamily: fontFamily.bold,
-    color: colors.green,
-  },
-  textFieldContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 40,
-    maxWidth: 250,
-    marginRight: 10,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  textField: {
-    flex: 1,
-    textAlign: 'left',
-    fontSize: 18,
-    color: colors.green,
-    fontFamily: fontFamily.regular,
+    paddingHorizontal: layout.screenPadding,
   },
   dropdown: {
-    maxWidth: 300,
-    minWidth: 250,
-    width: 250,
-    height: 40,
-    marginRight: 10,
+    alignSelf: 'flex-start',
   },
-  placeholder: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  column: {
-    flexDirection: 'column',
-    width: '100%',
+  centered: {
+    alignItems: 'center',
+    paddingVertical: spacing.xxl,
   },
 });

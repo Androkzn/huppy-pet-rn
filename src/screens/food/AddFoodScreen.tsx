@@ -1,30 +1,32 @@
 /**
- * Add Food Screen — port of the web app's AddFood.page.js + AddFoodForm.
+ * Add Food Screen — how much of a food goes into the meal.
  *
- * A Back / "Add to meal" header, the food photo and name, the Units and Select
- * weight rows, the collapsible Description and Nutrition Facts panels, and the
- * Add to Meal button.
+ * The food's photo and name lead, then the portion, then its description and
+ * nutrition in collapsed sections — the detail is there without standing in
+ * front of the one decision the screen is asking for.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAddFood, useGetFoodTemplateById } from '@hooks/useGraphQL';
 import { useProfile } from '@contexts/ProfileContext';
 import { useAuth } from '@contexts/AuthContext';
 import { useCurrentDate } from '@contexts/DateContext';
 import { PageContainer } from '@components/ui/PageContainer';
-import { Asset } from '@components/ui/Asset';
-import { HuppyButton } from '@components/ui/Buttons';
+import { IOSButton } from '@components/ios/Button';
+import { Label } from '@components/ios/Text';
+import { ListRow } from '@components/ios/List';
+import { Section } from '@components/ui/Section';
 import {
+  FormGroup,
   TitleAndDropdown,
   TitleButtonsAndTextField,
 } from '@components/ui/FormRows';
 import { CustomAlert } from '@components/ui/CustomAlert';
 import FoodImage from '@components/FoodImage';
 import { FoodUnits, AlertType } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { layout, spacing } from '@theme/tokens';
 
 type FoodStackParamList = {
   SearchFood: { mealId: string };
@@ -88,130 +90,86 @@ export default function AddFoodScreen({ navigation, route }: Props) {
     );
   };
 
+  /** One nutrition figure, stated as a value row. */
   const NutritionRow = ({ label, value }: { label: string; value?: number }) => (
-    <View style={styles.nutritionRow}>
-      <Text style={styles.nutritionText}>{label}</Text>
-      <Text style={styles.nutritionText}>{value}</Text>
-    </View>
+    <ListRow title={label} value={value === undefined ? '—' : String(value)} chevron={false} />
   );
+
+  const description = (foodItem as any)?.desc as string | undefined;
 
   return (
     <PageContainer>
-      {/* Top navigation */}
-      <View style={styles.topButtonsContainer}>
-        <HuppyButton
-          variant="backButton"
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-          onPress={() => navigation.goBack()}
+      <View style={styles.stack}>
+        {/* What is being added */}
+        <View style={styles.hero}>
+          <FoodImage foodItem={foodItem} isEditing={false} width={128} />
+          <Label variant="title2" brand numberOfLines={2} style={styles.heroTitle}>
+            {foodItem?.name}
+          </Label>
+          {foodItem?.calories ? (
+            <Label variant="subheadline" role="secondary">
+              {`${foodItem.calories} kcal / 100 g`}
+            </Label>
+          ) : null}
+        </View>
+
+        {/* The portion */}
+        <FormGroup header="Portion">
+          <TitleAndDropdown
+            title="Units"
+            dropdownOptions={unitOptions}
+            onChange={setUnits}
+          />
+          <TitleButtonsAndTextField
+            title="Amount"
+            initialValue={0}
+            step={10}
+            onChange={setWeight}
+            onChangeButton={setWeight}
+          />
+        </FormGroup>
+
+        {description ? (
+          <Section
+            title="Description"
+            expanded={isDescriptionExpanded}
+            onToggle={() => setDescriptionExpanded(!isDescriptionExpanded)}
+          >
+            <View style={styles.description}>
+              <Label variant="subheadline" role="secondary">
+                {description}
+              </Label>
+            </View>
+          </Section>
+        ) : null}
+
+        <Section
+          title="Nutrition facts"
+          expanded={isNutritionExpanded}
+          onToggle={() => setNutritionExpanded(!isNutritionExpanded)}
         >
-          Back
-        </HuppyButton>
-        <Text style={styles.addFoodTitle}>Add to meal</Text>
-        <View style={styles.topSpacer} />
-      </View>
+          <NutritionRow label="Protein, %" value={(foodItem as any)?.protein} />
+          <NutritionRow label="Fat, %" value={(foodItem as any)?.fat} />
+          <NutritionRow label="Carbohydrates, %" value={(foodItem as any)?.carb} />
+          <NutritionRow label="Fiber, %" value={(foodItem as any)?.fiber} />
+          <NutritionRow label="Ash, %" value={(foodItem as any)?.ash} />
+          <NutritionRow label="Calories in 100 g, kcal" value={foodItem?.calories} />
+          <NutritionRow
+            label="Calories in serving, kcal"
+            value={(foodItem as any)?.caloriesServing}
+          />
+        </Section>
 
-      <View style={styles.form}>
-        <View style={styles.imageContainer}>
-          <FoodImage foodItem={foodItem} isEditing={false} />
-        </View>
-
-        <Text style={styles.addFoodTitle}>{foodItem?.name}</Text>
-
-        <TitleAndDropdown
-          title="Units"
-          dropdownOptions={unitOptions}
-          onChange={setUnits}
-        />
-        <TitleButtonsAndTextField
-          title="Select weight"
-          initialValue={0}
-          onChange={setWeight}
-          onChangeButton={setWeight}
-        />
-
-        {/* Description */}
-        {!!(foodItem as any)?.desc && (
-          <View style={styles.panel}>
-            <View style={styles.panelHeader}>
-              <Text
-                style={styles.panelTitle}
-                onPress={() => setDescriptionExpanded(!isDescriptionExpanded)}
-              >
-                Description
-              </Text>
-              <Asset
-                imageName={
-                  isDescriptionExpanded
-                    ? 'arrow_down_green.svg'
-                    : 'arrow_right_green.svg'
-                }
-                width={20}
-                height={20}
-                onPress={() => setDescriptionExpanded(!isDescriptionExpanded)}
-              />
-            </View>
-            {isDescriptionExpanded && (
-              <View style={styles.panelBody}>
-                <Text style={styles.nutritionText}>
-                  {(foodItem as any)?.desc}
-                </Text>
-              </View>
-            )}
-          </View>
-        )}
-
-        {/* Nutrition facts */}
-        <View style={styles.panel}>
-          <View style={styles.panelHeader}>
-            <Text
-              style={styles.panelTitle}
-              onPress={() => setNutritionExpanded(!isNutritionExpanded)}
-            >
-              Nutrition Facts
-            </Text>
-            <Asset
-              imageName={
-                isNutritionExpanded
-                  ? 'arrow_down_green.svg'
-                  : 'arrow_right_green.svg'
-              }
-              width={20}
-              height={20}
-              onPress={() => setNutritionExpanded(!isNutritionExpanded)}
-            />
-          </View>
-          {isNutritionExpanded && (
-            <View style={styles.panelBody}>
-              <NutritionRow label="Protein, %" value={(foodItem as any)?.protein} />
-              <NutritionRow label="Fat, %" value={(foodItem as any)?.fat} />
-              <NutritionRow
-                label="Carbohydrates, %"
-                value={(foodItem as any)?.carb}
-              />
-              <NutritionRow label="Fiber, %" value={(foodItem as any)?.fiber} />
-              <NutritionRow label="Ash, %" value={(foodItem as any)?.ash} />
-              <NutritionRow
-                label="Calories in 100g, kcal"
-                value={foodItem?.calories}
-              />
-              <NutritionRow
-                label="Calories in serving, kcal"
-                value={(foodItem as any)?.caloriesServing}
-              />
-            </View>
-          )}
-        </View>
-
-        <View style={styles.row}>
-          <HuppyButton
-            variant="rectangleTextButton"
-            width={200}
+        <View style={styles.action}>
+          <IOSButton
+            title="Add to meal"
+            variant="prominent"
+            size="lg"
+            fullWidth
+            haptic="medium"
             onPress={addFoodToMeal}
             disabled={weight === 0 || showAlert}
-          >
-            Add to Meal
-          </HuppyButton>
+          />
         </View>
       </View>
 
@@ -227,80 +185,22 @@ export default function AddFoodScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  topButtonsContainer: {
-    flexDirection: 'row',
+  stack: {
+    gap: spacing.xl,
+  },
+  hero: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
+    gap: spacing.sm,
+    paddingHorizontal: layout.screenPadding,
+    paddingTop: spacing.sm,
   },
-  topSpacer: {
-    width: 100,
-  },
-  form: {
-    maxWidth: 450,
-    minWidth: 250,
-    width: '100%',
-  },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  addFoodTitle: {
+  heroTitle: {
     textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 17,
-    fontFamily: fontFamily.bold,
-    margin: 10,
   },
-  panel: {
-    flexDirection: 'column',
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '100%',
-    margin: 3,
-    marginTop: 10,
-    backgroundColor: colors.lightBrown,
+  description: {
+    padding: spacing.base,
   },
-  panelHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-  },
-  panelTitle: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    margin: 10,
-    fontSize: 17,
-    fontFamily: fontFamily.bold,
-    padding: 5,
-  },
-  panelBody: {
-    width: '90%',
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-  },
-  nutritionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    margin: 5,
-  },
-  nutritionText: {
-    fontFamily: fontFamily.regular,
-    fontSize: 16,
-    color: colors.black,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+  action: {
+    paddingHorizontal: layout.screenPadding,
   },
 });

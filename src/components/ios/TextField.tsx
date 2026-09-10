@@ -118,7 +118,8 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
             {...rest}
           />
 
-          {clearable && hasValue ? (
+          {/* A password field carries the reveal control instead, as iOS does. */}
+          {clearable && hasValue && !password ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Clear text"

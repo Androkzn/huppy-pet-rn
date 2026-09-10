@@ -1,16 +1,24 @@
 /**
- * TrainingCard — port of the web app's TrainingCard.component.js
- * (its small-screen branch): a 60px row that turns lightGreen2 with a trophy
- * once completed, swiped right to toggle and left to delete.
+ * TrainingCard — one training session in the day's list.
+ *
+ * A grouped row: the category's artwork, what is being trained, and a check
+ * that marks it done — the shape iOS uses for a checklist. Completed work is
+ * stated by a filled tint check and a struck-through title rather than by
+ * recolouring the whole row, so the list stays quiet as items are finished.
+ *
+ * Swiping left removes the session; swiping right toggles it, as before.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Pressable, Alert } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useDeleteTraining, useUpdateTraining } from '@hooks/useGraphQL';
-import * as colors from '../theme/colors';
-import { fontFamily } from '../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing } from '@theme/tokens';
+import { haptics } from '@utils/haptics';
 import { Asset } from './ui/Asset';
+import { Icon } from './ios/Icon';
+import { Label } from './ios/Text';
 import {
   getTitleForTrainingCategory,
   getTitleForTrainingType,
@@ -19,9 +27,15 @@ import type { Training } from '../types';
 
 interface TrainingCardProps {
   training: Training;
+  /** Hides the separator on the last row of a group. */
+  last?: boolean;
 }
 
-export const TrainingCard: React.FC<TrainingCardProps> = ({ training }) => {
+export const TrainingCard: React.FC<TrainingCardProps> = ({
+  training,
+  last = false,
+}) => {
+  const { colors } = useAppTheme();
   const { mutate: deleteTraining } = useDeleteTraining();
   const { mutate: updateTraining } = useUpdateTraining();
 
@@ -36,128 +50,142 @@ export const TrainingCard: React.FC<TrainingCardProps> = ({ training }) => {
     ? training.customType
     : getTitleForTrainingType(training.type);
 
-  const toggleCompleted = () =>
+  const toggleCompleted = () => {
+    haptics.light();
     updateTraining({
       trainingId: training._id,
       updateData: { isCompleted: !training.isCompleted },
     });
+  };
+
+  const confirmDelete = () => {
+    haptics.warning();
+    Alert.alert(`Remove ${category}?`, undefined, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: () => deleteTraining(training._id),
+      },
+    ]);
+  };
 
   return (
     <Swipeable
-      containerStyle={styles.swipeContainer}
+      friction={1.6}
+      overshootLeft={false}
+      overshootRight={false}
       renderLeftActions={() => (
-        <View style={styles.deleteAction}>
-          <Asset imageName="delete_white.svg" width={25} height={25} />
+        <View style={[styles.swipeAction, { backgroundColor: colors.red }]}>
+          <Icon name="trash" size={20} color={colors.onTint} />
         </View>
       )}
       renderRightActions={() => (
-        <View
-          style={[
-            styles.checkAction,
-            {
-              backgroundColor: training.isCompleted
-                ? colors.brown
-                : colors.lightGreen2,
-            },
-          ]}
-        >
-          <Asset
-            imageName={
-              training.isCompleted ? 'cancel_green.svg' : 'checkmark_white.svg'
-            }
-            width={20}
-            height={20}
+        <View style={[styles.swipeAction, { backgroundColor: colors.tint }]}>
+          <Icon
+            name={training.isCompleted ? "arrow.uturn.backward" : "checkmark"}
+            size={20}
+            color={colors.onTint}
           />
         </View>
       )}
       onSwipeableOpen={(direction) => {
         if (direction === 'left') {
-          Alert.alert('', 'Do you really want to delete this item ?', [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'OK', onPress: () => deleteTraining(training._id) },
-          ]);
+          confirmDelete();
         } else {
           toggleCompleted();
         }
       }}
     >
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: training.isCompleted
-              ? colors.lightGreen2
-              : colors.lightBrown2,
-          },
+      <Pressable
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: training.isCompleted }}
+        accessibilityLabel={`${category}, ${type}`}
+        onPress={toggleCompleted}
+        style={({ pressed }) => [
+          styles.row,
+          { backgroundColor: colors.groupedSurface },
+          pressed && styles.pressed,
         ]}
       >
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconTile, { backgroundColor: colors.tintSoft }]}>
           <Asset
             imageName={`training_${training.category}.svg`}
-            width={40}
-            height={40}
+            width={24}
+            height={24}
           />
         </View>
 
-        <View style={styles.column}>
-          <Text style={styles.textTitle}>{category}</Text>
-          <Text style={styles.text}>{type}</Text>
+        <View style={styles.rowLabel}>
+          <Label
+            variant="body"
+            numberOfLines={1}
+            role={training.isCompleted ? 'secondary' : 'primary'}
+            style={training.isCompleted ? styles.completedTitle : undefined}
+          >
+            {category}
+          </Label>
+          <Label variant="footnote" role="secondary" numberOfLines={1}>
+            {type}
+          </Label>
         </View>
 
-        {training.isCompleted && (
-          <Asset imageName="trophy.svg" width={35} height={35} />
-        )}
-      </View>
+        <Icon
+          name={training.isCompleted ? 'checkmark.circle.fill' : 'circle'}
+          size={22}
+          color={training.isCompleted ? colors.tint : colors.tertiaryLabel}
+          fallbackAsset={
+            training.isCompleted ? 'checkmark_orange.svg' : undefined
+          }
+        />
+      </Pressable>
+
+      {last ? null : (
+        <View
+          style={[
+            styles.separator,
+            { backgroundColor: colors.separator, height: layout.hairline },
+          ]}
+        />
+      )}
     </Swipeable>
   );
 };
 
 const styles = StyleSheet.create({
-  swipeContainer: {
-    borderRadius: 10,
-    margin: 5,
-    overflow: 'hidden',
-  },
-  deleteAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.orange,
-  },
-  checkAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
+  row: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    height: 60,
+    gap: spacing.md,
+    paddingHorizontal: layout.screenPadding,
+    paddingVertical: spacing.md,
+    minHeight: 60,
   },
-  iconContainer: {
-    minWidth: '20%',
-    marginLeft: 5,
+  iconTile: {
+    width: 38,
+    height: 38,
+    borderRadius: radius.sm,
+    borderCurve: 'continuous',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  column: {
+  rowLabel: {
     flex: 1,
-    flexDirection: 'column',
+    gap: 1,
   },
-  textTitle: {
-    paddingTop: 10,
-    paddingHorizontal: 5,
-    textAlign: 'left',
-    fontSize: 17,
-    color: colors.green,
-    fontFamily: fontFamily.bold,
+  completedTitle: {
+    textDecorationLine: 'line-through',
   },
-  text: {
-    padding: 5,
-    textAlign: 'left',
-    fontSize: 15,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
+  separator: {
+    marginLeft: layout.screenPadding + 38 + spacing.md,
+  },
+  swipeAction: {
+    width: 76,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.6,
   },
 });
 

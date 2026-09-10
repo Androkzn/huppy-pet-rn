@@ -47,6 +47,17 @@ interface NavBarProps {
   title?: string;
   /** Auth and profile-creation screens show the wordmark. */
   showLogo?: boolean;
+  /**
+   * Trailing control, for screens with a bar action of their own (Save, Done).
+   * It replaces the profile avatar while it is present.
+   */
+  trailing?: React.ReactNode;
+  /**
+   * Whether the bar offers a back control. Tabs pass `false`: switching tabs
+   * counts as history, so asking the navigator would put a back chevron on
+   * every tab — which is not what a tab is.
+   */
+  showBack?: boolean;
 }
 
 export const NavBar: React.FC<NavBarProps> = ({
@@ -54,6 +65,8 @@ export const NavBar: React.FC<NavBarProps> = ({
   scrollKey,
   title,
   showLogo,
+  trailing,
+  showBack,
 }) => {
   const navigation = useNavigation<any>();
   const [switcherOpen, setSwitcherOpen] = useState(false);
@@ -65,7 +78,7 @@ export const NavBar: React.FC<NavBarProps> = ({
   // The day stepper steers the two dated screens, as the date picker did.
   const showDayStepper =
     isLoggedIn && (routeName === 'Home' || routeName === 'Training');
-  const canGoBack = navigation.canGoBack?.() ?? false;
+  const canGoBack = showBack ?? (navigation.canGoBack?.() ?? false);
 
   return (
     <>
@@ -98,7 +111,7 @@ export const NavBar: React.FC<NavBarProps> = ({
           ) : undefined
         }
         trailing={
-          isLoggedIn ? (
+          trailing ?? (isLoggedIn ? (
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Profile and accounts"
@@ -111,7 +124,7 @@ export const NavBar: React.FC<NavBarProps> = ({
             >
               <Avatar profile={currentProfile} width={34} />
             </Pressable>
-          ) : null
+          ) : null)
         }
       />
 

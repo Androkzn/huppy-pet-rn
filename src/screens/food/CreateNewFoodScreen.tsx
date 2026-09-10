@@ -1,20 +1,21 @@
 /**
- * Create New Food Screen — port of the web app's CreateNewFood.page.js
- * + NewFoodForm.
+ * Create New Food Screen — adding a food of the user's own.
  *
- * The photo picker, Name / Food type / Units / Food category rows, the
- * Nutrition Facts rows, the meat-bones ratio slider (meat and bones only), a
- * description box, and the two create buttons.
+ * The photo, the food's identity, its nutrition, the meat/bones split where it
+ * applies, and a description. The two ways to finish sit together at the end:
+ * create it, or create it and put it straight into the meal.
  */
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAddFoodTemplate } from '@hooks/useGraphQL';
 import { useAuth } from '@contexts/AuthContext';
 import { PageContainer } from '@components/ui/PageContainer';
-import { HuppyButton } from '@components/ui/Buttons';
+import { IOSButton } from '@components/ios/Button';
+import { Label } from '@components/ios/Text';
 import {
+  FormGroup,
   TitleAndDropdown,
   TitleAndTextField,
   TitleButtonsAndTextField,
@@ -33,8 +34,8 @@ import {
   getTitleUpercased,
   AlertType,
 } from '@constants/enums';
-import * as colors from '../../theme/colors';
-import { fontFamily } from '../../theme';
+import { useAppTheme } from '@theme/ThemeProvider';
+import { layout, radius, spacing, textStyles } from '@theme/tokens';
 
 type FoodStackParamList = {
   SearchFood: { mealId: string };
@@ -61,6 +62,7 @@ const categoryOptions = Object.values(FoodCategoryType).map((type) => ({
 }));
 
 export default function CreateNewFoodScreen({ navigation, route }: Props) {
+  const { colors } = useAppTheme();
   const { mealId } = route.params;
   const { user } = useAuth();
   const { mutate: addFoodTemplate } = useAddFoodTemplate();
@@ -147,73 +149,75 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
     );
   };
 
+  const showRatioSlider =
+    foodItem.type === 'food' &&
+    (foodItem.categoryType === 'meat' || foodItem.categoryType === 'bones');
+
   return (
     <PageContainer>
-      {/* Top navigation */}
-      <View style={styles.topButtonsContainer}>
-        <HuppyButton
-          variant="backButton"
-          imageName="arrow_left_green.svg"
-          imageSize={20}
-          onPress={() => navigation.goBack()}
-        >
-          Back
-        </HuppyButton>
-        <Text style={styles.title}>Add New Food</Text>
-        <View style={styles.topSpacer} />
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.imageContainer}>
+      <View style={styles.stack}>
+        <View style={styles.hero}>
           <FoodImage
             foodItem={foodItem}
             imageDataUrl={imageUri}
+            width={128}
+            onPress={() => setImageDialogOpen(true)}
+          />
+          <IOSButton
+            title={imageUri ? 'Change photo' : 'Add photo'}
+            variant="tinted"
+            size="sm"
+            icon="camera"
             onPress={() => setImageDialogOpen(true)}
           />
         </View>
 
-        <TitleAndTextField
-          title="Name"
-          placeholder="Enter food name"
-          onChange={(value) => onInputChange('name', value)}
-        />
-        <TitleAndDropdown
-          title="Food type"
-          initialValue={foodItem.type}
-          dropdownOptions={typeOptions}
-          onChange={(value) => onInputChange('type', value)}
-        />
-        <TitleAndDropdown
-          title="Units"
-          initialValue={foodItem.units}
-          dropdownOptions={unitOptions}
-          onChange={(value) => onInputChange('units', value)}
-        />
-        <TitleAndDropdown
-          title="Food category"
-          initialValue={foodItem.categoryType}
-          dropdownOptions={categoryOptions}
-          onChange={(value) => onInputChange('categoryType', value)}
-          disabled={foodItem.type !== 'food'}
-        />
-
-        <Text style={styles.nutritionFactsTitle}>Nutrition Facts</Text>
-
-        {Object.values(AddFoodRowType).map((rowType) => (
-          <TitleButtonsAndTextField
-            key={rowType}
-            title={getTitleForAddFoodRowType(rowType)}
-            initialValue={foodItem[rowType]}
-            onChange={(value) => onInputChange(rowType, value)}
-            onChangeButton={(value) => onInputChange(rowType, value)}
+        <FormGroup header="Food">
+          <TitleAndTextField
+            title="Name"
+            placeholder="Enter food name"
+            onChange={(value) => onInputChange('name', value)}
           />
-        ))}
+          <TitleAndDropdown
+            title="Food type"
+            initialValue={foodItem.type}
+            dropdownOptions={typeOptions}
+            onChange={(value) => onInputChange('type', value)}
+          />
+          <TitleAndDropdown
+            title="Units"
+            initialValue={foodItem.units}
+            dropdownOptions={unitOptions}
+            onChange={(value) => onInputChange('units', value)}
+          />
+          <TitleAndDropdown
+            title="Food category"
+            initialValue={foodItem.categoryType}
+            dropdownOptions={categoryOptions}
+            onChange={(value) => onInputChange('categoryType', value)}
+            disabled={foodItem.type !== 'food'}
+          />
+        </FormGroup>
 
-        {foodItem.type === 'food' &&
-          (foodItem.categoryType === 'meat' ||
-            foodItem.categoryType === 'bones') && (
+        <FormGroup
+          header="Nutrition facts"
+          footer="Calories per 100 g are needed to work the food into the day's total."
+        >
+          {Object.values(AddFoodRowType).map((rowType) => (
+            <TitleButtonsAndTextField
+              key={rowType}
+              title={getTitleForAddFoodRowType(rowType)}
+              initialValue={foodItem[rowType]}
+              onChange={(value) => onInputChange(rowType, value)}
+              onChangeButton={(value) => onInputChange(rowType, value)}
+            />
+          ))}
+        </FormGroup>
+
+        {showRatioSlider ? (
+          <FormGroup header="Composition">
             <TitleAndSlider
-              title="Meat / Bones ratio"
+              title="Meat / bones ratio"
               firstValueTitle="Meat"
               secondValueTitle="Bones"
               firstValue={foodItem.meatRatio}
@@ -222,35 +226,50 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
                 setFoodItem((prev: any) => ({ ...prev, meatRatio, bonesRatio }))
               }
             />
-          )}
+          </FormGroup>
+        ) : null}
 
-        <View style={styles.descriptionBox}>
-          <Text style={styles.descriptionTitle}>Add Description</Text>
+        <View style={styles.noteGroup}>
+          <Label
+            variant="footnote"
+            role="secondary"
+            sectionHeader
+            style={styles.noteHeader}
+          >
+            Description
+          </Label>
           <TextInput
-            style={styles.descriptionInput}
+            style={[
+              styles.note,
+              { backgroundColor: colors.groupedSurface, color: colors.label },
+            ]}
             multiline
+            placeholder="What is in it, how it is served…"
+            placeholderTextColor={colors.tertiaryLabel}
+            selectionColor={colors.tint}
             value={foodItem.desc}
             onChangeText={(value) => onInputChange('desc', value)}
           />
         </View>
 
-        <View style={styles.buttonRow}>
-          <HuppyButton
-            variant="rectangleTextButton"
-            width={130}
-            onPress={() => addNewFood(false)}
-            disabled={!isValid}
-          >
-            Create Food
-          </HuppyButton>
-          <HuppyButton
-            variant="rectangleTextButton"
-            width={200}
+        <View style={styles.actions}>
+          <IOSButton
+            title="Create and add to meal"
+            variant="prominent"
+            size="lg"
+            fullWidth
+            haptic="medium"
             onPress={() => addNewFood(true)}
             disabled={!isValid}
-          >
-            Create and Add to Meal
-          </HuppyButton>
+          />
+          <IOSButton
+            title="Create only"
+            variant="tinted"
+            size="md"
+            fullWidth
+            onPress={() => addNewFood(false)}
+            disabled={!isValid}
+          />
         </View>
       </View>
 
@@ -281,65 +300,31 @@ export default function CreateNewFoodScreen({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  topButtonsContainer: {
-    flexDirection: 'row',
+  stack: {
+    gap: spacing.xl,
+  },
+  hero: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
+    gap: spacing.md,
+    paddingTop: spacing.sm,
   },
-  topSpacer: {
-    width: 100,
+  noteGroup: {
+    gap: 7,
   },
-  title: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontSize: 17,
-    fontFamily: fontFamily.bold,
+  noteHeader: {
+    paddingHorizontal: layout.screenPadding + 4,
   },
-  form: {
-    width: '100%',
-  },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  nutritionFactsTitle: {
-    textAlign: 'center',
-    color: colors.lightGreen,
-    fontFamily: fontFamily.bold,
-    fontSize: 17,
-    marginVertical: 10,
-  },
-  descriptionBox: {
-    borderRadius: 10,
-    backgroundColor: colors.lightBrown,
-    margin: 3,
-    padding: 10,
-  },
-  descriptionTitle: {
-    fontSize: 16,
-    fontFamily: fontFamily.bold,
-    color: colors.black,
-    marginBottom: 5,
-  },
-  descriptionInput: {
-    minHeight: 80,
-    borderRadius: 10,
-    backgroundColor: colors.white,
-    padding: 10,
-    fontSize: 16,
-    fontFamily: fontFamily.regular,
-    color: colors.black,
+  note: {
+    marginHorizontal: layout.screenPadding,
+    minHeight: 96,
+    padding: spacing.md,
+    borderRadius: radius.lg,
+    borderCurve: 'continuous',
     textAlignVertical: 'top',
+    ...textStyles.body,
   },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    width: '100%',
+  actions: {
+    gap: spacing.sm,
+    paddingHorizontal: layout.screenPadding,
   },
 });
